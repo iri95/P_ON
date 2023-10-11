@@ -12,3 +12,4 @@ spring:
           uri: https://lab.ssafy.com/kimta2hwan/s09p31e102-yaml.git
           default-label: master
           search-paths: yaml/**
+          basedir: ../../repo
