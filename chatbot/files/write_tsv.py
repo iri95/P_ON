@@ -1,4 +1,4 @@
-tsv_file = open('user_dic.tsv', 'w', encoding='utf-8')
+tsv_file = open('service_dic.tsv', 'w', encoding='utf-8')
 
 # 애들 등 NNG로 등록
 tsv_file.write("애들\tNNG\n")
