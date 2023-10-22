@@ -92,13 +92,14 @@ final PlanListData = [
       planTitle: '팀 회식',
       planDate: '미정',
       planTime: '미정',
-      planLocation: '하단 팔각도'),  PlanData(
+      planLocation: '하단 팔각도'),
+  PlanData(
       planTitle: '팀 회식',
       planDate: '미정',
       planTime: '미정',
       planLocation: '하단 팔각도'),
   PlanData(
-      planTitle: '팀 회식',
+      planTitle: '프로젝트 완성',
       planDate: '미정',
       planTime: '미정',
       planLocation: '하단 팔각도'),
