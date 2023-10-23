@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'config-deploy-image:latest'
+        DOCKERFILE_PATH = './config/Dockerfile' // Dockerfile의 경로
     }
 
     stages {
@@ -24,7 +25,7 @@ pipeline {
             steps {
                 script {
                     // Docker 이미지 빌드
-                    docker.build(DOCKER_IMAGE, "--build-arg JAR_FILE=build/libs/*.jar -f Dockerfile .")
+                    docker.build(DOCKER_IMAGE, "--file $DOCKERFILE_PATH --build-arg JAR_FILE=build/libs/*.jar .")
 
                     // Docker 이미지를 실행할 컨테이너 이름
                     def CONTAINER_NAME = 'config-deploy-container'
