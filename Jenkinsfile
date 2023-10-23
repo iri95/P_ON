@@ -1,46 +1,51 @@
 pipeline {
-    agent any // 사용 가능한 에이전트를 선택하거나 빈 문자열을 사용하여 자유 스타일 프로젝트를 실행
+    agent any
 
     environment {
-        DOCKER_IMAGE = 'config-deploy:latest'
+        DOCKER_IMAGE = 'config-deploy-image:latest'
     }
 
     stages {
         stage('Checkout') {
             steps {
-                // GitLab에서 소스 코드를 가져옴
+                // GitLab에서 소스 코드 가져옴
                 checkout scm
             }
         }
 
-        stage('Build') {
+        stage('Project Build') {
             steps {
                 // Spring Boot 프로젝트 빌드
                 sh './gradlew clean build'
             }
         }
 
-        stage('Docker Build') {
+        stage('Docker Build and Deploy') {
             steps {
-                // Docker 이미지 빌드
-                sh "docker build -t ${DOCKER_IMAGE} ."
-            }
-        }
+                script {
+                    // Docker 이미지 빌드
+                    docker.build(DOCKER_IMAGE, "--build-arg JAR_FILE=build/libs/*.jar -f Dockerfile .")
 
-        stage('Deploy') {
-            steps {
-                // Docker 컨테이너 실행
-                sh "docker run -d -p 8081:8080 --name your-container-name ${DOCKER_IMAGE}"
+                    // Docker 이미지를 실행할 컨테이너 이름
+                    def CONTAINER_NAME = 'config-deploy-container'
+
+                    // 기존 컨테이너가 실행 중인지 확인하고 중지합니다.
+                    sh "docker stop -f $CONTAINER_NAME || true"
+                    sh "docker rm -f $CONTAINER_NAME || true"
+
+                    // Docker 컨테이너 실행
+                    sh "docker run -d -p 8888:8888 --name $CONTAINER_NAME $DOCKER_IMAGE"
+                }
             }
         }
     }
 
     post {
         success {
-            // 배포 성공 시 
+            echo '배포 성공!'
         }
         failure {
-            // 배포가 실패했을 때 실행할 작업을 정의할 수 있습니다.
+            echo '배포 실패.'
         }
     }
 }
