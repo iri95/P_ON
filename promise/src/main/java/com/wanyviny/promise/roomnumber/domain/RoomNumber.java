@@ -1,4 +1,4 @@
-package com.wanyviny.promise.roomnum.domain;
+package com.wanyviny.promise.roomnumber.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
