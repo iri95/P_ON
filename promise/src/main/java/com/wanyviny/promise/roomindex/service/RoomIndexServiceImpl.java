@@ -16,18 +16,21 @@ public class RoomIndexServiceImpl implements RoomIndexService {
 
     private final RoomIndexRepository roomIndexRepository;
 
+    private static final String ID = "6535e81131a96c027bfc040d";
+
     @Override
     public RoomIndexDto findRoomIndex() {
         RoomIndex roomIndex =
-                roomIndexRepository.findById("6535e81131a96c027bfc040d").orElseThrow();
+                roomIndexRepository.findById(ID).orElseThrow();
 
         return RoomIndexDto.builder().index(roomIndex.getIndex()).build();
     }
 
+    @Transactional
     @Override
     public RoomIndexDto increaseRoomIndex() {
         RoomIndex roomIndex =
-                roomIndexRepository.findById("6535e81131a96c027bfc040d").orElseThrow();
+                roomIndexRepository.findById(ID).orElseThrow();
 
         roomIndex.increaseIndex();
         roomIndexRepository.save(roomIndex);
