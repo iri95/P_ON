@@ -1,4 +1,4 @@
-package com.wanyviny.promise.message.domain;
+package com.wanyviny.promise.chat.domain;
 
 public enum MessageType {
 
