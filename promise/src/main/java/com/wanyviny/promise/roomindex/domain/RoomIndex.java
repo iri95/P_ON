@@ -1,4 +1,4 @@
-package com.wanyviny.promise.roomnumber.domain;
+package com.wanyviny.promise.roomindex.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,14 +7,14 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "room_number")
+@Document(collection = "room_index")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class RoomNumber {
+public class RoomIndex {
 
     @Id
     private String id;
-    private Long roomNumber;
+    private Long index;
 }
