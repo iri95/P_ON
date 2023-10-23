@@ -17,4 +17,8 @@ public class RoomIndex {
     @Id
     private String id;
     private Long index;
+
+    public void increaseIndex() {
+        this.index++;
+    }
 }

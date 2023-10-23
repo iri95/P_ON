@@ -18,7 +18,20 @@ public class RoomIndexServiceImpl implements RoomIndexService {
 
     @Override
     public RoomIndexDto findRoomIndex() {
-        RoomIndex roomIndex = roomIndexRepository.findById("6535e81131a96c027bfc040d").orElseThrow();
+        RoomIndex roomIndex =
+                roomIndexRepository.findById("6535e81131a96c027bfc040d").orElseThrow();
+
+        return RoomIndexDto.builder().index(roomIndex.getIndex()).build();
+    }
+
+    @Override
+    public RoomIndexDto increaseRoomIndex() {
+        RoomIndex roomIndex =
+                roomIndexRepository.findById("6535e81131a96c027bfc040d").orElseThrow();
+
+        roomIndex.increaseIndex();
+        roomIndexRepository.save(roomIndex);
+
         return RoomIndexDto.builder().index(roomIndex.getIndex()).build();
     }
 }
