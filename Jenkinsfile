@@ -20,7 +20,7 @@ pipeline {
                 dir('config') {
                     // Spring Boot 프로젝트 빌드
                     sh 'chmod +x gradlew'
-                    sh './config/gradlew clean build'
+                    sh './gradlew clean build'
                 }
             }
         }
