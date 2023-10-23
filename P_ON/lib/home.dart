@@ -8,6 +8,14 @@ class homeScreen extends StatefulWidget {
 }
 
 class _homeScreenState extends State<homeScreen> {
+  late int index;
+
+  @override
+  void initState() {
+    super.initState();
+    index = 0;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,27 +49,35 @@ class _homeScreenState extends State<homeScreen> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('수완님',
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.w500)),
-                  Text('다가오는 약속이 있어요!',
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.w500)),
-                ],
-              ),
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('수완님',
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.w500)),
+                      Text('다가오는 약속이 있어요!',
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.w500)),
+                    ],
+                  ),
+                ),
+                PlanList()
+              ],
             ),
-            PlanList()
-          ],
-        ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: BottomAppBar(
+
       ),
     );
   }

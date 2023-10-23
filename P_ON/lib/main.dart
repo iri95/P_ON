@@ -35,9 +35,10 @@ class _ponAppState extends State<ponApp> {
           secondary: Colors.black,
         ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-            showSelectedLabels: false,
-            showUnselectedLabels: false,
-            selectedItemColor: Colors.black
+          unselectedItemColor: Colors.black,
+          showSelectedLabels: true,
+          showUnselectedLabels: true,
+          selectedItemColor: Color(0xff0066FF)
         ),
         useMaterial3: true,
       ),
