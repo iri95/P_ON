@@ -49,35 +49,74 @@ class _homeScreenState extends State<homeScreen> {
           ),
         ),
       ),
-      body: Stack(
-        children: [
-          SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('수완님',
-                          style: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.w500)),
-                      Text('다가오는 약속이 있어요!',
-                          style: TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.w500)),
-                    ],
-                  ),
-                ),
-                PlanList()
-              ],
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text('수완님',
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.w500)),
+                  Text('다가오는 약속이 있어요!',
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.w500)),
+                ],
+              ),
             ),
-          ),
-        ],
+            PlanList()
+          ],
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: FloatingActionButton.large(
+        onPressed: () {},
+        child: TextButton(
+          onPressed: () {},
+          child: Image.asset('assets/images/핑키1.png', fit: BoxFit.contain),
+        )
+
       ),
       bottomNavigationBar: BottomAppBar(
-
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(onPressed: () {}, icon: Icon(Icons.home_outlined)),
+                Text('홈')
+              ],
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(onPressed: () {}, icon: Icon(Icons.home_outlined)),
+                Text('홈')
+              ],
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(onPressed: () {}, icon: Icon(Icons.home_outlined)),
+                Text('홈')
+              ],
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(onPressed: () {}, icon: Icon(Icons.home_outlined)),
+                Text('홈')
+              ],
+            ),
+          ],
+        ),
+        shape: CircularNotchedRectangle(),
+        color: Colors.white,
       ),
     );
   }
