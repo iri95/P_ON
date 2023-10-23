@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'config-deploy-image:latest'
+        DOCKERFILE_PATH = './config/Dockerfile' // Dockerfile의 경로
     }
 
     stages {
@@ -16,7 +17,7 @@ pipeline {
         stage('Project Build') {
             steps {
                 // Spring Boot 프로젝트 빌드
-                sh './gradlew clean build'
+                sh './config/gradlew clean build'
             }
         }
 
