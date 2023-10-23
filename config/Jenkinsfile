@@ -3,7 +3,6 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = 'config-deploy-image:latest'
-        DOCKERFILE_PATH = './config/Dockerfile' // Dockerfile의 경로
     }
 
     stages {
