@@ -1,4 +1,4 @@
-package com.example.p_on
+package com.wanyviny.p_on
 
 import io.flutter.embedding.android.FlutterActivity
 
