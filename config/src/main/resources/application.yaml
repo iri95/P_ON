@@ -13,3 +13,6 @@ spring:
           default-label: master
           search-paths: yaml/**
           basedir: ../../repo
+
+  profiles:
+    include: gitlab
