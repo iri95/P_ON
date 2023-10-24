@@ -32,14 +32,13 @@ class _ponAppState extends State<ponApp> {
         fontFamily: 'Pretendard',
         colorScheme: const ColorScheme.light(
           primary: Colors.white,
-          secondary: Colors.black,
+          secondary: Colors.white,
         ),
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-          unselectedItemColor: Colors.black,
-          showSelectedLabels: true,
-          showUnselectedLabels: true,
-          selectedItemColor: Color(0xff0066FF)
-        ),
+            unselectedItemColor: Colors.black,
+            showSelectedLabels: true,
+            showUnselectedLabels: true,
+            selectedItemColor: Color(0xff0066FF)),
         // useMaterial3: true,
       ),
       home: const homeScreen(),
