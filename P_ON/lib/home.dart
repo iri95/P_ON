@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class homeScreen extends StatefulWidget {
@@ -18,106 +21,184 @@ class _homeScreenState extends State<homeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Image.asset('assets/images/핑키1.png',
-                  fit: BoxFit.contain, height: 32),
+    return Stack(
+      children: [
+        Scaffold(
+          appBar: AppBar(
+            title: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Image.asset('assets/images/핑키1.png',
+                      fit: BoxFit.contain, height: 32),
+                ),
+                Text('P:ON',
+                    style: TextStyle(
+                        fontSize: 32,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xffff7f27))),
+              ],
             ),
-            Text('P:ON',
-                style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w700,
-                    color: Color(0xffff7f27))),
-          ],
-        ),
-        actions: [
-          IconButton(
-              onPressed: () {},
-              icon: Icon(Icons.notifications_none_outlined, size: 32)),
-          IconButton(
-              onPressed: () {}, icon: Icon(Icons.settings_outlined, size: 32))
-        ],
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(1.0),
-          child: Container(
-            color: Colors.grey,
-            height: 1.0,
+            actions: [
+              IconButton(
+                  onPressed: () {},
+                  icon: Icon(
+                    Icons.notifications_none_outlined,
+                    size: 32,
+                    color: Colors.black,
+                  )),
+              IconButton(
+                  onPressed: () {},
+                  icon: Icon(
+                    Icons.settings_outlined,
+                    size: 32,
+                    color: Colors.black,
+                  ))
+            ],
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(1.0),
+              child: Container(
+                color: Colors.grey,
+                height: 1.0,
+              ),
+            ),
           ),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+          body: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('수완님',
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.w500)),
+                      Text('다가오는 약속이 있어요!',
+                          style: TextStyle(
+                              fontSize: 24, fontWeight: FontWeight.w500)),
+                    ],
+                  ),
+                ),
+                PlanList()
+              ],
+            ),
+          ),
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+          floatingActionButton: FloatingActionButton.large(
+              elevation: 0,
+              onPressed: () {},
+              child: TextButton(
+                onPressed: () {
+                  print('눌림');
+                },
+                child:
+                    Image.asset('assets/images/핑키3.png', fit: BoxFit.contain),
+              )),
+          bottomNavigationBar: BottomAppBar(
+            child: Container(
+              margin: EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('수완님',
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.w500)),
-                  Text('다가오는 약속이 있어요!',
-                      style:
-                          TextStyle(fontSize: 24, fontWeight: FontWeight.w500)),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                          onPressed: () {},
+                          icon: Icon(Icons.home_outlined,
+                              size: 32,
+                              color: index == 0
+                                  ? Color(0xff0074FF)
+                                  : Colors.black)),
+                      Text('홈',
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: index == 0
+                                  ? Color(0xff0074FF)
+                                  : Colors.black))
+                    ],
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                          onPressed: () {},
+                          icon: Icon(Icons.menu_book,
+                              size: 32,
+                              color: index == 1
+                                  ? Color(0xff0074FF)
+                                  : Colors.black)),
+                      Text('추억',
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: index == 1
+                                  ? Color(0xff0074FF)
+                                  : Colors.black))
+                    ],
+                  ),
+                  SizedBox(
+                    width: 30,
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                          onPressed: () {},
+                          icon: Icon(Icons.calendar_today_outlined,
+                              size: 32,
+                              color: index == 2
+                                  ? Color(0xff0074FF)
+                                  : Colors.black)),
+                      Text('일정',
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: index == 2
+                                  ? Color(0xff0074FF)
+                                  : Colors.black))
+                    ],
+                  ),
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                          onPressed: () {},
+                          icon: Icon(Icons.person_outline_outlined,
+                              size: 32,
+                              color: index == 3
+                                  ? Color(0xff0074FF)
+                                  : Colors.black)),
+                      Text('MY',
+                          style: TextStyle(
+                              fontSize: 16,
+                              color: index == 3
+                                  ? Color(0xff0074FF)
+                                  : Colors.black))
+                    ],
+                  ),
                 ],
               ),
             ),
-            PlanList()
-          ],
+            // shape: CircularNotchedRectangle(),
+            color: Colors.white,
+          ),
         ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton.large(
-        onPressed: () {},
-        child: TextButton(
-          onPressed: () {},
-          child: Image.asset('assets/images/핑키1.png', fit: BoxFit.contain),
+        Positioned(
+          right: 20,
+          bottom: 85,
+          child: FloatingActionButton(
+            onPressed: () {},
+            child: Icon(
+              Icons.edit_calendar,
+              color: Color(0xff0074FF),
+            ),
+          ),
         )
-
-      ),
-      bottomNavigationBar: BottomAppBar(
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(onPressed: () {}, icon: Icon(Icons.home_outlined)),
-                Text('홈')
-              ],
-            ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(onPressed: () {}, icon: Icon(Icons.home_outlined)),
-                Text('홈')
-              ],
-            ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(onPressed: () {}, icon: Icon(Icons.home_outlined)),
-                Text('홈')
-              ],
-            ),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconButton(onPressed: () {}, icon: Icon(Icons.home_outlined)),
-                Text('홈')
-              ],
-            ),
-          ],
-        ),
-        shape: CircularNotchedRectangle(),
-        color: Colors.white,
-      ),
+      ],
     );
   }
 }
@@ -194,7 +275,7 @@ class _PlanItemState extends State<PlanItem> {
     return Stack(children: [
       Container(
         width: double.infinity,
-        height: 150,
+        height: 200,
         margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
         decoration: BoxDecoration(
             color: Color(0xffE4E8EF), borderRadius: BorderRadius.circular(12)),
@@ -209,12 +290,45 @@ class _PlanItemState extends State<PlanItem> {
                       fontSize: 24,
                       fontWeight: FontWeight.w700,
                       height: 1.8)),
-              Text('일시 | ${widget.planData.planDate}',
-                  style: TextStyle(color: Colors.black, fontSize: 18)),
-              Text('시간 | ${widget.planData.planTime}',
-                  style: TextStyle(color: Colors.black, fontSize: 18)),
-              Text('장소 | ${widget.planData.planLocation}',
-                  style: TextStyle(color: Colors.black, fontSize: 18))
+              Row(
+                children: [
+                  Text('일시 | ${widget.planData.planDate}',
+                      style: TextStyle(color: Colors.black, fontSize: 18)),
+                  widget.planData.planDate == '미정'
+                      ? OutlinedButton(
+                          style: OutlinedButton.styleFrom(
+                            padding: EdgeInsets.symmetric(horizontal: 30),
+                            side: BorderSide.none,
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20)),
+                            backgroundColor: Color(0xffEFF3F9),
+                          ),
+                          onPressed: () {},
+                          child: Text(
+                            '투표 생성',
+                            style: TextStyle(color: Colors.black),
+                          ))
+                      : SizedBox.shrink()
+                ],
+              ),
+              Row(
+                children: [
+                  Text('시간 | ${widget.planData.planTime}',
+                      style: TextStyle(color: Colors.black, fontSize: 18)),
+                  widget.planData.planDate == '미정'
+                      ? TextButton(onPressed: () {}, child: Text('투표 생성'))
+                      : SizedBox.shrink()
+                ],
+              ),
+              Row(
+                children: [
+                  Text('장소 | ${widget.planData.planLocation}',
+                      style: TextStyle(color: Colors.black, fontSize: 18)),
+                  widget.planData.planDate == '미정'
+                      ? TextButton(onPressed: () {}, child: Text('투표 생성'))
+                      : SizedBox.shrink()
+                ],
+              ),
             ],
           )),
         ),
