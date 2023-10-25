@@ -1,6 +1,8 @@
 spring:
-  data:
-    mongodb:
-      host: localhost
-      port: 27017
-      database: local
+  config:
+    import: optional:configserver:http://j9e101.p.ssafy.io:8888
+
+  cloud:
+    config:
+      name: auth
+      profile: default
