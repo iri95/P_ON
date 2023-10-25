@@ -33,9 +33,4 @@ public class USERS {
     @Column(name = "USER_PHONE_ID")
     private String phoneId;
 
-    @Column(name = "USER_REFRESH_TOKEN")
-    private String refreshToken;
-
-
-
 }
