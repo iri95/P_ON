@@ -4,5 +4,17 @@ public enum MessageType {
 
     ENTER,
     LEAVE,
-    TEXT
+    NOTICE,
+    TEXT,
+    EMOJI,
+    LINK,
+    IMAGE,
+    VIDEO,
+    FILE,
+    MAP,
+    RECORD,
+    INVITE,
+    REFUSE,
+    VOTE_START,
+    VOTE_END
 }
