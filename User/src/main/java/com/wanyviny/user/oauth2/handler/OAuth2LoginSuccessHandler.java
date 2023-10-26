@@ -21,6 +21,7 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
+
     private final JwtService jwtService;
 
     @Override
@@ -32,9 +33,9 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             // User의 Role이 GUEST일 경우 처음 요청한 회원이므로 회원가입 페이지로 리다이렉트
             if (oAuth2User.getRole() == Role.GUEST) {
                 String accessToken = jwtService.createAccessToken(oAuth2User.getId());
-                response.addHeader(jwtService.getAccessHeader(), "Bearar " + accessToken);
+                response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
                 response.sendRedirect(
-                        "https://k9e102.p.ssafy.io.kakaologin?" + "access_token=Bearer" + accessToken + "&is_user=F"
+                        "https://k9e102.p.ssafy.io/kakaologin?" + "access_token=Bearer " + accessToken + "&is_user=F"
                 );
 
             }else{
@@ -53,7 +54,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         response.addHeader(jwtService.getRefreshHeader(), "Bearer " + refreshToken);
         response.sendRedirect(
                 "https://k9e102.p.ssafy.io/kakaologin?" + "access_token=Bearer " + accessToken + "&refresh_token="
-                + "Bearer " + refreshToken + "&is_user=T"
+                        + "Bearer " + refreshToken + "&is_user=T"
         );
         jwtService.updateRefreshToken(oAuth2User.getId(), refreshToken);
 

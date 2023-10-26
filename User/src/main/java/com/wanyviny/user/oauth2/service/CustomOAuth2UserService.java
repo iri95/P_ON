@@ -20,7 +20,6 @@ import java.util.Map;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-// User의 정보를 return함.
 public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final UserRepository userRepository;
