@@ -2,35 +2,45 @@ package com.wanyviny.user.user.entity;
 
 
 import com.wanyviny.user.user.PRIVACY;
+import com.wanyviny.user.user.Role;
+import jakarta.annotation.Nullable;
 import jakarta.persistence.*;
 import lombok.*;
+
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "USERS")
-public class USERS {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "USER_ID")
     private Long id;
 
-    @Column(name = "USER_PROFILE_URL")
+    @Column(name = "USER_PROFILE_URL", nullable = false)
     private String profileUrl;
 
-    @Column(name = "USER_NAME")
-    private String name;
+    @Column(name = "USER_NCIKNAME", nullable = false)
+    private String nickname;
 
     @Column(name = "USER_STATE_MESSAGE")
     private String stateMessage;
 
-    @Column(name = "USER_PRIVACY")
+    @Column(name = "USER_PRIVACY", nullable = false)
     @Enumerated(EnumType.STRING)
-    private PRIVACY privacy;
+    @Builder.Default
+    private PRIVACY privacy = PRIVACY.PRIVATE;
 
     @Column(name = "USER_PHONE_ID")
     private String phoneId;
 
+    @Column(name = "USER_ROLE", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
+    @Column(name = "USER_SOCIAL_ID", nullable = false)
+    private String socialId;
 }
