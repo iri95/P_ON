@@ -17,7 +17,7 @@ repositories {
 }
 
 openapi3 {
-	setServer("http://k9e102.p.ssafy.io")
+//	setServer("http://k9e102.p.ssafy.io")
 	title = "restdocs-swagger API Documentation"
 	description = "Spring REST Docs with SwaggerUI."
 	version = "0.0.1"
