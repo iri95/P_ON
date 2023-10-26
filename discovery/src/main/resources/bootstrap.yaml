@@ -1,6 +1,6 @@
 spring:
   config:
-    import: optional:configserver:http://k9e102.p.ssafy.io:8888
+    import: optional:configserver:http://config-container:8888
 
   cloud:
     config:
