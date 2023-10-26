@@ -17,7 +17,7 @@ repositories {
 }
 
 openapi3 {
-	setServer("http://localhost:7070")
+	setServer("http://localhost:9091")
 	title = "restdocs-swagger API Documentation"
 	description = "Spring REST Docs with SwaggerUI."
 	version = "0.0.1"
