@@ -1,13 +1,15 @@
 import 'vo_bank.dart';
 
-class BankAccount {
-  final Bank bank;
-  int balance;
-  final String? accountTypeName;
+class PlanData {
+  final String Plantitle;
+  final String PlanDate;
+  final String PlanTime;
+  final String PlanLocation;
 
-  BankAccount(
-    this.bank,
-    this.balance, {
-    this.accountTypeName,
-  });
+  PlanData(
+    this.Plantitle,
+    this.PlanDate,
+    this.PlanTime,
+    this.PlanLocation,
+  );
 }

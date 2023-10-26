@@ -15,7 +15,7 @@ abstract class AbstractThemeColors {
   Color get scrollableItem => const Color.fromARGB(255, 57, 57, 57);
 
   Color get iconButton => const Color.fromARGB(255, 255, 255, 255);
-  
+
   Color get navButton => const Color.fromARGB(255, 0, 102, 255);
 
   Color get navButtonInactivate => const Color.fromARGB(255, 0, 0, 0);
@@ -55,6 +55,8 @@ abstract class AbstractThemeColors {
   Color get roundedLayoutBackground => const Color.fromARGB(255, 255, 255, 255);
 
   Color get listLayoutBackground => const Color.fromARGB(255, 228, 232, 239);
+
+  Color get dateTimeCloseLayoutBackground => const Color.fromARGB(255, 51, 59, 79);
 
   Color get unreadColor => const Color.fromARGB(255, 48, 48, 48);
 
