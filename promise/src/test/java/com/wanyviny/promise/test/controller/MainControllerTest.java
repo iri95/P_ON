@@ -43,7 +43,7 @@ class MainControllerTest {
     @DisplayName("Get 테스트")
     void getTest() throws Exception {
         mockMvc.perform(
-                        RestDocumentationRequestBuilders.get("/user")
+                        RestDocumentationRequestBuilders.get("/api/promise/test")
                 )
                 .andExpect(status().isOk())
                 .andDo(MockMvcRestDocumentationWrapper.document("test-get",
@@ -67,7 +67,7 @@ class MainControllerTest {
     void postTest() throws Exception {
         MainRequest.Post request = new Post("post request");
         mockMvc.perform(
-                        RestDocumentationRequestBuilders.post("/user")
+                        RestDocumentationRequestBuilders.post("/api/promise/test")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(mapper.writeValueAsString(request))
                 )
@@ -97,7 +97,7 @@ class MainControllerTest {
         MainRequest.Put requestBody = new Put("put request");
 
         mockMvc.perform(
-                        RestDocumentationRequestBuilders.put("/user/{id}", requestId)
+                        RestDocumentationRequestBuilders.put("/api/promise/test/{id}", requestId)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(mapper.writeValueAsString(requestBody))
                 )
@@ -131,7 +131,7 @@ class MainControllerTest {
         MainRequest.Patch requestBody = new Patch("patch request");
 
         mockMvc.perform(
-                        RestDocumentationRequestBuilders.patch("/user/{id}", requestId)
+                        RestDocumentationRequestBuilders.patch("/api/promise/test/{id}", requestId)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(mapper.writeValueAsString(requestBody))
                 )
@@ -164,7 +164,7 @@ class MainControllerTest {
         Long request = 1L;
 
         mockMvc.perform(
-                        RestDocumentationRequestBuilders.delete("/user/{id}", request)
+                        RestDocumentationRequestBuilders.delete("/api/promise/test/{id}", request)
                 )
                 .andExpect(status().isNoContent())
                 .andDo(MockMvcRestDocumentationWrapper.document("test-delete",
