@@ -16,4 +16,6 @@ class AppColors {
   static const Color faleBlue = Color.fromARGB(255, 160, 206, 222);
   static const Color brightBlue = Color.fromARGB(255, 123, 182, 212);
   static const Color salmon = Color(0xffff6666);
+  static const Color mainBlue = Color(0xff3F48CC);
+  static const Color mainBlue2 = Color(0xff778CE3);
 }

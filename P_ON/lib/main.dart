@@ -1,47 +1,24 @@
-import 'package:flutter/cupertino.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:p_on/home.dart';
-import 'package:p_on/historyScreen.dart';
-import 'package:p_on/planScreen.dart';
-import 'package:p_on/myPageScreen.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
-void main() {
-  runApp(const ponApp());
-}
 
-class ponApp extends StatefulWidget {
-  const ponApp({super.key});
+import 'app.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
-  @override
-  State<ponApp> createState() => _ponAppState();
-}
+import 'common/data/preference/app_preferences.dart';
 
-class _ponAppState extends State<ponApp> {
-  late int selectedPage;
-  @override
-  void initState() {
-    super.initState();
-    selectedPage = 0;
-  }
+void main() async {
+  final bindings = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: bindings);
+  await EasyLocalization.ensureInitialized();
+  await AppPreferences.init();
+  timeago.setLocaleMessages('ko', timeago.KoMessages());
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: 'Pretendard',
-        colorScheme: const ColorScheme.light(
-          primary: Colors.white,
-          secondary: Colors.white,
-        ),
-        bottomNavigationBarTheme: const BottomNavigationBarThemeData(
-            unselectedItemColor: Colors.black,
-            showSelectedLabels: true,
-            showUnselectedLabels: true,
-            selectedItemColor: Color(0xff0066FF)),
-        // useMaterial3: true,
-      ),
-      home: const homeScreen(),
-    );
-  }
+  runApp(EasyLocalization(
+      supportedLocales: const [Locale('en'), Locale('ko')],
+      fallbackLocale: const Locale('en'),
+      path: 'assets/translations',
+      useOnlyLangCode: true,
+      child: const App()));
 }

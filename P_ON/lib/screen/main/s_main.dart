@@ -20,16 +20,17 @@ class MainScreenState extends State<MainScreen>
   DateTime? lastPressed;
   final tabs = [
     TabItem.home,
-    TabItem.benefit,
-    TabItem.ttosspay,
-    TabItem.stock,
-    TabItem.all,
+    TabItem.history,
+    TabItem.blankFeild,
+    TabItem.plan,
+    TabItem.my,
   ];
   final List<GlobalKey<NavigatorState>> navigatorKeys = [];
 
   int get _currentIndex => tabs.indexOf(_currentTab);
 
-  GlobalKey<NavigatorState> get _currentTabNavigationKey => navigatorKeys[_currentIndex];
+  GlobalKey<NavigatorState> get _currentTabNavigationKey =>
+      navigatorKeys[_currentIndex];
 
   ///bottomNavigationBar 아래 영역 까지 그림
   bool get extendBody => true;
@@ -37,6 +38,8 @@ class MainScreenState extends State<MainScreen>
   static double get bottomNavigationBarBorderRadius => 30.0;
 
   static const double bottomNavigatorHeight = 50;
+
+  String currentImage = 'assets/image/main/핑키3.png';
 
   @override
   FutureOr<void> afterFirstLayout(BuildContext context) async {
@@ -57,13 +60,28 @@ class MainScreenState extends State<MainScreen>
         extendBody: extendBody,
         drawer: const MenuDrawer(),
         body: Padding(
-          padding: EdgeInsets.only(bottom: extendBody ? 60 - bottomNavigationBarBorderRadius : 0),
+          padding: EdgeInsets.only(
+              bottom: extendBody ? 60 - bottomNavigationBarBorderRadius : 0),
           child: SafeArea(
             bottom: !extendBody,
             child: pages,
           ),
         ),
         bottomNavigationBar: _buildBottomNavigationBar(context),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton: InkWell(
+          onHover: (e) {
+            setState(() {
+              currentImage = "assets/image/main/핑키1.png";
+            });
+          },
+          child: FloatingActionButton.large(
+            elevation: 4,
+            onPressed: () {},
+            child: Image.asset(currentImage),
+          ),
+
+        )
       ),
     );
   }
@@ -91,7 +109,8 @@ class MainScreenState extends State<MainScreen>
         // 사용자가 "뒤로" 버튼을 빠르게 두 번 누르면 앱이 종료되도록 합니다.
         final now = DateTime.now();
         if (lastPressed == null ||
-            now.difference(lastPressed!) > const Duration(seconds: 2)) { // 2초 내에 두 번 눌러야 함
+            now.difference(lastPressed!) > const Duration(seconds: 2)) {
+          // 2초 내에 두 번 눌러야 함
           // 처음 탭하거나 마지막 탭 이후 2초가 지난 경우
           lastPressed = now;
 
@@ -122,15 +141,12 @@ class MainScreenState extends State<MainScreen>
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(bottomNavigationBarBorderRadius),
-          topRight: Radius.circular(bottomNavigationBarBorderRadius),
-        ),
         child: BottomNavigationBar(
+          backgroundColor: Colors.white,
           items: navigationBarItems(context),
           currentIndex: _currentIndex,
-          selectedItemColor: context.appColors.text,
-          unselectedItemColor: context.appColors.iconButtonInactivate,
+          selectedItemColor: context.appColors.navButton,
+          unselectedItemColor: context.appColors.navButtonInactivate,
           onTap: _handleOnTapNavigationBarItem,
           showSelectedLabels: true,
           showUnselectedLabels: true,
@@ -157,13 +173,15 @@ class MainScreenState extends State<MainScreen>
     });
   }
 
-  BottomNavigationBarItem bottomItem(
-      bool activate, IconData iconData, IconData inActivateIconData, String label) {
+  BottomNavigationBarItem bottomItem(bool activate, IconData iconData,
+      IconData inActivateIconData, String label) {
     return BottomNavigationBarItem(
         icon: Icon(
           key: ValueKey(label),
           activate ? iconData : inActivateIconData,
-          color: activate ? context.appColors.iconButton : context.appColors.iconButtonInactivate,
+          color: activate
+              ? context.appColors.iconButton
+              : context.appColors.iconButtonInactivate,
         ),
         label: label);
   }

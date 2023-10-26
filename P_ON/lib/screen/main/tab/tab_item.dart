@@ -8,11 +8,11 @@ import 'package:flutter/material.dart';
 import 'benefit/f_benefit.dart';
 
 enum TabItem {
-  home(Icons.home, '홈', HomeFragment()),
-  benefit(Icons.collections, '추억', BenefitFragment()),
-  ttosspay(Icons.payment, '마이페이지', TtospayFragment()),
-  stock(Icons.calendar_month_outlined, '일정', StockFragment()),
-  all(Icons.person_outline, '마이페이지', AllFragment());
+  home(Icons.home_outlined, '홈', HomeFragment()),
+  history(Icons.menu_book, '추억', BenefitFragment()),
+  blankFeild(Icons.check_box_outline_blank, '', TtospayFragment()),
+  plan(Icons.calendar_today_outlined, '일정', StockFragment()),
+  my(Icons.person_outline, 'MY', AllFragment());
 
   final IconData activeIcon;
   final IconData inActiveIcon;
@@ -28,7 +28,7 @@ enum TabItem {
           key: ValueKey(tabName),
           isActivated ? activeIcon : inActiveIcon,
           color:
-              isActivated ? context.appColors.iconButton : context.appColors.iconButtonInactivate,
+              isActivated ? context.appColors.navButton : context.appColors.navButtonInactivate,
         ),
         label: tabName);
   }
