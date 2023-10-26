@@ -7,14 +7,16 @@ class ListContainer extends StatelessWidget {
   final EdgeInsets? margin;
   final double radius;
   final Color? backgroundColor;
+  final bool isDateClose;
 
   const ListContainer(
       {required this.child,
-        super.key,
-        this.radius = 20,
-        this.backgroundColor,
-        this.margin,
-        this.padding = const EdgeInsets.symmetric(horizontal: 20, vertical: 15)});
+      this.isDateClose = false,
+      super.key,
+      this.radius = 20,
+      this.backgroundColor,
+      this.margin,
+      this.padding = const EdgeInsets.symmetric(horizontal: 20, vertical: 15)});
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +24,9 @@ class ListContainer extends StatelessWidget {
       padding: padding,
       margin: margin,
       decoration: BoxDecoration(
-          color: backgroundColor ?? context.appColors.listLayoutBackground,
+        color: isDateClose
+          ? backgroundColor ?? context.appColors.listLayoutBackground
+          : backgroundColor ?? context.appColors.listLayoutBackground,
           borderRadius: BorderRadius.circular(radius)),
       child: child,
     );
