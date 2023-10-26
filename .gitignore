@@ -39,21 +39,21 @@ out/
 ### yaml ###
 application-gitlab.yaml
 
-### front ###
+### front - web ###
 # dependencies
-front/node_modules
-front/.pnp
+web/node_modules
+web/.pnp
 .pnp.js
 
 # testing
 /coverage
 
 # next.js
-front/.next/
+web/.next/
 out/
 
 # production
-front/build
+web/build
 
 # misc
 .DS_Store
@@ -65,7 +65,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # local env files
-front/.env*.local
+web/.env*.local
 
 # vercel
 .vercel
