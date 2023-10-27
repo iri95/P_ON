@@ -5,11 +5,13 @@ class PlanData {
   final String PlanDate;
   final String PlanTime;
   final String PlanLocation;
+  final bool PlanChat;
 
   PlanData(
     this.Plantitle,
     this.PlanDate,
     this.PlanTime,
     this.PlanLocation,
+    this.PlanChat
   );
 }

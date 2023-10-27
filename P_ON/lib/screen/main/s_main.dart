@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import '../../common/common.dart';
+import 'w_bottom_nav_floating_button.dart';
 import 'w_menu_drawer.dart';
 
 class MainScreen extends StatefulWidget {
@@ -54,35 +55,29 @@ class MainScreenState extends State<MainScreen>
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: _handleBackPressed,
-      child: Scaffold(
-        extendBody: extendBody,
-        drawer: const MenuDrawer(),
-        body: Padding(
-          padding: EdgeInsets.only(
-              bottom: extendBody ? 60 - bottomNavigationBarBorderRadius : 0),
-          child: SafeArea(
-            bottom: !extendBody,
-            child: pages,
-          ),
-        ),
-        bottomNavigationBar: _buildBottomNavigationBar(context),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: InkWell(
-          onHover: (e) {
-            setState(() {
-              currentImage = "assets/image/main/핑키1.png";
-            });
-          },
-          child: FloatingActionButton.large(
-            elevation: 4,
-            onPressed: () {},
-            child: Image.asset(currentImage),
-          ),
-
-        )
-      ),
+    return Scaffold(
+      body: Builder(builder: (BuildContext context) {
+        return WillPopScope(
+          onWillPop: _handleBackPressed,
+          child: Scaffold(
+              resizeToAvoidBottomInset: false,
+              extendBody: extendBody,
+              drawer: const MenuDrawer(),
+              body: Padding(
+                padding: EdgeInsets.only(
+                    bottom:
+                        extendBody ? 60 - bottomNavigationBarBorderRadius : 0),
+                child: SafeArea(
+                  bottom: !extendBody,
+                  child: pages,
+                ),
+              ),
+              bottomNavigationBar: _buildBottomNavigationBar(context),
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.centerDocked,
+              floatingActionButton: const BottomFloatingActionButton()),
+        );
+      }),
     );
   }
 
@@ -119,6 +114,7 @@ class MainScreenState extends State<MainScreen>
             const SnackBar(
               content: Text('한 번 더 누르면 종료됩니다.'),
               duration: Duration(seconds: 2), // 스낵바 표시 지속 시간
+              // behavior: SnackBarBehavior.floating,
             ),
           );
 

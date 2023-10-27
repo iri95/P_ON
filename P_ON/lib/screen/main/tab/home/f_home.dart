@@ -4,6 +4,7 @@ import 'package:fast_app_base/common/widget/w_rounded_container.dart';
 import 'package:fast_app_base/screen/dialog/d_message.dart';
 import 'package:fast_app_base/screen/main/tab/home/w_my_plan_and_promise.dart';
 import 'package:fast_app_base/screen/main/tab/home/w_p_on_app_bar.dart';
+import 'package:fast_app_base/screen/main/tab/promise_room/f_create_promise.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../common/widget/w_big_button.dart';
@@ -21,7 +22,7 @@ class HomeFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      // color: Colors.white,
       child: Stack(
         children: [
           RefreshIndicator(
@@ -42,7 +43,23 @@ class HomeFragment extends StatelessWidget {
                       child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      '수완님'.text.semiBold.size(24).color(Colors.black).make(),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          '수완'
+                              .text
+                              .semiBold
+                              .size(24)
+                              .color(AppColors.mainBlue)
+                              .make(),
+                          '님,'
+                              .text
+                              .semiBold
+                              .size(24)
+                              .color(Colors.black)
+                              .make(),
+                        ],
+                      ),
                       '다가오는 약속이 있어요!'
                           .text
                           .semiBold
@@ -68,9 +85,11 @@ class HomeFragment extends StatelessWidget {
               bottom: 40,
               right: 10,
               child: FloatingActionButton(
-                backgroundColor: Colors.white,
+                backgroundColor: const Color(0xffEFF3F9),
                 elevation: 4,
-                onPressed: fetchData,
+                onPressed: () {
+                  Nav.push(const CreatePromise());
+                },
                 child: Icon(
                   Icons.add,
                   color: context.appColors.navButton,
@@ -79,66 +98,5 @@ class HomeFragment extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  void showSnackbar(BuildContext context) {
-    context.showSnackbar('snackbar 입니다.',
-        extraButton: Tap(
-          onTap: () {
-            context.showErrorSnackbar('error');
-          },
-          child: '에러 보여주기 버튼'
-              .text
-              .white
-              .size(13)
-              .make()
-              .centered()
-              .pSymmetric(h: 10, v: 5),
-        ));
-  }
-
-  Future<void> showConfirmDialog(BuildContext context) async {
-    final confirmDialogResult = await ConfirmDialog(
-      '오늘 기분이 좋나요?',
-      buttonText: "네",
-      cancelButtonText: "아니오",
-    ).show();
-    debugPrint(confirmDialogResult?.isSuccess.toString());
-
-    confirmDialogResult?.runIfSuccess((data) {
-      ColorBottomSheet(
-        '❤️',
-        context: context,
-        backgroundColor: Colors.yellow.shade200,
-      ).show();
-    });
-
-    confirmDialogResult?.runIfFailure((data) {
-      ColorBottomSheet(
-        '❤️힘내여',
-        backgroundColor: Colors.yellow.shade300,
-        textColor: Colors.redAccent,
-      ).show();
-    });
-  }
-
-  Future<void> showMessageDialog() async {
-    final result = await MessageDialog("안녕하세요").show();
-    debugPrint(result.toString());
-  }
-
-  void openDrawer(BuildContext context) {
-    Scaffold.of(context).openDrawer();
-  }
-
-  Future<void> fetchData() async {
-    Dio dio = Dio();
-
-    try {
-      final response = await dio.get('http://k9e102.p.ssafy.io/api/promise/test');
-      print('Response Data: ${response}');
-    } catch (error) {
-      print(error);
-    }
   }
 }

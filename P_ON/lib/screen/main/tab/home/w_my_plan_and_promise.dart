@@ -13,42 +13,62 @@ class MyPlanAndPromise extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    DateTime? planDate;
+    if (promise.PlanDate != "미정") {
+      planDate = DateTime.parse(promise.PlanDate);
+    }
+
+    final currentDate = DateTime.now();
+    bool isClose = false;
+
+    if (planDate != null) {
+      final diff = currentDate.difference(planDate).inDays;
+      if (diff.abs() < 3) {
+        isClose = true;
+      }
+    }
+
     return Stack(
       children: [
         Container(
           margin: const EdgeInsets.symmetric(vertical: 12),
           width: double.infinity,
           child: ListContainer(
+            isDateClose: isClose,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
                   margin: const EdgeInsets.only(bottom: 10),
                   child: Text(
-                      promise.Plantitle.length > 12 ? promise.Plantitle.substring(0, 12) + '...' : promise.Plantitle,
-                      style: const TextStyle(
+                      promise.Plantitle.length > 12
+                          ? promise.Plantitle.substring(0, 12) + '...'
+                          : promise.Plantitle,
+                      style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.w700,
                           fontFamily: 'Pretendard',
-                          color: Colors.black)),
+                          color: isClose ? Colors.white : Colors.black)),
                 ),
                 Container(
                   height: 30,
                   child: Row(children: [
-                    CustomText(text: '일시 | '),
+                    CustomText(text: '일시 | ', textColor: isClose),
                     promise.PlanDate == '미정'
                         ? CreateVote()
-                        : CustomText(text: promise.PlanDate),
+                        : CustomText(
+                            text: promise.PlanDate, textColor: isClose),
                   ]),
                 ),
                 Container(
                   height: 30,
                   child: Row(
                     children: [
-                      CustomText(text: '시간 | '),
+                      CustomText(text: '시간 | ', textColor: isClose),
                       promise.PlanTime == '미정'
                           ? CreateVote()
-                          : CustomText(text: promise.PlanTime),
+                          : CustomText(
+                              text: promise.PlanTime, textColor: isClose),
                     ],
                   ),
                 ),
@@ -59,10 +79,12 @@ class MyPlanAndPromise extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          CustomText(text: '장소 | '),
+                          CustomText(text: '장소 | ', textColor: isClose),
                           promise.PlanLocation == '미정'
                               ? CreateVote()
-                              : CustomText(text: promise.PlanLocation),
+                              : CustomText(
+                                  text: promise.PlanLocation,
+                                  textColor: isClose),
                         ],
                       ),
                       Stack(
@@ -79,10 +101,11 @@ class MyPlanAndPromise extends StatelessWidget {
                                   // 버튼 누르면 해당 채팅방으로 이동
                                   print('눌렸');
                                 },
-                                color: Color(0xff3F48CC),
+                                color: Color(0xffFFBA20),
                               ),
                             ),
                           ),
+                          if (promise.PlanChat)
                           const Positioned(
                               right: 5,
                               top: 5,
@@ -99,10 +122,12 @@ class MyPlanAndPromise extends StatelessWidget {
             ),
           ),
         ),
-        const Positioned(
+        Positioned(
             right: 20,
             child: Image(
-              image: AssetImage('assets/image/main/핑키2.png'),
+              image: isClose
+                  ? const AssetImage('assets/image/main/핑키3.png')
+                  : const AssetImage('assets/image/main/핑키2.png'),
               fit: BoxFit.contain,
               width: 60,
             )),
@@ -119,8 +144,8 @@ class CreateVote extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(left: 5),
-      width: 70,
-      height: 20,
+      width: 80,
+      height: 25,
       child: FilledButton(
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(Colors.white),
@@ -133,9 +158,9 @@ class CreateVote extends StatelessWidget {
           children: [
             Text(
               '투표',
-              style: TextStyle(color: Color(0xFFFF7F27), fontSize: 12),
+              style: TextStyle(color: Color(0xFFFF7F27), fontSize: 14),
             ),
-            Icon(Icons.arrow_forward_ios, size: 11, color: Color(0xFFFF7F27))
+            Icon(Icons.arrow_forward_ios, size: 14, color: Color(0xFFFF7F27))
           ],
         ),
       ),

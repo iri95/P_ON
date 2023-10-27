@@ -25,7 +25,7 @@ class ListContainer extends StatelessWidget {
       margin: margin,
       decoration: BoxDecoration(
         color: isDateClose
-          ? backgroundColor ?? context.appColors.listLayoutBackground
+          ? backgroundColor ?? context.appColors.dateTimeCloseLayoutBackground
           : backgroundColor ?? context.appColors.listLayoutBackground,
           borderRadius: BorderRadius.circular(radius)),
       child: child,
