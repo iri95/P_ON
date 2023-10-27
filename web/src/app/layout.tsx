@@ -1,12 +1,11 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'P:ON',
-  description: '약속 및 일정 관리 앱',
+  description: '핑키가 관리하는 약속 및 일정 관리 앱',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
