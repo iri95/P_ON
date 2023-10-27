@@ -22,10 +22,10 @@ enum CustomTheme {
 
   ThemeData get themeData {
     switch (this) {
-      case CustomTheme.dark:
-        return darkTheme;
       case CustomTheme.light:
         return lightTheme;
+      case CustomTheme.dark:
+        return darkTheme;
     }
   }
 }
