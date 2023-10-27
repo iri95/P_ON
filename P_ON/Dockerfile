@@ -19,6 +19,7 @@ ENV PATH="$FLUTTER_SDK/bin:$FLUTTER_SDK/bin/cache/dart-sdk/bin:${PATH}"
 
 # Start to run Flutter commands
 # doctor to see if all was installes ok
+
 RUN flutter doctor -v
 
 RUN flutter channel master
