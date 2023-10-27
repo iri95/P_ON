@@ -157,12 +157,12 @@ public class JwtService {
      * RefreshToken DB 저장(업데이트)
      */
     public void updateRefreshToken(Long id, String refreshToken) {
-//        userRepository.findById(id).ifPresentOrElse(
-//                user -> user.updateRefreshToken(refreshToken),
-//                () -> {
-//                    throw new IllegalArgumentException("소셜아이디에 해당하는 유저가 없습니다.");
-//                }
-//        );
+        userRepository.findById(id).ifPresentOrElse(
+                user -> user.updateRefreshToken(refreshToken), // 해당 유저의 refreshToken을 refreshToken으로 update
+                () -> {
+                    throw new IllegalArgumentException("소셜아이디에 해당하는 유저가 없습니다.");
+                }
+        );
     }
 
     public boolean isTokenValid(String token) {
