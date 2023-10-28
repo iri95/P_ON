@@ -44,9 +44,10 @@ RUN perl -pi -e 's/<base href="\/">/<base href=".\/">/' /build/web/index.html
 # use nginx to deploy
 FROM nginx
 
-EXPOSE 5000
 # copy the info of the builded web app to nginx
 COPY --from=build-env /app/build/web /usr/share/nginx/html
+COPY etc/mobile/nginx.conf /etc/nginx/nginx.conf
 
 # Expose and run nginx
-# CMD ["nginx", "-g", "daemon off;"]
+EXPOSE 80
+CMD ["nginx", "-g", "daemon off;"]
