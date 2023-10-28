@@ -2,7 +2,7 @@ package com.wanyviny.promise.room.controller;
 
 import com.wanyviny.promise.room.dto.RoomRequest;
 import com.wanyviny.promise.room.dto.RoomResponse;
-import com.wanyviny.promise.room.service.RoomListService;
+import com.wanyviny.promise.room.service.RoomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/promise/room")
 public class RoomController {
 
-    private final RoomListService roomListService;
+    private final RoomService roomService;
 
     @PutMapping("{userId}")
     public RoomResponse.CreateDto createRoom(
             @PathVariable String userId,
             @RequestBody RoomRequest.CreateDto roomCreateDto
     ) {
-        return roomListService.addRoom(userId, roomCreateDto);
+        return roomService.addRoom(userId, roomCreateDto);
     }
 
 //    @GetMapping("/{roomId}")

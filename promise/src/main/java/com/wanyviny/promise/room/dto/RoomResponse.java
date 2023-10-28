@@ -23,24 +23,4 @@ public class RoomResponse {
             String promiseLocation,
             boolean unread
     ) {}
-
-    @Builder
-    public record ReadDto(
-
-            String promiseTitle,
-            String promiseDate,
-            String promiseTime,
-            String promiseLocation,
-            boolean unread
-    ) {}
-
-    @Builder
-    public record UnreadDto(
-
-            String promiseTitle,
-            String promiseDate,
-            String promiseTime,
-            String promiseLocation,
-            boolean unread
-    ) {}
 }

@@ -8,5 +8,4 @@ public interface RoomListService {
 
     void createRoomList(String userId);
     RoomListResponse.FindDto findRoomList(String userId);
-    RoomResponse.CreateDto addRoom(String userId, RoomRequest.CreateDto roomCreateDto);
 }
