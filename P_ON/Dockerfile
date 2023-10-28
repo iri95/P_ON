@@ -46,8 +46,8 @@ FROM nginx
 
 # copy the info of the builded web app to nginx
 COPY --from=build-env /app/build/web /usr/share/nginx/html
-COPY etc/mobile/nginx.conf /etc/nginx/nginx.conf
+COPY /etc/mobile/nginx.conf /etc/nginx/nginx.conf
 
 # Expose and run nginx
-EXPOSE 80
+EXPOSE 5000
 CMD ["nginx", "-g", "daemon off;"]
