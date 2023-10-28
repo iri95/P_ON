@@ -35,6 +35,16 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public RoomResponse.FindDto findRoom(String id) {
-        return null;
+
+        Room room = roomRepository.findById(id).orElseThrow();
+
+        return RoomResponse.FindDto
+                .builder()
+                .id(room.getId())
+                .promiseTitle(room.getPromiseTitle())
+                .promiseDate(room.getPromiseDate())
+                .promiseTime(room.getPromiseTime())
+                .promiseLocation(room.getPromiseLocation())
+                .build();
     }
 }

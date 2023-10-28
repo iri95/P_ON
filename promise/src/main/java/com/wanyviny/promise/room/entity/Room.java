@@ -21,5 +21,13 @@ public class Room {
     private String promiseDate;
     private String promiseTime;
     private String promiseLocation;
-    private boolean read;
+    private boolean unread;
+
+    public void read() {
+        unread = false;
+    }
+
+    public void unread() {
+        unread = true;
+    }
 }

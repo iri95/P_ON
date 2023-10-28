@@ -18,15 +18,15 @@ public class RoomListController {
 
     private final RoomListService roomListService;
 
-    @GetMapping("/{userId}")
-    public RoomListResponse.FindDto findRoomList(@PathVariable String userId) {
-
-        return roomListService.findRoomList(userId);
-    }
-
     @PostMapping("/{userId}")
     public void createRoomList(@PathVariable String userId) {
 
         roomListService.createRoomList(userId);
+    }
+
+    @GetMapping("/{userId}")
+    public RoomListResponse.FindDto findRoomList(@PathVariable String userId) {
+
+        return roomListService.findRoomList(userId);
     }
 }

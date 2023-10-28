@@ -5,6 +5,8 @@ import com.wanyviny.promise.room.dto.RoomResponse;
 import com.wanyviny.promise.room.service.RoomListService;
 import com.wanyviny.promise.room.service.RoomService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,5 +27,10 @@ public class RoomController {
         roomListService.addRoomList("1", room);
 
         return room;
+    }
+
+    @GetMapping("/{roomId}")
+    public RoomResponse.FindDto findRoom(@PathVariable String roomId) {
+        return roomService.findRoom(roomId);
     }
 }
