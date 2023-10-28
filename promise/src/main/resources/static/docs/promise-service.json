@@ -6,7 +6,7 @@
     "version" : "0.0.1"
   },
   "servers" : [ {
-    "url" : "http://localhost"
+    "url" : "http://k9e102.p.ssafy.io"
   } ],
   "tags" : [ ],
   "paths" : {

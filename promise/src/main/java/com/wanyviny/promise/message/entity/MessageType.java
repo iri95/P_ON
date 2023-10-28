@@ -1,4 +1,4 @@
-package com.wanyviny.promise.domain.message.entity;
+package com.wanyviny.promise.message.entity;
 
 public enum MessageType {
 
