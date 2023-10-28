@@ -42,11 +42,11 @@ RUN perl -pi -e 's/<base href="\/">/<base href=".\/">/' /build/web/index.html
 # once heare the app will be compiled and ready to deploy
 
 # use nginx to deploy
-FROM nginx:1.25.2-alpine
+FROM nginx
 
+EXPOSE 5000
 # copy the info of the builded web app to nginx
-COPY --from=build-env /app/build/web /usr/share/nginx/html
+COPY --from=build-env /app/build/web /usr/sfhare/nginx/html
 
 # Expose and run nginx
-EXPOSE 5000
-CMD ["nginx", "-g", "daemon off;"]
+# CMD ["nginx", "-g", "daemon off;"]
