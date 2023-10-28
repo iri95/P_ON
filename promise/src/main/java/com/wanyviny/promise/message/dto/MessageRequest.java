@@ -11,6 +11,7 @@ public class MessageRequest {
 
             String sender,
             MessageType messageType,
+            String content,
             LocalDateTime createAt
     ) {}
 }

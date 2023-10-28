@@ -11,6 +11,7 @@ public class MessageResponse {
 
             String sender,
             MessageType messageType,
+            String content,
             LocalDateTime createAt
     ) {}
 }

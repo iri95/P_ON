@@ -5,5 +5,5 @@ import com.wanyviny.promise.message.dto.MessageResponse;
 
 public interface MessageService {
 
-    MessageResponse.CreateDto createMessage(MessageRequest.CreateDto createDto);
+    MessageResponse.CreateDto createMessage(String roomId, MessageRequest.CreateDto createDto);
 }
