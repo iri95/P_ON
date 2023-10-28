@@ -2,6 +2,7 @@ package com.wanyviny.promise.room.dto;
 
 import com.wanyviny.promise.room.entity.Room;
 import java.util.List;
+import java.util.Map;
 import lombok.Builder;
 
 public class RoomListResponse {
@@ -11,6 +12,6 @@ public class RoomListResponse {
 
             String id,
             String userId,
-            List<Room> rooms
+            List<Map<String, Room>> rooms
     ) {}
 }

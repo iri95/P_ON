@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,9 +24,11 @@ public class RoomList {
     private String userId;
 
     @Builder.Default
-    private List<Room> rooms = new ArrayList<>();
+    private List<Map<String, Room>> rooms = new ArrayList<>();
 
     public void addRoom(Room room) {
-        rooms.add(room);
+        Map<String, Room> roomMap = new HashMap<>();
+        roomMap.put(String.valueOf(UUID.randomUUID()), room);
+        rooms.add(roomMap);
     }
 }

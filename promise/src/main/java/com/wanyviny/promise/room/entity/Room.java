@@ -1,6 +1,7 @@
 package com.wanyviny.promise.room.entity;
 
 import com.wanyviny.promise.message.entity.Message;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +23,8 @@ public class Room {
     private String promiseLocation;
     private boolean unread;
 
-    private List<Message> messages;
+    @Builder.Default
+    private List<Message> messages = new ArrayList<>();
 
     public void read() {
         unread = false;
