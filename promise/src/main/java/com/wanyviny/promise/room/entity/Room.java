@@ -1,6 +1,6 @@
 package com.wanyviny.promise.room.entity;
 
-import com.wanyviny.promise.message.entity.Message;
+import com.wanyviny.promise.chat.entity.Chat;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -26,9 +26,9 @@ public class Room {
     private String promiseLocation;
 
     @Builder.Default
-    private List<Message> messages = new ArrayList<>();
+    private List<Chat> chats = new ArrayList<>();
 
-    public void addMessage(Message message) {
-        messages.add(message);
+    public void addMessage(Chat chat) {
+        chats.add(chat);
     }
 }

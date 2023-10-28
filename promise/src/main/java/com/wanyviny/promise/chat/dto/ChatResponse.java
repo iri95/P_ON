@@ -1,16 +1,16 @@
-package com.wanyviny.promise.message.dto;
+package com.wanyviny.promise.chat.dto;
 
-import com.wanyviny.promise.message.entity.MessageType;
+import com.wanyviny.promise.chat.entity.ChatType;
 import java.time.LocalDateTime;
 import lombok.Builder;
 
-public class MessageResponse {
+public class ChatResponse {
 
     @Builder
     public record CreateDto(
 
             String sender,
-            MessageType messageType,
+            ChatType chatType,
             String content,
             LocalDateTime createAt
     ) {}
