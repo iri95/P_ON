@@ -24,6 +24,7 @@ public class RoomServiceImpl implements RoomService {
                 .promiseLocation(roomCreateDto.promiseLocation())
                 .build();
 
+        room.addUser(userId);
         roomRepository.save(room);
 
         return RoomResponse.CreateDto.builder()
@@ -32,6 +33,7 @@ public class RoomServiceImpl implements RoomService {
                 .promiseDate(room.getPromiseDate())
                 .promiseTime(room.getPromiseTime())
                 .promiseLocation(room.getPromiseLocation())
+                .users(room.getUsers())
                 .build();
     }
 }

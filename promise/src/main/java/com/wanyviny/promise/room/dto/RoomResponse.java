@@ -1,5 +1,6 @@
 package com.wanyviny.promise.room.dto;
 
+import java.util.List;
 import lombok.Builder;
 
 public class RoomResponse {
@@ -12,6 +13,7 @@ public class RoomResponse {
             String promiseDate,
             String promiseTime,
             String promiseLocation,
+            List<String> users,
             boolean unread
     ) {}
 
@@ -22,6 +24,7 @@ public class RoomResponse {
             String promiseDate,
             String promiseTime,
             String promiseLocation,
+            List<String> users,
             boolean unread
     ) {}
 }

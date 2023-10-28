@@ -26,9 +26,16 @@ public class Room {
     private String promiseLocation;
 
     @Builder.Default
+    private List<String> users = new ArrayList<>();
+
+    @Builder.Default
     private List<Chat> chats = new ArrayList<>();
 
-    public void addMessage(Chat chat) {
+    public void addUser(String userId) {
+        users.add(userId);
+    }
+
+    public void addChat(Chat chat) {
         chats.add(chat);
     }
 }

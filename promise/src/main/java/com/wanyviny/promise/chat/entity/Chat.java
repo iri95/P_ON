@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class Chat {
 
+    private String senderId;
     private String sender;
     private ChatType chatType;
     private String content;

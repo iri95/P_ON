@@ -9,6 +9,7 @@ public class ChatRequest {
     @Builder
     public record CreateDto(
 
+            String senderId,
             String sender,
             ChatType chatType,
             String content,
