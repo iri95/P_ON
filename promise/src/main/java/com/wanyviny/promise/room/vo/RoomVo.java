@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class RoomVo {
 
-    private String id;
     private String promiseTitle;
     private String promiseDate;
     private String promiseTime;

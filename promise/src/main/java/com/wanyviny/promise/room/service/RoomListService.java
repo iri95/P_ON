@@ -7,5 +7,5 @@ public interface RoomListService {
 
     void createRoomList(String userId);
     RoomListResponse.FindDto findRoomList(String userId);
-    void addRoom(String userId, RoomVo roomVo);
+    void addRoom(String userId, String roomId, RoomVo roomVo);
 }

@@ -23,9 +23,9 @@ public class RoomList {
     private String id;
 
     @Builder.Default
-    private List<RoomVo> rooms = new ArrayList<>();
+    private Map<String, RoomVo> rooms = new HashMap<>();
 
-    public void addRoom(RoomVo roomVo) {
-        rooms.add(roomVo);
+    public void addRoom(String roomId, RoomVo roomVo) {
+        rooms.put(roomId, roomVo);
     }
 }

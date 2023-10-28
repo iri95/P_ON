@@ -27,14 +27,13 @@ public class RoomController {
     ) {
         RoomResponse.CreateDto responseDto = roomService.createRoom(userId, roomCreateDto);
         RoomVo roomVo = RoomVo.builder()
-                .id(responseDto.id())
                 .promiseTitle(responseDto.promiseTitle())
                 .promiseDate(responseDto.promiseDate())
                 .promiseTime(responseDto.promiseTime())
                 .promiseLocation(responseDto.promiseLocation())
                 .build();
 
-        roomListService.addRoom(userId, roomVo);
+        roomListService.addRoom(userId, responseDto.id(), roomVo);
         return responseDto;
     }
 
