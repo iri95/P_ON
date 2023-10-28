@@ -2,6 +2,7 @@ package com.wanyviny.promise.room.service;
 
 import com.wanyviny.promise.room.dto.RoomRequest;
 import com.wanyviny.promise.room.dto.RoomResponse;
+import com.wanyviny.promise.room.dto.RoomResponse.ReadDto;
 import com.wanyviny.promise.room.dto.RoomResponse.UnreadDto;
 import com.wanyviny.promise.room.entity.Room;
 import com.wanyviny.promise.room.repository.RoomRepository;
@@ -41,6 +42,24 @@ public class RoomServiceImpl implements RoomService {
         Room room = roomRepository.findById(id).orElseThrow();
 
         return RoomResponse.FindDto
+                .builder()
+                .id(room.getId())
+                .promiseTitle(room.getPromiseTitle())
+                .promiseDate(room.getPromiseDate())
+                .promiseTime(room.getPromiseTime())
+                .promiseLocation(room.getPromiseLocation())
+                .unread(room.isUnread())
+                .build();
+    }
+
+    @Override
+    public ReadDto readRoom(String id) {
+        Room room = roomRepository.findById(id).orElseThrow();
+        room.read();
+
+        roomRepository.save(room);
+
+        return RoomResponse.ReadDto
                 .builder()
                 .id(room.getId())
                 .promiseTitle(room.getPromiseTitle())

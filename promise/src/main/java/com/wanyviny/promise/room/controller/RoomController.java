@@ -35,7 +35,12 @@ public class RoomController {
         return roomService.findRoom(roomId);
     }
 
-    @PutMapping("/{roomId}")
+    @PutMapping("/read/{roomId}")
+    public RoomResponse.ReadDto readRoom(@PathVariable String roomId) {
+        return roomService.readRoom(roomId);
+    }
+
+    @PutMapping("/unread/{roomId}")
     public RoomResponse.UnreadDto unReadRoom(@PathVariable String roomId) {
         return roomService.unreadRoom(roomId);
     }
