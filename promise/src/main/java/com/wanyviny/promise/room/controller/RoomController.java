@@ -23,11 +23,7 @@ public class RoomController {
 
     @PostMapping({"", "/"})
     public RoomResponse.CreateDto createRoom(@RequestBody RoomRequest.CreateDto roomCreateDto) {
-
-        RoomResponse.CreateDto room = roomService.createRoom(roomCreateDto);
-        roomListService.addRoomList("1", room);
-
-        return room;
+        return roomService.createRoom("1", roomCreateDto);
     }
 
     @GetMapping("/{roomId}")

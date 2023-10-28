@@ -5,7 +5,7 @@ import com.wanyviny.promise.room.dto.RoomResponse;
 
 public interface RoomService {
 
-    RoomResponse.CreateDto createRoom(RoomRequest.CreateDto roomCreateDto);
+    RoomResponse.CreateDto createRoom(String userId, RoomRequest.CreateDto roomCreateDto);
     RoomResponse.FindDto findRoom(String id);
     RoomResponse.ReadDto readRoom(String id);
     RoomResponse.UnreadDto unreadRoom(String id);

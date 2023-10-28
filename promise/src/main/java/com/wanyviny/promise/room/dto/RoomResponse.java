@@ -7,7 +7,6 @@ public class RoomResponse {
     @Builder
     public record CreateDto(
 
-            String id,
             String promiseTitle,
             String promiseDate,
             String promiseTime,
@@ -18,7 +17,6 @@ public class RoomResponse {
     @Builder
     public record FindDto(
 
-            String id,
             String promiseTitle,
             String promiseDate,
             String promiseTime,
@@ -29,7 +27,6 @@ public class RoomResponse {
     @Builder
     public record ReadDto(
 
-            String id,
             String promiseTitle,
             String promiseDate,
             String promiseTime,
@@ -40,7 +37,6 @@ public class RoomResponse {
     @Builder
     public record UnreadDto(
 
-            String id,
             String promiseTitle,
             String promiseDate,
             String promiseTime,
