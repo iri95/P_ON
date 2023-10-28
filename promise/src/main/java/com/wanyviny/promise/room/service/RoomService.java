@@ -7,4 +7,6 @@ public interface RoomService {
 
     RoomResponse.CreateDto createRoom(RoomRequest.CreateDto roomCreateDto);
     RoomResponse.FindDto findRoom(String id);
+
+    RoomResponse.UnreadDto unreadRoom(String id);
 }

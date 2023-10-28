@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,5 +33,10 @@ public class RoomController {
     @GetMapping("/{roomId}")
     public RoomResponse.FindDto findRoom(@PathVariable String roomId) {
         return roomService.findRoom(roomId);
+    }
+
+    @PutMapping("/{roomId}")
+    public RoomResponse.UnreadDto unReadRoom(@PathVariable String roomId) {
+        return roomService.unreadRoom(roomId);
     }
 }

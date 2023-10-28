@@ -2,6 +2,7 @@ package com.wanyviny.promise.room.service;
 
 import com.wanyviny.promise.room.dto.RoomRequest;
 import com.wanyviny.promise.room.dto.RoomResponse;
+import com.wanyviny.promise.room.dto.RoomResponse.UnreadDto;
 import com.wanyviny.promise.room.entity.Room;
 import com.wanyviny.promise.room.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class RoomServiceImpl implements RoomService {
                 .promiseDate(room.getPromiseDate())
                 .promiseTime(room.getPromiseTime())
                 .promiseLocation(room.getPromiseLocation())
+                .unread(room.isUnread())
                 .build();
     }
 
@@ -45,6 +47,25 @@ public class RoomServiceImpl implements RoomService {
                 .promiseDate(room.getPromiseDate())
                 .promiseTime(room.getPromiseTime())
                 .promiseLocation(room.getPromiseLocation())
+                .unread(room.isUnread())
+                .build();
+    }
+
+    @Override
+    public UnreadDto unreadRoom(String id) {
+        Room room = roomRepository.findById(id).orElseThrow();
+        room.unread();
+
+        roomRepository.save(room);
+
+        return RoomResponse.UnreadDto
+                .builder()
+                .id(room.getId())
+                .promiseTitle(room.getPromiseTitle())
+                .promiseDate(room.getPromiseDate())
+                .promiseTime(room.getPromiseTime())
+                .promiseLocation(room.getPromiseLocation())
+                .unread(room.isUnread())
                 .build();
     }
 }

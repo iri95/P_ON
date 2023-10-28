@@ -11,7 +11,8 @@ public class RoomResponse {
             String promiseTitle,
             String promiseDate,
             String promiseTime,
-            String promiseLocation
+            String promiseLocation,
+            boolean unread
     ) {}
 
     @Builder
