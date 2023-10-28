@@ -7,6 +7,7 @@ public class RoomResponse {
     @Builder
     public record CreateDto(
 
+            String id,
             String promiseTitle,
             String promiseDate,
             String promiseTime,

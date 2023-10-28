@@ -2,9 +2,9 @@ package com.wanyviny.promise.room.service;
 
 import com.wanyviny.promise.room.dto.RoomRequest;
 import com.wanyviny.promise.room.dto.RoomResponse;
+import com.wanyviny.promise.room.dto.RoomResponse.CreateDto;
 import com.wanyviny.promise.room.entity.Room;
-import com.wanyviny.promise.room.entity.RoomList;
-import com.wanyviny.promise.room.repository.RoomListRepository;
+import com.wanyviny.promise.room.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -12,13 +12,10 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class RoomServiceImpl implements RoomService {
 
-    private final RoomListRepository roomListRepository;
+    private final RoomRepository roomRepository;
 
     @Override
-    public RoomResponse.CreateDto addRoom(String userId, RoomRequest.CreateDto roomCreateDto) {
-
-        RoomList roomList = roomListRepository.findByUserId(userId)
-                .orElseThrow();
+    public CreateDto createRoom(String userId, RoomRequest.CreateDto roomCreateDto) {
 
         Room room = Room.builder()
                 .promiseTitle(roomCreateDto.promiseTitle())
@@ -27,16 +24,14 @@ public class RoomServiceImpl implements RoomService {
                 .promiseLocation(roomCreateDto.promiseLocation())
                 .build();
 
-        roomList.addRoom(room);
-        roomListRepository.save(roomList);
+        roomRepository.save(room);
 
-        return RoomResponse.CreateDto
-                .builder()
+        return RoomResponse.CreateDto.builder()
+                .id(room.getId())
                 .promiseTitle(room.getPromiseTitle())
                 .promiseDate(room.getPromiseDate())
                 .promiseTime(room.getPromiseTime())
                 .promiseLocation(room.getPromiseLocation())
-                .unread(room.isUnread())
                 .build();
     }
 }

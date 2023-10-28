@@ -10,29 +10,23 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collation = "room")
+@Document
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 public class Room {
 
+    @Id
+    private String id;
+
     private String promiseTitle;
     private String promiseDate;
     private String promiseTime;
     private String promiseLocation;
-    private boolean unread;
 
     @Builder.Default
     private List<Message> messages = new ArrayList<>();
-
-    public void read() {
-        unread = false;
-    }
-
-    public void unread() {
-        unread = true;
-    }
 
     public void addMessage(Message message) {
         messages.add(message);
