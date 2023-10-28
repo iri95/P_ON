@@ -46,7 +46,7 @@ FROM nginx
 
 EXPOSE 5000
 # copy the info of the builded web app to nginx
-COPY --from=build-env /app/build/web /usr/sfhare/nginx/html
+COPY --from=build-env /app/build/web /usr/share/nginx/html
 
 # Expose and run nginx
 # CMD ["nginx", "-g", "daemon off;"]
