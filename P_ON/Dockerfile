@@ -37,7 +37,7 @@ RUN flutter clean
 RUN flutter pub get
 RUN flutter build web --web-renderer canvaskit
 # RUN sed -i 's/<base href="\/">/<base href=".\/">/' /build/web/index.html
-RUN perl -pi -e 's/<base href="\/">/<base href=".\/">/' /app/build/web/index.html
+# RUN perl -pi -e 's/<base href="\/">/<base href=".\/">/' /app/build/web/index.html
 
 # once heare the app will be compiled and ready to deploy
 
