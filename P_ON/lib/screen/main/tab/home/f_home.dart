@@ -88,7 +88,10 @@ class HomeFragment extends StatelessWidget {
                 backgroundColor: const Color(0xffEFF3F9),
                 elevation: 4,
                 onPressed: () {
-                  Nav.push(const CreatePromise());
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CreatePromise())
+                  );
                 },
                 child: Icon(
                   Icons.add,

@@ -18,4 +18,6 @@ class AppColors {
   static const Color salmon = Color(0xffff6666);
   static const Color mainBlue = Color(0xff3F48CC);
   static const Color mainBlue2 = Color(0xff778CE3);
+  static const Color mainBlue3 = Color(0xffA3B4ED);
+  static const Color grey200 = Color(0xffE4E8EF);
 }

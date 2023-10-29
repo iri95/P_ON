@@ -18,10 +18,11 @@ class _RegisterBodyState extends State<RegisterBody> with AfterLayoutMixin {
   final textController = TextEditingController();
   final node = FocusNode();
 
+
   @override
   void initState() {
     super.initState();
-    textController.addListener((updateTextLength));
+    textController.addListener(updateTextLength);
   }
 
   void updateTextLength() {
