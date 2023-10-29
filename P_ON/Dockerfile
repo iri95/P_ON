@@ -11,15 +11,14 @@ ARG APP=/app/
 
 #clone flutter
 RUN git clone https://github.com/flutter/flutter.git $FLUTTER_SDK
-# change dir to current flutter folder and make a checkout to the specific version
-RUN cd $FLUTTER_SDK && git checkout efbf63d9c66b9f6ec30e9ad4611189aa80003d31
+# # change dir to current flutter folder and make a checkout to the specific version
+# RUN cd $FLUTTER_SDK && git checkout efbf63d9c66b9f6ec30e9ad4611189aa80003d31
 
 # setup the flutter path as an enviromental variable
 ENV PATH="$FLUTTER_SDK/bin:$FLUTTER_SDK/bin/cache/dart-sdk/bin:${PATH}"
 
 # Start to run Flutter commands
 # doctor to see if all was installes ok
-
 RUN flutter doctor -v
 
 RUN flutter channel master
@@ -35,6 +34,7 @@ WORKDIR $APP
 # Run build: 1 - clean, 2 - pub get, 3 - build web
 RUN flutter clean
 RUN flutter pub get
+RUN flutter config --enable-web
 RUN flutter build web --web-renderer canvaskit
 # RUN sed -i 's/<base href="\/">/<base href=".\/">/' /build/web/index.html
 # RUN perl -pi -e 's/<base href="\/">/<base href=".\/">/' /app/build/web/index.html
