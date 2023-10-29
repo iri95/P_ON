@@ -21,7 +21,7 @@ ENV PATH="$FLUTTER_SDK/bin:$FLUTTER_SDK/bin/cache/dart-sdk/bin:${PATH}"
 # doctor to see if all was installes ok
 RUN flutter doctor -v
 
-RUN flutter channel master
+RUN flutter channel stable
 RUN flutter upgrade
 
 # create folder to copy source code
