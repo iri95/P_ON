@@ -1,7 +1,7 @@
 package com.wanyviny.user.user.controller;
 
 import com.wanyviny.user.user.dto.KakaoDto;
-import com.wanyviny.user.user.service.KakaoService;
+//import com.wanyviny.user.user.service.KakaoService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -15,12 +15,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("kakao")
 public class KakaoController {
 
-    private final KakaoService kakaoService;
+//    private final KakaoService kakaoService;
 
-    @GetMapping("/callback")
-    public ResponseEntity<KakaoDto> callback(HttpServletRequest request) throws Exception {
-        KakaoDto kakaoInfo = kakaoService.getKakaoInfo(request.getParameter("code"));
-
-        return new ResponseEntity<>(kakaoInfo, HttpStatus.OK);
-    }
+//    @GetMapping("/callback")
+//    public ResponseEntity<KakaoDto> callback(HttpServletRequest request) throws Exception {
+//        KakaoDto kakaoInfo = kakaoService.getKakaoInfo(request.getParameter("code"));
+//
+//        return new ResponseEntity<>(kakaoInfo, HttpStatus.OK);
+//    }
+//    @GetMapping("/callback")
+//    public String signUpForm() {
+//        return "임시 리다이렉트 페이지";
+//    }
 }

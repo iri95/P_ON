@@ -6,8 +6,6 @@ import com.wanyviny.user.user.entity.User;
 import com.wanyviny.user.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -26,8 +24,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
 
     private final UserRepository userRepository;
 
-    private final RedisTemplate<String, Object> redisTemplate;
-
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         log.info("CustomOAuth2UserService.loadUser() 실행 - OAuth2 로그인 요청 진입");
@@ -40,7 +36,6 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
          */
         OAuth2UserService<OAuth2UserRequest, OAuth2User> delegate = new DefaultOAuth2UserService();
         OAuth2User oAuth2User = delegate.loadUser(userRequest);
-
         /**
          * userRequest에서 registrationId 추출 후 registractionId으로 SocialType 저장
          * http://localhost:8080/oauth2/authorization/kakao에서 /oauth2/authorization security가 제공, kakao가 registrationId

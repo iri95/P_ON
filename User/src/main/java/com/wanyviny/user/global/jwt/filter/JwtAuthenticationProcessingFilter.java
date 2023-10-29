@@ -3,6 +3,7 @@ package com.wanyviny.user.global.jwt.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.wanyviny.user.global.jwt.service.JwtService;
+import com.wanyviny.user.global.jwt.util.PasswordUtil;
 import com.wanyviny.user.user.entity.User;
 import com.wanyviny.user.user.repository.UserRepository;
 import jakarta.servlet.FilterChain;
@@ -11,7 +12,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,7 +25,6 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -174,7 +173,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         }
 
         UserDetails userDetailsUser = org.springframework.security.core.userdetails.User.builder()
-                .username(myUser.getEmail())
+                .username(String.valueOf(myUser.getId()))
                 .password(password)
                 .roles(myUser.getRole().name())
                 .build();

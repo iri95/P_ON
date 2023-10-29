@@ -32,7 +32,8 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 String accessToken = jwtService.createAccessToken(oAuth2User.getId());
                 response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
                 response.sendRedirect(
-                        "https://k9e102.p.ssafy.io/kakaologin?" + "access_token=Bearer " + accessToken + "&is_user=F"
+//                        "https://k9e102.p.ssafy.io/sign-up?" + "access_token=Bearer " + accessToken + "&is_user=F"
+                        "http://localhost:8080/sign-up?" + "access_token=Bearer " + accessToken + "&is_user=F"
                 );
 
             }else{
@@ -50,9 +51,10 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
         response.addHeader(jwtService.getRefreshHeader(), "Bearer " + refreshToken);
         response.sendRedirect(
-                "https://k9e102.p.ssafy.io/kakaologin?" + "access_token=Bearer " + accessToken + "&refresh_token="
+                "http://localhost:8080/kakaologin?" + "access_token=Bearer " + accessToken + "&refresh_token="
                         + "Bearer " + refreshToken + "&is_user=T"
         );
+        jwtService.removeRefreshToken(oAuth2User.getId());
         jwtService.updateRefreshToken(oAuth2User.getId(), refreshToken);
 
     }

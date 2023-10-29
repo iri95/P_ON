@@ -2,7 +2,6 @@ package com.wanyviny.user.global.jwt.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.wanyviny.user.user.entity.User;
 import com.wanyviny.user.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,10 +9,12 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +47,8 @@ public class JwtService {
     private static final String BEARER = "Bearer ";
 
     private final UserRepository userRepository;
+    private final RedisTemplate redisTemplate;
+
 
     /**
      * AccessToken 생성 메소드
@@ -157,8 +160,10 @@ public class JwtService {
      * RefreshToken DB 저장(업데이트)
      */
     public void updateRefreshToken(Long id, String refreshToken) {
-        userRepository.findById(id).ifPresentOrElse(
-                user -> user.updateRefreshToken(refreshToken), // 해당 유저의 refreshToken을 refreshToken으로 update
+        redisTemplate.opsForValue().set(refreshToken,id);
+        userRepository.findById(id).ifPresentOrElse( user -> {
+                    redisTemplate.opsForValue().set(refreshToken, id);
+                }, // 해당 유저의 refreshToken을 refreshToken으로 update
                 () -> {
                     throw new IllegalArgumentException("소셜아이디에 해당하는 유저가 없습니다.");
                 }
@@ -172,6 +177,17 @@ public class JwtService {
         } catch (Exception e) {
             log.error("유효하지 않은 토큰입니다. {}", e.getMessage());
             return false;
+        }
+    }
+
+    public void removeRefreshToken(Long id) {
+        Set<String> keys = redisTemplate.keys("*");
+        for (String key : keys
+        ) {
+            Object findId = redisTemplate.opsForValue().get(key);
+            if (id == findId) {
+                redisTemplate.unlink(key);
+            }
         }
     }
 }
