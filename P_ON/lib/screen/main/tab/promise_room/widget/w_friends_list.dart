@@ -2,7 +2,7 @@ import 'package:fast_app_base/common/common.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'dto_promise.dart';
+import '../dto_promise.dart';
 
 class FriendsList extends ConsumerStatefulWidget {
   final Friends friends;

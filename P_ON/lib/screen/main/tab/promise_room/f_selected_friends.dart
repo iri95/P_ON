@@ -1,9 +1,10 @@
 import 'package:fast_app_base/common/common.dart';
 import 'package:fast_app_base/common/widget/w_basic_appbar.dart';
 import 'package:fast_app_base/screen/main/tab/promise_room/dto_promise.dart';
-import 'package:fast_app_base/screen/main/tab/promise_room/friends_dummy.dart';
-import 'package:fast_app_base/screen/main/tab/promise_room/w_follows.dart';
-import 'package:fast_app_base/screen/main/tab/promise_room/w_friends_list.dart';
+import 'package:fast_app_base/screen/main/tab/promise_room/f_last_create_promise.dart';
+import 'package:fast_app_base/screen/main/tab/promise_room/widget/friends_dummy.dart';
+import 'package:fast_app_base/screen/main/tab/promise_room/widget/w_follows.dart';
+import 'package:fast_app_base/screen/main/tab/promise_room/widget/w_friends_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -108,8 +109,10 @@ class _SelectedFriendsState extends ConsumerState<SelectedFriends> {
             child: FilledButton(
                 style:
                     FilledButton.styleFrom(backgroundColor: AppColors.mainBlue),
-                onPressed: () {},
-                child: Text('다음')),
+                onPressed: () {
+                  Nav.push(const LastCreatePromise());
+                },
+                child: const Text('다음')),
           ),
         ),
       ),

@@ -1,4 +1,4 @@
-package com.fighting
+package com.jungswanbini
 
 import io.flutter.embedding.android.FlutterActivity
 
