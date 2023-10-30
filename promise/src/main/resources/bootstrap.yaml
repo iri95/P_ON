@@ -1,21 +1,21 @@
-#spring:
-#  cloud:
-#    config:
-#      name: promise
-#      profile: default
-
-server:
-  port: 8080
-
 spring:
-  application:
-    name: promise-service
+  cloud:
+    config:
+      name: promise
+      profile: default
 
-  data:
-    mongodb:
-      host: localhost
-      port: 27017
-      database: local
+#server:
+#  port: 8080
+#
+#spring:
+#  application:
+#    name: promise-service
+#
+#  data:
+#    mongodb:
+#      host: localhost
+#      port: 27017
+#      database: local
 
   # datasource:
   #   driver-class-name: com.mysql.cj.jdbc.Driver
