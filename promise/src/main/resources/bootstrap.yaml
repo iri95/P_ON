@@ -1,4 +1,7 @@
 spring:
+  config:
+    import: optional:configserver:http://config-container:8888
+
   cloud:
     config:
       name: promise
