@@ -2,8 +2,11 @@ package com.wanyviny.promise.domain.common;
 
 import java.util.List;
 import lombok.Builder;
+import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+@Getter
+@Builder
 public class BasicResponse {
 
     @Builder.Default

@@ -36,12 +36,12 @@ public class RoomListServiceImpl implements RoomListService {
     }
 
     @Override
-    public void addRoom(String userId, String roomId, RoomVo roomVo) {
+    public void addRoom(String userId, RoomVo roomVo) {
 
         RoomList roomList = roomListRepository.findById(userId)
                 .orElseThrow();
 
-        roomList.addRoom(roomId, roomVo);
+        roomList.addRoom(roomVo);
         roomListRepository.save(roomList);
     }
 }

@@ -23,7 +23,7 @@ public class RoomList {
     @Builder.Default
     private Map<String, RoomVo> rooms = new HashMap<>();
 
-    public void addRoom(String roomId, RoomVo roomVo) {
-        rooms.put(roomId, roomVo);
+    public void addRoom(RoomVo roomVo) {
+        rooms.put(roomVo.getRoomId(), roomVo);
     }
 }
