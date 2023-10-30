@@ -1,4 +1,4 @@
-package com.fighting
+package com.wanyviny.p_on
 
 import io.flutter.embedding.android.FlutterActivity
 
