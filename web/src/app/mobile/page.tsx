@@ -5,6 +5,7 @@ export default function page() {
     <div>
       <Head>
         <title>My Page</title>
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
       </Head>
 
       <iframe
