@@ -1,9 +1,10 @@
-package com.wanyviny.promise.room.service;
+package com.wanyviny.promise.domain.room.service;
 
-import com.wanyviny.promise.room.dto.RoomListResponse;
-import com.wanyviny.promise.room.entity.RoomList;
-import com.wanyviny.promise.room.repository.RoomListRepository;
-import com.wanyviny.promise.room.vo.RoomVo;
+import com.wanyviny.promise.domain.room.dto.RoomListResponse;
+import com.wanyviny.promise.domain.room.dto.RoomListResponse.FindDto;
+import com.wanyviny.promise.domain.room.entity.RoomList;
+import com.wanyviny.promise.domain.room.repository.RoomListRepository;
+import com.wanyviny.promise.domain.room.vo.RoomVo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,7 @@ public class RoomListServiceImpl implements RoomListService {
     }
 
     @Override
-    public RoomListResponse.FindDto findRoomList(String userId) {
+    public FindDto findRoomList(String userId) {
 
         RoomList roomList = roomListRepository.findById(userId)
                 .orElseThrow();

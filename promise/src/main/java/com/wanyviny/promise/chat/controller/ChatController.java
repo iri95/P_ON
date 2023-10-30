@@ -4,8 +4,9 @@ import com.wanyviny.promise.chat.dto.ChatRequest;
 import com.wanyviny.promise.chat.dto.ChatResponse;
 import com.wanyviny.promise.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,12 +18,14 @@ public class ChatController {
 
     private final ChatService chatService;
 
-    @PostMapping("/{roomId}")
+    @MessageMapping("/chat/{roomId}/{senderId}")
+    @SendTo("/topic/chat/{roomId}")
     public ChatResponse.CreateDto createChat(
-            @PathVariable String roomId,
+            @DestinationVariable String roomId,
+            @DestinationVariable String senderId,
             @RequestBody ChatRequest.CreateDto createDto
     ) {
 
-        return chatService.createChat(roomId, createDto);
+        return chatService.createChat(roomId, senderId, createDto);
     }
 }
