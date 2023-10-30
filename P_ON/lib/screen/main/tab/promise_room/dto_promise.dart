@@ -3,9 +3,21 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final promiseProvider = StateNotifierProvider<PromiseNotifier, Promise>((ref) => PromiseNotifier());
 
+class Friends {
+  final String id;
+  final String userImage;
+  final String userName;
+
+  Friends({
+    required this.id,
+    required this.userImage,
+    required this.userName,
+});
+}
+
 class Promise {
   String? promise_title;
-  List<String>? selected_friends;
+  List<Friends>? selected_friends;
   DateTime? promise_date;
   TimeOfDay? promise_time;
   String? promise_location;
@@ -30,13 +42,24 @@ class PromiseNotifier extends StateNotifier<Promise> {
         promise_location: state.promise_location);
   }
 
-  void setSelectedFriends(List<String> selected_friends) {
+  void addFriends(Friends friends) {
     state = Promise(
         promise_title: state.promise_title,
-        selected_friends: selected_friends,
+        selected_friends: List.from(state.selected_friends ?? [])..add(friends),
         promise_date: state.promise_date,
         promise_time: state.promise_time,
-        promise_location: state.promise_location);
+        promise_location: state.promise_location
+    );
+  }
+
+  void removeFriends(String friendId) {
+    state = Promise(
+      promise_title: state.promise_title,
+        selected_friends: state.selected_friends?.where((friend) => friend.id != friendId).toList(),
+        promise_date: state.promise_date,
+        promise_time: state.promise_time,
+        promise_location: state.promise_location
+    );
   }
 
   void setPromiseDate(DateTime promise_date) {
