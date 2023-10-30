@@ -17,7 +17,7 @@ public class ChatServiceImpl implements ChatService {
     private final RoomRepository roomRepository;
 
     @Override
-    public CreateDto createChat(String roomId, String senderId, ChatRequest.CreateDto createDto) {
+    public CreateDto sendChat(String roomId, String senderId, ChatRequest.CreateDto createDto) {
 
         Chat chat = Chat.builder()
                 .senderId(senderId)
@@ -33,6 +33,7 @@ public class ChatServiceImpl implements ChatService {
 
         return ChatResponse.CreateDto
                 .builder()
+                .roomId(roomId)
                 .senderId(senderId)
                 .sender(chat.getSender())
                 .chatType(chat.getChatType())

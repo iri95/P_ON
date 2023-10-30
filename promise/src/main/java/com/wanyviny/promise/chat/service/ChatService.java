@@ -5,5 +5,5 @@ import com.wanyviny.promise.chat.dto.ChatResponse;
 
 public interface ChatService {
 
-    ChatResponse.CreateDto createChat(String roomId, String senderId, ChatRequest.CreateDto createDto);
+    ChatResponse.CreateDto sendChat(String roomId, String senderId, ChatRequest.CreateDto createDto);
 }
