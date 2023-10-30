@@ -1,4 +1,4 @@
-name: P-ON
+name: P_ON
 description: 핑키와 함께하는 약속 관리 앱
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
