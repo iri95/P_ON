@@ -1,4 +1,4 @@
-package com.wanyviny.user.user;
+package com.wanyviny.user.domain.user;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

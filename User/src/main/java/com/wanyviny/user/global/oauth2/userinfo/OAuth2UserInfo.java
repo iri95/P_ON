@@ -1,4 +1,4 @@
-package com.wanyviny.user.oauth2.userinfo;
+package com.wanyviny.user.global.oauth2.userinfo;
 
 import java.util.Map;
 

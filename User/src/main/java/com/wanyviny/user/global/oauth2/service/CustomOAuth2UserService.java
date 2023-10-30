@@ -1,9 +1,9 @@
-package com.wanyviny.user.oauth2.service;
+package com.wanyviny.user.global.oauth2.service;
 
-import com.wanyviny.user.oauth2.CustomOAuth2User;
-import com.wanyviny.user.oauth2.OAuthAttributes;
-import com.wanyviny.user.user.entity.User;
-import com.wanyviny.user.user.repository.UserRepository;
+import com.wanyviny.user.global.oauth2.CustomOAuth2User;
+import com.wanyviny.user.global.oauth2.OAuthAttributes;
+import com.wanyviny.user.domain.user.entity.User;
+import com.wanyviny.user.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -1,9 +1,9 @@
-package com.wanyviny.user.oauth2;
+package com.wanyviny.user.global.oauth2;
 
-import com.wanyviny.user.oauth2.userinfo.KakaoOAuth2UserInfo;
-import com.wanyviny.user.oauth2.userinfo.OAuth2UserInfo;
-import com.wanyviny.user.user.Role;
-import com.wanyviny.user.user.entity.User;
+import com.wanyviny.user.global.oauth2.userinfo.KakaoOAuth2UserInfo;
+import com.wanyviny.user.global.oauth2.userinfo.OAuth2UserInfo;
+import com.wanyviny.user.domain.user.Role;
+import com.wanyviny.user.domain.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 

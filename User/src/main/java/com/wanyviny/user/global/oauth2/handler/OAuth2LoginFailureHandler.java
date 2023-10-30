@@ -1,4 +1,4 @@
-package com.wanyviny.user.oauth2.handler;
+package com.wanyviny.user.global.oauth2.handler;
 
         import jakarta.servlet.ServletException;
         import jakarta.servlet.http.HttpServletRequest;

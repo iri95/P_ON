@@ -1,4 +1,4 @@
-package com.wanyviny.user.user.controller;
+package com.wanyviny.user.domain.user.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

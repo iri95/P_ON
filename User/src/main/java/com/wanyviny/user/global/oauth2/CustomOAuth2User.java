@@ -1,6 +1,6 @@
-package com.wanyviny.user.oauth2;
+package com.wanyviny.user.global.oauth2;
 
-import com.wanyviny.user.user.Role;
+import com.wanyviny.user.domain.user.Role;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;

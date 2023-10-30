@@ -1,9 +1,8 @@
-package com.wanyviny.user.user.entity;
+package com.wanyviny.user.domain.user.entity;
 
 
-import com.wanyviny.user.user.PRIVACY;
-import com.wanyviny.user.user.Role;
-import jakarta.annotation.Nullable;
+import com.wanyviny.user.domain.user.Role;
+import com.wanyviny.user.domain.user.PRIVACY;
 import jakarta.persistence.*;
 import lombok.*;
 

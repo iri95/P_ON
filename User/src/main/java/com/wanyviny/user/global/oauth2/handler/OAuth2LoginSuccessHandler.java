@@ -1,8 +1,8 @@
-package com.wanyviny.user.oauth2.handler;
+package com.wanyviny.user.global.oauth2.handler;
 
 import com.wanyviny.user.global.jwt.service.JwtService;
-import com.wanyviny.user.oauth2.CustomOAuth2User;
-import com.wanyviny.user.user.Role;
+import com.wanyviny.user.global.oauth2.CustomOAuth2User;
+import com.wanyviny.user.domain.user.Role;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,7 +33,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
                 response.sendRedirect(
 //                        "https://k9e102.p.ssafy.io/sign-up?" + "access_token=Bearer " + accessToken + "&is_user=F"
-                        "http://localhost:8080/sign-up?" + "access_token=Bearer " + accessToken + "&is_user=F"
+                        "http://k9e102.p.ssafy.io/sign-up?" + "access_token=Bearer " + accessToken + "&is_user=F"
                 );
 
             }else{
@@ -51,7 +51,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
         response.addHeader(jwtService.getRefreshHeader(), "Bearer " + refreshToken);
         response.sendRedirect(
-                "http://localhost:8080/kakaologin?" + "access_token=Bearer " + accessToken + "&refresh_token="
+                "http://k9e102.p.ssafy.io/kakaologin?" + "access_token=Bearer " + accessToken + "&refresh_token="
                         + "Bearer " + refreshToken + "&is_user=T"
         );
         jwtService.removeRefreshToken(oAuth2User.getId());

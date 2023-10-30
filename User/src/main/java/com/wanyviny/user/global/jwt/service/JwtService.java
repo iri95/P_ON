@@ -2,7 +2,7 @@ package com.wanyviny.user.global.jwt.service;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.wanyviny.user.user.repository.UserRepository;
+import com.wanyviny.user.domain.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
@@ -160,7 +160,6 @@ public class JwtService {
      * RefreshToken DB 저장(업데이트)
      */
     public void updateRefreshToken(Long id, String refreshToken) {
-        redisTemplate.opsForValue().set(refreshToken,id);
         userRepository.findById(id).ifPresentOrElse( user -> {
                     redisTemplate.opsForValue().set(refreshToken, id);
                 }, // 해당 유저의 refreshToken을 refreshToken으로 update
