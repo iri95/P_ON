@@ -15,6 +15,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <meta name="google-site-verification" content="wXqbRHLSsIryb4TbVEEEO2uBOcxygcDOzvgwhJbvlxw" />
         <meta name="naver-site-verification" content="8e3fcf0a7a62a2254e119fe92a0e27afbc44a297" />
+        <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />
       </head>
       <body className={inter.className}>
         <Nav />
