@@ -9,6 +9,7 @@ module.exports = {
   exclude: [
     '/exclude/review', // 페이지 주소 하나만 제외시키는 경우
     '/exclude/**', // 하위 주소 전체를 제외시키는 경우
+    '/policy-privacy/',
   ], // sitemap 등록 제외 페이지 주소
   robotsTxtOptions: {
     // 정책 설정
@@ -18,6 +19,7 @@ module.exports = {
         allow: '/', // 모든 페이지 주소 크롤링 허용
         disallow: [
           '/exclude', // exclude로 시작하는 페이지 주소 크롤링 금지
+          '/policy-privacy',
         ],
       },
       // 추가 정책이 필요할 경우 배열 요소로 추가 작성
