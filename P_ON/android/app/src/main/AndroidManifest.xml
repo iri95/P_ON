@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.fighting">
+    package="com.jungswanbini">
 
     <application
         android:name="${applicationName}"
@@ -19,7 +19,10 @@
                  to determine the Window background behind the Flutter UI. -->
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
-                android:resource="@style/NormalTheme" />
+                android:resource="@style/NormalTheme"
+                android:name="com.nvaer.maps.map.CLIENT_ID"
+                android:value="b99t409y3p"
+                />
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
