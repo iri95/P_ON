@@ -1,4 +1,4 @@
-package com.wanyviny.promise.room.dto;
+package com.wanyviny.promise.domain.room.dto;
 
 import java.util.List;
 import lombok.Builder;

@@ -1,9 +1,7 @@
-package com.wanyviny.promise.room.entity;
+package com.wanyviny.promise.domain.room.entity;
 
-import com.wanyviny.promise.room.vo.RoomVo;
-import java.util.ArrayList;
+import com.wanyviny.promise.domain.room.vo.RoomVo;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

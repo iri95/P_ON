@@ -1,7 +1,7 @@
-package com.wanyviny.promise.room.controller;
+package com.wanyviny.promise.domain.room.controller;
 
-import com.wanyviny.promise.room.dto.RoomListResponse;
-import com.wanyviny.promise.room.service.RoomListService;
+import com.wanyviny.promise.domain.room.dto.RoomListResponse;
+import com.wanyviny.promise.domain.room.service.RoomListService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;

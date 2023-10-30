@@ -1,6 +1,6 @@
-package com.wanyviny.promise.room.dto;
+package com.wanyviny.promise.domain.room.dto;
 
-import com.wanyviny.promise.room.vo.RoomVo;
+import com.wanyviny.promise.domain.room.vo.RoomVo;
 import java.util.Map;
 import lombok.Builder;
 
