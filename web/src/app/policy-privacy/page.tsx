@@ -1,4 +1,4 @@
-import Policy from '@/containers/policy';
+import Policy from '@/containers/policy-privacy';
 
 export default function page() {
   return <Policy />;
