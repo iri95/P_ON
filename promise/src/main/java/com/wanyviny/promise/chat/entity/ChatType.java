@@ -1,6 +1,6 @@
-package com.wanyviny.promise.domain.message.entity;
+package com.wanyviny.promise.chat.entity;
 
-public enum MessageType {
+public enum ChatType {
 
     ENTER,
     LEAVE,

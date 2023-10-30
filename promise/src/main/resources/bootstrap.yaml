@@ -1,8 +1,33 @@
 spring:
-  config:
-    import: optional:configserver:http://k9e102.p.ssafy.io:8888
-
   cloud:
     config:
       name: promise
       profile: default
+
+#server:
+#  port: 8080
+#
+#spring:
+#  application:
+#    name: promise-service
+#
+#  data:
+#    mongodb:
+#      host: localhost
+#      port: 27017
+#      database: local
+
+  # datasource:
+  #   driver-class-name: com.mysql.cj.jdbc.Driver
+  #   url: jdbc:mysql://localhost:3306/local?characterEncoding=UTF-8&serverTimezone=UTC
+  #   username: root
+  #   password: 1234
+
+  # jpa:
+  #   show-sql: true
+  #   hibernate:
+  #     ddl-auto: update
+
+  #   properties:
+  #     hibernate:
+  #       format_sql: true
