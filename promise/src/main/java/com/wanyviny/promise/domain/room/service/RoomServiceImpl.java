@@ -1,6 +1,7 @@
 package com.wanyviny.promise.domain.room.service;
 
 import com.wanyviny.promise.domain.room.dto.RoomRequest;
+import com.wanyviny.promise.domain.room.dto.RoomResponse;
 import com.wanyviny.promise.domain.room.entity.Room;
 import com.wanyviny.promise.domain.room.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,38 +14,15 @@ public class RoomServiceImpl implements RoomService {
 
     private final RoomRepository roomRepository;
 
-//    @Override
-//    public CreateDto createRoom(RoomRequest.CreateDto roomCreateDto) {
-//
-//        Room room = Room.builder()
-//                .users(roomCreateDto.getUsers())
-//                .promiseTitle(roomCreateDto.getPromiseTitle())
-//                .promiseDate(roomCreateDto.getPromiseDate())
-//                .promiseTime(roomCreateDto.getPromiseTime())
-//                .promiseLocation(roomCreateDto.getPromiseLocation())
-//                .build();
-//
-//        roomRepository.save(room);
-//
-//        return RoomResponse.CreateDto.builder()
-//                .id(room.getId())
-//                .promiseTitle(room.getPromiseTitle())
-//                .promiseDate(room.getPromiseDate())
-//                .promiseTime(room.getPromiseTime())
-//                .promiseLocation(room.getPromiseLocation())
-//                .users(room.getUsers())
-//                .build();
-//    }
-
     @Override
-    public void createRoom(RoomRequest.CreateDto roomCreateDto) {
+    public RoomResponse.CreateDto createRoom(RoomRequest.CreateDto request) {
 
         Room room = Room.builder()
-                .users(roomCreateDto.getUsers())
-                .promiseTitle(roomCreateDto.getPromiseTitle())
-                .promiseDate(roomCreateDto.getPromiseDate())
-                .promiseTime(roomCreateDto.getPromiseTime())
-                .promiseLocation(roomCreateDto.getPromiseLocation())
+                .users(request.getUsers())
+                .promiseTitle(request.getPromiseTitle())
+                .promiseDate(request.getPromiseDate())
+                .promiseTime(request.getPromiseTime())
+                .promiseLocation(request.getPromiseLocation())
                 .build();
 
         if (!StringUtils.hasText(room.getPromiseTitle())) {
@@ -54,11 +32,15 @@ public class RoomServiceImpl implements RoomService {
 
         roomRepository.save(room);
 
-        System.out.println(room.getUsers().toString());
-        System.out.println(room.getPromiseTitle());
-        System.out.println(room.getPromiseDate());
-        System.out.println(room.getPromiseTime());
-        System.out.println(room.getPromiseLocation());
-        System.out.println(room.isDefaultTitle());
+        return RoomResponse.CreateDto.builder()
+                .id(room.getId())
+                .users(room.getUsers())
+                .isDefaultTitle(room.isDefaultTitle())
+                .promiseTitle(room.getPromiseTitle())
+                .promiseDate(room.getPromiseDate())
+                .promiseTime(room.getPromiseTime())
+                .promiseLocation(room.getPromiseLocation())
+                .chats(room.getChats())
+                .build();
     }
 }
