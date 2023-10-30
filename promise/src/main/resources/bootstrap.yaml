@@ -2,7 +2,7 @@ spring:
   cloud:
     config:
       name: promise
-      profile: default
+      profile: promise
 
 #server:
 #  port: 8080
