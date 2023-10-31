@@ -1,1 +1,32 @@
-/* 스타일 시트 관련 공통 요소 */
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: 'Pretendard', sans-serif;
+  line-height: 1.6;
+  font-size: 18px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+main {
+  padding-top: 10px;
+  width: 60vw;
+  margin: 0 20vw;
+}
+
+nav {
+  height: 60px;
+  background-color: blue;
+  padding: 0 20vw;
+  display: flex;
+  justify-content: flex-end;
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  font-style: normal;
+  src: url('/fonts/PretendardVariable.ttf') format('truetype');
+}

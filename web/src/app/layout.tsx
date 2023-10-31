@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import Nav from '@/components/NavBar';
+import '@/styles/reset.css';
+import '@/styles/globals.css';
 
 export const metadata: Metadata = {
   title: { template: 'P:ON | %s', default: 'P:ON | 약속 및 일정 관리 앱' },
@@ -19,7 +21,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <Nav />
-        {children}
+        <main>{children}</main>
       </body>
     </html>
   );
