@@ -1,6 +1,6 @@
-import 'package:fast_app_base/common/common.dart';
-import 'package:fast_app_base/common/theme/custom_theme_app.dart';
-import 'package:fast_app_base/screen/main/s_main.dart';
+import 'package:p_on/common/common.dart';
+import 'package:p_on/common/theme/custom_theme_app.dart';
+import 'package:p_on/screen/main/s_main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 

@@ -1,4 +1,4 @@
-import 'package:fast_app_base/common/theme/color/abs_theme_colors.dart';
+import 'package:p_on/common/theme/color/abs_theme_colors.dart';
 
 class DarkAppColors extends AbstractThemeColors {
   const DarkAppColors();

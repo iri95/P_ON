@@ -4,11 +4,12 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:dio/dio.dart';
-import 'package:fast_app_base/common/constant/app_colors.dart';
-import 'package:fast_app_base/common/widget/w_basic_appbar.dart';
-import 'package:fast_app_base/screen/main/tab/promise_room/f_search_naver.dart';
-import 'package:fast_app_base/screen/main/tab/promise_room/vo_naver_headers.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:p_on/common/constant/app_colors.dart';
+import 'package:p_on/common/util/app_keyboard_util.dart';
+import 'package:p_on/common/widget/w_basic_appbar.dart';
+import 'package:p_on/screen/main/tab/promise_room/f_search_naver.dart';
+import 'package:p_on/screen/main/tab/promise_room/vo_naver_headers.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:day_night_time_picker/day_night_time_picker.dart';
@@ -39,7 +40,7 @@ class _LastCreatePromiseState extends State<LastCreatePromise> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-              colorScheme: ColorScheme.light(
+              colorScheme: const ColorScheme.light(
                 primary: AppColors.mainBlue2,
                 onPrimary: Colors.white,
                 onSurface: Colors.black,
@@ -75,9 +76,9 @@ class _LastCreatePromiseState extends State<LastCreatePromise> {
             minuteInterval: TimePickerInterval.FIVE,
             iosStylePicker: true,
             okText: '확인',
-            okStyle: TextStyle(color: AppColors.mainBlue2),
+            okStyle: const TextStyle(color: AppColors.mainBlue2),
             cancelText: '취소',
-            cancelStyle: TextStyle(color: AppColors.mainBlue2),
+            cancelStyle: const TextStyle(color: AppColors.mainBlue2),
             hourLabel: '시',
             minuteLabel: '분',
             accentColor: AppColors.mainBlue2

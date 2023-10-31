@@ -1,4 +1,4 @@
-package com.jungswanbini
+package com.wanyviny.p_on
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,4 +1,4 @@
-import 'package:fast_app_base/screen/notification/w_notification_item.dart';
+import 'package:p_on/screen/notification/w_notification_item.dart';
 import 'package:flutter/material.dart';
 
 import 'd_notification.dart';
