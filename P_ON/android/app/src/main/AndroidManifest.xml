@@ -1,6 +1,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.jungswanbini">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+
     <application
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher"
@@ -20,6 +23,8 @@
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
                 android:resource="@style/NormalTheme"
+                />
+            <meta-data
                 android:name="com.nvaer.maps.map.CLIENT_ID"
                 android:value="b99t409y3p"
                 />
