@@ -54,7 +54,7 @@ public class UserController {
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
 
-    @RequestMapping("/sign-up")
+    @PostMapping("/sign-up")
     public ResponseEntity<BasicResponse> signup(@RequestBody UserSignUpDto userSignUpDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -73,7 +73,7 @@ public class UserController {
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
 
-    @RequestMapping("/profile")
+    @GetMapping("/profile")
     public ResponseEntity<BasicResponse> getProfile() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
@@ -102,8 +102,8 @@ public class UserController {
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
 
-    @RequestMapping("/update")
-    public ResponseEntity<BasicResponse> userUpdate(@RequestBody UserDto userDto){
+    @PutMapping("/update")
+    public ResponseEntity<BasicResponse> userUpdate(@RequestBody UserDto userDto) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || authentication.getName() == null || authentication.getName().equals("anonymousUser")) {
@@ -122,4 +122,26 @@ public class UserController {
 
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
+
+    @GetMapping("/logout")
+    public ResponseEntity<BasicResponse> logout() throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || authentication.getName() == null || authentication.getName().equals("anonymousUser")) {
+            throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
+        }
+
+        Long id = Long.parseLong(authentication.getName());
+
+        userService.logout(id);
+
+        BasicResponse basicResponse = BasicResponse.builder()
+                .code(HttpStatus.OK.value())
+                .httpStatus(HttpStatus.OK)
+                .message("유저 로그아웃 성공")
+                .build();
+
+        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+    }
+
 }
