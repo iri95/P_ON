@@ -3,6 +3,8 @@ package com.wanyviny.user.domain.user.entity;
 
 import com.wanyviny.user.domain.user.ROLE;
 import com.wanyviny.user.domain.user.PRIVACY;
+import com.wanyviny.user.domain.user.dto.UserDto;
+import com.wanyviny.user.domain.user.dto.UserSignUpDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -45,4 +47,19 @@ public class User {
 
     @Column(name = "USER_PASSWORD")
     private String password;
+
+    public void signUp(UserSignUpDto userSignUpDto) {
+        this.nickname = userSignUpDto.getNickName();
+        this.profileImage = userSignUpDto.getProfileImage();
+        this.privacy = userSignUpDto.getPrivacy();
+        this.stateMessage = userSignUpDto.getStateMessage();
+        this.role = ROLE.USER;
+    }
+
+    public void update(UserDto userDto) {
+        this.nickname = userDto.getNickName();
+        this.profileImage = userDto.getProfileImage();
+        this.privacy = userDto.getPrivacy();
+        this.stateMessage = userDto.getStateMessage();
+    }
 }
