@@ -35,6 +35,7 @@ class AppState extends State<App> with Nav, WidgetsBindingObserver {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.bottom]);    return CustomThemeApp(
       child: Builder(builder: (context) {
         return MaterialApp(
+
           debugShowCheckedModeBanner: false,
           navigatorKey: App.navigatorKey,
           localizationsDelegates: context.localizationDelegates,
