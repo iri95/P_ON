@@ -12,17 +12,28 @@ body {
 }
 
 main {
-  padding-top: 10px;
+  padding-top: 80px;
   width: 60vw;
   margin: 0 20vw;
 }
 
 nav {
   height: 60px;
-  background-color: blue;
+  /* background-color: var(--color-background); */
+  background-color: var(--color-main1);
+  opacity: 0.8;
   padding: 0 20vw;
   display: flex;
-  justify-content: flex-end;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  box-sizing: content-box;
+}
+
+a {
+  color: var(--color-white);
+  text-decoration: none;
 }
 
 @font-face {
