@@ -1,1 +1,44 @@
-/* 스타일 시트 관련 공통 요소 */
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: 'Pretendard', sans-serif;
+  line-height: 1.6;
+  font-size: 18px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+header {
+  height: 70px;
+  background-color: #f4f7fa80;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: fixed;
+  width: 100vw;
+  padding: 0 20vw;
+}
+
+nav a {
+  color: var(--color-grey7);
+  text-decoration: none;
+}
+
+main {
+  padding-top: 80px;
+  width: 60vw;
+  margin: 0 20vw;
+}
+
+@font-face {
+  font-family: 'Pretendard';
+  font-style: normal;
+  src: url('/fonts/PretendardVariable.ttf') format('truetype');
+}
