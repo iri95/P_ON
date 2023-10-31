@@ -26,15 +26,6 @@ export const metadata: Metadata = {
     // ],
     type: 'website',
   },
-  icons: {
-    icon: '/Pinky/pinky1.png',
-    shortcut: '/Pinky/pinky1.png',
-    apple: '/Pinky/pinky1.png',
-    other: {
-      rel: 'apple-touch-icon-precomposed',
-      url: '/Pinky/pinky1.png',
-    },
-  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
