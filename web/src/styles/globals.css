@@ -11,6 +11,10 @@ body {
   font-size: 18px;
 }
 
+button {
+  all: unset;
+}
+
 * {
   box-sizing: border-box;
 }
