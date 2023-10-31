@@ -13,4 +13,6 @@ public interface UserService {
     void update(UserDto userDto, Long id);
 
     void logout(Long id) throws Exception;
+
+    void withdrawal(Long id) throws Exception;
 }
