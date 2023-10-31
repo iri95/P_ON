@@ -10,7 +10,32 @@ export const metadata: Metadata = {
   description:
     'P:ON은 손쉬운 약속 생성과 친구 초대, 공유 링크를 통한 함께 약속 만들기를 위한 앱입니다. 일정 관리를 위한 캘린더와 일정 관련 챗봇 Pinky를 제공합니다.',
   keywords: ['P:ON', 'Pinky', '플랜온', '핑키', 'WANYVINY', '와니비니'],
-  // TODO: og태그 title, image, description
+  metadataBase: new URL('https://p-on.site'),
+  alternates: {
+    canonical: '/',
+  },
+  openGraph: {
+    title: '약속 및 일정 관리 앱',
+    description: '챗봇 Pinky와 함께하는 약속 및 일정 관리 앱 P:ON',
+    siteName: 'P:ON',
+    // images: [
+    //   {
+    //     url: 'https://nextjs.org/og.png',
+    //     width: 800,
+    //     height: 600,
+    //   },
+    // ],
+    type: 'website',
+  },
+  icons: {
+    icon: '/Pinky/pinky1.png',
+    shortcut: '/Pinky/pinky1.png',
+    apple: '/Pinky/pinky1.png',
+    other: {
+      rel: 'apple-touch-icon-precomposed',
+      url: '/Pinky/pinky1.png',
+    },
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -22,7 +47,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="naver-site-verification" content="8e3fcf0a7a62a2254e119fe92a0e27afbc44a297" />
         <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-        <link rel="canonical" href="https://p-on.site" />
+        <meta httpEquiv="imagetoolbar" content="no" />
       </head>
       <body className={inter.className}>
         <Nav />
