@@ -1,8 +1,8 @@
-import 'package:fast_app_base/common/common.dart';
-import 'package:fast_app_base/common/widget/w_image_button.dart';
-import 'package:fast_app_base/screen/main/tab/stock/search/s_stock_search.dart';
-import 'package:fast_app_base/screen/main/tab/stock/tab/f_my_stock.dart';
-import 'package:fast_app_base/screen/main/tab/stock/tab/f_todays_discovery.dart';
+import 'package:p_on/common/common.dart';
+import 'package:p_on/common/widget/w_image_button.dart';
+import 'package:p_on/screen/main/tab/stock/search/s_stock_search.dart';
+import 'package:p_on/screen/main/tab/stock/tab/f_my_stock.dart';
+import 'package:p_on/screen/main/tab/stock/tab/f_todays_discovery.dart';
 import 'package:flutter/material.dart';
 
 import 'setting/s_setting.dart';

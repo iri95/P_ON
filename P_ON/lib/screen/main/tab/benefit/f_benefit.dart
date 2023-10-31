@@ -1,8 +1,8 @@
-import 'package:fast_app_base/common/common.dart';
-import 'package:fast_app_base/screen/main/s_main.dart';
-import 'package:fast_app_base/screen/main/tab/benefit/benefits_dummy.dart';
-import 'package:fast_app_base/screen/main/tab/benefit/w_benefit_item.dart';
-import 'package:fast_app_base/screen/main/tab/benefit/w_point_button.dart';
+import 'package:p_on/common/common.dart';
+import 'package:p_on/screen/main/s_main.dart';
+import 'package:p_on/screen/main/tab/benefit/benefits_dummy.dart';
+import 'package:p_on/screen/main/tab/benefit/w_benefit_item.dart';
+import 'package:p_on/screen/main/tab/benefit/w_point_button.dart';
 import 'package:flutter/material.dart';
 
 class BenefitFragment extends StatefulWidget {

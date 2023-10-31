@@ -1,5 +1,5 @@
-import 'package:fast_app_base/common/constant/app_colors.dart';
-import 'package:fast_app_base/screen/main/tab/promise_room/widget/w_following_list.dart';
+import 'package:p_on/common/constant/app_colors.dart';
+import 'package:p_on/screen/main/tab/promise_room/widget/w_following_list.dart';
 import 'package:flutter/material.dart';
 
 import 'friends_dummy.dart';

@@ -1,5 +1,5 @@
-import 'package:fast_app_base/common/theme/custom_theme.dart';
-import 'package:fast_app_base/common/theme/custom_theme_holder.dart';
+import 'package:p_on/common/theme/custom_theme.dart';
+import 'package:p_on/common/theme/custom_theme_holder.dart';
 import 'package:flutter/material.dart';
 
 import '../../common.dart';

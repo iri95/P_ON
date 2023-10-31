@@ -1,5 +1,5 @@
-import 'package:fast_app_base/screen/notification/vo/vo_notification.dart';
-import 'package:fast_app_base/screen/notification/w_notification_item.dart';
+import 'package:p_on/screen/notification/vo/vo_notification.dart';
+import 'package:p_on/screen/notification/w_notification_item.dart';
 import 'package:flutter/material.dart';
 import 'package:nav/dialog/dialog.dart';
 import 'package:nav/enum/enum_nav_ani.dart';

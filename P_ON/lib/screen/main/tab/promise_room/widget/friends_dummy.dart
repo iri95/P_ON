@@ -1,4 +1,4 @@
-import 'package:fast_app_base/screen/main/tab/promise_room/dto_promise.dart';
+import 'package:p_on/screen/main/tab/promise_room/dto_promise.dart';
 
 final friend1 = Friends(id: '1', userImage: 'assets/image/main/핑키1.png', userName: '구희영');
 final friend2 = Friends(id: '2', userImage: 'assets/image/main/핑키2.png', userName: '김나연');

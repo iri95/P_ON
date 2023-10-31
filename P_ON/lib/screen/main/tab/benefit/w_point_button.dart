@@ -1,5 +1,5 @@
-import 'package:fast_app_base/common/common.dart';
-import 'package:fast_app_base/common/widget/w_arrow.dart';
+import 'package:p_on/common/common.dart';
+import 'package:p_on/common/widget/w_arrow.dart';
 import 'package:flutter/material.dart';
 
 class PointButton extends StatelessWidget {

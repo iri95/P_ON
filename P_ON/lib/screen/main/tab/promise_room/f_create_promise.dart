@@ -1,5 +1,5 @@
 import 'package:after_layout/after_layout.dart';
-import 'package:fast_app_base/screen/main/tab/promise_room/f_selected_friends.dart';
+import 'package:p_on/screen/main/tab/promise_room/f_selected_friends.dart';
 import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
 import '../../../../common/common.dart';
