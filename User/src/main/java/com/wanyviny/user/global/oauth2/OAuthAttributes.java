@@ -2,7 +2,7 @@ package com.wanyviny.user.global.oauth2;
 
 import com.wanyviny.user.global.oauth2.userinfo.KakaoOAuth2UserInfo;
 import com.wanyviny.user.global.oauth2.userinfo.OAuth2UserInfo;
-import com.wanyviny.user.domain.user.Role;
+import com.wanyviny.user.domain.user.ROLE;
 import com.wanyviny.user.domain.user.entity.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -47,8 +47,8 @@ public class OAuthAttributes {
         return User.builder()
                 .socialId(oauth2UserInfo.getId())
                 .nickname(oauth2UserInfo.getNickname())
-                .profileUrl(oauth2UserInfo.getProfileImage())
-                .role(Role.GUEST)
+                .profileImage(oauth2UserInfo.getProfileImage())
+                .role(ROLE.GUEST)
                 .build();
     }
 }

@@ -1,14 +1,23 @@
 package com.wanyviny.user.global.oauth2.handler;
 
+import com.wanyviny.user.domain.user.entity.User;
+import com.wanyviny.user.domain.user.repository.UserRepository;
 import com.wanyviny.user.global.jwt.service.JwtService;
+import com.wanyviny.user.global.jwt.util.PasswordUtil;
 import com.wanyviny.user.global.oauth2.CustomOAuth2User;
-import com.wanyviny.user.domain.user.Role;
+import com.wanyviny.user.domain.user.ROLE;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
+import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +29,9 @@ import java.io.IOException;
 public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtService jwtService;
+    private GrantedAuthoritiesMapper authoritiesMapper = new NullAuthoritiesMapper();
+    @Autowired
+    private com.wanyviny.user.domain.user.repository.UserRepository userRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -28,14 +40,12 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
 
             // User의 Role이 GUEST일 경우 처음 요청한 회원이므로 회원가입 페이지로 리다이렉트
-            if (oAuth2User.getRole() == Role.GUEST) {
+            if (oAuth2User.getRole() == ROLE.GUEST) {
                 String accessToken = jwtService.createAccessToken(oAuth2User.getId());
                 response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
                 response.sendRedirect(
-//                        "https://k9e102.p.ssafy.io/sign-up?" + "access_token=Bearer " + accessToken + "&is_user=F"
-                        "http://k9e102.p.ssafy.io/sign-up?" + "access_token=Bearer " + accessToken + "&is_user=F"
+                        "http://k9e102.p.ssafy.io/" + "access_token=Bearer " + accessToken + "&is_user=F"
                 );
-
             }else{
                 loginSuccess(response, oAuth2User);
             }
@@ -51,12 +61,12 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
         response.addHeader(jwtService.getRefreshHeader(), "Bearer " + refreshToken);
         response.sendRedirect(
-                "http://k9e102.p.ssafy.io/kakaologin?" + "access_token=Bearer " + accessToken + "&refresh_token="
+                "http://k9e102.p.ssafy.io/?" + "access_token=Bearer " + accessToken + "&refresh_token="
                         + "Bearer " + refreshToken + "&is_user=T"
         );
+
         jwtService.removeRefreshToken(oAuth2User.getId());
         jwtService.updateRefreshToken(oAuth2User.getId(), refreshToken);
-
     }
 
 }

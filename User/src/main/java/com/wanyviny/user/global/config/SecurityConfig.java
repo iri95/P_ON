@@ -1,16 +1,21 @@
 package com.wanyviny.user.global.config;
 
+import com.wanyviny.user.domain.user.repository.UserRepository;
+import com.wanyviny.user.global.jwt.filter.JwtAuthenticationProcessingFilter;
+import com.wanyviny.user.global.jwt.service.JwtService;
 import com.wanyviny.user.global.oauth2.handler.OAuth2LoginFailureHandler;
 import com.wanyviny.user.global.oauth2.handler.OAuth2LoginSuccessHandler;
 import com.wanyviny.user.global.oauth2.service.CustomOAuth2UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 
 /**
  * RefreshToken과 AccessToken 발급은 Filter를 통해서 함.
@@ -24,6 +29,9 @@ public class SecurityConfig {
     private final OAuth2LoginSuccessHandler oAuth2LoginSuccessHandler;
     private final OAuth2LoginFailureHandler oAuth2LoginFailureHandler;
     private final CustomOAuth2UserService customOAuth2UserService;
+    private final JwtService jwtService;
+    private final UserRepository userRepository;
+    private final RedisTemplate redisTemplate;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -38,6 +46,12 @@ public class SecurityConfig {
                         .successHandler(oAuth2LoginSuccessHandler) // 동의하고 계속하기를 눌렀을 때 Handler 설정
                         .failureHandler(oAuth2LoginFailureHandler) // 소셜 로그인 실패 시 핸들러 설정
                 );
+        http.addFilterAfter(jwtAuthenticationProcessingFilter(), LogoutFilter.class);
         return http.build();
+    }
+
+    @Bean
+    public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
+        return new JwtAuthenticationProcessingFilter(jwtService, userRepository, redisTemplate);
     }
 }

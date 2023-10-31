@@ -1,7 +1,7 @@
 package com.wanyviny.user.domain.user.entity;
 
 
-import com.wanyviny.user.domain.user.Role;
+import com.wanyviny.user.domain.user.ROLE;
 import com.wanyviny.user.domain.user.PRIVACY;
 import jakarta.persistence.*;
 import lombok.*;
@@ -19,8 +19,8 @@ public class User {
     @Column(name = "USER_ID")
     private Long id;
 
-    @Column(name = "USER_PROFILE_URL", nullable = false)
-    private String profileUrl;
+    @Column(name = "USER_PROFILE_IMAGE", nullable = false)
+    private String profileImage;
 
     @Column(name = "USER_NCIKNAME", nullable = false)
     private String nickname;
@@ -38,7 +38,7 @@ public class User {
 
     @Column(name = "USER_ROLE", nullable = false)
     @Enumerated(EnumType.STRING)
-    private Role role;
+    private ROLE role;
 
     @Column(name = "USER_SOCIAL_ID", nullable = false)
     private String socialId;
