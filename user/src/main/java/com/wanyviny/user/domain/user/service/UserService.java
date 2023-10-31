@@ -11,4 +11,6 @@ public interface UserService {
     void signUp(UserSignUpDto userSignUpDto, Long id);
 
     void update(UserDto userDto, Long id);
+
+    void logout(Long id) throws Exception;
 }
