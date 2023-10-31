@@ -26,8 +26,6 @@ public class UserServiceImpl implements UserService {
     @Value("${kakao.admin}")
     private String SERVICE_APP_ADMIN_KEY;
 
-    private final String KAKAO_API_URL = "https://kapi.kakao.com/v1/user/";
-
     private final UserRepository userRepository;
 
     @Override
@@ -75,6 +73,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public void kakaoApi(String api, String socialId) throws Exception {
+        String KAKAO_API_URL = "https://kapi.kakao.com/v1/user/";
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.add("Authorization", "KakaoAK " + SERVICE_APP_ADMIN_KEY);
