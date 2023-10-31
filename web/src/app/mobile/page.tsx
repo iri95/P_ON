@@ -1,34 +1,13 @@
 import Head from 'next/head';
+import Mobile from '@/containers/Mobile';
 
 export default function page() {
   return (
     <div>
       <Head>
-        <title>My Page</title>
+        <title>P:ON Demo</title>
       </Head>
-
-      <iframe
-        title="mobileWeb"
-        src="http://k9e102.p.ssafy.io:5000"
-        width="100%"
-        height="500px"
-        style={{ border: 'solid black' }}
-      />
-      <iframe
-        title="mobileWeb"
-        src="http://k9e102.p.ssafy.io:9090"
-        width="100%"
-        height="500px"
-        style={{ border: 'solid black' }}
-      />
-      <iframe
-        title="mobileWeb"
-        src="http://k9e102.p.ssafy.io"
-        width="100%"
-        height="500px"
-        style={{ border: 'solid black' }}
-      />
-      {/* <iframe src="https://www.google.com" width="100%" height="500px" style={{ border: 0 }} /> */}
+      <Mobile />
     </div>
   );
 }
