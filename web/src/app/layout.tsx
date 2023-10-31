@@ -1,8 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import Nav from '@/components/NavBar';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: { template: 'P:ON | %s', default: 'P:ON | 약속 및 일정 관리 앱' },
@@ -20,7 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="naver-site-verification" content="8e3fcf0a7a62a2254e119fe92a0e27afbc44a297" />
         <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests" />
       </head>
-      <body className={inter.className}>
+      <body>
         <Nav />
         {children}
       </body>
