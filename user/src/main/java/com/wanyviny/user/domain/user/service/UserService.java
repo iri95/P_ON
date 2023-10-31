@@ -1,5 +1,6 @@
 package com.wanyviny.user.domain.user.service;
 
+import com.wanyviny.user.domain.user.dto.UserDto;
 import com.wanyviny.user.domain.user.dto.UserSignUpDto;
 import com.wanyviny.user.domain.user.entity.User;
 
@@ -9,4 +10,5 @@ public interface UserService {
 
     void signUp(UserSignUpDto userSignUpDto, Long id);
 
+    void update(UserDto userDto, Long id);
 }
