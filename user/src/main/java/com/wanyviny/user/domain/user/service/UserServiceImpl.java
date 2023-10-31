@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService {
     @Value("${kakao.admin}")
     private String SERVICE_APP_ADMIN_KEY;
 
-    private final String KAKAO_API_URL = "https://kapi.kakao.com/v1/user";
+    private final String KAKAO_API_URL = "https://kapi.kakao.com/v1/user/";
 
     private final UserRepository userRepository;
 
@@ -37,6 +37,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void signUp(UserSignUpDto userSignUpDto, Long id) {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("해당하는 유저가 없습니다.")
@@ -45,6 +46,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void update(UserDto userDto, Long id) {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("해당하는 유저가 없습니다.")
@@ -53,24 +55,39 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public void logout(Long id) throws Exception {
-        String socialId = userRepository.findById(id).orElseThrow(
+        User user = userRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("해당하는 유저가 없습니다. ")
-        ).getSocialId();
+        );
+        kakaoApi("logout", user.getSocialId());
+    }
 
+    @Override
+    @Transactional
+    public void withdrawal(Long id) throws Exception {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new IllegalArgumentException("해당하는 유저가 없습니다. ")
+        );
+
+        kakaoApi("unlink", user.getSocialId());
+        userRepository.delete(user);
+    }
+
+    public void kakaoApi(String api, String socialId) throws Exception {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.add("Authorization", "KakaoAK " + SERVICE_APP_ADMIN_KEY);
 
             MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-            params.add("target_id_type"   , "user_id");
-            params.add("target_id"    , socialId);
+            params.add("target_id_type", "user_id");
+            params.add("target_id", socialId);
 
             RestTemplate restTemplate = new RestTemplate();
             HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(params, headers);
 
             ResponseEntity<String> response = restTemplate.exchange(
-                    KAKAO_API_URL + "/logout",
+                    KAKAO_API_URL + api,
                     HttpMethod.POST,
                     httpEntity,
                     String.class
@@ -78,10 +95,8 @@ public class UserServiceImpl implements UserService {
             JSONParser jsonParser = new JSONParser();
             JSONObject jsonObj = (JSONObject) jsonParser.parse(response.getBody());
 
-            Long userSocialId  = (Long) jsonObj.get("id");
-            System.out.println(userSocialId);
-
-            // TODO : Token관리 추가
+            Long userSocialId = (Long) jsonObj.get("id");
+            System.out.println("유저 " + api + " 완료 id : " + userSocialId);
 
         } catch (Exception e) {
             throw new Exception("API call failed");

@@ -1,7 +1,6 @@
 package com.wanyviny.user.domain.user.controller;
 
 import com.wanyviny.user.domain.common.BasicResponse;
-import com.wanyviny.user.domain.user.PRIVACY;
 import com.wanyviny.user.domain.user.dto.KakaoUserDto;
 import com.wanyviny.user.domain.user.dto.UserDto;
 import com.wanyviny.user.domain.user.dto.UserSignUpDto;
@@ -24,8 +23,6 @@ import java.util.Collections;
 public class UserController {
 
     private final UserService userService;
-    private final UserRepository userRepository;
-    private final JwtService jwtService;
 
     @GetMapping("/kakao-profile")
     public ResponseEntity<BasicResponse> getKakaoProfile() {
@@ -34,8 +31,8 @@ public class UserController {
         if (authentication == null || authentication.getName() == null || authentication.getName().equals("anonymousUser")) {
             throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
         }
-        Long id = Long.parseLong(authentication.getName());
-        User userProfile = userService.getUserProfile(id);
+
+        User userProfile = userService.getUserProfile(Long.parseLong(authentication.getName()));
 
         KakaoUserDto kakaoUserDto = KakaoUserDto.builder()
                 .profileImage(userProfile.getProfileImage())
@@ -80,8 +77,8 @@ public class UserController {
         if (authentication == null || authentication.getName() == null || authentication.getName().equals("anonymousUser")) {
             throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
         }
-        Long id = Long.parseLong(authentication.getName());
-        User userProfile = userService.getUserProfile(id);
+
+        User userProfile = userService.getUserProfile(Long.parseLong(authentication.getName()));
 
         UserDto userDto = UserDto.builder()
                 .id(userProfile.getId())
@@ -110,8 +107,6 @@ public class UserController {
             throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
         }
 
-        Long id = Long.parseLong(authentication.getName());
-
         userService.update(userDto, Long.parseLong(authentication.getName()));
 
         BasicResponse basicResponse = BasicResponse.builder()
@@ -131,9 +126,7 @@ public class UserController {
             throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
         }
 
-        Long id = Long.parseLong(authentication.getName());
-
-        userService.logout(id);
+        userService.logout(Long.parseLong(authentication.getName()));
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
@@ -144,4 +137,22 @@ public class UserController {
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
 
+    @DeleteMapping("/withdrawal")
+    public ResponseEntity<BasicResponse> withdrawal() throws Exception {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || authentication.getName() == null || authentication.getName().equals("anonymousUser")) {
+            throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
+        }
+
+        userService.withdrawal(Long.parseLong(authentication.getName()));
+
+        BasicResponse basicResponse = BasicResponse.builder()
+                .code(HttpStatus.OK.value())
+                .httpStatus(HttpStatus.OK)
+                .message("회원 탈퇴 성공")
+                .build();
+
+        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+    }
 }
