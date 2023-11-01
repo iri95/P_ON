@@ -1,5 +1,5 @@
-import 'package:fast_app_base/screen/main/tab/home/banks_dummy.dart';
-import 'package:fast_app_base/screen/main/tab/home/vo/vo_bank_account.dart';
+import 'package:p_on/screen/main/tab/home/banks_dummy.dart';
+import 'package:p_on/screen/main/tab/home/vo/vo_bank_account.dart';
 
 final plan1 = PlanData('중간 평가', '2023-10-20', '오후 5시', '부산 SSAFY', true);
 final plan2 = PlanData('팀 회식', '2023-10-23', '오후 7시', '하단역', true);

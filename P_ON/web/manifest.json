@@ -1,6 +1,6 @@
 {
-    "name": "fast_app_base",
-    "short_name": "fast_app_base",
+    "name": "p_on",
+    "short_name": "p_on",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

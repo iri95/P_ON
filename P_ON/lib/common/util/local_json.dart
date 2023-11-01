@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:fast_app_base/screen/main/tab/stock/vo/vo_simple_stock.dart';
+import 'package:p_on/screen/main/tab/stock/vo/vo_simple_stock.dart';
 import 'package:flutter/services.dart';
 
 import '../../screen/opensource/vo_package.dart';

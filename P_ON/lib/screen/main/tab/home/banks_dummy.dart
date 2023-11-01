@@ -1,4 +1,4 @@
-import 'package:fast_app_base/common/constants.dart';
+import 'package:p_on/common/constants.dart';
 
 import 'vo/vo_bank.dart';
 

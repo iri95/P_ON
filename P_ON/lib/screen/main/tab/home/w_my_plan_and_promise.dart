@@ -1,6 +1,6 @@
-import 'package:fast_app_base/common/common.dart';
-import 'package:fast_app_base/common/widget/w_list_container.dart';
-import 'package:fast_app_base/screen/main/tab/home/vo/vo_bank_account.dart';
+import 'package:p_on/common/common.dart';
+import 'package:p_on/common/widget/w_list_container.dart';
+import 'package:p_on/screen/main/tab/home/vo/vo_bank_account.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

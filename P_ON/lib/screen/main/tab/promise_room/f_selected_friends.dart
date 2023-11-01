@@ -1,6 +1,10 @@
-import 'package:fast_app_base/common/common.dart';
-import 'package:fast_app_base/common/widget/w_basic_appbar.dart';
-import 'package:fast_app_base/screen/main/tab/promise_room/dto_promise.dart';
+import 'package:p_on/common/common.dart';
+import 'package:p_on/common/widget/w_basic_appbar.dart';
+import 'package:p_on/screen/main/tab/promise_room/dto_promise.dart';
+import 'package:p_on/screen/main/tab/promise_room/f_last_create_promise.dart';
+import 'package:p_on/screen/main/tab/promise_room/widget/friends_dummy.dart';
+import 'package:p_on/screen/main/tab/promise_room/widget/w_follows.dart';
+import 'package:p_on/screen/main/tab/promise_room/widget/w_friends_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -13,20 +17,9 @@ class SelectedFriends extends ConsumerStatefulWidget {
 }
 
 class _SelectedFriendsState extends ConsumerState<SelectedFriends> {
-  bool isSelected = true;
-
   @override
   Widget build(BuildContext context) {
     final promise = ref.watch(promiseProvider);
-    print('=================================test==========================');
-    print('=================================test==========================');
-    print('=================================test==========================');
-    print('=================================test==========================');
-    print(promise.promise_title);
-    print('=================================test==========================');
-    print('=================================test==========================');
-    print('=================================test==========================');
-    print('=================================test==========================');
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -56,7 +49,7 @@ class _SelectedFriendsState extends ConsumerState<SelectedFriends> {
                       child: TextButton(
                           style: TextButton.styleFrom(primary: Colors.black),
                           onPressed: () {},
-                          child: Column(
+                          child: const Column(
                             children: [Icon(Icons.search), Text('닉네임 검색')],
                           )),
                     ),
@@ -71,7 +64,7 @@ class _SelectedFriendsState extends ConsumerState<SelectedFriends> {
                       child: TextButton(
                           style: TextButton.styleFrom(primary: Colors.black),
                           onPressed: () {},
-                          child: Column(
+                          child: const Column(
                             children: [Icon(Icons.link), Text('링크 복사')],
                           )),
                     ),
@@ -79,121 +72,32 @@ class _SelectedFriendsState extends ConsumerState<SelectedFriends> {
                 ],
               ),
               Container(
-                width: double.infinity,
-                height: 100,
-                margin: EdgeInsets.only(top: 16),
-                color: Colors.grey,
-                // color: Color(0xffF4F7FA),
+                height: 120,
+                margin: const EdgeInsets.symmetric(vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: const BoxDecoration(color: AppColors.grey200),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('선택된 친구 N명'),
-                    Row(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.all(8),
-                          child: Column(
-                            children: [
-                              Stack(
-                                children: [
-                                  CircleAvatar(
-                                    backgroundColor: Color(0xff778CE3),
-                                    child: Stack(
-                                      children: [
-                                        Image.asset(
-                                          'assets/image/main/핑키1.png',
-                                          width: 36,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Positioned(
-                                    right: 0,
-                                    child: CircleAvatar(
-                                        radius: 8,
-                                        child: Positioned(
-                                            child: Icon(
-                                          Icons.close,
-                                          size: 10,
-                                        ))),
-                                  )
-                                ],
-                              ),
-                              Text('이름')
-                            ],
-                          ),
-                        ),
-                      ],
-                    )
+                    '선택된 친구 ${promise.selected_friends?.length ?? 0}명'
+                        .text
+                        .semiBold
+                        .size(16)
+                        .make(),
+                    Expanded(
+                      child: ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: [
+                            ...friendList
+                                .map((friend) => FriendsList(friend))
+                                .toList()
+                          ]),
+                    ),
                   ],
                 ),
               ),
-              Row(
-                children: [
-                  Expanded(
-                      child: Container(
-                    decoration: BoxDecoration(
-                        border: Border(
-                            bottom: BorderSide(
-                                color:
-                                    isSelected ? Colors.blue : Colors.grey))),
-                    child: TextButton(
-                      onPressed: () {
-                        setState(() {
-                          isSelected = !isSelected;
-                        });
-                      },
-                      child: Text('Followings NN명',
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: isSelected
-                                  ? AppColors.mainBlue
-                                  : Colors.black)),
-                      style: ButtonStyle(
-                        foregroundColor:
-                            MaterialStateProperty.resolveWith((states) {
-                          if (states.contains(MaterialState.pressed)) {
-                            return Colors.black;
-                          } else {
-                            return Colors.grey;
-                          }
-                        }),
-                      ),
-                    ),
-                  )),
-                  Expanded(
-                      child: Container(
-                    decoration: BoxDecoration(
-                        border: Border(
-                            bottom: BorderSide(
-                                color:
-                                    !isSelected ? Colors.blue : Colors.grey))),
-                    child: TextButton(
-                      onPressed: () {
-                        setState(() {
-                          isSelected = !isSelected;
-                        });
-                      },
-                      child: Text('Followers NN명',
-                          style: TextStyle(
-                              fontSize: 20,
-                              color: !isSelected
-                                  ? AppColors.mainBlue
-                                  : Colors.black)),
-                      style: ButtonStyle(
-                        foregroundColor:
-                            MaterialStateProperty.resolveWith((states) {
-                          if (states.contains(MaterialState.pressed)) {
-                            return Colors.black;
-                          } else {
-                            return Colors.grey;
-                          }
-                        }),
-                      ),
-                    ),
-                  )),
-                ],
-              )
+              const Expanded(child: Follows()),
             ],
           ),
           floatingActionButtonLocation:
@@ -201,12 +105,14 @@ class _SelectedFriendsState extends ConsumerState<SelectedFriends> {
           floatingActionButton: Container(
             width: double.infinity,
             height: 48,
-            margin: EdgeInsets.all(14),
+            margin: const EdgeInsets.all(14),
             child: FilledButton(
                 style:
                     FilledButton.styleFrom(backgroundColor: AppColors.mainBlue),
-                onPressed: () {},
-                child: Text('다음')),
+                onPressed: () {
+                  Nav.push(const LastCreatePromise());
+                },
+                child: const Text('다음')),
           ),
         ),
       ),

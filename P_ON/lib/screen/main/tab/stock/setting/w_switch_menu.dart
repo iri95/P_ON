@@ -1,5 +1,5 @@
-import 'package:fast_app_base/common/common.dart';
-import 'package:fast_app_base/screen/main/tab/stock/setting/w_os_switch.dart';
+import 'package:p_on/common/common.dart';
+import 'package:p_on/screen/main/tab/stock/setting/w_os_switch.dart';
 import 'package:flutter/material.dart';
 
 class SwitchMenu extends StatelessWidget {

@@ -1,4 +1,4 @@
-import 'package:fast_app_base/screen/main/tab/stock/vo/vo_popular_stock.dart';
+import 'package:p_on/screen/main/tab/stock/vo/vo_popular_stock.dart';
 
 List<PopularStock> get popularStocks => [
       PopularStock(

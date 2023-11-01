@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:after_layout/after_layout.dart';
-import 'package:fast_app_base/common/common.dart';
-import 'package:fast_app_base/common/util/app_keyboard_util.dart';
-import 'package:fast_app_base/screen/main/tab/register/w_profileImage.dart';
+import 'package:p_on/common/common.dart';
+import 'package:p_on/common/util/app_keyboard_util.dart';
+import 'package:p_on/screen/main/tab/register/w_profileImage.dart';
 import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
 

@@ -1,4 +1,4 @@
-import 'package:fast_app_base/screen/notification/vo/notification_type.dart';
+import 'package:p_on/screen/notification/vo/notification_type.dart';
 
 class TtossNotification {
   final NotificationType type;
