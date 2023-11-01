@@ -13,6 +13,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: '/',
   },
+  icons: {
+    icon: [{ url: '/icon.png' }, new URL('/icon.png', 'https://p-on.site')],
+    shortcut: ['/icon.png'],
+  },
   openGraph: {
     title: '약속 및 일정 관리 앱',
     description: '챗봇 Pinky와 함께하는 약속 및 일정 관리 앱 P:ON',
@@ -31,7 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
         <meta httpEquiv="imagetoolbar" content="no" />
-        <link rel="shortcut icon" href="/favicon.ico" />
+        <link rel="shortcut icon" href="/icon.png" />
       </head>
       <body>
         <Nav />
