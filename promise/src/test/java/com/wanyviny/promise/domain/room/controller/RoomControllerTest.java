@@ -53,7 +53,7 @@ public class RoomControllerTest extends RestDocsSupport {
                 .willReturn(dto);
 
         mockMvc.perform(
-                RestDocumentationRequestBuilders.post("/api/promise/room")
+                RestDocumentationRequestBuilders.post("https://p-on.site/api/promise/room")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
                 )
