@@ -31,6 +31,10 @@ button {
   all: unset;
 }
 
+ul {
+  padding-inline-start: 0;
+}
+
 @font-face {
   font-family: 'Pretendard';
   font-style: normal;
