@@ -5,10 +5,12 @@ import com.wanyviny.user.domain.user.dto.KakaoUserDto;
 import com.wanyviny.user.domain.user.dto.UserDto;
 import com.wanyviny.user.domain.user.dto.UserSignUpDto;
 import com.wanyviny.user.domain.user.entity.User;
+import com.wanyviny.user.domain.user.repository.UserRepository;
 import com.wanyviny.user.domain.user.service.UserService;
 import com.wanyviny.user.global.jwt.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -67,6 +69,15 @@ public class UserController {
                 .httpStatus(HttpStatus.OK)
                 .message("회원 가입 성공!")
                 .build();
+
+        String refreshToken = jwtService.createRefreshToken();
+
+        // 헤더에 토큰 정보 추가
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + accessToken);
+        headers.add("Authorization_refresh", "Bearer " + refreshToken);
+
+        jwtService.updateRefreshToken(id, refreshToken);
 
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
@@ -156,5 +167,33 @@ public class UserController {
                 .build();
 
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+    }
+
+    @GetMapping("/auto-login")
+    public ResponseEntity<BasicResponse> autoLogin(HttpServletRequest request) {
+        String refreshToken = jwtService.extractRefreshToken(request)
+                .orElseThrow(() -> new IllegalArgumentException("refresh 토큰이 없습니다."));
+
+
+        User findUser = userService.getUserByRefreshToken(refreshToken);
+
+
+        String reissueAccessToken = jwtService.createAccessToken(findUser.getId());
+        String reissueRefreshToken = jwtService.createRefreshToken();
+
+        // 헤더에 토큰 정보 추가
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + reissueAccessToken);
+        headers.add("Authorization_refresh", "Bearer " + reissueRefreshToken);
+
+        jwtService.updateRefreshToken(findUser.getId(), reissueRefreshToken);
+
+        BasicResponse basicResponse = BasicResponse.builder()
+                .code(HttpStatus.OK.value())
+                .httpStatus(HttpStatus.OK)
+                .message("자동로그인을 위한 api라 아무 의미없다~")
+                .build();
+
+        return new ResponseEntity<>(basicResponse, headers, basicResponse.getHttpStatus());
     }
 }
