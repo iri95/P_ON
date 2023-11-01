@@ -164,7 +164,7 @@ public class JwtService {
                     redisTemplate.opsForValue().set(REFRESH_TOKEN_SUBJECT + id, refreshToken, refreshTokenExpirationPeriod, TimeUnit.MILLISECONDS);
                 }, // 해당 유저의 refreshToken을 refreshToken으로 update
                 () -> {
-                    throw new IllegalArgumentException("소셜아이디에 해당하는 유저가 없습니다.");
+                    throw new IllegalArgumentException("아이디에 해당하는 유저가 없습니다.");
                 }
         );
     }

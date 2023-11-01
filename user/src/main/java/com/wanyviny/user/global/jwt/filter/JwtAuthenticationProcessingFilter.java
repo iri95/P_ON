@@ -90,6 +90,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         // 리프레시 토큰이 요청 헤더에 존재했다면, 사용자가 AccessToken이 만료되어서
         // RefreshToken까지 보낸 것이므로 리프레시 토큰이 DB의 리프레시 토큰과 일치하는지 판단 후,
         // 일치한다면 AccessToken을 재발급
+        // TODO : 왜 Access Token이 만료되었다고 판단? Refresh Token은 Access Token이 만료되었을 때만 담나?
         if (refreshToken != null) {
             checkRefreshTokenAndReIssueAccessToken(response, refreshToken);
             return; // RefreshToken을 보낸 경우에는 AccessToken을 재발급하고 인증 처리는 하지 않게 하도록 바로 return으로 필터 진행 막기
@@ -109,14 +110,15 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
      * JwtService.createAccessToken()으로 AccessToken 생성,
      * reIssueRefreshToken()로 리프레시토큰 재발급 & DB에 리프레시 토큰 업데이트 메소드 호출
      * 그 후 JwtService.sendAccessTokenAndRefreshToken()으로 응답 헤더에 보내기
+     *  ->> refresh Token이 너무 자주 재발급 되는거 같아 지움..
      */
     // TODO: 회원가입 안한 GUEST유저는 filter에서 오류남.(refreshToken은 회원 로그인 시 헤더에 줌) -> refreshToken == null, 일 경우
     public void checkRefreshTokenAndReIssueAccessToken(HttpServletResponse response, String refreshToken) {
         userRepository.findById(jwtService.findIdByRefreshToken(refreshToken).orElse(null))
                 .ifPresent(user -> {
-                    String reIssuedRefreshToken = reIssueRefreshToken(user);
+//                    String reIssuedRefreshToken = reIssueRefreshToken(user);
                     jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(user.getId()),
-                            reIssuedRefreshToken);
+                            refreshToken);
                 });
     }
 
@@ -141,6 +143,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
      * 인증 허가 처리된 객체를 SecurityContextHolder에 담기
      * 그 후 다음 인증 필터로 진행
      */
+    // TODO: response에 access token을 안담아도 되는건가?, access token도 없으면 logout, 이건 나중에 GATEWAY에서
     public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         log.info("checkAccessTokenAndAuthentidcation() 호출");
