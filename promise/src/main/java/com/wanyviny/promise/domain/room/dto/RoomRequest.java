@@ -15,7 +15,7 @@ public class RoomRequest {
     @Builder
     public static class CreateDto {
 
-        private Map<String, String> users;
+        private List<Map<String, String>> users;
         private String promiseTitle;
 
         @Builder.Default

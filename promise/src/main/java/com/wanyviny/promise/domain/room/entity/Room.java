@@ -20,8 +20,7 @@ public class Room {
 
     @Id
     private String id;
-
-    private Map<String, String> users;
+    private List<Map<String, String>> users;
     private String promiseTitle;
     private boolean isDefaultTitle;
     private String promiseDate;
@@ -38,16 +37,16 @@ public class Room {
     public void changeDefaultTitle() {
         StringBuilder sb = new StringBuilder();
 
-        users.forEach((k, v) -> {
-            sb.append(v).append(", ");
+        users.forEach(user -> {
+            sb.append(user.get("nickname")).append(", ");
         });
 
         sb.setLength(sb.length() - 2);
         promiseTitle = sb.toString();
     }
 
-    public void addUser(Map<String, String> users) {
-        this.users.putAll(users);
+    public void addUser(List<Map<String, String>> users) {
+        this.users.addAll(users);
     }
 
     public void addChat(Chat chat) {

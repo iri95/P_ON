@@ -11,7 +11,7 @@ public class RoomResponse {
     public record CreateDto(
 
             String id,
-            Map<String, String> users,
+            List<Map<String, String>> users,
             String promiseTitle,
             boolean isDefaultTitle,
             String promiseDate,
