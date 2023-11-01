@@ -52,7 +52,7 @@ public class RoomControllerTest extends RestDocsSupport {
                 .willReturn(dto);
 
         mockMvc.perform(
-                RestDocumentationRequestBuilders.post("https://p-on.site/api/promise/room")
+                RestDocumentationRequestBuilders.post("/api/promise/room")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request))
                 )
@@ -61,7 +61,7 @@ public class RoomControllerTest extends RestDocsSupport {
                         ResourceSnippetParameters.builder()
                                 .tag("약속방")
                                 .summary("약속방 생성")
-//                                .requestSchema(Schema.schema("RoomRequest.CreateDto"))
+                                .requestSchema(Schema.schema("약속방 생성 Request"))
 //                                .responseSchema(Schema.schema("RoomResponse.CreateDto")
 //                                ),
 //                        preprocessRequest(prettyPrint()),
