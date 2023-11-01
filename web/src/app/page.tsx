@@ -1,4 +1,4 @@
-// import HomeIndex from '@/containers/Home';
+import HomeIndex from '@/containers/Home';
 
 export default function Home() {
   return (
@@ -21,7 +21,7 @@ export default function Home() {
         있습니다. 소중한 약속들을 소중한 사람들과 함께 더욱 즐겁게 만들어보세요. P:ON과 Pinky가 여러분의 일상을 더욱
         편리하고 풍요롭게 만들어줄 거예요!
       </p>
-      {/* <HomeIndex /> */}
+      <HomeIndex />
     </>
   );
 }

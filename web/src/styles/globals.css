@@ -10,35 +10,25 @@ body {
   line-height: 1.6;
   font-size: 18px;
 }
-
-button {
-  all: unset;
-}
-
 * {
   box-sizing: border-box;
-}
-
-header {
-  height: 70px;
-  background-color: #f4f7fa80;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: fixed;
-  width: 100vw;
-  padding: 0 20vw;
-}
-
-nav a {
-  color: var(--color-grey7);
-  text-decoration: none;
 }
 
 main {
   padding-top: 80px;
   width: 60vw;
   margin: 0 20vw;
+}
+/* 타블렛 이하 */
+@media screen and (max-width: 1023px) {
+  main {
+    width: 90vw;
+    margin: 0 5vw;
+  }
+}
+
+button {
+  all: unset;
 }
 
 @font-face {
