@@ -1,0 +1,429 @@
+{
+  "openapi" : "3.0.1",
+  "info" : {
+    "title" : "restdocs-swagger API Documentation",
+    "description" : "Spring REST Docs with SwaggerUI.",
+    "version" : "0.0.1"
+  },
+  "servers" : [ {
+    "url" : "https://p-on.site"
+  } ],
+  "tags" : [ ],
+  "paths" : {
+    "/api/promise/room" : {
+      "post" : {
+        "tags" : [ "테스트" ],
+        "summary" : "Post 테스트",
+        "description" : "Post 테스트",
+        "operationId" : "room-post",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/RoomRequest.CreateDto"
+              },
+              "examples" : {
+                "room-post" : {
+                  "value" : "{\r\n  \"users\" : [ {\r\n    \"nickname\" : \"김태환\",\r\n    \"id\" : \"1\"\r\n  } ],\r\n  \"promiseTitle\" : \"미정\",\r\n  \"promiseDate\" : \"미정\",\r\n  \"promiseTime\" : \"미정\",\r\n  \"promiseLocation\" : \"미정\"\r\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "200",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/RoomResponse.CreateDto"
+                },
+                "examples" : {
+                  "room-post" : {
+                    "value" : "{\r\n  \"httpStatus\" : \"OK\",\r\n  \"code\" : 200,\r\n  \"message\" : \"약속방 생성 성공\",\r\n  \"count\" : 1,\r\n  \"result\" : [ {\r\n    \"id\" : \"1234\",\r\n    \"users\" : [ {\r\n      \"nickname\" : \"김태환\",\r\n      \"id\" : \"1\"\r\n    } ],\r\n    \"promiseTitle\" : \"미정\",\r\n    \"isDefaultTitle\" : false,\r\n    \"promiseDate\" : \"미정\",\r\n    \"promiseTime\" : \"미정\",\r\n    \"promiseLocation\" : \"미정\",\r\n    \"chats\" : [ ]\r\n  } ]\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/promise/test" : {
+      "get" : {
+        "tags" : [ "테스트" ],
+        "summary" : "Get 테스트",
+        "description" : "Get 테스트",
+        "operationId" : "test-get",
+        "responses" : {
+          "200" : {
+            "description" : "200",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MainResponse.Get"
+                },
+                "examples" : {
+                  "test-get" : {
+                    "value" : "{\r\n  \"message\" : \"get test success\"\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "tags" : [ "테스트" ],
+        "summary" : "Post 테스트",
+        "description" : "Post 테스트",
+        "operationId" : "test-post",
+        "requestBody" : {
+          "content" : {
+            "application/json;charset=UTF-8" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/MainRequest.Post"
+              },
+              "examples" : {
+                "test-post" : {
+                  "value" : "{\r\n  \"message\" : \"post request\"\r\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "201" : {
+            "description" : "201",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MainResponse.Post"
+                },
+                "examples" : {
+                  "test-post" : {
+                    "value" : "{\r\n  \"id\" : 1\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/promise/test/{id}" : {
+      "put" : {
+        "tags" : [ "테스트" ],
+        "summary" : "Put 테스트",
+        "description" : "Put 테스트",
+        "operationId" : "test-put",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "수정 ID",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json;charset=UTF-8" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/MainRequest.Put"
+              },
+              "examples" : {
+                "test-put" : {
+                  "value" : "{\r\n  \"message\" : \"put request\"\r\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "200",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MainResponse.Put"
+                },
+                "examples" : {
+                  "test-put" : {
+                    "value" : "{\r\n  \"message\" : \"put test success\"\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete" : {
+        "tags" : [ "테스트" ],
+        "summary" : "Delete 테스트",
+        "description" : "Delete 테스트",
+        "operationId" : "test-delete",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "삭제 ID",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "204"
+          }
+        }
+      },
+      "patch" : {
+        "tags" : [ "테스트" ],
+        "summary" : "Patch 테스트",
+        "description" : "Patch 테스트",
+        "operationId" : "test-patch",
+        "parameters" : [ {
+          "name" : "id",
+          "in" : "path",
+          "description" : "수정 ID",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json;charset=UTF-8" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/MainRequest.Patch"
+              },
+              "examples" : {
+                "test-patch" : {
+                  "value" : "{\r\n  \"message\" : \"patch request\"\r\n}"
+                }
+              }
+            }
+          }
+        },
+        "responses" : {
+          "200" : {
+            "description" : "200",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MainResponse.Post"
+                },
+                "examples" : {
+                  "test-patch" : {
+                    "value" : "{\r\n  \"message\" : \"patch test success\"\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "MainRequest.Put" : {
+        "title" : "MainRequest.Put",
+        "required" : [ "message" ],
+        "type" : "object",
+        "properties" : {
+          "message" : {
+            "type" : "string",
+            "description" : "요청 메세지"
+          }
+        }
+      },
+      "RoomRequest.CreateDto" : {
+        "title" : "RoomRequest.CreateDto",
+        "required" : [ "promiseDate", "promiseLocation", "promiseTime", "promiseTitle", "users" ],
+        "type" : "object",
+        "properties" : {
+          "promiseTitle" : {
+            "type" : "string",
+            "description" : "약속방 제목"
+          },
+          "promiseDate" : {
+            "type" : "string",
+            "description" : "약속 날짜"
+          },
+          "promiseTime" : {
+            "type" : "string",
+            "description" : "약속 시간"
+          },
+          "promiseLocation" : {
+            "type" : "string",
+            "description" : "약속 장소"
+          },
+          "users" : {
+            "type" : "array",
+            "description" : "유저 목록",
+            "items" : {
+              "required" : [ "id", "nickname" ],
+              "type" : "object",
+              "properties" : {
+                "nickname" : {
+                  "type" : "string",
+                  "description" : "유저 닉네임"
+                },
+                "id" : {
+                  "type" : "string",
+                  "description" : "유저 아이디"
+                }
+              }
+            }
+          }
+        }
+      },
+      "MainRequest.Patch" : {
+        "title" : "MainRequest.Patch",
+        "required" : [ "message" ],
+        "type" : "object",
+        "properties" : {
+          "message" : {
+            "type" : "string",
+            "description" : "요청 메세지"
+          }
+        }
+      },
+      "MainResponse.Put" : {
+        "title" : "MainResponse.Put",
+        "required" : [ "message" ],
+        "type" : "object",
+        "properties" : {
+          "message" : {
+            "type" : "string",
+            "description" : "응답 메세지"
+          }
+        }
+      },
+      "MainResponse.Post" : {
+        "title" : "MainResponse.Post",
+        "required" : [ "message" ],
+        "type" : "object",
+        "properties" : {
+          "message" : {
+            "type" : "string",
+            "description" : "응답 메세지"
+          }
+        }
+      },
+      "RoomResponse.CreateDto" : {
+        "title" : "RoomResponse.CreateDto",
+        "required" : [ "code", "count", "httpStatus", "message" ],
+        "type" : "object",
+        "properties" : {
+          "result" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "chats", "id", "isDefaultTitle", "promiseDate", "promiseLocation", "promiseTime", "promiseTitle", "users" ],
+              "type" : "object",
+              "properties" : {
+                "promiseTitle" : {
+                  "type" : "string",
+                  "description" : "약속방 제목"
+                },
+                "promiseDate" : {
+                  "type" : "string",
+                  "description" : "약속 날짜"
+                },
+                "chats" : {
+                  "type" : "array",
+                  "description" : "채팅 리스트",
+                  "items" : {
+                    "oneOf" : [ {
+                      "type" : "object"
+                    }, {
+                      "type" : "boolean"
+                    }, {
+                      "type" : "string"
+                    }, {
+                      "type" : "number"
+                    } ]
+                  }
+                },
+                "promiseTime" : {
+                  "type" : "string",
+                  "description" : "약속 시간"
+                },
+                "promiseLocation" : {
+                  "type" : "string",
+                  "description" : "약속 장소"
+                },
+                "id" : {
+                  "type" : "string",
+                  "description" : "약송방 ID"
+                },
+                "isDefaultTitle" : {
+                  "type" : "boolean",
+                  "description" : "기본 제목"
+                },
+                "users" : {
+                  "type" : "array",
+                  "description" : "유저 목록",
+                  "items" : {
+                    "required" : [ "id", "nickname" ],
+                    "type" : "object",
+                    "properties" : {
+                      "nickname" : {
+                        "type" : "string",
+                        "description" : "유저 목록"
+                      },
+                      "id" : {
+                        "type" : "string",
+                        "description" : "유저 목록"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "code" : {
+            "type" : "number",
+            "description" : "HTTP 상태 코드"
+          },
+          "httpStatus" : {
+            "type" : "string",
+            "description" : "HTTP 상태"
+          },
+          "count" : {
+            "type" : "number",
+            "description" : "결과 수"
+          },
+          "message" : {
+            "type" : "string",
+            "description" : "결과 메세지"
+          }
+        }
+      },
+      "MainResponse.Get" : {
+        "title" : "MainResponse.Get",
+        "required" : [ "message" ],
+        "type" : "object",
+        "properties" : {
+          "message" : {
+            "type" : "string",
+            "description" : "메세지"
+          }
+        }
+      },
+      "MainRequest.Post" : {
+        "title" : "MainRequest.Post",
+        "required" : [ "message" ],
+        "type" : "object",
+        "properties" : {
+          "message" : {
+            "type" : "string",
+            "description" : "요청 메시지"
+          }
+        }
+      }
+    }
+  }
+}

@@ -34,7 +34,10 @@ public class RoomController {
                 .promiseLocation(response.promiseLocation())
                 .build();
 
-        response.users().forEach((k, v) -> roomListService.addRoom(k, roomVo));
+        response.users()
+                .forEach(user -> {
+                    roomListService.addRoom(user.get("userId"), roomVo);
+                });
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .message("약속방 생성 성공")

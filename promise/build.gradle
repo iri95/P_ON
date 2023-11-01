@@ -17,7 +17,7 @@ repositories {
 }
 
 openapi3 {
-	setServer("https://p-on.site")
+	setServer("http://gateway-container")
 	title = "restdocs-swagger API Documentation"
 	description = "Spring REST Docs with SwaggerUI."
 	version = "0.0.1"
