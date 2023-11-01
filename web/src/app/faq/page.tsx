@@ -1,3 +1,3 @@
-export default function page(params) {
-  return <></>;
+export default function page() {
+  return <>FAQpage</>;
 }
