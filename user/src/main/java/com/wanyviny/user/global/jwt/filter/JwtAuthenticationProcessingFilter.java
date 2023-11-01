@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -30,8 +31,15 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
 
+    @Value("${jwt.access.expiration}")
+    private Long accessTokenExpirationPeriod;
+
+    @Value("${jwt.refresh.expiration}")
+    private Long refreshTokenExpirationPeriod;
     private static final String NO_CHECK_URL = "/auto-login";
-    private static final String LOGOUT_URL = "/user-logout";
+    private static final String LOGOUT_URL = "/api/user/logout";
+    private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
+
 
     private final JwtService jwtService;
     private final UserRepository userRepository;
@@ -102,13 +110,13 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
      * reIssueRefreshToken()로 리프레시토큰 재발급 & DB에 리프레시 토큰 업데이트 메소드 호출
      * 그 후 JwtService.sendAccessTokenAndRefreshToken()으로 응답 헤더에 보내기
      */
+    // TODO: 회원가입 안한 GUEST유저는 filter에서 오류남.(refreshToken은 회원 로그인 시 헤더에 줌) -> refreshToken == null, 일 경우
     public void checkRefreshTokenAndReIssueAccessToken(HttpServletResponse response, String refreshToken) {
-        userRepository.findById((Long)redisTemplate.opsForValue().get(refreshToken))
+        userRepository.findById(jwtService.findIdByRefreshToken(refreshToken).orElse(null))
                 .ifPresent(user -> {
                     String reIssuedRefreshToken = reIssueRefreshToken(user);
                     jwtService.sendAccessAndRefreshToken(response, jwtService.createAccessToken(user.getId()),
                             reIssuedRefreshToken);
-
                 });
     }
 
@@ -121,20 +129,20 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
         String reIssuedRefreshToken = jwtService.createRefreshToken();
 //        user.updateRefreshToken(reIssuedRefreshToken);
 //        userRepository.saveAndFlush(user);
-        redisTemplate.opsForValue().set(reIssuedRefreshToken, user.getId());
+        redisTemplate.opsForValue().set(REFRESH_TOKEN_SUBJECT + user.getId(), reIssuedRefreshToken, refreshTokenExpirationPeriod, TimeUnit.MILLISECONDS);
         return reIssuedRefreshToken;
     }
 
     /**
-     *  [액세스 토큰 체크 & 인증 처리 메소드]
-     *  request에서 extractAccessToken()으로 액세스 토큰 추출 후, isTokenValid()로 유효한 토큰인지 검증
-     *  유효한 토큰이면, 액세스 토큰에서 extractId로 id를 추출한 후 findById()로 해당 id의 유저 객체 반환
-     *  그 유저 객체를 saveAuthentication()으로 인증 처리하여
-     *  인증 허가 처리된 객체를 SecurityContextHolder에 담기
-     *  그 후 다음 인증 필터로 진행
+     * [액세스 토큰 체크 & 인증 처리 메소드]
+     * request에서 extractAccessToken()으로 액세스 토큰 추출 후, isTokenValid()로 유효한 토큰인지 검증
+     * 유효한 토큰이면, 액세스 토큰에서 extractId로 id를 추출한 후 findById()로 해당 id의 유저 객체 반환
+     * 그 유저 객체를 saveAuthentication()으로 인증 처리하여
+     * 인증 허가 처리된 객체를 SecurityContextHolder에 담기
+     * 그 후 다음 인증 필터로 진행
      */
     public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-        throws ServletException, IOException {
+            throws ServletException, IOException {
         log.info("checkAccessTokenAndAuthentidcation() 호출");
         jwtService.extractAccessToken(request)
                 .filter(jwtService::isTokenValid)
@@ -143,8 +151,8 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                     String isLogout = (String) redisTemplate.opsForValue().get(accessToken);
                     if (ObjectUtils.isEmpty(isLogout)) {
                         jwtService.extractId(accessToken)
-                                .ifPresent(id -> userRepository.findById(id)
-                                        .ifPresent(this::saveAuthentication));
+                                .flatMap(userRepository::findById)
+                                .ifPresent(this::saveAuthentication);
                     }
                 });
 
@@ -166,7 +174,7 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
      * SecurityContextHolder.getContext()로 SecurityContext를 꺼낸 후,
      * setAuthentication()을 이용하여 위에서 만든 Authentication 객체에 대한 인증 허가 처리
      */
-    public void saveAuthentication(User myUser){
+    public void saveAuthentication(User myUser) {
         String password = myUser.getPassword();
         if (password == null) { // 소셜 로그인 유저의 비밀번호 임의로 설정 하여 소셜 로그인 유저도 인증 되도록 설정
             password = PasswordUtil.generateRandomPassword();

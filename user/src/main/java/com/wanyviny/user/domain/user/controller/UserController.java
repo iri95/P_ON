@@ -6,6 +6,8 @@ import com.wanyviny.user.domain.user.dto.UserDto;
 import com.wanyviny.user.domain.user.dto.UserSignUpDto;
 import com.wanyviny.user.domain.user.entity.User;
 import com.wanyviny.user.domain.user.service.UserService;
+import com.wanyviny.user.global.jwt.service.JwtService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,16 +23,17 @@ import java.util.Collections;
 public class UserController {
 
     private final UserService userService;
+    private final JwtService jwtService;
 
     @GetMapping("/kakao-profile")
-    public ResponseEntity<BasicResponse> getKakaoProfile() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public ResponseEntity<BasicResponse> getKakaoProfile(HttpServletRequest request) {
+        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
 
-        if (authentication == null || authentication.getName() == null || authentication.getName().equals("anonymousUser")) {
-            throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
-        }
+        Long id = jwtService.extractId(accessToken).orElseThrow(
+                () -> new IllegalArgumentException("Access Token에 해당하는 id가 없습니다.")
+        );
 
-        User userProfile = userService.getUserProfile(Long.parseLong(authentication.getName()));
+        User userProfile = userService.getUserProfile(id);
 
         KakaoUserDto kakaoUserDto = KakaoUserDto.builder()
                 .profileImage(userProfile.getProfileImage())
@@ -50,14 +53,14 @@ public class UserController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<BasicResponse> signup(@RequestBody UserSignUpDto userSignUpDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public ResponseEntity<BasicResponse> signup(HttpServletRequest request,  @RequestBody UserSignUpDto userSignUpDto) {
+        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
 
-        if (authentication == null || authentication.getName() == null || authentication.getName().equals("anonymousUser")) {
-            throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
-        }
+        Long id = jwtService.extractId(accessToken).orElseThrow(
+                () -> new IllegalArgumentException("Access Token에 해당하는 id가 없습니다.")
+        );
 
-        userService.signUp(userSignUpDto, Long.parseLong(authentication.getName()));
+        userService.signUp(userSignUpDto,id);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
@@ -121,6 +124,7 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || authentication.getName() == null || authentication.getName().equals("anonymousUser")) {
+            System.out.println(authentication.getName());
             throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
         }
 

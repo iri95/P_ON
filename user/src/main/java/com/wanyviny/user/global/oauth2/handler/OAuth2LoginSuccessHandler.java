@@ -43,6 +43,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
             if (oAuth2User.getRole() == ROLE.GUEST) {
                 String accessToken = jwtService.createAccessToken(oAuth2User.getId());
                 response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
+                log.info("accessToken : Bearer " + accessToken);
                 response.sendRedirect(
                         "http://k9e102.p.ssafy.io/" + "access_token=Bearer " + accessToken + "&is_user=F"
                 );
@@ -60,12 +61,13 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         String refreshToken = jwtService.createRefreshToken();
         response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
         response.addHeader(jwtService.getRefreshHeader(), "Bearer " + refreshToken);
+        log.info("accessToken : Bearer " + accessToken);
+        log.info("refreshToken : Bearer " + refreshToken);
         response.sendRedirect(
                 "http://k9e102.p.ssafy.io/?" + "access_token=Bearer " + accessToken + "&refresh_token="
                         + "Bearer " + refreshToken + "&is_user=T"
         );
 
-        jwtService.removeRefreshToken(oAuth2User.getId());
         jwtService.updateRefreshToken(oAuth2User.getId(), refreshToken);
     }
 
