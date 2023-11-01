@@ -35,7 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta httpEquiv="Content-Security-Policy" content="upgrade-insecure-requests" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
         <meta httpEquiv="imagetoolbar" content="no" />
-        <link rel="shortcut icon" href="/icon.png" />
+        <link rel="icon" href="/icon.png" />
       </head>
       <body>
         <Nav />
