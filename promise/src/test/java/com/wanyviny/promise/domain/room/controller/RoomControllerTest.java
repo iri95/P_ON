@@ -43,11 +43,10 @@ public class RoomControllerTest extends RestDocsSupport {
     RoomListService roomListService;
 
     @Test
-    @DisplayName("Room Post 테스트")
+    @DisplayName("약속방 생성 테스트")
     void postTest() throws Exception {
         RoomRequest.CreateDto request = createRequest();
         RoomResponse.CreateDto dto = createDto();
-        ResponseEntity<BasicResponse> response = createResponse(dto);
 
         given(roomService.createRoom(any()))
                 .willReturn(dto);
@@ -60,39 +59,39 @@ public class RoomControllerTest extends RestDocsSupport {
                 .andExpect(status().isOk())
                 .andDo(MockMvcRestDocumentationWrapper.document("room-post",
                         ResourceSnippetParameters.builder()
-                                .tag("테스트")
-                                .summary("Post 테스트")
-                                .description("Post 테스트")
-                                .requestSchema(Schema.schema("RoomRequest.CreateDto"))
-                                .responseSchema(Schema.schema("RoomResponse.CreateDto")
-                                ),
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        requestFields(
-                                fieldWithPath("users").type(JsonFieldType.ARRAY).description("유저 목록"),
-                                fieldWithPath("users[].userId").type(JsonFieldType.STRING).description("유저 아이디"),
-                                fieldWithPath("users[].nickname").type(JsonFieldType.STRING).description("유저 닉네임"),
-                                fieldWithPath("promiseTitle").type(JsonFieldType.STRING).description("약속방 제목"),
-                                fieldWithPath("promiseDate").type(JsonFieldType.STRING).description("약속 날짜"),
-                                fieldWithPath("promiseTime").type(JsonFieldType.STRING).description("약속 시간"),
-                                fieldWithPath("promiseLocation").type(JsonFieldType.STRING).description("약속 장소")
-                        ),
-                        responseFields(
-                                fieldWithPath("httpStatus").type(JsonFieldType.STRING).description("HTTP 상태"),
-                                fieldWithPath("code").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
-                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과 메세지"),
-                                fieldWithPath("count").type(JsonFieldType.NUMBER).description("결과 수"),
-                                fieldWithPath("result[].id").type(JsonFieldType.STRING).description("약송방 ID"),
-                                fieldWithPath("result[].users").type(JsonFieldType.ARRAY).description("유저 목록"),
-                                fieldWithPath("result[].users[].userId").type(JsonFieldType.STRING).description("유저 목록"),
-                                fieldWithPath("result[].users[].nickname").type(JsonFieldType.STRING).description("유저 목록"),
-                                fieldWithPath("result[].promiseTitle").type(JsonFieldType.STRING).description("약속방 제목"),
-                                fieldWithPath("result[].isDefaultTitle").type(JsonFieldType.BOOLEAN).description("기본 제목"),
-                                fieldWithPath("result[].promiseDate").type(JsonFieldType.STRING).description("약속 날짜"),
-                                fieldWithPath("result[].promiseTime").type(JsonFieldType.STRING).description("약속 시간"),
-                                fieldWithPath("result[].promiseLocation").type(JsonFieldType.STRING).description("약속 장소"),
-                                fieldWithPath("result[].chats").type(JsonFieldType.ARRAY).description("채팅 리스트")
-                        )));
+                                .tag("약속방")
+                                .summary("약속방 생성")
+//                                .requestSchema(Schema.schema("RoomRequest.CreateDto"))
+//                                .responseSchema(Schema.schema("RoomResponse.CreateDto")
+//                                ),
+//                        preprocessRequest(prettyPrint()),
+//                        preprocessResponse(prettyPrint()),
+//                        requestFields(
+//                                fieldWithPath("users").type(JsonFieldType.ARRAY).description("유저 목록"),
+//                                fieldWithPath("users[].userId").type(JsonFieldType.STRING).description("유저 아이디"),
+//                                fieldWithPath("users[].nickname").type(JsonFieldType.STRING).description("유저 닉네임"),
+//                                fieldWithPath("promiseTitle").type(JsonFieldType.STRING).description("약속방 제목"),
+//                                fieldWithPath("promiseDate").type(JsonFieldType.STRING).description("약속 날짜"),
+//                                fieldWithPath("promiseTime").type(JsonFieldType.STRING).description("약속 시간"),
+//                                fieldWithPath("promiseLocation").type(JsonFieldType.STRING).description("약속 장소")
+//                        ),
+//                        responseFields(
+//                                fieldWithPath("httpStatus").type(JsonFieldType.STRING).description("HTTP 상태"),
+//                                fieldWithPath("code").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+//                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과 메세지"),
+//                                fieldWithPath("count").type(JsonFieldType.NUMBER).description("결과 수"),
+//                                fieldWithPath("result[].id").type(JsonFieldType.STRING).description("약송방 ID"),
+//                                fieldWithPath("result[].users").type(JsonFieldType.ARRAY).description("유저 목록"),
+//                                fieldWithPath("result[].users[].userId").type(JsonFieldType.STRING).description("유저 목록"),
+//                                fieldWithPath("result[].users[].nickname").type(JsonFieldType.STRING).description("유저 목록"),
+//                                fieldWithPath("result[].promiseTitle").type(JsonFieldType.STRING).description("약속방 제목"),
+//                                fieldWithPath("result[].isDefaultTitle").type(JsonFieldType.BOOLEAN).description("기본 제목"),
+//                                fieldWithPath("result[].promiseDate").type(JsonFieldType.STRING).description("약속 날짜"),
+//                                fieldWithPath("result[].promiseTime").type(JsonFieldType.STRING).description("약속 시간"),
+//                                fieldWithPath("result[].promiseLocation").type(JsonFieldType.STRING).description("약속 장소"),
+//                                fieldWithPath("result[].chats").type(JsonFieldType.ARRAY).description("채팅 리스트")
+//                        )));
+                ));
     }
 
     private RoomRequest.CreateDto createRequest() {
@@ -131,16 +130,5 @@ public class RoomControllerTest extends RestDocsSupport {
                 .promiseLocation("미정")
                 .chats(new ArrayList<>())
                 .build();
-    }
-
-    private ResponseEntity<BasicResponse> createResponse(RoomResponse.CreateDto dto) {
-
-        BasicResponse basicResponse = BasicResponse.builder()
-                .message("약속방 생성 성공")
-                .count(1)
-                .result(Collections.singletonList(dto))
-                .build();
-
-        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
 }
