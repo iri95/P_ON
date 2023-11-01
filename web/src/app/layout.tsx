@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [{ url: '/icon.png' }, new URL('/icon.png', 'https://p-on.site')],
-    shortcut: ['/icon.png'],
+    shortcut: ['https://p-on.site/icon.png'],
   },
   openGraph: {
     title: '약속 및 일정 관리 앱',
