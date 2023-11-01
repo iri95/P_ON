@@ -4,124 +4,116 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+
   position: fixed;
   width: 100vw;
   padding: 0 20vw;
   margin-bottom: 12px;
-}
 
-.nav-icon {
-  height: 100%;
+  .nav-icon {
+    height: 100%;
 
-  * {
-    position: relative;
-    margin: auto 0;
-  }
-}
-
-.nav-items {
-  text-align: center;
-  display: block;
-
-  ul,
-  li {
-    list-style: none;
-    display: inline-block;
-    padding-inline-start: 0;
-  }
-  & > ul {
-    padding: 0;
-    margin: 0;
-    display: flex;
-  }
-  .nav-item {
-    margin: 0 80px 0 0;
-    opacity: 0.5;
-    transition: all 0.4s ease;
-    &:last-child {
-      margin-right: 10px;
-    }
-    & > a:hover {
-      opacity: 0.7;
-    }
-    a {
-      text-decoration: none;
-      color: var(--color-grey7);
-      text-transform: uppercase;
-      display: block;
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      font-size: 20px;
-      height: 100%;
-    }
-    &.active .main-item {
-      opacity: 1;
-    }
-    .line {
-      box-sizing: content-box;
+    * {
       position: relative;
-      width: inherit;
-      padding: 0 5px;
-      height: 2px;
-      left: -5px;
-      background: var(--color-point2);
-      animation: slide 0.3s forwards;
+      margin: auto 0;
     }
   }
-}
 
-.nav-item:hover > .dropdown,
-.dropdown:hover {
-  // visibility: visible;
-  // opacity: 1 !important;
-  display: block;
-  // text-align: left;
-  // box-shadow: 0px 3px 5px -1px #ccc;
-  // margin: 0 0 0 -10px;
-  // padding: 10px 0 0 0;
-}
+  .nav-items {
+    display: block;
+    ul li {
+      list-style: none;
+      text-decoration: none;
+      display: inline-block;
+    }
 
-// dropdown
-.dropdown {
-  // visibility: hidden;
-  opacity: 1;
-  position: absolute;
-  display: block;
-  background: white;
-  width: 150px;
+    .nav-item {
+      padding: 0 30px 0 0;
+      transition: all 0.4s ease;
+      width: 150px;
+      text-align: center;
 
-  // & > li {
-  //   opacity: 1;
-  //   width: 100%;
-  //   text-align: center;
-  //   margin-bottom: 10px;
-  //   border-style: none;
+      &:last-child {
+        margin-right: 10px;
+      }
+      & > a {
+        opacity: 0.5;
+        text-decoration: none;
+        color: var(--color-grey7);
+        text-transform: uppercase;
+        display: block;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        font-size: 20px;
+        height: 100%;
 
-  //   &:hover {
-  //     padding-left: 10px;
-  //     border-left: 2px solid #3ca0e7;
-  //     transition: all 0.3s ease;
-  //   }
-  //   & > a {
-  //     opacity: 1;
-  //     text-decoration: none;
-  //     // color: var(--color-grey7);
-  //     color: red;
-  //     display: block;
-  //     font-weight: 400;
-  //     // letter-spacing: 0.05em;
-  //     font-size: 18px;
-  //     height: 100%;
-  //   }
-  // }
-}
-
-@keyframes slide {
-  from {
-    width: 0;
+        & .line {
+          position: relative;
+          width: inherit;
+          padding: 0 5px;
+          height: 2px;
+          background: var(--color-point2);
+          animation: slide 0.3s forwards;
+        }
+      }
+      & > a:hover {
+        opacity: 0.7;
+      }
+      &.active a {
+        opacity: 1;
+      }
+    }
   }
-  to {
-    width: 100%;
+
+  .nav-item:hover > .dropdown,
+  .dropdown:hover {
+    visibility: visible;
+  }
+
+  // dropdown
+  .dropdown {
+    visibility: hidden;
+    position: absolute;
+    left: inherit;
+    display: block;
+    background: white;
+    width: 160px;
+    text-align: center;
+    box-shadow: 0px 3px 5px -1px #ccc;
+    margin: 0px 0 0 -15px;
+    padding: 10px 0 0 0;
+
+    & > li {
+      width: 100%;
+      margin-bottom: 10px;
+      border-style: none;
+      padding: 5px 0;
+
+      &:hover {
+        background: var(--color-main4);
+        transition: all 0.3s ease;
+        a {
+          color: var(--color-grey7);
+        }
+      }
+      a {
+        color: var(--color-grey7);
+        font-weight: 400;
+        text-decoration: none;
+        letter-spacing: 0.03em;
+        font-size: 18px;
+        height: 100%;
+      }
+    }
+  }
+
+  @keyframes slide {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+    }
   }
 }
 
