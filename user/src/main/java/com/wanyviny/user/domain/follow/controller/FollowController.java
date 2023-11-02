@@ -53,7 +53,7 @@ public class FollowController {
             throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
         }
 
-        List<UserDto> followDtoList =  followService.getFollower(Long.parseLong(authentication.getName()));
+        List<FollowDto> followDtoList =  followService.getFollower(Long.parseLong(authentication.getName()));
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
