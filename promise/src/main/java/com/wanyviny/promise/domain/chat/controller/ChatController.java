@@ -11,17 +11,15 @@ import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/promise/chat")
 public class ChatController {
 
     private final ChatService chatService;
 
-    @MessageMapping("/{roomId}/{senderId}")
+    @MessageMapping("/api/promise/chat/{roomId}/{senderId}")
     @SendTo("/topic/chat/{roomId}")
     public ResponseEntity<BasicResponse> sendChat(
             @DestinationVariable String roomId,
