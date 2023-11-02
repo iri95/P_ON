@@ -51,4 +51,32 @@ public class RoomListControllerTest extends RestDocsSupport {
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("결과 메세지")
                         )));
     }
+
+    @Test
+    @DisplayName("약속방 목록 조회 테스트")
+    void getTest() throws Exception {
+
+        mockMvc.perform(
+                        RestDocumentationRequestBuilders. get("/api/promise/room-list/{userId}", "1")
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andDo(MockMvcRestDocumentationWrapper.document("room-list-get",
+                        ResourceSnippetParameters.builder()
+                                .tag("약속방 목록")
+                                .summary("약속방 목록 조회")
+                                .responseSchema(Schema.schema("약속방 목록 조회 Response")
+                                ),
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING).description("HTTP 상태"),
+                                fieldWithPath("code").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과 메세지"),
+                                fieldWithPath("count").type(JsonFieldType.NUMBER).description("결과 메세지"),
+                                fieldWithPath("result").type(JsonFieldType.ARRAY).description("결과")
+//                                fieldWithPath("result[].id").type(JsonFieldType.STRING).description("약속방 목록 ID"),
+//                                fieldWithPath("result[].rooms").type(JsonFieldType.ARRAY).description("결과")
+                        )));
+    }
 }

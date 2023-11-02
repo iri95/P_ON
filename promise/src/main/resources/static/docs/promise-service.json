@@ -112,6 +112,38 @@
       }
     },
     "/api/promise/room-list/{userId}" : {
+      "get" : {
+        "tags" : [ "약속방 목록" ],
+        "summary" : "약속방 목록 조회",
+        "description" : "약속방 목록 조회",
+        "operationId" : "room-list-get",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "200",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/약속방 목록 조회 Response"
+                },
+                "examples" : {
+                  "room-list-get" : {
+                    "value" : "{\r\n  \"httpStatus\" : \"OK\",\r\n  \"code\" : 200,\r\n  \"message\" : \"약속방 리스트 조회 성공\",\r\n  \"count\" : 1,\r\n  \"result\" : [ null ]\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
       "post" : {
         "tags" : [ "약속방 목록" ],
         "summary" : "약속방 목록 생성",
@@ -262,24 +294,14 @@
   },
   "components" : {
     "schemas" : {
-      "MainRequest.Put" : {
-        "title" : "MainRequest.Put",
-        "required" : [ "message" ],
-        "type" : "object",
-        "properties" : {
-          "message" : {
-            "type" : "string",
-            "description" : "요청 메세지"
-          }
-        }
-      },
       "RoomResponse.CreateDto" : {
         "title" : "RoomResponse.CreateDto",
-        "required" : [ "code", "count", "httpStatus", "message" ],
+        "required" : [ "code", "count", "httpStatus", "message", "result" ],
         "type" : "object",
         "properties" : {
           "result" : {
             "type" : "array",
+            "description" : "결과",
             "items" : {
               "required" : [ "chats", "id", "isDefaultTitle", "promiseDate", "promiseLocation", "promiseTime", "promiseTitle", "users" ],
               "type" : "object",
@@ -362,8 +384,46 @@
           }
         }
       },
-      "MainRequest.Patch" : {
-        "title" : "MainRequest.Patch",
+      "약속방 목록 조회 Response" : {
+        "title" : "약속방 목록 조회 Response",
+        "required" : [ "code", "count", "httpStatus", "message", "result" ],
+        "type" : "object",
+        "properties" : {
+          "result" : {
+            "type" : "array",
+            "description" : "결과",
+            "items" : {
+              "oneOf" : [ {
+                "type" : "object"
+              }, {
+                "type" : "boolean"
+              }, {
+                "type" : "string"
+              }, {
+                "type" : "number"
+              } ]
+            }
+          },
+          "code" : {
+            "type" : "number",
+            "description" : "HTTP 상태 코드"
+          },
+          "httpStatus" : {
+            "type" : "string",
+            "description" : "HTTP 상태"
+          },
+          "count" : {
+            "type" : "number",
+            "description" : "결과 메세지"
+          },
+          "message" : {
+            "type" : "string",
+            "description" : "결과 메세지"
+          }
+        }
+      },
+      "MainRequest.Put" : {
+        "title" : "MainRequest.Put",
         "required" : [ "message" ],
         "type" : "object",
         "properties" : {
@@ -411,6 +471,17 @@
                 }
               }
             }
+          }
+        }
+      },
+      "MainRequest.Patch" : {
+        "title" : "MainRequest.Patch",
+        "required" : [ "message" ],
+        "type" : "object",
+        "properties" : {
+          "message" : {
+            "type" : "string",
+            "description" : "요청 메세지"
           }
         }
       },

@@ -77,6 +77,7 @@ public class RoomControllerTest extends RestDocsSupport {
                                 fieldWithPath("code").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
                                 fieldWithPath("message").type(JsonFieldType.STRING).description("결과 메세지"),
                                 fieldWithPath("count").type(JsonFieldType.NUMBER).description("결과 수"),
+                                fieldWithPath("result").type(JsonFieldType.ARRAY).description("결과"),
                                 fieldWithPath("result[].id").type(JsonFieldType.STRING).description("약송방 ID"),
                                 fieldWithPath("result[].users").type(JsonFieldType.ARRAY).description("유저 목록"),
                                 fieldWithPath("result[].users[].userId").type(JsonFieldType.STRING).description("유저 목록"),
