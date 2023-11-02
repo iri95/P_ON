@@ -87,9 +87,22 @@ public class FollowController {
 
     // 팔로잉 삭제
     @DeleteMapping("/following")
-    public ResponseEntity<BasicResponse> deleteFollowing() {
+    public ResponseEntity<BasicResponse> deleteFollowing(@RequestBody Long followingId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        return null;
+        if (authentication == null || authentication.getName() == null || authentication.getName().equals("anonymousUser")) {
+            throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
+        }
+
+        followService.deleteFollowing(Long.parseLong(authentication.getName()), followingId);
+
+        BasicResponse basicResponse = BasicResponse.builder()
+                .code(HttpStatus.OK.value())
+                .httpStatus(HttpStatus.OK)
+                .message("팔로잉 취소 완료!")
+                .build();
+
+        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
 
     // 팔로워 삭제

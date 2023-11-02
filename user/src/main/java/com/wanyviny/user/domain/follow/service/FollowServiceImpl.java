@@ -67,4 +67,16 @@ public class FollowServiceImpl implements FollowService {
                 .followingId(following)
                 .build());
     }
+
+    @Override
+    public void deleteFollowing(Long userId, Long followingId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new IllegalArgumentException("userId에 해당하는 유저가 없습니다.")
+        );
+        User following = userRepository.findById(followingId).orElseThrow(
+                () -> new IllegalArgumentException("followingId에 해당하는 유저가 없습니다.")
+        );
+
+        followRepository.deleteByUserIdAndFollowingId(user, following);
+    }
 }
