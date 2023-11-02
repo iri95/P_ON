@@ -1,11 +1,20 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:p_on/common/common.dart';
 import 'package:p_on/common/theme/custom_theme_app.dart';
+import 'package:p_on/route/transition/fade_transition_page.dart';
 import 'package:p_on/screen/main/s_main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:p_on/screen/main/tab/tab_item.dart';
+
+import 'auth.dart';
+import 'common/widget/w_round_button.dart';
 
 class App extends StatefulWidget {
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
+  static final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey();
+
   static bool isForeground = true;
 
   const App({super.key});
@@ -15,9 +24,10 @@ class App extends StatefulWidget {
 }
 
 class AppState extends State<App> with Nav, WidgetsBindingObserver {
-  @override
-  GlobalKey<NavigatorState> get navigatorKey => App.navigatorKey;
+  final ValueKey<String> _scaffoldKey = const ValueKey<String>('App scaffold');
 
+  final _auth = PonAuth();
+  
   @override
   void initState() {
     super.initState();
@@ -32,21 +42,86 @@ class AppState extends State<App> with Nav, WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: [SystemUiOverlay.bottom]);    return CustomThemeApp(
-      child: Builder(builder: (context) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          navigatorKey: App.navigatorKey,
+    return ProviderScope(
+      child: PonAuthScope(
+        notifier: _auth,
+        child: MaterialApp.router(
+          scaffoldMessengerKey: App.scaffoldMessengerKey,
+          routerConfig: _router,
           localizationsDelegates: context.localizationDelegates,
           supportedLocales: context.supportedLocales,
           locale: context.locale,
           title: 'Image Finder',
           theme: context.themeType.themeData,
-          home: const MainScreen(),
-        );
-      }),
+        ),
+      ),
     );
   }
+
+  late final GoRouter _router = GoRouter(
+    navigatorKey: App.navigatorKey,
+    routes: <GoRoute>[
+      GoRoute(
+        path: '/',
+        redirect: (_, __) => '/main',
+      ),
+      GoRoute(
+        path: '/signin',
+        pageBuilder: (BuildContext context, GoRouterState state) => FadeTransitionPage(
+          key: state.pageKey,
+          child: Container(
+            color: Colors.green,
+            child: Center(
+              child: RoundButton(
+                text: '로그인',
+                onTap: () {
+                  _auth.signIn('hong', '1234');
+                },
+              ),
+            ),
+          ),
+        ),
+      ),
+      GoRoute(
+        path: '/main',
+        redirect: (_, __) => '/main/home',
+      ),
+      // GoRoute(
+      //   path: '/productPost/:postId',
+      //   redirect: (BuildContext context, GoRouterState state) =>
+      //   '/main/home/${state.pathParameters['postId']}',
+      // ),
+      GoRoute(
+        path: '/main/:kind(home|history|blankFeild|plan|my)',
+        pageBuilder: (BuildContext context, GoRouterState state) => FadeTransitionPage(
+          key: _scaffoldKey,
+          child: MainScreen(
+            firstTab: TabItem.find(state.pathParameters['kind']),
+          ),
+        ),
+        // routes: <GoRoute>[
+        //   GoRoute(
+        //     path: ':postId',
+        //     builder: (BuildContext context, GoRouterState state) {
+        //       final String postId = state.pathParameters['postId']!;
+        //       if (state.extra != null) {
+        //         final post = state.extra as SimpleProductPost;
+        //         return PostDetailScreen(
+        //           int.parse(postId),
+        //           simpleProductPost: post,
+        //         );
+        //       } else {
+        //         return PostDetailScreen(int.parse(postId));
+        //       }
+        //     },
+        //   ),
+        // ],
+      ),
+    ],
+    redirect: _auth.guard,
+    refreshListenable: _auth,
+    debugLogDiagnostics: true,
+  );
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -62,8 +137,10 @@ class AppState extends State<App> with Nav, WidgetsBindingObserver {
       case AppLifecycleState.detached:
         break;
       case AppLifecycleState.hidden:
-        // TODO: Handle this case.
+        break;
     }
     super.didChangeAppLifecycleState(state);
   }
+  @override
+  GlobalKey<NavigatorState> get navigatorKey => App.navigatorKey;
 }

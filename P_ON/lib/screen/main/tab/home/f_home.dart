@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:p_on/common/common.dart';
 import 'package:p_on/common/widget/w_list_container.dart';
 import 'package:p_on/common/widget/w_rounded_container.dart';
@@ -10,14 +11,38 @@ import 'package:flutter/material.dart';
 import '../../../../common/widget/w_big_button.dart';
 import '../../../dialog/d_color_bottom.dart';
 import '../../../dialog/d_confirm.dart';
+import '../../fab/w_bottom_nav_floating_button.riverpod.dart';
 import '../../s_main.dart';
 import 'bank_accounts_dummy.dart';
 import 'package:dio/dio.dart';
 
-class HomeFragment extends StatelessWidget {
+class HomeFragment extends ConsumerStatefulWidget {
   const HomeFragment({
     Key? key,
   }) : super(key: key);
+
+  @override
+  ConsumerState<HomeFragment> createState() => _HomeFragmentState();
+}
+
+
+class _HomeFragmentState extends ConsumerState<HomeFragment> {
+  final scrollController = ScrollController();
+
+  @override
+  void initState() {
+    scrollController.addListener(() {
+      final floatingState = ref.read(floatingButtonStateProvider);
+
+      if (scrollController.position.pixels > 100 && !floatingState.isSmall) {
+        ref.read(floatingButtonStateProvider.notifier).changeButtonSize(true);
+      } else if (scrollController.position.pixels < 100 && floatingState.isSmall) {
+        ref.read(floatingButtonStateProvider.notifier).changeButtonSize(false);
+      }
+    });
+    super.initState();
+  }
+
 
   @override
   Widget build(BuildContext context) {

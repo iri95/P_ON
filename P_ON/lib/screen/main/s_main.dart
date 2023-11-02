@@ -1,32 +1,37 @@
+import 'dart:io';
+
 import 'package:after_layout/after_layout.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:p_on/screen/main/tab/tab_item.dart';
 import 'package:p_on/screen/main/tab/tab_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import '../../common/common.dart';
-import 'w_bottom_nav_floating_button.dart';
+import 'fab/w_bottom_nav_floating_button.dart';
 import 'w_menu_drawer.dart';
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+
+final currentTabProvider = StateProvider((ref) => TabItem.home);
+
+class MainScreen extends ConsumerStatefulWidget {
+  final TabItem firstTab;
+
+  const MainScreen({
+    super.key,
+    this.firstTab = TabItem.home,
+  });
 
   @override
-  State<MainScreen> createState() => MainScreenState();
+  ConsumerState<MainScreen> createState() => MainScreenState();
 }
 
-class MainScreenState extends State<MainScreen>
-    with SingleTickerProviderStateMixin, AfterLayoutMixin {
-  TabItem _currentTab = TabItem.home;
+class MainScreenState extends ConsumerState<MainScreen> with SingleTickerProviderStateMixin, AfterLayoutMixin {
   DateTime? lastPressed;
-  final tabs = [
-    TabItem.home,
-    TabItem.history,
-    TabItem.blankFeild,
-    TabItem.plan,
-    TabItem.my,
-  ];
-  final List<GlobalKey<NavigatorState>> navigatorKeys = [];
+  final tabs = TabItem.values;
+  late final List<GlobalKey<NavigatorState>> navigatorKeys = TabItem.values.map((e) => GlobalKey<NavigatorState>()).toList();
+
+  TabItem get _currentTab => ref.watch(currentTabProvider);
 
   int get _currentIndex => tabs.indexOf(_currentTab);
 
@@ -37,8 +42,9 @@ class MainScreenState extends State<MainScreen>
   bool get extendBody => true;
 
   static double get bottomNavigationBarBorderRadius => 30.0;
-
   static const double bottomNavigatorHeight = 50;
+
+  bool isFabExpanded = false;
 
   String currentImage = 'assets/image/main/핑키3.png';
 
@@ -50,34 +56,49 @@ class MainScreenState extends State<MainScreen>
   @override
   void initState() {
     super.initState();
-    initNavigatorKeys();
+  }
+
+  @override
+  void didUpdateWidget(covariant MainScreen oldWidget) {
+    if (oldWidget.firstTab != widget.firstTab) {
+      delay(() {
+        ref.read(currentTabProvider.notifier).state = widget.firstTab;
+      }, 0.ms);
+    }
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Builder(builder: (BuildContext context) {
-        return WillPopScope(
-          onWillPop: _handleBackPressed,
-          child: Scaffold(
-              resizeToAvoidBottomInset: false,
+    return WillPopScope(
+      onWillPop: _handleBackPressed,
+      child: Material(
+        child: Stack(
+          children: [
+            Scaffold(
               extendBody: extendBody,
+              //bottomNavigationBar 아래 영역 까지 그림
               drawer: const MenuDrawer(),
-              body: Padding(
-                padding: EdgeInsets.only(
-                    bottom:
-                        extendBody ? 60 - bottomNavigationBarBorderRadius : 0),
+              drawerEnableOpenDragGesture: !Platform.isIOS,
+              body: Container(
+                padding:
+                EdgeInsets.only(bottom: extendBody ? 60 - bottomNavigationBarBorderRadius : 0),
                 child: SafeArea(
                   bottom: !extendBody,
                   child: pages,
                 ),
               ),
+              resizeToAvoidBottomInset: false,
               bottomNavigationBar: _buildBottomNavigationBar(context),
-              floatingActionButtonLocation:
-                  FloatingActionButtonLocation.centerDocked,
-              floatingActionButton: const BottomFloatingActionButton()),
-        );
-      }),
+            ),
+            AnimatedOpacity(
+              opacity: _currentTab != TabItem.plan ? 1 : 0,
+              duration: 300.ms,
+              child: BottomFloatingActionButton(),
+            )
+          ],
+        ),
+      ),
     );
   }
 
@@ -137,6 +158,10 @@ class MainScreenState extends State<MainScreen>
         ],
       ),
       child: ClipRRect(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(bottomNavigationBarBorderRadius),
+          topRight: Radius.circular(bottomNavigationBarBorderRadius),
+        ),
         child: BottomNavigationBar(
           backgroundColor: Colors.white,
           items: navigationBarItems(context),
@@ -164,9 +189,7 @@ class MainScreenState extends State<MainScreen>
   }
 
   void _changeTab(int index) {
-    setState(() {
-      _currentTab = tabs[index];
-    });
+    ref.read(currentTabProvider.notifier).state = tabs[index];
   }
 
   BottomNavigationBarItem bottomItem(bool activate, IconData iconData,
@@ -198,12 +221,6 @@ class MainScreenState extends State<MainScreen>
       while (navigationKey.currentState?.canPop() == true) {
         navigationKey.currentState!.pop();
       }
-    }
-  }
-
-  void initNavigatorKeys() {
-    for (final _ in tabs) {
-      navigatorKeys.add(GlobalKey<NavigatorState>());
     }
   }
 }
