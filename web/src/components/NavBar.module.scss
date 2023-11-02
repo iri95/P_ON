@@ -13,14 +13,27 @@
   .nav-icon {
     height: 100%;
 
-    * {
+    div.big {
+      display: block;
       position: relative;
       margin: auto 0;
+      height: 100%;
+      width: auto;
+      aspect-ratio: 710 / 363;
+    }
+    div.small {
+      display: none;
+      position: relative;
+      margin: 5% 0;
+      height: 90%;
+      width: auto;
+      aspect-ratio: 1;
     }
   }
 
   .nav-items {
     display: block;
+
     ul li {
       list-style: none;
       text-decoration: none;
@@ -120,5 +133,18 @@
 @media screen and (max-width: 1023px) {
   .nav-container {
     padding: 0 5vw;
+
+    .nav-icon {
+      div.big {
+        display: none;
+      }
+      div.small {
+        display: block;
+      }
+    }
+
+    .nav-item {
+      padding: 0 10px 0 0;
+    }
   }
 }

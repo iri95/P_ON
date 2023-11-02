@@ -17,8 +17,12 @@ export default function Nav() {
   return (
     <header className={styles['nav-container']}>
       <Link href="/" className={styles['nav-icon']}>
-        <Image alt="Pinky 핑키" src="/Pinky/Pinky1.png" width={50} height={50} />
-        <span>P:ON</span>
+        <div className={styles.big}>
+          <Image alt="p-on logo" src="/pon-logo.png" fill objectFit="contain" quality={100} />
+        </div>
+        <div className={styles.small}>
+          <Image alt="p-on logo" src="/Pinky/Pinky1.png" fill objectFit="contain" quality={100} />
+        </div>
       </Link>
       <nav className={styles['nav-items']}>
         <ul>
