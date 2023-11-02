@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:p_on/common/common.dart';
+import 'package:p_on/common/fcm/fcm_manager.dart';
 import 'package:p_on/common/theme/custom_theme_app.dart';
 import 'package:p_on/route/transition/fade_transition_page.dart';
 import 'package:p_on/screen/main/s_main.dart';
@@ -12,7 +13,7 @@ import 'package:p_on/screen/main/tab/tab_item.dart';
 import 'auth.dart';
 import 'common/widget/w_round_button.dart';
 
-class App extends StatefulWidget {
+class App extends ConsumerStatefulWidget {
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
   static final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey();
 
@@ -21,10 +22,10 @@ class App extends StatefulWidget {
   const App({super.key});
 
   @override
-  State<App> createState() => AppState();
+  ConsumerState<App> createState() => AppState();
 }
 
-class AppState extends State<App> with Nav, WidgetsBindingObserver {
+class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
   final ValueKey<String> _scaffoldKey = const ValueKey<String>('App scaffold');
 
   final _auth = PonAuth();
@@ -32,6 +33,8 @@ class AppState extends State<App> with Nav, WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    FcmManager.requestPermission();
+    FcmManager.initialize(ref);
     WidgetsBinding.instance.addObserver(this);
   }
 
