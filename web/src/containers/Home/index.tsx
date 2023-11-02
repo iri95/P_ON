@@ -1,3 +1,5 @@
+import GoogleBtn from './googleBtn';
+
 export default function index() {
   return (
     <>
@@ -6,6 +8,7 @@ export default function index() {
       <div id="section3">3</div>
       <div id="section4">4</div>
       <div id="section5">5</div>
+      <GoogleBtn />
     </>
   );
 }
