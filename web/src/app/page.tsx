@@ -1,9 +1,9 @@
-// import HomeIndex from '@/containers/Home';
+import HomeIndex from '@/containers/Home';
 
 export default function Home() {
   return (
     <>
-      <p>
+      <p style={{ display: 'none' }}>
         여러분을 위한 편리하고 친절한 약속 관리 앱, [P:ON]을 소개합니다! P:ON은 여러분의 바쁜 일상 속에서 약속을 쉽게
         관리하고, 소중한 시간을 더욱 효율적으로 활용할 수 있도록 도와줍니다. 이 앱은 약속 생성과 공유, 채팅 기능, 그리고
         일정 관리의 세 가지 핵심 기능을 제공합니다. 약속 생성과 공유 기능을 통해 여러분은 손쉽게 약속을 만들 수
@@ -21,7 +21,7 @@ export default function Home() {
         있습니다. 소중한 약속들을 소중한 사람들과 함께 더욱 즐겁게 만들어보세요. P:ON과 Pinky가 여러분의 일상을 더욱
         편리하고 풍요롭게 만들어줄 거예요!
       </p>
-      {/* <HomeIndex /> */}
+      <HomeIndex />
     </>
   );
 }
