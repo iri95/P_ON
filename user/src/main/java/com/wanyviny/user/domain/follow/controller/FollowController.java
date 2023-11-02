@@ -67,8 +67,8 @@ public class FollowController {
     }
 
     // 팔로잉 추가
-    @PostMapping("/following")
-    public ResponseEntity<BasicResponse> setFollowing(@RequestBody Long followingId) {
+    @PostMapping("/following/{followingId}")
+    public ResponseEntity<BasicResponse> setFollowing(@PathVariable(name = "followingId") Long followingId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || authentication.getName() == null || authentication.getName().equals("anonymousUser")) {
@@ -87,8 +87,8 @@ public class FollowController {
     }
 
     // 팔로잉 삭제
-    @DeleteMapping("/following")
-    public ResponseEntity<BasicResponse> deleteFollowing(@RequestBody Long followingId) {
+    @DeleteMapping("/following/{followingId}")
+    public ResponseEntity<BasicResponse> deleteFollowing(@PathVariable(name = "followingId") Long followingId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || authentication.getName() == null || authentication.getName().equals("anonymousUser")) {
@@ -107,10 +107,23 @@ public class FollowController {
     }
 
     // 팔로워 삭제
-    @DeleteMapping("/follower")
-    public ResponseEntity<BasicResponse> deleteFollower() {
+    @DeleteMapping("/follower/{followerId}")
+    public ResponseEntity<BasicResponse> deleteFollower(@PathVariable(name = "followerId") Long followerId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        return null;
+        if (authentication == null || authentication.getName() == null || authentication.getName().equals("anonymousUser")) {
+            throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
+        }
+
+        followService.deleteFollowing(followerId, Long.parseLong(authentication.getName()));
+
+        BasicResponse basicResponse = BasicResponse.builder()
+                .code(HttpStatus.OK.value())
+                .httpStatus(HttpStatus.OK)
+                .message("팔로워 삭제 완료!")
+                .build();
+
+        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
 
     // 팔로잉 여부 -> 저사람이 나를 팔로잉 했는지? 친구 일정 조회 전 확인
