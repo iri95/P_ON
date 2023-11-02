@@ -7,6 +7,7 @@ import com.wanyviny.user.domain.user.entity.User;
 import com.wanyviny.user.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,7 @@ public class FollowServiceImpl implements FollowService {
 
     // TODO : 맞팔의 경우 상단에 표시되도록
     @Override
+    @Transactional
     public List<UserDto> getFollowing(Long userId) {
         List<User> users = followRepository.findFollowingByUserId(userId);
         List<UserDto> result = new ArrayList<>();
@@ -37,6 +39,7 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
+    @Transactional
     public List<UserDto> getFollower(Long userId) {
         List<User> users = followRepository.findFollowerByUserId(userId);
         List<UserDto> result = new ArrayList<>();
@@ -54,6 +57,7 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
+    @Transactional
     public void setFollowing(Long userId, Long followingId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new IllegalArgumentException("userId에 해당하는 유저가 없습니다.")
@@ -69,6 +73,7 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
+    @Transactional
     public void deleteFollowing(Long userId, Long followingId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new IllegalArgumentException("userId에 해당하는 유저가 없습니다.")

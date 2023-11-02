@@ -19,7 +19,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-@Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
@@ -29,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Override
+    @Transactional
     public User getUserProfile(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(("id에 해당하는 유저가 없습니다.")));
