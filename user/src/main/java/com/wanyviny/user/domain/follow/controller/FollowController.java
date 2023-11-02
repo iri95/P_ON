@@ -1,6 +1,7 @@
 package com.wanyviny.user.domain.follow.controller;
 
 import com.wanyviny.user.domain.common.BasicResponse;
+import com.wanyviny.user.domain.follow.dto.FollowDto;
 import com.wanyviny.user.domain.follow.service.FollowService;
 import com.wanyviny.user.domain.user.dto.UserDto;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class FollowController {
             throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
         }
 
-        List<UserDto> followDtoList =  followService.getFollowing(Long.parseLong(authentication.getName()));
+        List<FollowDto> followDtoList =  followService.getFollowing(Long.parseLong(authentication.getName()));
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())

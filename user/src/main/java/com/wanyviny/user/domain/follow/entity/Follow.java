@@ -20,13 +20,11 @@ public class Follow {
     private Long id;
 
     @ManyToOne
-    @Column(name = "USER_ID")
     @JoinColumn(name = "USER_ID")
     private User userId;
 
     @ManyToOne
-    @Column(name = "FOLLOWING_ID")
-    @JoinColumn(name = "USER_ID")
+    @JoinColumn(name = "FOLLOWING_ID")
     private User followingId;
 
 }

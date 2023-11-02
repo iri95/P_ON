@@ -1,5 +1,6 @@
 package com.wanyviny.user.domain.follow.service;
 
+import com.wanyviny.user.domain.follow.dto.FollowDto;
 import com.wanyviny.user.domain.follow.entity.Follow;
 import com.wanyviny.user.domain.follow.repository.FollowRepository;
 import com.wanyviny.user.domain.user.dto.UserDto;
@@ -9,8 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -22,36 +22,43 @@ public class FollowServiceImpl implements FollowService {
     // TODO : 맞팔의 경우 상단에 표시되도록
     @Override
     @Transactional
-    public List<UserDto> getFollowing(Long userId) {
-        List<User> users = followRepository.findFollowingByUserId(userId);
-        List<UserDto> result = new ArrayList<>();
-        for (User user : users
+    public List<FollowDto> getFollowing(Long userId) {
+        List<User> followings = followRepository.findFollowingByUserId(userId);
+        List<FollowDto> result = new ArrayList<>();
+
+        for (User following : followings
         ) {
-            result.add(UserDto.builder()
-                    .id(user.getId())
-                    .nickName(user.getNickname())
-                    .profileImage(user.getProfileImage())
-                    .stateMessage(user.getStateMessage())
+            UserDto followInfo = following.userDtoToUser();
+
+            result.add(FollowDto.builder()
+                    .follow(followInfo)
+                    .followBack(followRepository.countFollowByUserIdAndFollowingId(following.getId(), userId))
                     .build());
         }
+
+        Collections.sort(result);
 
         return result;
     }
 
     @Override
     @Transactional
-    public List<UserDto> getFollower(Long userId) {
-        List<User> users = followRepository.findFollowerByUserId(userId);
-        List<UserDto> result = new ArrayList<>();
-        for (User user : users
+    public List<FollowDto> getFollower(Long userId) {
+        List<User> followers = followRepository.findFollowerByUserId(userId);
+
+        List<FollowDto> result = new ArrayList<>();
+
+        for (User follower : followers
         ) {
-            result.add(UserDto.builder()
-                    .id(user.getId())
-                    .nickName(user.getNickname())
-                    .profileImage(user.getProfileImage())
-                    .stateMessage(user.getStateMessage())
+            UserDto followerInfo = follower.userDtoToUser();
+
+            result.add(FollowDto.builder()
+                    .follow(followerInfo)
+                    .followBack(followRepository.countFollowByUserIdAndFollowingId(userId, follower.getId()))
                     .build());
         }
+
+        Collections.sort(result);
 
         return result;
     }

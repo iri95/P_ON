@@ -62,4 +62,15 @@ public class User {
         this.privacy = userDto.getPrivacy();
         this.stateMessage = userDto.getStateMessage();
     }
+
+    public UserDto userDtoToUser() {
+        return UserDto.builder()
+                .id(this.getId())
+                .nickName(this.getNickname())
+                .profileImage(this.getProfileImage())
+                .privacy(this.getPrivacy())
+                .stateMessage(this.getStateMessage())
+                .build();
+    }
+
 }
