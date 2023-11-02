@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 
 import styles from './Footer.module.scss';
@@ -6,16 +7,21 @@ export default function Footer() {
   return (
     <footer className={styles.footer}>
       <div className={styles.content}>
-        <div className={styles.company}>와니비니</div>
+        <div className={styles.company}>
+          <div className={styles.logo}>
+            <Image src="/wanyviny.png" alt="WANYVINY Logo" objectFit="contain" fill quality={100} />
+          </div>
+          <p>와니비니</p>
+        </div>
         <div>
           <ul className={styles['footer-nav']}>
             <li>
-              <Link href="/#" scroll={false}>
+              <Link href="/policy-privacy" target="_blank" scroll={false}>
                 개인정보처리방침
               </Link>
             </li>
             <li>
-              <Link href="/#" scroll={false}>
+              <Link href="/service" target="_blank" scroll={false}>
                 서비스 이용약관
               </Link>
             </li>
