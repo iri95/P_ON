@@ -87,7 +87,7 @@ public class RoomControllerTest extends RestDocsSupport {
                                 fieldWithPath("result[].promiseDate").type(JsonFieldType.STRING).description("약속 날짜"),
                                 fieldWithPath("result[].promiseTime").type(JsonFieldType.STRING).description("약속 시간"),
                                 fieldWithPath("result[].promiseLocation").type(JsonFieldType.STRING).description("약속 장소"),
-                                fieldWithPath("result[].chats").type(JsonFieldType.OBJECT).description("채팅 리스트")
+                                fieldWithPath("result[].chats").type(JsonFieldType.ARRAY).description("채팅 리스트")
                         )));
     }
 
