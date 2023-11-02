@@ -1,7 +1,8 @@
 package com.wanyviny.promise.domain.room.entity;
 
-import com.wanyviny.promise.chat.entity.Chat;
+import com.wanyviny.promise.domain.chat.entity.Chat;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import lombok.AllArgsConstructor;
@@ -28,7 +29,7 @@ public class Room {
     private String promiseLocation;
 
     @Builder.Default
-    private List<Chat> chats = new ArrayList<>();
+    private List<Map<String, String>> chats = new ArrayList<>();
 
     public void changeIsDefaultTitle() {
         isDefaultTitle = !isDefaultTitle;
@@ -50,6 +51,14 @@ public class Room {
     }
 
     public void addChat(Chat chat) {
-        chats.add(chat);
+        Map<String, String> map = new HashMap<>();
+
+        map.put("senderId", chat.getSenderId());
+        map.put("sender", chat.getSender());
+        map.put("chatType", String.valueOf(chat.getChatType()));
+        map.put("content", chat.getContent());
+        map.put("createAt", String.valueOf(chat.getCreateAt()));
+
+        chats.add(map);
     }
 }

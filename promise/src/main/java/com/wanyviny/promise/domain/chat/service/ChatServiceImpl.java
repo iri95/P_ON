@@ -1,9 +1,9 @@
-package com.wanyviny.promise.chat.service;
+package com.wanyviny.promise.domain.chat.service;
 
-import com.wanyviny.promise.chat.dto.ChatRequest;
-import com.wanyviny.promise.chat.dto.ChatResponse;
-import com.wanyviny.promise.chat.dto.ChatResponse.CreateDto;
-import com.wanyviny.promise.chat.entity.Chat;
+import com.wanyviny.promise.domain.chat.dto.ChatRequest;
+import com.wanyviny.promise.domain.chat.dto.ChatResponse;
+import com.wanyviny.promise.domain.chat.dto.ChatResponse.CreateDto;
+import com.wanyviny.promise.domain.chat.entity.Chat;
 import com.wanyviny.promise.domain.room.entity.Room;
 import com.wanyviny.promise.domain.room.repository.RoomRepository;
 import java.time.LocalDateTime;

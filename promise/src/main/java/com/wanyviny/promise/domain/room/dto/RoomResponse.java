@@ -1,6 +1,6 @@
 package com.wanyviny.promise.domain.room.dto;
 
-import com.wanyviny.promise.chat.entity.Chat;
+import com.wanyviny.promise.domain.chat.entity.Chat;
 import java.util.List;
 import java.util.Map;
 import lombok.Builder;
@@ -17,7 +17,7 @@ public class RoomResponse {
             String promiseDate,
             String promiseTime,
             String promiseLocation,
-            List<Chat> chats
+            List<Map<String, String>> chats
     ) {}
 
     @Builder

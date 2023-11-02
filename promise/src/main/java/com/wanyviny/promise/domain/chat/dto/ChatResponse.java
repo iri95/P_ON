@@ -1,6 +1,6 @@
-package com.wanyviny.promise.chat.dto;
+package com.wanyviny.promise.domain.chat.dto;
 
-import com.wanyviny.promise.chat.entity.ChatType;
+import com.wanyviny.promise.domain.chat.entity.ChatType;
 import java.time.LocalDateTime;
 import lombok.Builder;
 
