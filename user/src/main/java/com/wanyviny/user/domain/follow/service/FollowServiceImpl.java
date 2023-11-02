@@ -32,7 +32,7 @@ public class FollowServiceImpl implements FollowService {
 
             result.add(FollowDto.builder()
                     .follow(followInfo)
-                    .followBack(followRepository.countFollowByUserIdAndFollowingId(following.getId(), userId))
+                    .followBack(followRepository.existsFollowByUserId_IdAndFollowingId_Id(following.getId(), userId))
                     .build());
         }
 
@@ -54,7 +54,7 @@ public class FollowServiceImpl implements FollowService {
 
             result.add(FollowDto.builder()
                     .follow(followerInfo)
-                    .followBack(followRepository.countFollowByUserIdAndFollowingId(userId, follower.getId()))
+                    .followBack(followRepository.existsFollowByUserId_IdAndFollowingId_Id(userId, follower.getId()))
                     .build());
         }
 

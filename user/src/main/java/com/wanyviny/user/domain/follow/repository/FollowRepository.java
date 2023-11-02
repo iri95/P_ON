@@ -12,14 +12,13 @@ import java.util.Optional;
 
 @Repository
 public interface FollowRepository extends JpaRepository<Follow, Long> {
-    @Query("SELECT Follow.followingId FROM Follow where Follow.userId.id = :userid")
+    @Query("SELECT f.followingId FROM Follow f where f.userId.id = :userId")
     List<com.wanyviny.user.domain.user.entity.User> findFollowingByUserId(Long userId);
 
-    @Query("SELECT Follow.userId FROM Follow where Follow.followingId.id = :userid")
+    @Query("SELECT f.userId FROM Follow f where f.followingId.id = :userId")
     List<com.wanyviny.user.domain.user.entity.User> findFollowerByUserId(Long userId);
 
-    @Query("SELECT count(Follow)  FROM Follow where Follow.userId.id = :userId AND Follow.followingId.id = :followingId")
-    boolean countFollowByUserIdAndFollowingId(Long userId, Long followingId);
+    boolean existsFollowByUserId_IdAndFollowingId_Id(Long userId, Long followingId);
 
     @Transactional
     void deleteByUserIdAndFollowingId(User userId, User followingId);
