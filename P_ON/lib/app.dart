@@ -6,6 +6,7 @@ import 'package:p_on/route/transition/fade_transition_page.dart';
 import 'package:p_on/screen/main/s_main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:p_on/screen/main/tab/promise_room/f_create_promise.dart';
 import 'package:p_on/screen/main/tab/tab_item.dart';
 
 import 'auth.dart';
@@ -117,6 +118,13 @@ class AppState extends State<App> with Nav, WidgetsBindingObserver {
         //   ),
         // ],
       ),
+      GoRoute(path: '/createpromise',
+          builder: (BuildContext context, GoRouterState state){
+        // 'state.extra' 로 'extra' 로 넘겨준 데이터 사용 한다.
+        return const CreatePromise();
+          }
+      ),
+
     ],
     redirect: _auth.guard,
     refreshListenable: _auth,

@@ -11,15 +11,14 @@ import 'package:flutter/material.dart';
 import '../../../../common/widget/w_big_button.dart';
 import '../../../dialog/d_color_bottom.dart';
 import '../../../dialog/d_confirm.dart';
+import '../../fab/w_bottom_nav_floating_button.dart';
 import '../../fab/w_bottom_nav_floating_button.riverpod.dart';
 import '../../s_main.dart';
 import 'bank_accounts_dummy.dart';
 import 'package:dio/dio.dart';
 
 class HomeFragment extends ConsumerStatefulWidget {
-  const HomeFragment({
-    Key? key,
-  }) : super(key: key);
+  const HomeFragment({super.key});
 
   @override
   ConsumerState<HomeFragment> createState() => _HomeFragmentState();
@@ -58,9 +57,11 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
               await sleepAsync(500.ms);
             },
             child: SingleChildScrollView(
-              padding: const EdgeInsets.only(
-                top: PONAppBar.appBarHeight + 10,
-              ),
+              padding: const EdgeInsets.only(bottom: BottomFloatingActionButton.height),
+              // 반응형으로 만들기위해서 컨트롤넣음
+              controller: scrollController,
+              // 리스트가 적을때는 스크롤이 되지 않도록 기본 설정이 되어있는 문제해결.
+              physics: const AlwaysScrollableScrollPhysics(),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -102,27 +103,28 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
                   )),
                   height100
                 ],
+
               ),
             ),
           ),
-          const PONAppBar(),
-          Positioned(
-              bottom: 40,
-              right: 10,
-              child: FloatingActionButton(
-                backgroundColor: const Color(0xffEFF3F9),
-                elevation: 4,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CreatePromise())
-                  );
-                },
-                child: Icon(
-                  Icons.add,
-                  color: context.appColors.navButton,
-                ),
-              ))
+          // const PONAppBar(),
+          // Positioned(
+          //     bottom: 40,
+          //     right: 10,
+          //     child: FloatingActionButton(
+          //       backgroundColor: const Color(0xffEFF3F9),
+          //       elevation: 4,
+          //       onPressed: () {
+          //         Navigator.push(
+          //           context,
+          //           MaterialPageRoute(builder: (context) => CreatePromise())
+          //         );
+          //       },
+          //       child: Icon(
+          //         Icons.add,
+          //         color: context.appColors.navButton,
+          //       ),
+          //     ))
         ],
       ),
     );

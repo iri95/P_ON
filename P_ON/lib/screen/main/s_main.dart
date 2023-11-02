@@ -42,7 +42,7 @@ class MainScreenState extends ConsumerState<MainScreen> with SingleTickerProvide
   bool get extendBody => true;
 
   static double get bottomNavigationBarBorderRadius => 30.0;
-  static const double bottomNavigatorHeight = 50;
+  static const double bottomNavigatorHeight = 60.0;
 
   bool isFabExpanded = false;
 
@@ -152,6 +152,7 @@ class MainScreenState extends ConsumerState<MainScreen> with SingleTickerProvide
 
   Widget _buildBottomNavigationBar(BuildContext context) {
     return Container(
+      height: bottomNavigatorHeight + context.viewPaddingBottom,
       decoration: const BoxDecoration(
         boxShadow: [
           BoxShadow(color: Colors.black26, spreadRadius: 0, blurRadius: 10),
