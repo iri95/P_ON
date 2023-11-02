@@ -1,4 +1,4 @@
-package com.wanyviny.promise.chat.controller;
+package com.wanyviny.promise.domain.chat.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

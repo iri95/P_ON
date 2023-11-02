@@ -1,4 +1,4 @@
-package com.wanyviny.promise.chat.entity;
+package com.wanyviny.promise.domain.chat.entity;
 
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;

@@ -1,4 +1,4 @@
-package com.wanyviny.promise.chat.entity;
+package com.wanyviny.promise.domain.chat.entity;
 
 public enum ChatType {
 

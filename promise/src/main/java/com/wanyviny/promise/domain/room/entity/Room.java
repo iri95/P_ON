@@ -1,6 +1,6 @@
 package com.wanyviny.promise.domain.room.entity;
 
-import com.wanyviny.promise.chat.entity.Chat;
+import com.wanyviny.promise.domain.chat.entity.Chat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

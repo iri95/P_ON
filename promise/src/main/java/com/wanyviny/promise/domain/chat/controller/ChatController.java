@@ -1,8 +1,8 @@
-package com.wanyviny.promise.chat.controller;
+package com.wanyviny.promise.domain.chat.controller;
 
-import com.wanyviny.promise.chat.dto.ChatRequest;
-import com.wanyviny.promise.chat.dto.ChatResponse;
-import com.wanyviny.promise.chat.service.ChatService;
+import com.wanyviny.promise.domain.chat.dto.ChatRequest;
+import com.wanyviny.promise.domain.chat.service.ChatService;
+import com.wanyviny.promise.domain.chat.dto.ChatResponse.CreateDto;
 import com.wanyviny.promise.domain.common.BasicResponse;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class ChatController {
             @RequestBody ChatRequest.CreateDto createDto
     ) {
 
-        ChatResponse.CreateDto response = chatService.sendChat(roomId, senderId, createDto);
+        CreateDto response = chatService.sendChat(roomId, senderId, createDto);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .message("채팅 발신 성공")

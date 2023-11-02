@@ -1,6 +1,6 @@
 package com.wanyviny.promise.domain.room.dto;
 
-import com.wanyviny.promise.chat.entity.Chat;
+import com.wanyviny.promise.domain.chat.entity.Chat;
 import java.util.List;
 import java.util.Map;
 import lombok.Builder;
