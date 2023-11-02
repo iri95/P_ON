@@ -7,10 +7,12 @@ module.exports = {
   changefreq: 'always', // 페이지 주소 변경 빈도 (검색엔진에 제공됨) - always, daily, hourly, monthly, never, weekly, yearly 중 택 1
   priority: 1, // 페이지 주소 우선순위 (검색엔진에 제공됨, 우선순위가 높은 순서대로 크롤링함)
   exclude: [
+    // sitemap 등록 제외 페이지 주소
     // '/exclude/review', // 페이지 주소 하나만 제외시키는 경우
     // '/exclude/**', // 하위 주소 전체를 제외시키는 경우
     '/policy-privacy',
-  ], // sitemap 등록 제외 페이지 주소
+  ],
+  // robots.txt 옵션 설정
   robotsTxtOptions: {
     // 정책 설정
     policies: [
@@ -24,5 +26,5 @@ module.exports = {
       },
       // 추가 정책이 필요할 경우 배열 요소로 추가 작성
     ],
-  }, // robots.txt 옵션 설정
+  },
 };
