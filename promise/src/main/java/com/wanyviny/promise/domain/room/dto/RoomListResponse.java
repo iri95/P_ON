@@ -1,6 +1,7 @@
 package com.wanyviny.promise.domain.room.dto;
 
 import com.wanyviny.promise.domain.room.vo.RoomVo;
+import java.util.List;
 import java.util.Map;
 import lombok.Builder;
 
@@ -10,6 +11,6 @@ public class RoomListResponse {
     public record FindDto(
 
             String id,
-            Map<String, RoomVo> rooms
+            List<Map<String, String>> rooms
     ) {}
 }
