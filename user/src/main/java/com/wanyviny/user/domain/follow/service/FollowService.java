@@ -8,4 +8,6 @@ public interface FollowService {
     List<UserDto> getFollowing(Long userId);
 
     List<UserDto> getFollower(Long userId);
+
+    void setFollowing(Long userId, Long followingId);
 }

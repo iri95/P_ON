@@ -1,12 +1,8 @@
 package com.wanyviny.user.domain.follow.controller;
 
 import com.wanyviny.user.domain.common.BasicResponse;
-import com.wanyviny.user.domain.follow.dto.FollowDto;
-import com.wanyviny.user.domain.follow.repository.FollowRepository;
 import com.wanyviny.user.domain.follow.service.FollowService;
 import com.wanyviny.user.domain.user.dto.UserDto;
-import com.wanyviny.user.domain.user.entity.User;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -71,9 +67,22 @@ public class FollowController {
 
     // 팔로잉 추가
     @PostMapping("/following")
-    public ResponseEntity<BasicResponse> setFollowing() {
+    public ResponseEntity<BasicResponse> setFollowing(@RequestBody Long followingId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        return null;
+        if (authentication == null || authentication.getName() == null || authentication.getName().equals("anonymousUser")) {
+            throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
+        }
+
+        followService.setFollowing(Long.parseLong(authentication.getName()), followingId);
+
+        BasicResponse basicResponse = BasicResponse.builder()
+                .code(HttpStatus.OK.value())
+                .httpStatus(HttpStatus.OK)
+                .message("팔로잉 완료!")
+                .build();
+
+        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
 
     // 팔로잉 삭제
