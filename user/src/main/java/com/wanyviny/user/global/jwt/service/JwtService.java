@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.Optional;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +37,6 @@ public class JwtService {
 
     @Value("${jwt.refresh.header}")
     private String refreshHeader;
-
     /**
      * JWT의 Subject와 Claim으로 socialId를 사용 -> 클레임의 name을 "socialId"으로 설정
      * JWT의 헤더로 들어오는 값 : 'Authorization(Key) = Bearer {토큰} (Value)'
@@ -58,7 +58,6 @@ public class JwtService {
         return JWT.create() // JWT토큰을 생성하는 빌더 반환
                 .withSubject(ACCESS_TOKEN_SUBJECT)
                 .withExpiresAt(new Date(now.getTime() + accessTokenExpirationPeriod))
-
                 // 클레임으로는 socialId 하나만 사용
                 // 추가적으로 식별자나, 이름 등의 정보를 더 추가 가능
                 // 추가할 경우 .withClaim(클레임 이름, 클레임 값)으로 설정
@@ -130,18 +129,19 @@ public class JwtService {
      * 유효하지 않다면 빈 Optional 객체 반환
      */
     public Optional<Long> extractId(String accessToken) {
-        try{
+        try {
             // 토큰 유혀성 검사하는 데에 사용할 알고리즘이 있는 JWT verifier builder 반환
             return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secretKey))
                     .build() // 반환된 빌더로 JWT verifier 생성
                     .verify(accessToken) // accessToken을 검증하고 유효하지 않다면 예외 발생
                     .getClaim(ID_CLAIM) // claim(Id) 가져오기
                     .asLong());
-        }catch (Exception e) {
+        } catch (Exception e) {
             log.error("액세스 토큰이 유효하지 않습니다.");
             return Optional.empty();
         }
     }
+
     /**
      * AccessToken 헤더 설정
      */
@@ -160,11 +160,11 @@ public class JwtService {
      * RefreshToken DB 저장(업데이트)
      */
     public void updateRefreshToken(Long id, String refreshToken) {
-        userRepository.findById(id).ifPresentOrElse( user -> {
-                    redisTemplate.opsForValue().set(refreshToken, id);
+        userRepository.findById(id).ifPresentOrElse(user -> {
+                    redisTemplate.opsForValue().set(REFRESH_TOKEN_SUBJECT + id, refreshToken, refreshTokenExpirationPeriod, TimeUnit.MILLISECONDS);
                 }, // 해당 유저의 refreshToken을 refreshToken으로 update
                 () -> {
-                    throw new IllegalArgumentException("소셜아이디에 해당하는 유저가 없습니다.");
+                    throw new IllegalArgumentException("아이디에 해당하는 유저가 없습니다.");
                 }
         );
     }
@@ -179,14 +179,15 @@ public class JwtService {
         }
     }
 
-    public void removeRefreshToken(Long id) {
+    public Optional<Long> findIdByRefreshToken(String token) {
         Set<String> keys = redisTemplate.keys("*");
         for (String key : keys
         ) {
-            Object findId = redisTemplate.opsForValue().get(key);
-            if (id == findId) {
-                redisTemplate.unlink(key);
+            if (redisTemplate.opsForValue().get(key).equals(token)) {
+                key.replace(REFRESH_TOKEN_SUBJECT, "");
+                return Optional.of(Long.parseLong(key));
             }
         }
+        return null;
     }
 }

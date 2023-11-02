@@ -4,6 +4,7 @@ import com.wanyviny.user.domain.user.dto.UserDto;
 import com.wanyviny.user.domain.user.dto.UserSignUpDto;
 import com.wanyviny.user.domain.user.entity.User;
 import com.wanyviny.user.domain.user.repository.UserRepository;
+import com.wanyviny.user.global.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
@@ -26,19 +27,20 @@ public class UserServiceImpl implements UserService {
     private String SERVICE_APP_ADMIN_KEY;
 
     private final UserRepository userRepository;
+    private final JwtService jwtService;
 
     @Override
     @Transactional
     public User getUserProfile(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(("id에 해당하는 유저가 없습니다.")));
+                .orElseThrow(() -> new IllegalArgumentException("id에 해당하는 유저가 없습니다."));
     }
 
     @Override
     @Transactional
     public void signUp(UserSignUpDto userSignUpDto, Long id) {
         User user = userRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당하는 유저가 없습니다.")
+                () -> new IllegalArgumentException("Id에 해당하는 유저가 없습니다.")
         );
         user.signUp(userSignUpDto);
     }
@@ -47,7 +49,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void update(UserDto userDto, Long id) {
         User user = userRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당하는 유저가 없습니다.")
+                () -> new IllegalArgumentException("Id에 해당하는 유저가 없습니다.")
         );
         user.update(userDto);
     }
@@ -56,7 +58,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void logout(Long id) throws Exception {
         User user = userRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당하는 유저가 없습니다. ")
+                () -> new IllegalArgumentException("Id에 해당하는 유저가 없습니다. ")
         );
         kakaoApi("logout", user.getSocialId());
     }
@@ -65,12 +67,20 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void withdrawal(Long id) throws Exception {
         User user = userRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당하는 유저가 없습니다. ")
+                () -> new IllegalArgumentException("Id에 해당하는 유저가 없습니다.")
         );
 
         kakaoApi("unlink", user.getSocialId());
         userRepository.delete(user);
     }
+
+    @Override
+    public User getUserByRefreshToken(String refreshToken) {
+        return userRepository.findById(jwtService.findIdByRefreshToken(refreshToken)
+                        .orElseThrow(() -> new IllegalArgumentException("Refresh Token과 일치하는 사용자 정보가 없습니다.")))
+                .orElseThrow(() -> new IllegalArgumentException("Id에 해당하는 유저가 없습니다."));
+    }
+
 
     public void kakaoApi(String api, String socialId) throws Exception {
         String KAKAO_API_URL = "https://kapi.kakao.com/v1/user/";

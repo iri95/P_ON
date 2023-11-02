@@ -5,8 +5,12 @@ import com.wanyviny.user.domain.user.dto.KakaoUserDto;
 import com.wanyviny.user.domain.user.dto.UserDto;
 import com.wanyviny.user.domain.user.dto.UserSignUpDto;
 import com.wanyviny.user.domain.user.entity.User;
+import com.wanyviny.user.domain.user.repository.UserRepository;
 import com.wanyviny.user.domain.user.service.UserService;
+import com.wanyviny.user.global.jwt.service.JwtService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -21,16 +25,17 @@ import java.util.Collections;
 public class UserController {
 
     private final UserService userService;
+    private final JwtService jwtService;
 
     @GetMapping("/kakao-profile")
-    public ResponseEntity<BasicResponse> getKakaoProfile() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public ResponseEntity<BasicResponse> getKakaoProfile(HttpServletRequest request) {
+        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
 
-        if (authentication == null || authentication.getName() == null || authentication.getName().equals("anonymousUser")) {
-            throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
-        }
+        Long id = jwtService.extractId(accessToken).orElseThrow(
+                () -> new IllegalArgumentException("Access Token에 해당하는 id가 없습니다.")
+        );
 
-        User userProfile = userService.getUserProfile(Long.parseLong(authentication.getName()));
+        User userProfile = userService.getUserProfile(id);
 
         KakaoUserDto kakaoUserDto = KakaoUserDto.builder()
                 .profileImage(userProfile.getProfileImage())
@@ -50,20 +55,29 @@ public class UserController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<BasicResponse> signup(@RequestBody UserSignUpDto userSignUpDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public ResponseEntity<BasicResponse> signup(HttpServletRequest request,  @RequestBody UserSignUpDto userSignUpDto) {
+        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
 
-        if (authentication == null || authentication.getName() == null || authentication.getName().equals("anonymousUser")) {
-            throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
-        }
+        Long id = jwtService.extractId(accessToken).orElseThrow(
+                () -> new IllegalArgumentException("Access Token에 해당하는 id가 없습니다.")
+        );
 
-        userService.signUp(userSignUpDto, Long.parseLong(authentication.getName()));
+        userService.signUp(userSignUpDto,id);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
                 .httpStatus(HttpStatus.OK)
                 .message("회원 가입 성공!")
                 .build();
+
+        String refreshToken = jwtService.createRefreshToken();
+
+        // 헤더에 토큰 정보 추가
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + accessToken);
+        headers.add("Authorization_refresh", "Bearer " + refreshToken);
+
+        jwtService.updateRefreshToken(id, refreshToken);
 
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
@@ -121,6 +135,7 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || authentication.getName() == null || authentication.getName().equals("anonymousUser")) {
+            System.out.println(authentication.getName());
             throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
         }
 
@@ -152,5 +167,33 @@ public class UserController {
                 .build();
 
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+    }
+
+    @GetMapping("/auto-login")
+    public ResponseEntity<BasicResponse> autoLogin(HttpServletRequest request) {
+        String refreshToken = jwtService.extractRefreshToken(request)
+                .orElseThrow(() -> new IllegalArgumentException("refresh 토큰이 없습니다."));
+
+
+        User findUser = userService.getUserByRefreshToken(refreshToken);
+
+
+        String reissueAccessToken = jwtService.createAccessToken(findUser.getId());
+        String reissueRefreshToken = jwtService.createRefreshToken();
+
+        // 헤더에 토큰 정보 추가
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + reissueAccessToken);
+        headers.add("Authorization_refresh", "Bearer " + reissueRefreshToken);
+
+        jwtService.updateRefreshToken(findUser.getId(), reissueRefreshToken);
+
+        BasicResponse basicResponse = BasicResponse.builder()
+                .code(HttpStatus.OK.value())
+                .httpStatus(HttpStatus.OK)
+                .message("자동로그인을 위한 api라 아무 의미없다~")
+                .build();
+
+        return new ResponseEntity<>(basicResponse, headers, basicResponse.getHttpStatus());
     }
 }

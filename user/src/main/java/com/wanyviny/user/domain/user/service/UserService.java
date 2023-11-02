@@ -15,4 +15,6 @@ public interface UserService {
     void logout(Long id) throws Exception;
 
     void withdrawal(Long id) throws Exception;
+
+    User getUserByRefreshToken(String refreshToken);
 }
