@@ -6,7 +6,7 @@
     "version" : "0.0.1"
   },
   "servers" : [ {
-    "url" : "http://k9e102.p.ssafy.io:8080"
+    "url" : "http://k9e102.p.ssafy.io:8000"
   } ],
   "tags" : [ ],
   "paths" : {
@@ -20,11 +20,11 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "$ref" : "#/components/schemas/api-promise-room486549215"
+                "$ref" : "#/components/schemas/약속방 생성 Request"
               },
               "examples" : {
                 "room-post" : {
-                  "value" : "{\"users\":[{\"nickname\":\"김태환\",\"userId\":\"1\"}],\"promiseTitle\":\"미정\",\"promiseDate\":\"미정\",\"promiseTime\":\"미정\",\"promiseLocation\":\"미정\"}"
+                  "value" : "{\r\n  \"users\" : [ {\r\n    \"nickname\" : \"김태환\",\r\n    \"userId\" : \"1\"\r\n  } ],\r\n  \"promiseTitle\" : \"미정\",\r\n  \"promiseDate\" : \"미정\",\r\n  \"promiseTime\" : \"미정\",\r\n  \"promiseLocation\" : \"미정\"\r\n}"
                 }
               }
             }
@@ -36,11 +36,11 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/api-promise-room486549215"
+                  "$ref" : "#/components/schemas/RoomResponse.CreateDto"
                 },
                 "examples" : {
                   "room-post" : {
-                    "value" : "{\"httpStatus\":\"OK\",\"code\":200,\"message\":\"약속방 생성 성공\",\"count\":1,\"result\":[{\"id\":\"1234\",\"users\":[{\"nickname\":\"김태환\",\"userId\":\"1\"}],\"promiseTitle\":\"미정\",\"isDefaultTitle\":false,\"promiseDate\":\"미정\",\"promiseTime\":\"미정\",\"promiseLocation\":\"미정\",\"chats\":[]}]}"
+                    "value" : "{\r\n  \"httpStatus\" : \"OK\",\r\n  \"code\" : 200,\r\n  \"message\" : \"약속방 생성 성공\",\r\n  \"count\" : 1,\r\n  \"result\" : [ {\r\n    \"id\" : \"1234\",\r\n    \"users\" : [ {\r\n      \"nickname\" : \"김태환\",\r\n      \"userId\" : \"1\"\r\n    } ],\r\n    \"promiseTitle\" : \"미정\",\r\n    \"isDefaultTitle\" : false,\r\n    \"promiseDate\" : \"미정\",\r\n    \"promiseTime\" : \"미정\",\r\n    \"promiseLocation\" : \"미정\",\r\n    \"chats\" : [ ]\r\n  } ]\r\n}"
                   }
                 }
               }
@@ -103,6 +103,40 @@
                 "examples" : {
                   "test-post" : {
                     "value" : "{\r\n  \"id\" : 1\r\n}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/promise/room-list/{userId}" : {
+      "post" : {
+        "tags" : [ "약속방 목록" ],
+        "summary" : "약속방 목록 생성",
+        "description" : "약속방 목록 생성",
+        "operationId" : "room-list-post",
+        "parameters" : [ {
+          "name" : "userId",
+          "in" : "path",
+          "description" : "",
+          "required" : true,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "200",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/약속방 목록 생성 Response"
+                },
+                "examples" : {
+                  "room-list-post" : {
+                    "value" : "{\r\n  \"httpStatus\" : \"OK\",\r\n  \"code\" : 200,\r\n  \"message\" : \"약속방 리스트 생성 성공\"\r\n}"
                   }
                 }
               }
@@ -239,6 +273,95 @@
           }
         }
       },
+      "RoomResponse.CreateDto" : {
+        "title" : "RoomResponse.CreateDto",
+        "required" : [ "code", "count", "httpStatus", "message" ],
+        "type" : "object",
+        "properties" : {
+          "result" : {
+            "type" : "array",
+            "items" : {
+              "required" : [ "chats", "id", "isDefaultTitle", "promiseDate", "promiseLocation", "promiseTime", "promiseTitle", "users" ],
+              "type" : "object",
+              "properties" : {
+                "promiseTitle" : {
+                  "type" : "string",
+                  "description" : "약속방 제목"
+                },
+                "promiseDate" : {
+                  "type" : "string",
+                  "description" : "약속 날짜"
+                },
+                "chats" : {
+                  "type" : "array",
+                  "description" : "채팅 리스트",
+                  "items" : {
+                    "oneOf" : [ {
+                      "type" : "object"
+                    }, {
+                      "type" : "boolean"
+                    }, {
+                      "type" : "string"
+                    }, {
+                      "type" : "number"
+                    } ]
+                  }
+                },
+                "promiseTime" : {
+                  "type" : "string",
+                  "description" : "약속 시간"
+                },
+                "promiseLocation" : {
+                  "type" : "string",
+                  "description" : "약속 장소"
+                },
+                "id" : {
+                  "type" : "string",
+                  "description" : "약송방 ID"
+                },
+                "isDefaultTitle" : {
+                  "type" : "boolean",
+                  "description" : "기본 제목"
+                },
+                "users" : {
+                  "type" : "array",
+                  "description" : "유저 목록",
+                  "items" : {
+                    "required" : [ "nickname", "userId" ],
+                    "type" : "object",
+                    "properties" : {
+                      "nickname" : {
+                        "type" : "string",
+                        "description" : "유저 목록"
+                      },
+                      "userId" : {
+                        "type" : "string",
+                        "description" : "유저 목록"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "code" : {
+            "type" : "number",
+            "description" : "HTTP 상태 코드"
+          },
+          "httpStatus" : {
+            "type" : "string",
+            "description" : "HTTP 상태"
+          },
+          "count" : {
+            "type" : "number",
+            "description" : "결과 수"
+          },
+          "message" : {
+            "type" : "string",
+            "description" : "결과 메세지"
+          }
+        }
+      },
       "MainRequest.Patch" : {
         "title" : "MainRequest.Patch",
         "required" : [ "message" ],
@@ -247,6 +370,47 @@
           "message" : {
             "type" : "string",
             "description" : "요청 메세지"
+          }
+        }
+      },
+      "약속방 생성 Request" : {
+        "title" : "약속방 생성 Request",
+        "required" : [ "promiseDate", "promiseLocation", "promiseTime", "promiseTitle", "users" ],
+        "type" : "object",
+        "properties" : {
+          "promiseTitle" : {
+            "type" : "string",
+            "description" : "약속방 제목"
+          },
+          "promiseDate" : {
+            "type" : "string",
+            "description" : "약속 날짜"
+          },
+          "promiseTime" : {
+            "type" : "string",
+            "description" : "약속 시간"
+          },
+          "promiseLocation" : {
+            "type" : "string",
+            "description" : "약속 장소"
+          },
+          "users" : {
+            "type" : "array",
+            "description" : "유저 목록",
+            "items" : {
+              "required" : [ "nickname", "userId" ],
+              "type" : "object",
+              "properties" : {
+                "nickname" : {
+                  "type" : "string",
+                  "description" : "유저 닉네임"
+                },
+                "userId" : {
+                  "type" : "string",
+                  "description" : "유저 아이디"
+                }
+              }
+            }
           }
         }
       },
@@ -272,6 +436,25 @@
           }
         }
       },
+      "약속방 목록 생성 Response" : {
+        "title" : "약속방 목록 생성 Response",
+        "required" : [ "code", "httpStatus", "message" ],
+        "type" : "object",
+        "properties" : {
+          "code" : {
+            "type" : "number",
+            "description" : "HTTP 상태 코드"
+          },
+          "httpStatus" : {
+            "type" : "string",
+            "description" : "HTTP 상태"
+          },
+          "message" : {
+            "type" : "string",
+            "description" : "결과 메세지"
+          }
+        }
+      },
       "MainResponse.Get" : {
         "title" : "MainResponse.Get",
         "required" : [ "message" ],
@@ -293,9 +476,6 @@
             "description" : "요청 메시지"
           }
         }
-      },
-      "api-promise-room486549215" : {
-        "type" : "object"
       }
     }
   }
