@@ -1,3 +1,6 @@
+encrypt:
+  key: 00fe614f1a973f692391cdac8bc32f1066374fa064239e35b83d1f0d736ed5cc
+
 server:
   port: 8888
 
