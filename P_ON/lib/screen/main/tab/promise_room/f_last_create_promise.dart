@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:p_on/common/constant/app_colors.dart';
@@ -10,6 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:nav/nav.dart';
+
+import 'widget/w_checked_modal.dart';
 
 class LastCreatePromise extends ConsumerStatefulWidget {
   const LastCreatePromise({super.key});
@@ -105,6 +108,8 @@ class _LastCreatePromiseState extends ConsumerState<LastCreatePromise> {
     setState(() {});
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -127,7 +132,11 @@ class _LastCreatePromiseState extends ConsumerState<LastCreatePromise> {
             height: 48,
             margin: const EdgeInsets.all(14),
             child: FilledButton(
-                onPressed: () {},
+                onPressed: () {
+                  showDialog(context: context, builder: (BuildContext context) {
+                    return const CheckedModal();
+                  });
+                },
                 style: FilledButton.styleFrom(
                     backgroundColor:
                         isFilled ? AppColors.mainBlue : Colors.grey),
@@ -182,3 +191,6 @@ class _LastCreatePromiseState extends ConsumerState<LastCreatePromise> {
     );
   }
 }
+
+
+

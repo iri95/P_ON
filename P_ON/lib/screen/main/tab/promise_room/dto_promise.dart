@@ -39,7 +39,7 @@ class PromiseNotifier extends StateNotifier<Promise> {
 
   void setPromiseTitle(String promise_title) {
     state = Promise(
-        promise_title: promise_title,
+        promise_title: promise_title.isEmpty ? null : promise_title,
         selected_friends: state.selected_friends,
         promise_date: state.promise_date,
         promise_time: state.promise_time,
