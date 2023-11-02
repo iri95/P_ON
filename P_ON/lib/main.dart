@@ -7,6 +7,8 @@ import 'package:timeago/timeago.dart' as timeago;
 
 import 'common/data/preference/app_preferences.dart';
 import 'common/theme/custom_theme_app.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 void main() async {
   final bindings = WidgetsFlutterBinding.ensureInitialized();
@@ -14,6 +16,9 @@ void main() async {
   await EasyLocalization.ensureInitialized();
   await AppPreferences.init();
 
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
   timeago.setLocaleMessages('ko', timeago.KoMessages());
   runApp(EasyLocalization(
