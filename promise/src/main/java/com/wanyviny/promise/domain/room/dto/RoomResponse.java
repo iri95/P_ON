@@ -17,7 +17,7 @@ public class RoomResponse {
             String promiseDate,
             String promiseTime,
             String promiseLocation,
-            List<Chat> chats
+            List<Map<String, String>> chats
     ) {}
 
     @Builder

@@ -21,7 +21,7 @@ public class ChatController {
 
     private final ChatService chatService;
 
-    @MessageMapping("/chat/{roomId}/{senderId}")
+    @MessageMapping("/{roomId}/{senderId}")
     @SendTo("/topic/chat/{roomId}")
     public ResponseEntity<BasicResponse> sendChat(
             @DestinationVariable String roomId,
