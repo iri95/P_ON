@@ -9,21 +9,22 @@ body {
   font-family: 'Pretendard', sans-serif;
   line-height: 1.6;
   font-size: 18px;
+  background: white;
 }
 * {
   box-sizing: border-box;
 }
 
 main {
-  padding-top: 80px;
+  padding: 80px 0 0 0;
+  margin: 0 20vw 40px 20vw;
   width: 60vw;
-  margin: 0 20vw;
 }
 /* 타블렛 이하 */
 @media screen and (max-width: 1023px) {
   main {
     width: 90vw;
-    margin: 0 5vw;
+    margin: 0 5vw 300px 5vw;
   }
 }
 
@@ -31,8 +32,15 @@ button {
   all: unset;
 }
 
-ul {
+ul,
+li {
   padding-inline-start: 0;
+  list-style: none;
+  text-decoration: none;
+}
+
+a {
+  text-decoration: none;
 }
 
 @font-face {
