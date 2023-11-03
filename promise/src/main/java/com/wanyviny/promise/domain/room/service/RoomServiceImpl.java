@@ -2,6 +2,7 @@ package com.wanyviny.promise.domain.room.service;
 
 import com.wanyviny.promise.domain.room.dto.RoomRequest;
 import com.wanyviny.promise.domain.room.dto.RoomResponse;
+import com.wanyviny.promise.domain.room.dto.RoomResponse.FindDto;
 import com.wanyviny.promise.domain.room.entity.Room;
 import com.wanyviny.promise.domain.room.repository.RoomRepository;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,23 @@ public class RoomServiceImpl implements RoomService {
                 .id(room.getId())
                 .users(room.getUsers())
                 .isDefaultTitle(room.isDefaultTitle())
+                .promiseTitle(room.getPromiseTitle())
+                .promiseDate(room.getPromiseDate())
+                .promiseTime(room.getPromiseTime())
+                .promiseLocation(room.getPromiseLocation())
+                .chats(room.getChats())
+                .build();
+    }
+
+    @Override
+    public FindDto findRoom(String roomId) {
+
+        Room room = roomRepository.findById(roomId).orElseThrow();
+
+        return RoomResponse.FindDto
+                .builder()
+                .id(room.getId())
+                .users(room.getUsers())
                 .promiseTitle(room.getPromiseTitle())
                 .promiseDate(room.getPromiseDate())
                 .promiseTime(room.getPromiseTime())
