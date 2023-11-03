@@ -22,4 +22,8 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 
     @Transactional
     void deleteByUserIdAndFollowingId(User userId, User followingId);
+
+    @Query("SELECT f.followingId.id FROM Follow f where f.userId.id = :userId")
+    List<Long> findFollowingId_IdByUserId_Id(Long userId);
+
 }

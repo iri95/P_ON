@@ -1,5 +1,6 @@
 package com.wanyviny.user.domain.user.service;
 
+import com.wanyviny.user.domain.follow.repository.FollowRepository;
 import com.wanyviny.user.domain.user.dto.UserDto;
 import com.wanyviny.user.domain.user.dto.UserSignUpDto;
 import com.wanyviny.user.domain.user.entity.User;
@@ -19,6 +20,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -28,6 +31,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final JwtService jwtService;
+    private final FollowRepository followRepository;
 
     @Override
     @Transactional
@@ -79,6 +83,21 @@ public class UserServiceImpl implements UserService {
         return userRepository.findById(jwtService.findIdByRefreshToken(refreshToken)
                         .orElseThrow(() -> new IllegalArgumentException("Refresh Token과 일치하는 사용자 정보가 없습니다.")))
                 .orElseThrow(() -> new IllegalArgumentException("Id에 해당하는 유저가 없습니다."));
+    }
+
+    @Override
+    public List<UserDto> searchUser(Long userId, String keyword) {
+        List<User> users = userRepository.findByNicknameContaining(keyword);
+
+        List<Long> followingId = followRepository.findFollowingId_IdByUserId_Id(userId);
+
+        return users.stream()
+                .map(User::userDtoToUser)
+                .sorted((o1, o2) ->
+                        followingId.contains(o1.getId())
+                                ? followingId.contains(o2.getId())
+                                ? 0 : -1 : 1)
+                .toList();
     }
 
 

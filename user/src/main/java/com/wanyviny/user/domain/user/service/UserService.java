@@ -4,6 +4,8 @@ import com.wanyviny.user.domain.user.dto.UserDto;
 import com.wanyviny.user.domain.user.dto.UserSignUpDto;
 import com.wanyviny.user.domain.user.entity.User;
 
+import java.util.List;
+
 public interface UserService {
 
     User getUserProfile(Long id);
@@ -17,4 +19,7 @@ public interface UserService {
     void withdrawal(Long id) throws Exception;
 
     User getUserByRefreshToken(String refreshToken);
+
+    List<UserDto> searchUser(Long userId, String keyword);
+
 }

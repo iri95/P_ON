@@ -17,7 +17,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -55,14 +57,14 @@ public class UserController {
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<BasicResponse> signup(HttpServletRequest request,  @RequestBody UserSignUpDto userSignUpDto) {
+    public ResponseEntity<BasicResponse> signup(HttpServletRequest request, @RequestBody UserSignUpDto userSignUpDto) {
         String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
 
         Long id = jwtService.extractId(accessToken).orElseThrow(
                 () -> new IllegalArgumentException("Access Token에 해당하는 id가 없습니다.")
         );
 
-        userService.signUp(userSignUpDto,id);
+        userService.signUp(userSignUpDto, id);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
@@ -195,5 +197,26 @@ public class UserController {
                 .build();
 
         return new ResponseEntity<>(basicResponse, headers, basicResponse.getHttpStatus());
+    }
+
+    @GetMapping("/search/{keyword}")
+    public ResponseEntity<BasicResponse> searchUser(@PathVariable(name = "keyword") String keyword) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || authentication.getName() == null || authentication.getName().equals("anonymousUser")) {
+            throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
+        }
+
+        List<UserDto> userDtoList = userService.searchUser(Long.parseLong(authentication.getName()), keyword);
+
+        BasicResponse basicResponse = BasicResponse.builder()
+                .code(HttpStatus.OK.value())
+                .httpStatus(HttpStatus.OK)
+                .message("\"" + keyword + "\" 검색 결과 입니다.")
+                .count(userDtoList.size())
+                .result(Arrays.asList(userDtoList.toArray()))
+                .build();
+
+        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
 }
