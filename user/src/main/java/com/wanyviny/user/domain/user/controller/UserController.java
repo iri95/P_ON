@@ -84,14 +84,14 @@ public class UserController {
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<BasicResponse> getProfile() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public ResponseEntity<BasicResponse> getProfile(HttpServletRequest request) {
+        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
 
-        if (authentication == null || authentication.getName() == null || authentication.getName().equals("anonymousUser")) {
-            throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
-        }
+        Long id = jwtService.extractId(accessToken).orElseThrow(
+                () -> new IllegalArgumentException("Access Token에 해당하는 id가 없습니다.")
+        );
 
-        User userProfile = userService.getUserProfile(Long.parseLong(authentication.getName()));
+        User userProfile = userService.getUserProfile(id);
 
         UserDto userDto = UserDto.builder()
                 .id(userProfile.getId())
@@ -113,14 +113,14 @@ public class UserController {
     }
 
     @PutMapping("/update")
-    public ResponseEntity<BasicResponse> userUpdate(@RequestBody UserDto userDto) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public ResponseEntity<BasicResponse> userUpdate(HttpServletRequest request, @RequestBody UserDto userDto) {
+        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
 
-        if (authentication == null || authentication.getName() == null || authentication.getName().equals("anonymousUser")) {
-            throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
-        }
+        Long id = jwtService.extractId(accessToken).orElseThrow(
+                () -> new IllegalArgumentException("Access Token에 해당하는 id가 없습니다.")
+        );
 
-        userService.update(userDto, Long.parseLong(authentication.getName()));
+        userService.update(userDto, id);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
@@ -132,14 +132,14 @@ public class UserController {
     }
 
     @GetMapping("/logout")
-    public ResponseEntity<BasicResponse> logout() throws Exception {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public ResponseEntity<BasicResponse> logout(HttpServletRequest request) throws Exception {
+        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
 
-        if (authentication == null || authentication.getName() == null || authentication.getName().equals("anonymousUser")) {
-            throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
-        }
+        Long id = jwtService.extractId(accessToken).orElseThrow(
+                () -> new IllegalArgumentException("Access Token에 해당하는 id가 없습니다.")
+        );
 
-        userService.logout(Long.parseLong(authentication.getName()));
+        userService.logout(id);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
@@ -151,14 +151,14 @@ public class UserController {
     }
 
     @DeleteMapping("/withdrawal")
-    public ResponseEntity<BasicResponse> withdrawal() throws Exception {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public ResponseEntity<BasicResponse> withdrawal(HttpServletRequest request) throws Exception {
+        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
 
-        if (authentication == null || authentication.getName() == null || authentication.getName().equals("anonymousUser")) {
-            throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
-        }
+        Long id = jwtService.extractId(accessToken).orElseThrow(
+                () -> new IllegalArgumentException("Access Token에 해당하는 id가 없습니다.")
+        );
 
-        userService.withdrawal(Long.parseLong(authentication.getName()));
+        userService.withdrawal(id);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
@@ -174,9 +174,7 @@ public class UserController {
         String refreshToken = jwtService.extractRefreshToken(request)
                 .orElseThrow(() -> new IllegalArgumentException("refresh 토큰이 없습니다."));
 
-
         User findUser = userService.getUserByRefreshToken(refreshToken);
-
 
         String reissueAccessToken = jwtService.createAccessToken(findUser.getId());
         String reissueRefreshToken = jwtService.createRefreshToken();
@@ -198,14 +196,14 @@ public class UserController {
     }
 
     @GetMapping("/search/{keyword}")
-    public ResponseEntity<BasicResponse> searchUser(@PathVariable(name = "keyword") String keyword) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+    public ResponseEntity<BasicResponse> searchUser(HttpServletRequest request, @PathVariable(name = "keyword") String keyword) {
+        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
 
-        if (authentication == null || authentication.getName() == null || authentication.getName().equals("anonymousUser")) {
-            throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
-        }
+        Long id = jwtService.extractId(accessToken).orElseThrow(
+                () -> new IllegalArgumentException("Access Token에 해당하는 id가 없습니다.")
+        );
 
-        List<UserDto> userDtoList = userService.searchUser(Long.parseLong(authentication.getName()), keyword);
+        List<UserDto> userDtoList = userService.searchUser(id, keyword);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())

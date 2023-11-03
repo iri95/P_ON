@@ -50,6 +50,8 @@ dependencies {
     // redis
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2'
+
     // MSA하기 위한 spring cloud
 //    implementation 'org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j'
 //    implementation 'org.springframework.cloud:spring-cloud-starter-config'
