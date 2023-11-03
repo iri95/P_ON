@@ -19,48 +19,32 @@ public class FollowServiceImpl implements FollowService {
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
 
-    // TODO : 맞팔의 경우 상단에 표시되도록
     @Override
     @Transactional
     public List<FollowDto> getFollowing(Long userId) {
+
         List<User> followings = followRepository.findFollowingByUserId(userId);
-        List<FollowDto> result = new ArrayList<>();
 
-        for (User following : followings
-        ) {
-            UserDto followInfo = following.userDtoToUser();
-
-            result.add(FollowDto.builder()
-                    .follow(followInfo)
-                    .followBack(followRepository.existsFollowByUserId_IdAndFollowingId_Id(following.getId(), userId))
-                    .build());
-        }
-
-        Collections.sort(result);
-
-        return result;
+        return followings.stream()
+                .map(User::userDtoToUser)
+                .map(userDto -> FollowDto.builder()
+                        .follow(userDto)
+                        .followBack(followRepository.existsFollowByUserId_IdAndFollowingId_Id(userDto.getId(), userId)).build())
+                .sorted().toList();
     }
 
     @Override
     @Transactional
     public List<FollowDto> getFollower(Long userId) {
+
         List<User> followers = followRepository.findFollowerByUserId(userId);
 
-        List<FollowDto> result = new ArrayList<>();
-
-        for (User follower : followers
-        ) {
-            UserDto followerInfo = follower.userDtoToUser();
-
-            result.add(FollowDto.builder()
-                    .follow(followerInfo)
-                    .followBack(followRepository.existsFollowByUserId_IdAndFollowingId_Id(userId, follower.getId()))
-                    .build());
-        }
-
-        Collections.sort(result);
-
-        return result;
+        return followers.stream()
+                .map(User::userDtoToUser)
+                .map(userDto -> FollowDto.builder()
+                        .follow(userDto)
+                        .followBack(followRepository.existsFollowByUserId_IdAndFollowingId_Id(userId, userDto.getId())).build())
+                .sorted().toList();
     }
 
     @Override
