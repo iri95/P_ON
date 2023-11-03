@@ -24,20 +24,20 @@ export default function page() {
         'P:ON은 약속에 참석하는 사람들을 쉽게 관리할 수 있는 기능을 제공합니다. 앱 내에서 참석자를 추가할 수 있으며, 참석 여부를 확인할 수 있습니다. 또한, 참석자들과의 커뮤니케이션을 원활하게 할 수 있는 채팅 기능도 제공됩니다.',
     },
   ];
-  const faq_pinky = [
-    {
-      id: 1,
-      question: '',
-      answer: '',
-    },
-  ];
-  const faq_memory = [
-    {
-      id: 1,
-      question: '',
-      answer: '',
-    },
-  ];
+  // const faq_pinky = [
+  //   {
+  //     id: 1,
+  //     question: '',
+  //     answer: '',
+  //   },
+  // ];
+  // const faq_memory = [
+  //   {
+  //     id: 1,
+  //     question: '',
+  //     answer: '',
+  //   },
+  // ];
 
   return (
     <>
