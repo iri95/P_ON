@@ -111,6 +111,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
 
   @override
   Widget build(BuildContext context) {
+    print(widget.id);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: SafeArea(
@@ -309,7 +310,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                     });
                     if (isModalOpen) {
                       showModalBottomSheet(
-                        isDismissible: false,
+
                         barrierColor: Colors.transparent,
                         context: context,
                         builder: (context) {
