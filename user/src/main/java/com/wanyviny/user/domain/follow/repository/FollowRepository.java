@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface FollowRepository extends JpaRepository<Follow, Long> {
@@ -22,4 +21,8 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
 
     @Transactional
     void deleteByUserIdAndFollowingId(User userId, User followingId);
+
+    @Query("SELECT f.followingId.id FROM Follow f where f.userId.id = :userId")
+    List<Long> findFollowingId_IdByUserId_Id(Long userId);
+
 }
