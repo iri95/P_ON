@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nav/nav.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:p_on/common/common.dart';
 
 import '../constant/app_colors.dart';
 
@@ -30,7 +31,9 @@ class BasicAppBar extends StatelessWidget {
             elevation: 0,
             leading: IconButton(
               onPressed: () {
-                Navigator.pop(context);
+                // Navigator.pop(context);
+                // context.pop();
+                Nav.pop(context);
               },
               icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
             ),

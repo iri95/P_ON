@@ -21,14 +21,19 @@ class _SelectedFriendsState extends ConsumerState<SelectedFriends> {
   Widget build(BuildContext context) {
     final promise = ref.watch(promiseProvider);
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: SafeArea(
-        child: Scaffold(
+    return
+      // MaterialApp(
+      // debugShowCheckedModeBanner: false,
+      // home: SafeArea(
+      //   child:
+        Scaffold(
+          appBar: AppBar(
+            title: '약속 생성'.text.bold.make(),
+          ),
           body: Column(
             children: [
-              const BasicAppBar(
-                  text: '약속 생성', isProgressBar: true, percentage: 66),
+              // const BasicAppBar(
+              //     text: '약속 생성', isProgressBar: true, percentage: 66),
               Container(
                 margin:
                     const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
@@ -114,8 +119,9 @@ class _SelectedFriendsState extends ConsumerState<SelectedFriends> {
                 },
                 child: const Text('다음')),
           ),
-        ),
-      ),
-    );
+        );
+    // ,
+    //   ),
+    // );
   }
 }

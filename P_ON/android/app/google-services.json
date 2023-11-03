@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "36353542711",
+    "project_id": "wanibini-d1599",
+    "storage_bucket": "wanibini-d1599.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:36353542711:android:4acdd28ed2a8381e3f4db2",
+        "android_client_info": {
+          "package_name": "com.wanyviny.p_on"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCvVdT7o0uT8FyhLOPm7rM3hWHuqkmxrEM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:nav/nav.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 import 'widget/w_checked_modal.dart';
 
@@ -112,14 +113,20 @@ class _LastCreatePromiseState extends ConsumerState<LastCreatePromise> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: SafeArea(
-        child: Scaffold(
+
+    return
+      // MaterialApp(
+      // debugShowCheckedModeBanner: false,
+      // home: SafeArea(
+      //   child:
+        Scaffold(
+          appBar: AppBar(
+            title: '약속 생성'.text.bold.make(),
+          ),
           body: Column(
             children: [
-              const BasicAppBar(
-                  text: '약속 생성', isProgressBar: true, percentage: 100),
+              // const BasicAppBar(
+              //     text: '약속 생성', isProgressBar: true, percentage: 100),
               _buildTextField('날짜', dateController, dateNode, timeNode),
               _buildTextField('시간', timeController, timeNode, placeNode),
               _buildTextField('장소', placeController, placeNode, null),
@@ -142,9 +149,9 @@ class _LastCreatePromiseState extends ConsumerState<LastCreatePromise> {
                         isFilled ? AppColors.mainBlue : Colors.grey),
                 child: Text(isFilled ? '다음' : '건너뛰기')),
           ),
-        ),
-      ),
-    );
+        );
+    //   ,),
+    // );
   }
 
   Widget _buildTextField(String label, TextEditingController controller,
