@@ -12,7 +12,7 @@ import org.springframework.http.HttpMethod;
 
 @EnableDiscoveryClient
 @SpringBootApplication
-@OpenAPIDefinition(info = @Info(title = "API Gateway", version = "1.0", description = "Documentation API Gateway v1.0"))
+@OpenAPIDefinition(info = @Info(title = "P:ON", version = "1.0", description = "Documentation P:ON"))
 public class GatewayApplication {
 
 	public static void main(String[] args) {
@@ -23,7 +23,7 @@ public class GatewayApplication {
 	public RouteLocator routeLocator(RouteLocatorBuilder builder) {
 		return builder
 				.routes()
-				.route(r -> r.path("/user-service/v3/api-docs").and().method(HttpMethod.GET).uri("lb://user-service"))
+				.route(r -> r.path("/api/user/api-docs").and().method(HttpMethod.GET).uri("lb://USER-SERVICE"))
     .build();
 	}
 }
