@@ -5,6 +5,7 @@ import com.wanyviny.promise.domain.room.dto.RoomResponse;
 import com.wanyviny.promise.domain.room.dto.RoomResponse.FindDto;
 import com.wanyviny.promise.domain.room.entity.Room;
 import com.wanyviny.promise.domain.room.repository.RoomRepository;
+import com.wanyviny.promise.domain.vote.entity.Vote;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -42,6 +43,7 @@ public class RoomServiceImpl implements RoomService {
                 .promiseTime(room.getPromiseTime())
                 .promiseLocation(room.getPromiseLocation())
                 .chats(room.getChats())
+                .votes(room.getVotes())
                 .build();
     }
 
@@ -59,6 +61,7 @@ public class RoomServiceImpl implements RoomService {
                 .promiseTime(room.getPromiseTime())
                 .promiseLocation(room.getPromiseLocation())
                 .chats(room.getChats())
+                .votes(room.getVotes())
                 .build();
     }
 }

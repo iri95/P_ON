@@ -1,6 +1,5 @@
 package com.wanyviny.promise.domain.room.vo;
 
-import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

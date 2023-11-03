@@ -1,6 +1,8 @@
 package com.wanyviny.promise.domain.room.entity;
 
 import com.wanyviny.promise.domain.chat.entity.Chat;
+import com.wanyviny.promise.domain.vote.entity.Vote;
+import com.wanyviny.promise.domain.vote.entity.VoteType;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,6 +33,9 @@ public class Room {
     @Builder.Default
     private List<Map<String, String>> chats = new ArrayList<>();
 
+    @Builder.Default
+    private List<Map<String, String>> votes = defaultVotes();
+
     public void changeIsDefaultTitle() {
         isDefaultTitle = !isDefaultTitle;
     }
@@ -60,5 +65,30 @@ public class Room {
         map.put("createAt", String.valueOf(chat.getCreateAt()));
 
         chats.add(map);
+    }
+
+    private static List<Map<String, String>> defaultVotes() {
+        List<Map<String, String>> votes = new ArrayList<>();
+        VoteType[] voteTypes = VoteType.values();
+
+        for (VoteType voteType : voteTypes) {
+            Map<String, String> map = new HashMap<>();
+            map.put("voteType", String.valueOf(voteType));
+            map.put("exist", "false");
+            votes.add(map);;
+        }
+
+        return votes;
+    }
+
+    public void addVote(Vote vote) {
+
+        for (Map<String, String> map : votes) {
+            if (map.get("voteType").equals(String.valueOf(vote.getVoteType()))) {
+                map.put("exist", "true");
+                map.put("voteId", vote.getId());
+                break;
+            }
+        }
     }
 }
