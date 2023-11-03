@@ -213,4 +213,10 @@ public class UserController {
 
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
+
+    @GetMapping("/test")
+    public String aa() {
+        return "sdfds";
+    }
+
 }
