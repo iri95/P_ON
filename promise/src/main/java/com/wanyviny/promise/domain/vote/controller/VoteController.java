@@ -7,8 +7,10 @@ import com.wanyviny.promise.domain.vote.service.VoteService;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -22,13 +24,27 @@ public class VoteController {
     @PostMapping("/{roomId}")
     public ResponseEntity<BasicResponse> createVote(
             @PathVariable String roomId,
-            VoteRequest.CreateDto request
+            @RequestBody VoteRequest.CreateDto request
     ) {
 
         VoteResponse.CreateDto response = voteService.createVote(roomId, request);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .message("투표 생성 성공")
+                .count(1)
+                .result(Collections.singletonList(response))
+                .build();
+
+        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+    }
+
+    @GetMapping("/{voteId}")
+    public ResponseEntity<BasicResponse> findVote(@PathVariable String voteId) {
+
+        VoteResponse.FindDto response = voteService.findVote(voteId);
+
+        BasicResponse basicResponse = BasicResponse.builder()
+                .message("투표 조회 성공")
                 .count(1)
                 .result(Collections.singletonList(response))
                 .build();
