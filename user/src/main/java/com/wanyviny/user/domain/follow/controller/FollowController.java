@@ -3,14 +3,12 @@ package com.wanyviny.user.domain.follow.controller;
 import com.wanyviny.user.domain.common.BasicResponse;
 import com.wanyviny.user.domain.follow.dto.FollowDto;
 import com.wanyviny.user.domain.follow.service.FollowService;
-import com.wanyviny.user.domain.user.dto.UserDto;
+
 import com.wanyviny.user.global.jwt.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;

@@ -13,6 +13,6 @@ public class HomeController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String enter(){
         System.out.println("접속");
-        return "index.html";
+        return "testIndex.html";
     }
 }
