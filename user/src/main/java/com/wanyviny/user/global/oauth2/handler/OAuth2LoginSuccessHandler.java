@@ -45,7 +45,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
                 response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
                 log.info("accessToken : Bearer " + accessToken);
                 response.sendRedirect(
-                        "http://k9e102.p.ssafy.io/" + "access_token=Bearer " + accessToken + "&is_user=F"
+                        "http://k9e102.p.ssafy.io/main/home?" + "access_token=Bearer " + accessToken + "&is_user=F"
                 );
             }else{
                 loginSuccess(response, oAuth2User);
@@ -64,7 +64,7 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         log.info("accessToken : Bearer " + accessToken);
         log.info("refreshToken : Bearer " + refreshToken);
         response.sendRedirect(
-                "http://k9e102.p.ssafy.io/?" + "access_token=Bearer " + accessToken + "&refresh_token="
+                "http://k9e102.p.ssafy.io/main/home?" + "access_token=Bearer " + accessToken + "&refresh_token="
                         + "Bearer " + refreshToken + "&is_user=T"
         );
 
