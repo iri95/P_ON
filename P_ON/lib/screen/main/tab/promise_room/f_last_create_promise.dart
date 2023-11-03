@@ -1,12 +1,18 @@
-import 'dart:async';
+// ignore_for_file: use_build_context_synchronously
 
-import 'package:after_layout/after_layout.dart';
+import 'dart:async';
+import 'dart:math';
+
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:p_on/common/constant/app_colors.dart';
 import 'package:p_on/common/util/app_keyboard_util.dart';
 import 'package:p_on/common/widget/w_basic_appbar.dart';
+import 'package:p_on/screen/main/tab/promise_room/f_search_naver.dart';
 import 'package:p_on/screen/main/tab/promise_room/vo_naver_headers.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:get/get.dart';
 import 'package:nav/nav.dart';
@@ -19,8 +25,7 @@ class LastCreatePromise extends StatefulWidget {
   State<LastCreatePromise> createState() => _LastCreatePromiseState();
 }
 
-class _LastCreatePromiseState extends State<LastCreatePromise>
-    with AfterLayoutMixin {
+class _LastCreatePromiseState extends State<LastCreatePromise> {
   final TextEditingController dateController = TextEditingController();
   final TextEditingController timeController = TextEditingController();
   final TextEditingController placeController = TextEditingController();
@@ -29,13 +34,71 @@ class _LastCreatePromiseState extends State<LastCreatePromise>
   final FocusNode timeNode = FocusNode();
   final FocusNode placeNode = FocusNode();
 
-  bool get isFilled => dateController.text.isNotEmpty &&
-      timeController.text.isNotEmpty &&
-      placeController.text.isNotEmpty;
+  Future<void> _selectDate() async {
+    FocusScope.of(context).requestFocus(FocusNode());
+    DateTime? picked = await showDatePicker(
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+              colorScheme: const ColorScheme.light(
+                primary: AppColors.mainBlue2,
+                onPrimary: Colors.white,
+                onSurface: Colors.black,
+              ),
+              textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                    foregroundColor: AppColors.mainBlue
+                ),
+              )
+          ), child: child!,
+        );
+      },
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2100),
+    );
+    if (picked != null) {
+      dateController.text = DateFormat('yyyy-MM-dd').format(picked);
+    }
+  }
+
+  Future<void> _selectTime() async {
+    TimeOfDay t = TimeOfDay.now();
+    Navigator.of(context).push(
+        showPicker(
+            context: context,
+            value: Time(hour: t.hour, minute: t.minute),
+            onChange: (TimeOfDay time) {
+              final period = time.period == DayPeriod.am ? '오전' : '오후';
+              timeController.text = '$period ${time.hourOfPeriod}:${time.minute.toString().padLeft(2, '0')}';
+            },
+            minuteInterval: TimePickerInterval.FIVE,
+            iosStylePicker: true,
+            okText: '확인',
+            okStyle: const TextStyle(color: AppColors.mainBlue2),
+            cancelText: '취소',
+            cancelStyle: const TextStyle(color: AppColors.mainBlue2),
+            hourLabel: '시',
+            minuteLabel: '분',
+            accentColor: AppColors.mainBlue2
+        )
+    );
+  }
+
+  void _searchPlace() {
+    Nav.push(SearchNaver());
+  }
+
+  bool get isFilled =>
+      dateController.text.isNotEmpty &&
+          timeController.text.isNotEmpty &&
+          placeController.text.isNotEmpty;
 
   @override
   void initState() {
     super.initState();
+    dateController.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
     dateController.addListener(updateState);
     timeController.addListener(updateState);
     placeController.addListener(updateState);
@@ -51,6 +114,7 @@ class _LastCreatePromiseState extends State<LastCreatePromise>
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+
       debugShowCheckedModeBanner: false,
       home: SafeArea(
         child: Scaffold(
@@ -64,7 +128,7 @@ class _LastCreatePromiseState extends State<LastCreatePromise>
             ],
           ),
           floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
+          FloatingActionButtonLocation.centerDocked,
           floatingActionButton: Container(
             width: double.infinity,
             height: 48,
@@ -72,7 +136,8 @@ class _LastCreatePromiseState extends State<LastCreatePromise>
             child: FilledButton(
                 onPressed: () {},
                 style: FilledButton.styleFrom(
-                    backgroundColor: isFilled ? AppColors.mainBlue : Colors.grey),
+                    backgroundColor: isFilled ? AppColors.mainBlue : Colors
+                        .grey),
                 child: Text(isFilled ? '다음' : '건너뛰기')),
           ),
         ),
@@ -80,14 +145,16 @@ class _LastCreatePromiseState extends State<LastCreatePromise>
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller, FocusNode node, FocusNode? nextNode) {
+  Widget _buildTextField(String label, TextEditingController controller,
+      FocusNode node, FocusNode? nextNode) {
     final dio = Dio();
     return Column(
       children: [
         Container(
           margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
           alignment: Alignment.topLeft,
-          child: Text(label, style: TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600)),
+          child: Text(label, style: const TextStyle(
+              color: Colors.black, fontSize: 16, fontWeight: FontWeight.w600)),
         ),
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 24),
@@ -103,19 +170,17 @@ class _LastCreatePromiseState extends State<LastCreatePromise>
             ),
           ),
           child: TextField(
+
+            showCursor: label == '장소',
             focusNode: node,
             controller: controller,
             decoration: const InputDecoration(
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none),
-            onSubmitted: (text) async {
-              node.unfocus();
-              if (nextNode != null) {
-                FocusScope.of(context).requestFocus(nextNode);
-              }
-              if(label == '장소' && text.isNotEmpty) {
-                SearchPlace(text);
-              }
+            onTap: () async {
+              if (label == '날짜') await _selectDate();
+              if (label == '시간') await _selectTime();
+              if (label == '장소') _searchPlace();
             },
           ),
         ),
@@ -126,26 +191,28 @@ class _LastCreatePromiseState extends State<LastCreatePromise>
   void SearchPlace(String text) async {
     final dio = Dio();
     final response = await dio.get(
-      'https://naveropenapi.apigw.ntruss.com/map-geocode/v2/geocode',
+      'https://openapi.naver.com/v1/search/local.json?',
       queryParameters: {
         'query': text,
       },
       options: Options(
         headers: {
-          'X-NCP-APIGW-API-KEY-ID': Client_ID,
-          'X-NCP-APIGW-API-KEY': Client_Secret,
+          'X-Naver-Client-Id': Client_ID,
+          'X-Naver-Client-Secret': Client_Secret,
         },
       ),
     );
-    if (response.statusCode == 200) {
-      print(response.data);
-    } else {
-      print(response.data.errorMessage);
-    }
-  }
-
-  @override
-  FutureOr<void> afterFirstLayout(BuildContext context) {
-    AppKeyboardUtil.show(context, dateNode);
+    print(text);
+    print("=======================");
+    print("=======================");
+    print("=======================");
+    print("=======================");
+    print(response);
+    print("=======================");
+    print("=======================");
+    print("=======================");
+    print("=======================");
   }
 }
+
+

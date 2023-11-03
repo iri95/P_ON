@@ -39,7 +39,9 @@ ThemeData lightTheme = ThemeData(
     // textTheme: GoogleFonts.singleDayTextTheme(
     //   ThemeData(brightness: Brightness.light).textTheme,
     // ),
-    colorScheme: const ColorScheme.light(background: Colors.white));
+    colorScheme: const ColorScheme.light(background: Colors.white),
+    textSelectionTheme:
+        const TextSelectionThemeData(selectionHandleColor: Colors.transparent));
 
 ThemeData darkTheme = ThemeData(
     primarySwatch: primarySwatchColor,
