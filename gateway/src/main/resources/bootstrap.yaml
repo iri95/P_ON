@@ -1,75 +1,8 @@
-#spring:
-#  config:
-#    import: optional:configserver:http://config-container:8888
-#
-#  cloud:
-#    config:
-#      name: gateway
-#      profile: default
-
-server:
-  servlet:
-    context-path: /
-
-  port: 8000
-
-eureka:
-  client:
-    serviceUrl:
-      defaultZone: http://k9e102.p.ssafy.io:8761/eureka
-
-    register-with-eureka: true
-    fetch-registry: true
-
-  instance:
-    prefer-ip-address: true
-    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
-
 spring:
-  application:
-    name: gateway-service
+  config:
+    import: optional:configserver:http://k9e102.p.ssafy.io:8888
 
   cloud:
-    gateway:
-      globalcors:
-        cors-configurations:
-          '[/**]':
-            allowedOrigins: 'http://localhost:3000'
-            allow-credentials: true
-            allowedHeaders: 'Access-Control-Allow-Origin'
-            allowedMethods:
-              - PUT
-              - GET
-              - POST
-              - DELETE
-              - OPTIONS
-
-      routes:
-        - id: promise-service
-          uri: lb://PROMISE-SERVICE
-          predicates:
-            - Path=/api/promise/**
-
-#        - id: promise-service
-#          uri: lb://PROMISE-SERVICE
-#          predicates:
-#            - Path=/api/promise/**
-#          filters:
-#            - RewritePath=/api/promise/(?<path>.*), /$\{path}
-
-# jwt:
-#   secretKey: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
-
-#   access:
-#     header: Authorization
-springdoc:
-  api-docs:
-    enabled: true
-
-  swagger-ui:
-    enabled: true
-    path: /swagger-ui.html
-    config-url: /api/api-docs/swagger-config
-    urls:
-      - url: /api/api-docs
-        name: API Gateway Service
+    config:
+      name: gateway
+      profile: dev
