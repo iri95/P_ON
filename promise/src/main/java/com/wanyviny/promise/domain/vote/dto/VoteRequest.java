@@ -4,7 +4,6 @@ import com.wanyviny.promise.domain.vote.entity.VoteType;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import lombok.Getter;
 
 public class VoteRequest {
 
