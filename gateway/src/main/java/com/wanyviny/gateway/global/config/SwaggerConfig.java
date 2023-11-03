@@ -14,7 +14,7 @@ public class SwaggerConfig {
     public RouteLocator routeLocator(RouteLocatorBuilder builder) {
         return builder
                 .routes()
-                .route(r -> r.path("/api/user/api-docs").and().method(HttpMethod.GET).uri("lb://USER-SERVICE"))
+                .route(r -> r.path("/v3/user/api-docs").and().method(HttpMethod.GET).uri("lb://USER-SERVICE"))
                 .build();
     }
 
