@@ -1,4 +1,4 @@
-import styles from './mobile.module.css';
+import styles from './mobile.module.scss';
 
 export default function index() {
   return (
