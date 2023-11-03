@@ -5,7 +5,6 @@ import com.wanyviny.user.domain.user.dto.KakaoUserDto;
 import com.wanyviny.user.domain.user.dto.UserDto;
 import com.wanyviny.user.domain.user.dto.UserSignUpDto;
 import com.wanyviny.user.domain.user.entity.User;
-import com.wanyviny.user.domain.user.repository.UserRepository;
 import com.wanyviny.user.domain.user.service.UserService;
 import com.wanyviny.user.global.jwt.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -137,7 +136,6 @@ public class UserController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || authentication.getName() == null || authentication.getName().equals("anonymousUser")) {
-            System.out.println(authentication.getName());
             throw new RuntimeException("Security Context에 인증 정보가 없습니다.");
         }
 
