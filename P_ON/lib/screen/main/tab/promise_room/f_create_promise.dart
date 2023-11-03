@@ -34,14 +34,19 @@ class _CreatePromiseState extends ConsumerState<CreatePromise> with AfterLayoutM
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: SafeArea(
-          child: Scaffold(
+    return
+      // MaterialApp(
+      // debugShowCheckedModeBanner: false,
+      // home: SafeArea(
+      //     child:
+          Scaffold(
+            appBar: AppBar(
+              title: '약속 생성'.text.bold.make(),
+            ),
         // extendBody: extendBody,
         body: Column(
           children: [
-            const BasicAppBar(text: '약속 생성', isProgressBar: true, percentage: 33),
+            // const BasicAppBar(text: '약속 생성', isProgressBar: true, percentage: 33),
             Container(
                 margin: const EdgeInsets.all(24),
                 alignment: Alignment.topLeft,
@@ -84,8 +89,9 @@ class _CreatePromiseState extends ConsumerState<CreatePromise> with AfterLayoutM
             child: const Text('다음'),
           ),
         ),
-      )),
-    );
+      );
+    // ),
+    // );
   }
 
   @override

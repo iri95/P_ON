@@ -9,6 +9,9 @@ import 'package:timeago/timeago.dart' as timeago;
 
 import 'common/data/preference/app_preferences.dart';
 import 'screen/main/tab/promise_room/vo_naver_headers.dart';
+import 'common/theme/custom_theme_app.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -17,12 +20,17 @@ void main() async {
   FlutterNativeSplash.preserve(widgetsBinding: bindings);
   await EasyLocalization.ensureInitialized();
   await AppPreferences.init();
-  timeago.setLocaleMessages('ko', timeago.KoMessages());
 
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  timeago.setLocaleMessages('ko', timeago.KoMessages());
   runApp(EasyLocalization(
-      supportedLocales: const [Locale('en'), Locale('ko')],
-      fallbackLocale: const Locale('en'),
+      supportedLocales: const [Locale('ko')],
+      fallbackLocale: const Locale('ko'),
       path: 'assets/translations',
       useOnlyLangCode: true,
-      child: ProviderScope(child: const App())));
+      child: const CustomThemeApp(child: const ProviderScope(child: App()),
+      )));
 }
