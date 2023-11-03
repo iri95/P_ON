@@ -84,9 +84,6 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
                 .filter(jwtService::isTokenValid)
                 .orElse(null);
 
-        log.info(request.getHeader("Authorization_refresh"));
-        log.info(refreshToken);
-
         // 리프레시 토큰이 요청 헤더에 존재했다면, 사용자가 AccessToken이 만료되어서
         // RefreshToken까지 보낸 것이므로 리프레시 토큰이 DB의 리프레시 토큰과 일치하는지 판단 후,
         // 일치한다면 AccessToken을 재발급
@@ -146,7 +143,6 @@ public class JwtAuthenticationProcessingFilter extends OncePerRequestFilter {
     // TODO: response에 access token을 안담아도 되는건가?, access token도 없으면 logout, 이건 나중에 GATEWAY에서
     public void checkAccessTokenAndAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        log.info("checkAccessTokenAndAuthentidcation() 호출");
         jwtService.extractAccessToken(request)
                 .filter(jwtService::isTokenValid)
                 .ifPresent(accessToken -> {
