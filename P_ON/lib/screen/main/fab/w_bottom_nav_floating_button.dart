@@ -4,6 +4,7 @@ import 'package:p_on/screen/main/fab/w_bottom_nav_floating_button.riverpod.dart'
 import 'package:p_on/screen/main/s_main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:p_on/screen/main/tab/promise_room/f_create_promise.dart';
 
 import '../../../common/widget/animated_width_collapse.dart';
 
@@ -69,7 +70,7 @@ class BottomFloatingActionButton extends ConsumerWidget {
                           Tap(
                             onTap: () {
                               // extra: , 이걸통해서 데이터 계속 불러오지 않게 할 수 있다.
-                              context.pushNamed('/createpromise');
+                              Nav.push(const CreatePromise());
                             },
                             child: Container(
                               width: 160,
@@ -113,7 +114,7 @@ class BottomFloatingActionButton extends ConsumerWidget {
                           AnimatedWidthCollapse(
                             visible: !isSmall,
                             duration: duration,
-                            child: '글쓰기'.text.make(),
+                            child: '일정 생성'.text.make(),
                           )
                         ],
                       ),

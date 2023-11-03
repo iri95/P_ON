@@ -50,14 +50,19 @@ class _LastCreatePromiseState extends State<LastCreatePromise>
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: SafeArea(
-        child: Scaffold(
+    return
+      // MaterialApp(
+      // debugShowCheckedModeBanner: false,
+      // home: SafeArea(
+      //   child:
+        Scaffold(
+          appBar: AppBar(
+            title: '약속 생성'.text.bold.make(),
+          ),
           body: Column(
             children: [
-              const BasicAppBar(
-                  text: '약속 생성', isProgressBar: true, percentage: 100),
+              // const BasicAppBar(
+              //     text: '약속 생성', isProgressBar: true, percentage: 100),
               _buildTextField('날짜', dateController, dateNode, timeNode),
               _buildTextField('시간', timeController, timeNode, placeNode),
               _buildTextField('장소', placeController, placeNode, null),
@@ -75,9 +80,9 @@ class _LastCreatePromiseState extends State<LastCreatePromise>
                     backgroundColor: isFilled ? AppColors.mainBlue : Colors.grey),
                 child: Text(isFilled ? '다음' : '건너뛰기')),
           ),
-        ),
-      ),
-    );
+        );
+    //   ,),
+    // );
   }
 
   Widget _buildTextField(String label, TextEditingController controller, FocusNode node, FocusNode? nextNode) {
