@@ -210,7 +210,7 @@ public class UserController {
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
                 .httpStatus(HttpStatus.OK)
-                .message("\"" + keyword + "\" 검색 결과 입니다.")
+                .message("'" + keyword + "'에 대한 검색 결과 입니다.")
                 .count(userDtoList.size())
                 .result(Arrays.asList(userDtoList.toArray()))
                 .build();
