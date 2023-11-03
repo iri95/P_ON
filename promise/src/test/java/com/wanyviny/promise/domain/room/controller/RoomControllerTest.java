@@ -8,6 +8,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper;
@@ -80,10 +81,49 @@ public class RoomControllerTest extends RestDocsSupport {
                                 fieldWithPath("result").type(JsonFieldType.ARRAY).description("결과"),
                                 fieldWithPath("result[].id").type(JsonFieldType.STRING).description("약송방 ID"),
                                 fieldWithPath("result[].users").type(JsonFieldType.ARRAY).description("유저 목록"),
-                                fieldWithPath("result[].users[].userId").type(JsonFieldType.STRING).description("유저 목록"),
-                                fieldWithPath("result[].users[].nickname").type(JsonFieldType.STRING).description("유저 목록"),
+                                fieldWithPath("result[].users[].userId").type(JsonFieldType.STRING).description("유저 아이디"),
+                                fieldWithPath("result[].users[].nickname").type(JsonFieldType.STRING).description("유저 닉네임"),
                                 fieldWithPath("result[].promiseTitle").type(JsonFieldType.STRING).description("약속방 제목"),
-                                fieldWithPath("result[].isDefaultTitle").type(JsonFieldType.BOOLEAN).description("기본 제목"),
+                                fieldWithPath("result[].isDefaultTitle").type(JsonFieldType.BOOLEAN).description("기본 제목 여부"),
+                                fieldWithPath("result[].promiseDate").type(JsonFieldType.STRING).description("약속 날짜"),
+                                fieldWithPath("result[].promiseTime").type(JsonFieldType.STRING).description("약속 시간"),
+                                fieldWithPath("result[].promiseLocation").type(JsonFieldType.STRING).description("약속 장소"),
+                                fieldWithPath("result[].chats").type(JsonFieldType.ARRAY).description("채팅 리스트")
+                        )));
+    }
+
+    @Test
+    @DisplayName("약속방 조회 테스트")
+    void getTest() throws Exception {
+        RoomResponse.FindDto dto = findDto();
+
+        given(roomService.findRoom(any()))
+                .willReturn(dto);
+
+        mockMvc.perform(
+                        RestDocumentationRequestBuilders.get("/api/promise/room/{roomId}", "654361e93614be73e06adeff")
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andExpect(status().isOk())
+                .andDo(MockMvcRestDocumentationWrapper.document("room-get",
+                        ResourceSnippetParameters.builder()
+                                .tag("약속방")
+                                .summary("약속방 조회")
+                                .responseSchema(Schema.schema("약속방 조회 Response")
+                                ),
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        responseFields(
+                                fieldWithPath("httpStatus").type(JsonFieldType.STRING).description("HTTP 상태"),
+                                fieldWithPath("code").type(JsonFieldType.NUMBER).description("HTTP 상태 코드"),
+                                fieldWithPath("message").type(JsonFieldType.STRING).description("결과 메세지"),
+                                fieldWithPath("count").type(JsonFieldType.NUMBER).description("결과 수"),
+                                fieldWithPath("result").type(JsonFieldType.ARRAY).description("결과"),
+                                fieldWithPath("result[].id").type(JsonFieldType.STRING).description("약송방 ID"),
+                                fieldWithPath("result[].users").type(JsonFieldType.ARRAY).description("유저 목록"),
+                                fieldWithPath("result[].users[].userId").type(JsonFieldType.STRING).description("유저 아이디"),
+                                fieldWithPath("result[].users[].nickname").type(JsonFieldType.STRING).description("유저 닉네임"),
+                                fieldWithPath("result[].promiseTitle").type(JsonFieldType.STRING).description("약속방 제목"),
                                 fieldWithPath("result[].promiseDate").type(JsonFieldType.STRING).description("약속 날짜"),
                                 fieldWithPath("result[].promiseTime").type(JsonFieldType.STRING).description("약속 시간"),
                                 fieldWithPath("result[].promiseLocation").type(JsonFieldType.STRING).description("약속 장소"),
@@ -122,6 +162,27 @@ public class RoomControllerTest extends RestDocsSupport {
                 .users(users)
                 .promiseTitle("미정")
                 .isDefaultTitle(false)
+                .promiseDate("미정")
+                .promiseTime("미정")
+                .promiseLocation("미정")
+                .chats(new ArrayList<>())
+                .build();
+    }
+
+    private RoomResponse.FindDto findDto() {
+
+        List<Map<String, String>> users = new ArrayList<>();
+        Map<String, String> user = new HashMap<>();
+
+        user.put("userId", "1");
+        user.put("nickname", "김태환");
+        users.add(user);
+
+        return RoomResponse.FindDto
+                .builder()
+                .id("1234")
+                .users(users)
+                .promiseTitle("미정")
                 .promiseDate("미정")
                 .promiseTime("미정")
                 .promiseLocation("미정")
