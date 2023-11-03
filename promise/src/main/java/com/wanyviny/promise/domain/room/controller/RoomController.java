@@ -9,6 +9,7 @@ import com.wanyviny.promise.domain.room.vo.RoomVo;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -59,6 +60,18 @@ public class RoomController {
                 .message("약속방 조회 성공")
                 .count(1)
                 .result(Collections.singletonList(response))
+                .build();
+
+        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+    }
+
+    @DeleteMapping("/{roomId}")
+    public ResponseEntity<BasicResponse> deleteRoom(@PathVariable String roomId) {
+
+        roomService.deleteRoom(roomId);
+
+        BasicResponse basicResponse = BasicResponse.builder()
+                .message("약속방 삭제 성공")
                 .build();
 
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
