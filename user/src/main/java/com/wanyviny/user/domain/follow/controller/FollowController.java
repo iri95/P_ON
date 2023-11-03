@@ -125,13 +125,4 @@ public class FollowController {
 
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
-
-    // 팔로잉 여부 -> 저사람이 나를 팔로잉 했는지? 친구 일정 조회 전 확인
-    @GetMapping("/do-following")
-    public ResponseEntity<BasicResponse> doFollowing() {
-
-        return null;
-    }
-
-
 }
