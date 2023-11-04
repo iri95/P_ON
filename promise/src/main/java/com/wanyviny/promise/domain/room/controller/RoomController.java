@@ -60,7 +60,7 @@ public class RoomController {
     @Operation(summary = "약속 방 조회", description = "약속방 아이디 값으로 약속 방을 조회 합니다.")
     public ResponseEntity<BasicResponse> createRoom(
             @Parameter(description = "조회할 약속 방 아이디")
-            @PathVariable(name = "roomId", required = true) String roomId
+            @PathVariable String roomId
     ) {
 
         RoomResponse.FindDto response = roomService.findRoom(roomId);
@@ -78,7 +78,7 @@ public class RoomController {
     @Operation(summary = "약속 방 삭제", description = "약속 방 아이디 값으로 약속 방을 삭제 합니다.")
     public ResponseEntity<BasicResponse> deleteRoom(
             @Parameter(description = "삭제할 약속 방 아이디")
-            @PathVariable(name = "roomId", required = true) String roomId
+            @PathVariable String roomId
     ) {
 
         roomService.deleteRoom(roomId);
