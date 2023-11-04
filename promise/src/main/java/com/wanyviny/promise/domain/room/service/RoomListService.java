@@ -8,4 +8,5 @@ public interface RoomListService {
     void createRoomList(String userId);
     FindDto findRoomList(String userId);
     void addRoom(String userId, RoomVo roomVo);
+    void deleteRoomList(String userId);
 }

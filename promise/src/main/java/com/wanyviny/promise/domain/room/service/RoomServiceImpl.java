@@ -64,4 +64,10 @@ public class RoomServiceImpl implements RoomService {
                 .votes(room.getVotes())
                 .build();
     }
+
+    @Override
+    public void deleteRoom(String roomId) {
+
+        roomRepository.deleteById(roomId);
+    }
 }
