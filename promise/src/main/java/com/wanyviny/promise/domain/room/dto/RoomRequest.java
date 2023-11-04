@@ -17,26 +17,23 @@ public class RoomRequest {
     @Schema(name = "RoomRequest.CreateDto")
     public static class CreateDto {
 
-        @Schema(
-                name = "users",
-                type = "array",
-                nullable = false,
-                example = "[{\"userId\" : \"1\", \"nickname\" : \"김태환\"}, {\"userId\" : \"2\", \"nickname\" : \"이상훈\"}]")
+        @Schema(example = "[{\"userId\" : \"string\", \"nickname\" : \"string\"},"
+                + "{\"userId\" : \"string\", \"nickname\" : \"string\"}]")
         private List<Map<String, String>> users;
 
-        @Schema(name = "promiseTitle", type = "string", nullable = true, defaultValue = "미정")
+        @Schema(nullable = true)
         private String promiseTitle;
 
         @Builder.Default
-        @Schema(name = "promiseDate", type = "string", nullable = true, defaultValue = "미정")
+        @Schema(nullable = true)
         private String promiseDate = "미정";
 
         @Builder.Default
-        @Schema(name = "promiseTime", type = "string", nullable = true, defaultValue = "미정")
+        @Schema(nullable = true)
         private String promiseTime = "미정";
 
         @Builder.Default
-        @Schema(name = "promiseLocation", type = "string", nullable = true, defaultValue = "미정")
+        @Schema(nullable = true)
         private String promiseLocation = "미정";
     }
 }

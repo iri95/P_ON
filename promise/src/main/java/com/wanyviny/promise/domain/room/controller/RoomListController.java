@@ -28,7 +28,7 @@ public class RoomListController {
     @Operation(summary = "약속 방 목록 생성", description = "사용자 아이디 값으로 약속 방 목록을 생성 합니다.")
     public ResponseEntity<BasicResponse> createRoomList(
             @Parameter(description = "생성할 사용자 아이디")
-            @PathVariable(name = "userId", required = true) String userId
+            @PathVariable String userId
     ) {
 
         roomListService.createRoomList(userId);
@@ -44,7 +44,7 @@ public class RoomListController {
     @Operation(summary = "약속 방 목록 조회", description = "사용자 아이디 값으로 약속 방 목록을 조회 합니다.")
     public ResponseEntity<BasicResponse> findRoomList(
             @Parameter(description = "조회할 사용자 아이디")
-            @PathVariable(name = "userId", required = true) String userId
+            @PathVariable String userId
     ) {
 
         RoomListResponse.FindDto response = roomListService.findRoomList(userId);
@@ -62,7 +62,7 @@ public class RoomListController {
     @Operation(summary = "약속 방 목록 삭제", description = "사용자 아이디 값으로 약속 방 목록을 삭제 합니다.")
     public ResponseEntity<BasicResponse> deleteRoomList(
             @Parameter(description = "삭제할 사용자 아이디")
-            @PathVariable(name = "userId", required = true) String userId
+            @PathVariable String userId
     ) {
 
         roomListService.deleteRoomList(userId);
