@@ -44,4 +44,10 @@ public class RoomListServiceImpl implements RoomListService {
         roomList.addRoom(roomVo);
         roomListRepository.save(roomList);
     }
+
+    @Override
+    public void deleteRoomList(String userId) {
+
+        roomListRepository.deleteById(userId);
+    }
 }

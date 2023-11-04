@@ -8,4 +8,5 @@ public interface RoomService {
 
     RoomResponse.CreateDto createRoom(RoomRequest.CreateDto request);
     RoomResponse.FindDto findRoom(String roomId);
+    void deleteRoom(String roomId);
 }
