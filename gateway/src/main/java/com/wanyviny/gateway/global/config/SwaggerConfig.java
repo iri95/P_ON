@@ -15,6 +15,7 @@ public class SwaggerConfig {
         return builder
                 .routes()
                 .route(r -> r.path("/v3/user/api-docs").and().method(HttpMethod.GET).uri("lb://USER-SERVICE"))
+                .route(r -> r.path("/v3/promise/api-docs").and().method(HttpMethod.GET).uri("lb://PROMISE-SERVICE"))
                 .build();
     }
 
