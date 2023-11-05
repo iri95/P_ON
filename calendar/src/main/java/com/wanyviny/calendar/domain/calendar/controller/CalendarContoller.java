@@ -66,24 +66,25 @@ public class CalendarContoller {
     }
 
     // 일정 상세 조회
-    @GetMapping("/schedule/{calendarId}")
+    @GetMapping("/schedule/detail/{calendarId}")
     public ResponseEntity<BasicResponse> getDetailSchedule(@PathVariable(name = "calendarId") Long calendarId) {
 
+        CalendarDto.getSchedule schedule = calendarService.getDetailSchedule(calendarId);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
                 .httpStatus(HttpStatus.OK)
                 .message("상세 일정 조회 성공!")
                 .count(1)
-//                .result(Collections.singletonList())
+                .result(Collections.singletonList(schedule))
                 .build();
 
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
 
     // 타인 일정 조회 -> 조회하려는 사람의 PRIVACY를 알아야 함, 어떤 일정인지는 상세하게 X
-    @GetMapping("/schedule/{userId}")
-    public ResponseEntity<BasicResponse> getAnotherSchedule(HttpServletRequest request, @PathVariable(name = "userId") Long userId) {
+    @GetMapping("/schedule/user/{userId}")
+    public ResponseEntity<BasicResponse> getUserSchedule(HttpServletRequest request, @PathVariable(name = "userId") Long userId) {
 //        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
 //
 //        Long id = jwtService.extractId(accessToken).orElseThrow(

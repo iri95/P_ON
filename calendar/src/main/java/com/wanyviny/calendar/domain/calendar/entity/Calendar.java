@@ -41,14 +41,14 @@ public class Calendar {
     @Column(name = "CALENDAR_PLACE")
     private String place;
 
-    public static CalendarDto.getSchedule entityToDtoList(Calendar calendar){
+    public CalendarDto.getSchedule entityToDto(){
         return CalendarDto.getSchedule.builder()
-                .calendarId(calendar.getId())
-                .title(calendar.title)
-                .content(calendar.content)
-                .startDate(calendar.startDate)
-                .endDate(calendar.endDate)
-                .place(calendar.place)
+                .calendarId(this.getId())
+                .title(this.title)
+                .content(this.content)
+                .startDate(this.startDate)
+                .endDate(this.endDate)
+                .place(this.place)
                 .build();
     }
 }

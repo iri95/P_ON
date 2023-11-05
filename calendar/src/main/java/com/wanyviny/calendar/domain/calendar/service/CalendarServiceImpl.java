@@ -32,7 +32,16 @@ public class CalendarServiceImpl implements CalendarService {
         List<Calendar> calendarList = calendarRepository.findByUserId_id(id);
 
         return calendarList.stream()
-                .map(Calendar::entityToDtoList)
+                .map(Calendar::entityToDto)
                 .toList();
+    }
+
+    @Override
+    public CalendarDto.getSchedule getDetailSchedule(Long calendarId) {
+        Calendar calendar = calendarRepository.findById(calendarId).orElseThrow(
+                () -> new IllegalArgumentException("해당 일정이 없습니다.")
+        );
+
+        return calendar.entityToDto();
     }
 }

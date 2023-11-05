@@ -8,4 +8,6 @@ public interface CalendarService {
     void postSchdule(Long id, CalendarDto.setSchedule schedule);
 
     List<CalendarDto.getSchedule> getMySchedule(Long id);
+
+    CalendarDto.getSchedule getDetailSchedule(Long calendarId);
 }
