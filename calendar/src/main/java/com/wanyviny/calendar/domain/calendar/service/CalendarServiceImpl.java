@@ -45,20 +45,27 @@ public class CalendarServiceImpl implements CalendarService {
     public List<CalendarDto.getSchedule> getMySchedule(Long id) {
 
 //        List<Calendar> calendarList = calendarRepository.findByUserId_id(id);
-        List<Calendar> list = scheduleRedisTemplate.opsForList().range("User_" + id, 0, -1);
+        List<Calendar> calendarList = scheduleRedisTemplate.opsForList().range("User_" + id, 0, -1);
 
-        return list.stream()
+        return calendarList.stream()
                 .map(Calendar::entityToDto)
                 .toList();
     }
 
     @Override
-    public CalendarDto.getSchedule getDetailSchedule(Long calendarId) {
-        Calendar calendar = calendarRepository.findById(calendarId).orElseThrow(
-                () -> new IllegalArgumentException("해당 일정이 없습니다.")
-        );
+    public CalendarDto.getSchedule getDetailSchedule(Long id, Long calendarId) {
+//        Calendar calendar = calendarRepository.findById(calendarId).orElseThrow(
+//                () -> new IllegalArgumentException("해당 일정이 없습니다.")
+//        );
 
-        return calendar.entityToDto();
+        List<Calendar> calendarList = scheduleRedisTemplate.opsForList().range("User_" + id, 0, -1);
+
+        return calendarList.stream()
+                .filter(calendar -> calendar.getId() == calendarId)
+                .map(Calendar::entityToDto)
+                .findAny().orElseThrow(
+                        () -> new IllegalArgumentException("해당하는 일정이 없습니다.")
+                );
     }
 
     @Override

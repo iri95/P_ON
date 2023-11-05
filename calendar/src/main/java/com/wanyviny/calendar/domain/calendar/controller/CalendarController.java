@@ -70,8 +70,14 @@ public class CalendarController {
     // 일정 상세 조회
     @GetMapping("/schedule/detail/{calendarId}")
     public ResponseEntity<BasicResponse> getDetailSchedule(@PathVariable(name = "calendarId") Long calendarId) {
+        //        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
+//
+//        Long id = jwtService.extractId(accessToken).orElseThrow(
+//                () -> new IllegalArgumentException("Access Token에 해당하는 id가 없습니다.")
+//        );
+        Long id = 1L;
 
-        CalendarDto.getSchedule schedule = calendarService.getDetailSchedule(calendarId);
+        CalendarDto.getSchedule schedule = calendarService.getDetailSchedule(id, calendarId);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())

@@ -9,7 +9,7 @@ public interface CalendarService {
 
     List<CalendarDto.getSchedule> getMySchedule(Long id);
 
-    CalendarDto.getSchedule getDetailSchedule(Long calendarId);
+    CalendarDto.getSchedule getDetailSchedule(Long id, Long calendarId);
 
     List<CalendarDto.getSchedule> getUserSchedule(Long id, Long userId);
 
