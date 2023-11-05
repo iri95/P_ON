@@ -51,4 +51,12 @@ public class Calendar {
                 .place(this.place)
                 .build();
     }
+
+    public void update(CalendarDto.setSchedule schedule) {
+        this.title = schedule.getTitle();
+        this.content = schedule.getContent();
+        this.startDate = schedule.getStartDate();
+        this.endDate = schedule.getEndDate();
+        this.place = schedule.getPlace();
+    }
 }

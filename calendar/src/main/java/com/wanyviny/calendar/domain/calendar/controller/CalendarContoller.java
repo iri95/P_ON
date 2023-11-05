@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -24,6 +25,7 @@ public class CalendarContoller {
 
     // 일정 생성
     @PostMapping("/schedule")
+    @Transactional
     public ResponseEntity<BasicResponse> postSchedule(HttpServletRequest request, @RequestBody CalendarDto.setSchedule schedule) {
 //        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
 //
@@ -118,8 +120,16 @@ public class CalendarContoller {
 
     // 일정 수정
     @PutMapping("/schedule/{calendarId}")
+    @Transactional
     public ResponseEntity<BasicResponse> updateSchedule(@PathVariable(name = "calendarId") Long calendarId, @RequestBody CalendarDto.setSchedule schedule) {
+//        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
+//
+//        Long id = jwtService.extractId(accessToken).orElseThrow(
+//                () -> new IllegalArgumentException("Access Token에 해당하는 id가 없습니다.")
+//        );
+        Long id = 1L;
 
+        calendarService.updateSchedule(id, calendarId, schedule);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())

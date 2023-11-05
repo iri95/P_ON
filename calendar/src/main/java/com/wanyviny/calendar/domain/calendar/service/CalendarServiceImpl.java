@@ -7,8 +7,10 @@ import com.wanyviny.calendar.domain.calendar.repository.CalendarRepository;
 import com.wanyviny.calendar.domain.follow.repository.FollowRepository;
 import com.wanyviny.calendar.domain.user.entity.User;
 import com.wanyviny.calendar.domain.user.repository.UserRepository;
+import jakarta.persistence.Table;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -21,6 +23,7 @@ public class CalendarServiceImpl implements CalendarService {
     private final FollowRepository followRepository;
 
     @Override
+    @Transactional
     public void postSchdule(Long id, CalendarDto.setSchedule schedule) {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("ID에 해당하는 유저가 없습니다.")
@@ -74,5 +77,15 @@ public class CalendarServiceImpl implements CalendarService {
                     .toList();
         }
 
+    }
+
+    @Override
+    @Transactional
+    // TODO : null 값은 변경하지 않도록 수정 -> null로 변경하고 싶은 값은 어떻게 할까? content 지운다거나
+    public void updateSchedule(Long id, Long calendarId, CalendarDto.setSchedule schedule) {
+        Calendar calendar = calendarRepository.findByUserId_idAndId(id, calendarId).orElseThrow(
+                () -> new IllegalArgumentException("해당하는 일정이 없습니다.")
+        );
+        calendar.update(schedule);
     }
 }
