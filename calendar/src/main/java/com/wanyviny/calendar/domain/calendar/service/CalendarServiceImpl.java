@@ -1,8 +1,10 @@
 package com.wanyviny.calendar.domain.calendar.service;
 
+import com.wanyviny.calendar.domain.PRIVACY;
 import com.wanyviny.calendar.domain.calendar.dto.CalendarDto;
 import com.wanyviny.calendar.domain.calendar.entity.Calendar;
 import com.wanyviny.calendar.domain.calendar.repository.CalendarRepository;
+import com.wanyviny.calendar.domain.follow.repository.FollowRepository;
 import com.wanyviny.calendar.domain.user.entity.User;
 import com.wanyviny.calendar.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ public class CalendarServiceImpl implements CalendarService {
 
     private final CalendarRepository calendarRepository;
     private final UserRepository userRepository;
+    private final FollowRepository followRepository;
 
     @Override
     public void postSchdule(Long id, CalendarDto.setSchedule schedule) {
@@ -43,5 +46,33 @@ public class CalendarServiceImpl implements CalendarService {
         );
 
         return calendar.entityToDto();
+    }
+
+    @Override
+    public List<CalendarDto.getSchedule> getUserSchedule(Long id, Long userId) {
+
+        // user의 privacy를 먼저 보고
+        PRIVACY privacy = userRepository.findPrivacyById(userId);
+
+        if (privacy == PRIVACY.PRIVATE) { // private일 경우 null
+            return null;
+        } else if (privacy == PRIVACY.FOLLOWING) { // following 일 경우 following 여부를 파악 후 일정 가져옴
+            if (followRepository.existsFollowByUserId_IdAndFollowingId_Id(userId, id)) {
+                List<Calendar> calendarList = calendarRepository.findByUserId_id(userId);
+
+                return calendarList.stream()
+                        .map(Calendar::entityToDto)
+                        .toList();
+            }else{
+                return null;
+            }
+        }else{ // all 일경우 그냥 가져옴
+            List<Calendar> calendarList = calendarRepository.findByUserId_id(userId);
+
+            return calendarList.stream()
+                    .map(Calendar::entityToDto)
+                    .toList();
+        }
+
     }
 }

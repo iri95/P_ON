@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface FollowRepository extends JpaRepository<Follow, Long> {
+    boolean existsFollowByUserId_IdAndFollowingId_Id(Long userId, Long followingId);
 }

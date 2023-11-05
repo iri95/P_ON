@@ -90,17 +90,30 @@ public class CalendarContoller {
 //        Long id = jwtService.extractId(accessToken).orElseThrow(
 //                () -> new IllegalArgumentException("Access Token에 해당하는 id가 없습니다.")
 //        );
-        Long id = 1L;
+        Long id = 4L;
 
-        BasicResponse basicResponse = BasicResponse.builder()
-                .code(HttpStatus.OK.value())
-                .httpStatus(HttpStatus.OK)
-                .message("타인 일정 조회 성공!")
-                .count(1)
-//                .result(Collections.singletonList())
-                .build();
+        List<CalendarDto.getSchedule> getScheduleList = calendarService.getUserSchedule(id, userId);
 
-        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+        if (getScheduleList == null) {
+            BasicResponse basicResponse = BasicResponse.builder()
+                    .code(HttpStatus.NOT_FOUND.value())
+                    .httpStatus(HttpStatus.NOT_FOUND)
+                    .message("일정을 확인할 수 없습니다.")
+                    .build();
+
+            return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+        } else {
+
+            BasicResponse basicResponse = BasicResponse.builder()
+                    .code(HttpStatus.OK.value())
+                    .httpStatus(HttpStatus.OK)
+                    .message("타인 일정 조회 성공!")
+                    .count(getScheduleList.size())
+                    .result(Arrays.asList(getScheduleList.toArray()))
+                    .build();
+
+            return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+        }
     }
 
     // 일정 수정
