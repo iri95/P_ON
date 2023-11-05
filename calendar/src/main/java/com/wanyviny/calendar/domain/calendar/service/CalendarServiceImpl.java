@@ -15,10 +15,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -61,7 +58,7 @@ public class CalendarServiceImpl implements CalendarService {
         List<Calendar> calendarList = scheduleRedisTemplate.opsForList().range("User_" + id, 0, -1);
 
         return calendarList.stream()
-                .filter(calendar -> calendar.getId() == calendarId)
+                .filter(calendar -> Objects.equals(calendar.getId(), calendarId))
                 .map(Calendar::entityToDto)
                 .findAny().orElseThrow(
                         () -> new IllegalArgumentException("해당하는 일정이 없습니다.")
