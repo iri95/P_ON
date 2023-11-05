@@ -57,7 +57,7 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
               await sleepAsync(500.ms);
             },
             child: SingleChildScrollView(
-              padding: const EdgeInsets.only(bottom: BottomFloatingActionButton.height),
+              padding: const EdgeInsets.only(top: PONAppBar.appBarHeight + 10, bottom: BottomFloatingActionButton.height,),
               // 반응형으로 만들기위해서 컨트롤넣음
               controller: scrollController,
               // 리스트가 적을때는 스크롤이 되지 않도록 기본 설정이 되어있는 문제해결.
@@ -107,7 +107,7 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
               ),
             ),
           ),
-          // const PONAppBar(),
+          const PONAppBar(),
           // Positioned(
           //     bottom: 40,
           //     right: 10,

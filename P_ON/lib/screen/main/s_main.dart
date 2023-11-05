@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import '../../common/common.dart';
+import '../../common/util/center_docked_style.dart';
 import 'fab/w_bottom_nav_floating_button.dart';
 import 'w_menu_drawer.dart';
 
@@ -90,6 +91,19 @@ class MainScreenState extends ConsumerState<MainScreen> with SingleTickerProvide
               ),
               resizeToAvoidBottomInset: false,
               bottomNavigationBar: _buildBottomNavigationBar(context),
+                floatingActionButtonLocation: CenterDockedFloatingActionButtonLocation(15.0),
+                floatingActionButton: InkWell(
+                  onHover: (e) {
+                    setState(() {
+                      currentImage = "assets/image/main/핑키1.png";
+                    });
+                  },
+                  child: FloatingActionButton(
+                    elevation: 4,
+                    onPressed: () {},
+                    child: Image.asset(currentImage),
+                  ),
+                )
             ),
             AnimatedOpacity(
               opacity: _currentTab != TabItem.plan ? 1 : 0,

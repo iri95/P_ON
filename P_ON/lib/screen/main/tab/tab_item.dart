@@ -10,12 +10,12 @@ import 'benefit/f_benefit.dart';
 enum TabItem {
   home(Icons.home_outlined, '홈', HomeFragment()),
   history(Icons.menu_book, '추억', BenefitFragment()),
-  blankFeild(Icons.check_box_outline_blank, '', TtospayFragment()),
+  blankFeild(null, '', TtospayFragment()),
   plan(Icons.calendar_today_outlined, '일정', StockFragment()),
   my(Icons.person_outline, 'MY', AllFragment());
 
-  final IconData activeIcon;
-  final IconData inActiveIcon;
+  final IconData? activeIcon;
+  final IconData? inActiveIcon;
   final String tabName;
   final Widget firstPage;
 
