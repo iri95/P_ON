@@ -7,6 +7,7 @@ import 'package:p_on/screen/main/tab/promise_room/widget/w_follows.dart';
 import 'package:p_on/screen/main/tab/promise_room/widget/w_friends_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class SelectedFriends extends ConsumerStatefulWidget {
@@ -34,6 +35,14 @@ class _SelectedFriendsState extends ConsumerState<SelectedFriends> {
             children: [
               // const BasicAppBar(
               //     text: '약속 생성', isProgressBar: true, percentage: 66),
+              LinearPercentIndicator(
+                padding: EdgeInsets.zero,
+                percent: 66 / 100,
+                lineHeight: 3,
+                backgroundColor: const Color(0xffCACFD8),
+                progressColor: AppColors.mainBlue2,
+                width: MediaQuery.of(context).size.width,
+              ),
               Container(
                 margin:
                     const EdgeInsets.symmetric(vertical: 16, horizontal: 24),

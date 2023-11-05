@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:p_on/common/constant/app_colors.dart';
@@ -11,8 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:nav/nav.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:velocity_x/velocity_x.dart';
-
 import 'widget/w_checked_modal.dart';
 
 class LastCreatePromise extends ConsumerStatefulWidget {
@@ -127,6 +125,14 @@ class _LastCreatePromiseState extends ConsumerState<LastCreatePromise> {
             children: [
               // const BasicAppBar(
               //     text: '약속 생성', isProgressBar: true, percentage: 100),
+              LinearPercentIndicator(
+                padding: EdgeInsets.zero,
+                percent: 100 / 100,
+                lineHeight: 3,
+                backgroundColor: const Color(0xffCACFD8),
+                progressColor: AppColors.mainBlue2,
+                width: MediaQuery.of(context).size.width,
+              ),
               _buildTextField('날짜', dateController, dateNode, timeNode),
               _buildTextField('시간', timeController, timeNode, placeNode),
               _buildTextField('장소', placeController, placeNode, null),
