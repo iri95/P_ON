@@ -7,7 +7,9 @@ import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 import 'dart:convert';
+import '../home/f_home.dart';
 import '../promise_room/vo_server_url.dart';
+import 'w_header_text_vote.dart';
 
 class ChatRoom extends ConsumerStatefulWidget {
   final String id;
@@ -32,6 +34,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
   final String userName = "김태환";
 
   List<Map<String, dynamic>> messages = [];
+  Map<String, dynamic> chatRoomInfo = {};
 
   void onConnect(StompFrame? frame) {
     client.subscribe(
@@ -76,9 +79,23 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
   late final String formatedDate =
       DateFormat('yyyy년 MM월 dd일 EEEE', 'ko_KR').format(DateTime.now());
 
+  void getChatRoom() async {
+    final response = await dio.get('$server/api/promise/room/${widget.id}');
+    chatRoomInfo = response.data['result'][0];
+
+    print('==================================');
+    print('==================================');
+    print('==================================');
+    print('==================================');
+    print('==================================');
+    print('==================================');
+    print(response);
+  }
+
   @override
   void initState() {
     super.initState();
+    getChatRoom();
 
     client = StompClient(
         config: StompConfig.sockJS(
@@ -116,11 +133,32 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
       debugShowCheckedModeBanner: false,
       home: SafeArea(
         child: Scaffold(
+          appBar: AppBar(
+            title: Text(
+              chatRoomInfo['promiseTitle'] ?? '...',
+              style: const TextStyle(
+                  color: Colors.black,
+                  fontFamily: 'Pretendard',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 24),
+            ),
+            centerTitle: true,
+            backgroundColor: Colors.white,
+            leading: IconButton(
+              icon: const Icon(Icons.arrow_back_ios, color: Colors.black,),
+              onPressed: () {
+                // Nav.push(HomeFragment());
+              },
+            ),
+            actions: [
+              IconButton(onPressed: () {}, icon: const Icon(Icons.menu, color: Colors.black))
+            ],
+          ),
           body: Container(
             padding: const EdgeInsets.only(bottom: 60),
             child: Column(
               children: [
-                const BasicAppBar(text: '약속방이름', isProgressBar: false),
+                // BasicAppBar(text: chatRoomInfo['promiseTitle'] ?? '...', isProgressBar: false),
                 InkWell(
                   child: Container(
                     padding: const EdgeInsets.symmetric(
@@ -134,30 +172,64 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                           blurRadius: 5,
                           offset: const Offset(0, 3))
                     ]),
-                    height: 90,
-                    child: const Column(
+                    height: 120,
+                    child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Row(
-                          children: [
-                            ChatHeadText(
-                                text: '일시 | ', color: AppColors.grey500),
-                            ChatHeadText(text: '받아온 날짜', color: Colors.black),
-                          ],
+                        Container(
+                          margin: const EdgeInsets.symmetric(vertical: 3),
+                          child: Row(
+                            children: [
+                              const ChatHeadText(
+                                  text: '일시 | ', color: AppColors.grey500),
+                              if (chatRoomInfo['promiseDate'] == '미정')
+                                Vote(
+                                  voteType: VoteType.Date,
+                                  roomId: widget.id,
+                                )
+                              else
+                                ChatHeadText(
+                                    text: chatRoomInfo['promiseDate'] ?? '...',
+                                    color: Colors.black),
+                            ],
+                          ),
                         ),
-                        Row(
-                          children: [
-                            ChatHeadText(
-                                text: '시간 | ', color: AppColors.grey500),
-                            ChatHeadText(text: '받아온 시간', color: Colors.black),
-                          ],
+                        Container(
+                          margin: const EdgeInsets.symmetric(vertical: 3),
+                          child: Row(
+                            children: [
+                              const ChatHeadText(
+                                  text: '시간 | ', color: AppColors.grey500),
+                              if (chatRoomInfo['promiseTime'] == '미정')
+                                Vote(
+                                  voteType: VoteType.Time,
+                                  roomId: widget.id,
+                                )
+                              else
+                                ChatHeadText(
+                                    text: chatRoomInfo['promiseTime'] ?? '...',
+                                    color: Colors.black),
+                            ],
+                          ),
                         ),
-                        Row(
-                          children: [
-                            ChatHeadText(
-                                text: '장소 | ', color: AppColors.grey500),
-                            ChatHeadText(text: '받아온 장소', color: Colors.black),
-                          ],
+                        Container(
+                          margin: const EdgeInsets.symmetric(vertical: 3),
+                          child: Row(
+                            children: [
+                              const ChatHeadText(
+                                  text: '장소 | ', color: AppColors.grey500),
+                              if (chatRoomInfo['promiseLocation'] == '미정')
+                                Vote(
+                                  voteType: VoteType.Location,
+                                  roomId: widget.id,
+                                )
+                              else
+                                ChatHeadText(
+                                    text: chatRoomInfo['promiseLocation'] ??
+                                        '...',
+                                    color: Colors.black),
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -291,7 +363,8 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
             ),
           ),
           bottomSheet: Container(
-            padding: EdgeInsets.only(left: 4, bottom: isModalOpen ? keyboardHeight : 0),
+            padding: EdgeInsets.only(
+                left: 4, bottom: isModalOpen ? keyboardHeight : 0),
             height: isModalOpen ? keyboardHeight + 60 : 60,
             width: double.infinity,
             decoration: const BoxDecoration(
@@ -310,7 +383,6 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                     });
                     if (isModalOpen) {
                       showModalBottomSheet(
-
                         barrierColor: Colors.transparent,
                         context: context,
                         builder: (context) {
@@ -320,8 +392,6 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                           );
                         },
                       );
-                    } else {
-                      Navigator.pop(context);
                     }
                   },
                 ),
@@ -330,7 +400,8 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
-                        margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+                        margin: const EdgeInsets.symmetric(
+                            vertical: 4, horizontal: 8),
                         padding: const EdgeInsets.only(left: 16),
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
@@ -358,8 +429,8 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                                   } else {}
                                 },
                                 icon: node.hasFocus
-                                    ? const Icon(Icons.send)
-                                    : const Icon(Icons.mic))
+                                    ? const Icon(Icons.send, color: AppColors.mainBlue,)
+                                    : const Icon(Icons.mic, color: AppColors.mainBlue,))
                           ],
                         ),
                       ),
@@ -371,25 +442,6 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
           ),
         ),
       ),
-    );
-  }
-}
-
-class ChatHeadText extends StatelessWidget {
-  final String text;
-  final Color color;
-
-  const ChatHeadText({super.key, required this.text, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: TextStyle(
-          fontFamily: 'Pretendard',
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-          color: color),
     );
   }
 }

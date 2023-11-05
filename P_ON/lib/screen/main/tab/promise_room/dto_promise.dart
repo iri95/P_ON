@@ -26,7 +26,7 @@ class Promise {
 
   Promise(
       {this.promise_title,
-      this.selected_friends,
+      this.selected_friends = const [],
       this.promise_date,
       this.promise_time,
       this.promise_location,
