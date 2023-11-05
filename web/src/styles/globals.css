@@ -16,10 +16,11 @@ body {
 }
 
 main {
-  padding: 80px 0 0 0;
-  margin: 0 20vw 40px 20vw;
-  width: 60vw;
+  padding: 0;
   min-height: 100vh;
+  .container {
+    padding: 70px 0 0 0;
+  }
 }
 /* 타블렛 이하 */
 @media screen and (max-width: 1023px) {
