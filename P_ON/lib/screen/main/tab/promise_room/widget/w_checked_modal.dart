@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:p_on/common/common.dart';
 import 'package:p_on/screen/main/tab/chat_room/f_chat_room.dart';
 import 'package:p_on/screen/main/tab/promise_room/dto_promise.dart';
+import 'package:go_router/go_router.dart';
 
 import '../vo_server_url.dart';
 
@@ -29,7 +31,7 @@ class _CheckedModalState extends ConsumerState<CheckedModal> {
           {"nickname": "김나연", "userId": "6"},
         ],
         "promiseTitle":
-            promise.promise_title != null ? promise.promise_title : "미정",
+        promise.promise_title != null ? promise.promise_title : "미정",
         "promiseDate": promise.promise_date != null
             ? promise.promise_date.toString()
             : "미정",
@@ -37,15 +39,20 @@ class _CheckedModalState extends ConsumerState<CheckedModal> {
             ? promise.promise_time.toString()
             : "미정",
         "promiseLocation":
-            promise.promise_location != null ? promise.promise_location : "미정"
+        promise.promise_location != null ? promise.promise_location : "미정"
       };
       var response = await dio.post(url, data: data);
+      print(response);
+      print(response.data['result'][0]['id']);
 
       String room_id = response.data['result'][0]['id'];
-      Navigator.pushAndRemoveUntil(context,
-          MaterialPageRoute(builder: (context) => ChatRoom(id: room_id)), (route) => false);
+      final router = GoRouter.of(context);
+      // Nav.removeUntil((route) => false);
+      router.go('/chatroom/$room_id');
+
+
     } catch (e) {
-      print(e);
+    print(e);
     }
   }
 
@@ -56,35 +63,64 @@ class _CheckedModalState extends ConsumerState<CheckedModal> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
-      title: const Text('약속 정하기', style: TextStyle(fontSize: 16)),
+      title: Text(
+          promise.promise_title != null
+              ? '${promise.promise_title} 약속'
+              : '약속 정하기',
+          style: TextStyle(fontSize: 16, fontFamily: 'Pretendard')
+      ),
+
       content: Container(
         height: 200,
         child: Column(
           children: [
             const Expanded(child: Text('')),
-            Text(
-                '제목 : ${promise.promise_title != null ? promise.promise_title : '미정'}'),
-            Text(
-                '날짜 : ${promise.promise_date != null ? promise.promise_date : '미정'}'),
-            Text(
-                '시간 : ${promise.promise_time != null ? promise.promise_time : '미정'}'),
-            Text(
-                '장소 : ${promise.promise_location != null ? promise.promise_location : '미정'}'),
-            Text('멤버 : ${promise.selected_friends}'),
+            MText(text: '제목 : ${promise.promise_title != null
+                    ? promise.promise_title
+                    : '미정'}',18),
+            MText(
+                text:'날짜 : ${promise.promise_date != null
+                    ? promise.promise_date
+                    : '미정'}', 18),
+            MText(
+                text:'시간 : ${promise.promise_time != null
+                    ? promise.promise_time
+                    : '미정'}',18),
+            MText(
+                text:'장소 : ${promise.promise_location != null ? promise
+                    .promise_location : '미정'}', 18),
+            MText(18, text:
+            '총 N명'),
             const Expanded(child: Text('')),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                TextButton(
-                    onPressed: () async {
-                      await PostCreatePromiseRoom(promise);
-                    },
-                    child: Text('확인')),
-                TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text('취소')),
+                Container(
+                  height: 40,
+                  width: 80,
+                  margin: EdgeInsets.only(right: 6),
+                  child: FilledButton(
+                      onPressed: () async {
+                        await PostCreatePromiseRoom(promise);
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(AppColors.mainBlue2)
+                      ),
+                      child: Text('확인', style: TextStyle(fontFamily: 'Pretendard', color: Colors.white))),
+                ),
+                Container(
+                  width: 80,
+                  height: 40,
+                  margin: EdgeInsets.only(left: 6),
+                  child: FilledButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      style: ButtonStyle(
+                          backgroundColor: MaterialStateProperty.all(AppColors.grey300)
+                      ),
+                      child: Text('취소', style: TextStyle(fontFamily: 'Pretendard', color: Colors.white))),
+                ),
               ],
             )
           ],
@@ -93,3 +129,20 @@ class _CheckedModalState extends ConsumerState<CheckedModal> {
     );
   }
 }
+
+class MText extends StatelessWidget {
+  String text;
+  double size;
+
+  MText(this.size, {super.key, required this.text});
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(text, style: TextStyle(
+      fontFamily: 'Pretendard',
+      fontSize: size,
+      color: Colors.black
+    ),);
+  }
+}
+
