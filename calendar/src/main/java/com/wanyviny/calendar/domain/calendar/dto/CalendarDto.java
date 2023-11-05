@@ -1,5 +1,6 @@
 package com.wanyviny.calendar.domain.calendar.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.wanyviny.calendar.domain.calendar.entity.Calendar;
 import com.wanyviny.calendar.domain.user.entity.User;
@@ -28,7 +29,9 @@ public class CalendarDto {
         private Long calendarId;
         private String title;
         private String content;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private Date startDate;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private Date endDate;
         private String place;
     }
@@ -40,7 +43,9 @@ public class CalendarDto {
     public static class setSchedule{
         private String title;
         private String content;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private Date startDate;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private Date endDate;
         private String place;
 
