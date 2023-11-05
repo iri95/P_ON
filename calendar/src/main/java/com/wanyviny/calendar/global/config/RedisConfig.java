@@ -1,5 +1,7 @@
 package com.wanyviny.calendar.global.config;
 
+import com.wanyviny.calendar.domain.calendar.dto.CalendarDto;
+import com.wanyviny.calendar.domain.calendar.entity.Calendar;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -9,7 +11,10 @@ import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
+import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+
+import java.util.List;
 
 @Configuration
 @RequiredArgsConstructor
@@ -48,4 +53,13 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         return redisTemplate;
     }
+    @Bean
+    public RedisTemplate<String, Calendar> calendarRedisTemplate(){
+        RedisTemplate<String, Calendar> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setKeySerializer(new StringRedisSerializer()); //key 깨짐 방지
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Calendar.class)); //value 깨짐 방지 -- 이것 때문인가.. 맞음
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        return redisTemplate;
+    }
+
 }

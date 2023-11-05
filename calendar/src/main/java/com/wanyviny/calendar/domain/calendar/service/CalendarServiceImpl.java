@@ -1,5 +1,6 @@
 package com.wanyviny.calendar.domain.calendar.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wanyviny.calendar.domain.PRIVACY;
 import com.wanyviny.calendar.domain.calendar.dto.CalendarDto;
 import com.wanyviny.calendar.domain.calendar.entity.Calendar;
@@ -8,11 +9,16 @@ import com.wanyviny.calendar.domain.follow.repository.FollowRepository;
 import com.wanyviny.calendar.domain.user.entity.User;
 import com.wanyviny.calendar.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +27,7 @@ public class CalendarServiceImpl implements CalendarService {
     private final CalendarRepository calendarRepository;
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
-
+    private final RedisTemplate<String, Calendar> scheduleRedisTemplate;
     @Override
     @Transactional
     public void postSchdule(Long id, CalendarDto.setSchedule schedule) {
@@ -29,15 +35,19 @@ public class CalendarServiceImpl implements CalendarService {
                 () -> new IllegalArgumentException("ID에 해당하는 유저가 없습니다.")
         );
 
+        scheduleRedisTemplate.opsForList().rightPush("User_" + id, schedule.dtoToEntity(user));
+
+
         calendarRepository.save(schedule.dtoToEntity(user));
     }
 
     @Override
     public List<CalendarDto.getSchedule> getMySchedule(Long id) {
 
-        List<Calendar> calendarList = calendarRepository.findByUserId_id(id);
+//        List<Calendar> calendarList = calendarRepository.findByUserId_id(id);
+        List<Calendar> list = scheduleRedisTemplate.opsForList().range("User_" + id, 0, -1);
 
-        return calendarList.stream()
+        return list.stream()
                 .map(Calendar::entityToDto)
                 .toList();
     }

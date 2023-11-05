@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.Date;
 
 
@@ -34,7 +35,7 @@ public class CalendarDto {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class setSchedule {
+    public static class setSchedule implements Serializable {
         private String title;
         private String content;
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
