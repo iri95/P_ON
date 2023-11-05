@@ -7,11 +7,14 @@ import 'package:p_on/route/transition/fade_transition_page.dart';
 import 'package:p_on/screen/main/s_main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:p_on/screen/main/tab/chat_room/f_chat_room.dart';
+import 'package:p_on/screen/main/tab/chat_room/f_create_vote_room.dart';
 import 'package:p_on/screen/main/tab/promise_room/f_create_promise.dart';
 import 'package:p_on/screen/main/tab/tab_item.dart';
 
 import 'auth.dart';
 import 'common/widget/w_round_button.dart';
+import 'screen/main/tab/chat_room/w_header_text_vote.dart';
 
 class App extends ConsumerStatefulWidget {
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
@@ -50,6 +53,7 @@ class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
       child: PonAuthScope(
         notifier: _auth,
         child: MaterialApp.router(
+          debugShowCheckedModeBanner: false,
           scaffoldMessengerKey: App.scaffoldMessengerKey,
           routerConfig: _router,
           localizationsDelegates: context.localizationDelegates,
@@ -127,6 +131,28 @@ class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
            return const CreatePromise();
           }
       ),
+      GoRoute(
+        path: '/chatroom/:id',
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          final id = state.pathParameters['id'] ?? 'unknown';
+          return MaterialPage(
+            // key: ValueKey(id),
+            child: ChatRoom(id: id),
+          );
+        }
+      ),
+      GoRoute(
+          path: '/create/vote/:id/:voteType',
+          pageBuilder: (BuildContext context, GoRouterState state) {
+            final id = state.pathParameters['id'] ?? 'unknown';
+            final voteTypeString = state.pathParameters['voteType'] ?? 'Date';
+            final voteType = VoteType.values.firstWhere((e) => e.toString() == 'VoteType.$voteTypeString', orElse: () => VoteType.Date);
+            return MaterialPage(
+              child: CreateVoteRoom(id: id, voteType: voteType),
+            );
+          }
+      ),
+
 
     ],
     redirect: _auth.guard,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:p_on/common/constant/app_colors.dart';
 
 enum VoteType {
@@ -26,15 +27,25 @@ class _VoteState extends State<Vote> {
           style: ButtonStyle(
               backgroundColor: MaterialStateProperty.all(AppColors.mainBlue3)),
           onPressed: () {
+            final router = GoRouter.of(context);
+            String voteTypeToString(VoteType voteType) {
+              return voteType.toString().split('.').last;
+            }
             switch (widget.voteType) {
               case VoteType.Date:
-              // Date 투표일 때의 동작
+                print('date');
+                print(widget.voteType);
+                router.go('/create/vote/${widget.roomId}/${voteTypeToString(widget.voteType)}');
                 break;
               case VoteType.Time:
-              // Time 투표일 때의 동작
+                print('time');
+                print(widget.voteType);
+                router.go('/create/vote/${widget.roomId}/${voteTypeToString(widget.voteType)}');
                 break;
               case VoteType.Location:
-              // Location 투표일 때의 동작
+                print('location');
+                print(widget.voteType);
+                router.go('/create/vote/${widget.roomId}/${voteTypeToString(widget.voteType)}');
                 break;
             }
           },
