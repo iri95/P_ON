@@ -53,7 +53,7 @@ class _LastCreatePromiseState extends ConsumerState<LastCreatePromise> {
       lastDate: DateTime(2100),
     );
     if (picked != null) {
-      dateController.text = DateFormat('yyyy-MM-dd').format(picked);
+      dateController.text = DateFormat('yyyy-MM-dd (E)', 'ko_kr').format(picked);
       ref.read(promiseProvider.notifier).setPromiseDate(picked);
     }
   }
