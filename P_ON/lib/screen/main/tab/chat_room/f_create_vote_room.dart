@@ -2,7 +2,6 @@ import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:day_night_time_picker/lib/daynight_timepicker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
-import 'package:p_on/app.dart';
 import 'package:p_on/common/common.dart';
 import 'w_header_text_vote.dart';
 
@@ -18,7 +17,12 @@ class CreateVoteRoom extends StatefulWidget {
 
 class _CreateVoteRoomState extends State<CreateVoteRoom> {
   VoteType? selectedVoteType;
-  bool isEndTimeSet = false;
+  bool isEndTimeSet = true;
+  bool isMultipleChoice = false;
+  bool isAnoymous = false;
+  TextEditingController _endDateController = TextEditingController();
+  TextEditingController _endTimeController = TextEditingController();
+
 
   Map<VoteType, List<String>> voteItems = {
     VoteType.Date: ['', ''],
@@ -34,10 +38,16 @@ class _CreateVoteRoomState extends State<CreateVoteRoom> {
   @override
   void initState() {
     selectedVoteType = widget.voteType;
+    _endDateController.text = _formatDate(DateTime.now());
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       setState(() {});
     });
     super.initState();
+  }
+
+  String _formatDate(DateTime date) {
+    final formatter = DateFormat('yyyy-MM-dd (E)', 'ko_KR');
+    return formatter.format(date);
   }
 
   @override
@@ -222,27 +232,150 @@ class _CreateVoteRoomState extends State<CreateVoteRoom> {
                 ),
               ),
             Container(
-              color: Colors.red,
               height: 100,
+              margin: const EdgeInsets.symmetric(horizontal: 12),
               child: Row(
                 children: [
+                  Checkbox(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15)
+                    ),
+                    activeColor: AppColors.mainBlue,
+                    side: isEndTimeSet ? const BorderSide(color: AppColors.mainBlue3) : const BorderSide(color: AppColors.grey300),
+                    value: isEndTimeSet, 
+                    onChanged: (bool? value) {
+                    setState(() {
+                      isEndTimeSet = value!;
+                    });
+                  }),
+                  Text('종료시간', style: TextStyle(fontFamily: 'Pretendard', color: isEndTimeSet ? Colors.black : AppColors.grey300),),
+                  Expanded(child: Container()),
                   Container(
-                    width: 50,
+                    width: 145,
                     height: 50,
-                    color: Colors.blue,
+                    padding: const EdgeInsets.only(left: 12),
+                    margin: const EdgeInsets.only(right: 6),
+                    decoration: BoxDecoration(
+                      border: isEndTimeSet ? Border.all(color: AppColors.mainBlue3) : Border.all(color: AppColors.grey300),
+                      borderRadius: BorderRadius.circular(6)
+                    ),
+                    child: TextField(
+                      decoration: const InputDecoration(
+                        border: InputBorder.none,
+                      ),
+                      readOnly: true,
+                      controller: _endDateController,
+                      enabled: isEndTimeSet,
+                      onTap: () async {
+                        DateTime? date = await showDatePicker(
+                          builder: (context, child) {
+                            return Theme(
+                              data: Theme.of(context).copyWith(
+                                  colorScheme: const ColorScheme.light(
+                                    primary: AppColors.mainBlue2,
+                                    onPrimary: Colors.white,
+                                    onSurface: Colors.black,
+                                  ),
+                                  textButtonTheme: TextButtonThemeData(
+                                    style:
+                                    TextButton.styleFrom(foregroundColor: AppColors.mainBlue),
+                                  )),
+                              child: child!,
+                            );
+                          },
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2100),
+                        );
+                        if (date != null) {
+                          _endDateController.text = _formatDate(date);
+                        }
+                      }
+                    ),
                   ),
                   Container(
-                    width: 50,
+                    width: 120,
                     height: 50,
-                    color: Colors.green,
+                    padding: const EdgeInsets.only(left: 6),
+                    decoration: BoxDecoration(
+                        border: isEndTimeSet ? Border.all(color: AppColors.mainBlue3) : Border.all(color: AppColors.grey300),
+                        borderRadius: BorderRadius.circular(6)
+                    ),
+                    child: TextField(
+                      readOnly: true,
+                      decoration: const InputDecoration(border: InputBorder.none),
+                      controller: _endTimeController,
+                      enabled: isEndTimeSet,
+                      onTap: () {
+                        TimeOfDay initialTime = TimeOfDay.now();
+                        Navigator.of(context).push(showPicker(
+                            context: context,
+                            value: Time(hour: initialTime.hour, minute: initialTime.minute),
+                            onChange: (TimeOfDay time) {
+                              final period = time.period == DayPeriod.am ? '오전' : '오후';
+                              _endTimeController.text =
+                              '$period ${time.hourOfPeriod}시 ${time.minute.toString().padLeft(2, '0')}분';
+                            },
+                            minuteInterval: TimePickerInterval.FIVE,
+                            iosStylePicker: true,
+                            okText: '확인',
+                            okStyle: const TextStyle(color: AppColors.mainBlue2),
+                            cancelText: '취소',
+                            cancelStyle: const TextStyle(color: AppColors.mainBlue2),
+                            hourLabel: '시',
+                            minuteLabel: '분',
+                            accentColor: AppColors.mainBlue2)
+                        );
+                      },
+                    ),
                   )
                 ],
               ),
-            )
-
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 12),
+              child: Row(
+                children: [
+                  Checkbox(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15)
+                      ),
+                      activeColor: AppColors.mainBlue,
+                      side: isMultipleChoice ? const BorderSide(color: AppColors.mainBlue3) : const BorderSide(color: AppColors.grey300),
+                      value: isMultipleChoice,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          isMultipleChoice = value!;
+                        });
+                      }),
+                  Text('복수선택', style: TextStyle(fontFamily: 'Pretendard', color: isMultipleChoice ? Colors.black : AppColors.grey300))
+                ],
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 12),
+              child: Row(
+                children: [
+                  Checkbox(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15)
+                      ),
+                      activeColor: AppColors.mainBlue,
+                      side: isAnoymous ? const BorderSide(color: AppColors.mainBlue3) : const BorderSide(color: AppColors.grey300),
+                      value: isAnoymous,
+                      onChanged: (bool? value) {
+                        setState(() {
+                          isAnoymous = value!;
+                        });
+                      }),
+                  Text('익명투표', style: TextStyle(fontFamily: 'Pretendard', color: isAnoymous ? Colors.black : AppColors.grey300))
+                ],
+              ),
+            ),
+            
           ],
         ),
-
       ),
     );
   }
