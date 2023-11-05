@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -50,12 +52,14 @@ public class CalendarContoller {
 //        );
         Long id = 1L;
 
+        List<CalendarDto.getSchedule> calendarDto = calendarService.getMySchedule(id);
+
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
                 .httpStatus(HttpStatus.OK)
                 .message("일정 조회 성공!")
-                .count(1)
-//                .result(Collections.singletonList())
+                .count(calendarDto.size())
+                .result(Arrays.asList(calendarDto.toArray()))
                 .build();
 
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());

@@ -1,5 +1,6 @@
 package com.wanyviny.calendar.domain.calendar.entity;
 
+import com.wanyviny.calendar.domain.calendar.dto.CalendarDto;
 import com.wanyviny.calendar.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Builder
@@ -38,4 +40,15 @@ public class Calendar {
 
     @Column(name = "CALENDAR_PLACE")
     private String place;
+
+    public static CalendarDto.getSchedule entityToDtoList(Calendar calendar){
+        return CalendarDto.getSchedule.builder()
+                .calendarId(calendar.getId())
+                .title(calendar.title)
+                .content(calendar.content)
+                .startDate(calendar.startDate)
+                .endDate(calendar.endDate)
+                .place(calendar.place)
+                .build();
+    }
 }
