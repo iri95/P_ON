@@ -7,7 +7,6 @@ import com.wanyviny.calendar.domain.calendar.repository.CalendarRepository;
 import com.wanyviny.calendar.domain.follow.repository.FollowRepository;
 import com.wanyviny.calendar.domain.user.entity.User;
 import com.wanyviny.calendar.domain.user.repository.UserRepository;
-import jakarta.persistence.Table;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -87,5 +86,11 @@ public class CalendarServiceImpl implements CalendarService {
                 () -> new IllegalArgumentException("해당하는 일정이 없습니다.")
         );
         calendar.update(schedule);
+    }
+
+    @Override
+    @Transactional
+    public void deleteSchedule(Long id, Long calendarId) {
+        calendarRepository.deleteByUserId_IdAndId(id, calendarId);
     }
 }

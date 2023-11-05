@@ -143,6 +143,13 @@ public class CalendarContoller {
     // 일정 삭제
     @DeleteMapping("/schedule/{calendarId}")
     public ResponseEntity<BasicResponse> deleteSchedule(@PathVariable(name = "calendarId") Long calendarId) {
+//        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
+//
+//        Long id = jwtService.extractId(accessToken).orElseThrow(
+//                () -> new IllegalArgumentException("Access Token에 해당하는 id가 없습니다.")
+//        );
+        Long id = 1L;
+        calendarService.deleteSchedule(id, calendarId);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())

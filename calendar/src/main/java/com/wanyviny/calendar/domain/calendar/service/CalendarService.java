@@ -14,4 +14,6 @@ public interface CalendarService {
     List<CalendarDto.getSchedule> getUserSchedule(Long id, Long userId);
 
     void updateSchedule(Long id, Long calendarId, CalendarDto.setSchedule schedule);
+
+    void deleteSchedule(Long id, Long calendarId);
 }
