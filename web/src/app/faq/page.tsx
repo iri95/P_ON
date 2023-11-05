@@ -2,6 +2,7 @@ import Index from '@/containers/FAQ';
 import styles from '@/containers/FAQ/faq.module.scss';
 
 export default function page() {
+  // TODO: faq 더 채우기
   const faqApp = [
     {
       id: 1,
