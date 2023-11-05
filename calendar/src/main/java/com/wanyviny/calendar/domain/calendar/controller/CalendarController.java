@@ -18,7 +18,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/calendar")
-public class CalendarContoller {
+public class CalendarController {
 
     private final CalendarService calendarService;
     private final JwtService jwtService;
@@ -160,16 +160,18 @@ public class CalendarContoller {
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
 
-    // 여러명의 일정 가져오기 -> 그사람의 PRIVACY를 상관 없이 가져옴, 상세적인 일정은 가져가지 않음
+    // 여러명의 일정 가져오기 -> 그사람의 PRIVACY에 상관 없이 가져옴, 상세적인 일정은 가져가지 않음
     @GetMapping("/schedule/promise")
     public ResponseEntity<BasicResponse> getPromiseSchedule(@RequestParam List<Long> userIdList) {
+
+        List<CalendarDto.promiseScheduleDto> calendarDtoList = calendarService.getPromiseSchedule(userIdList);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
                 .httpStatus(HttpStatus.OK)
                 .message("약속 일정 조회 성공!")
-                .count(1)
-//                .result()
+                .count(calendarDtoList.size())
+                .result(Arrays.asList(calendarDtoList.toArray()))
                 .build();
 
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());

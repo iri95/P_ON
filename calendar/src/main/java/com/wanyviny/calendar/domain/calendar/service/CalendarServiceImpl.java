@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -92,5 +93,16 @@ public class CalendarServiceImpl implements CalendarService {
     @Transactional
     public void deleteSchedule(Long id, Long calendarId) {
         calendarRepository.deleteByUserId_IdAndId(id, calendarId);
+    }
+
+    @Override
+    public List<CalendarDto.promiseScheduleDto> getPromiseSchedule(List<Long> userIdList) {
+        List<CalendarDto> result = new ArrayList<>();
+        List<Calendar> calendarList = calendarRepository.findByUserId_Id(userIdList);
+
+
+        return calendarList.stream()
+                .map(Calendar::entityToPromiseDto)
+                .toList();
     }
 }

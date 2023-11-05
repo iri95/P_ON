@@ -16,4 +16,6 @@ public interface CalendarService {
     void updateSchedule(Long id, Long calendarId, CalendarDto.setSchedule schedule);
 
     void deleteSchedule(Long id, Long calendarId);
+
+    List<CalendarDto.promiseScheduleDto> getPromiseSchedule(List<Long> userIdList);
 }

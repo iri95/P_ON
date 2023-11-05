@@ -2,6 +2,7 @@ package com.wanyviny.calendar.domain.calendar.repository;
 
 import com.wanyviny.calendar.domain.calendar.entity.Calendar;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,4 +17,7 @@ public interface CalendarRepository extends JpaRepository<Calendar, Long> {
 
     @Transactional
     void deleteByUserId_IdAndId(Long id, Long calendarId);
+
+    @Query("SELECT c FROM Calendar c where c.userId.id in :userIdList")
+    List<Calendar> findByUserId_Id(List<Long> userIdList);
 }

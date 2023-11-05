@@ -10,15 +10,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
-import java.util.List;
 
-@Builder
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
+
 public class CalendarDto {
-    private Long id;
-    private List<getSchedule> scheduleList;
 
     @Builder
     @Getter
@@ -40,7 +34,7 @@ public class CalendarDto {
     @Getter
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class setSchedule{
+    public static class setSchedule {
         private String title;
         private String content;
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -49,7 +43,7 @@ public class CalendarDto {
         private Date endDate;
         private String place;
 
-        public Calendar dtoToEntity(User user){
+        public Calendar dtoToEntity(User user) {
             return Calendar.builder()
                     .userId(user)
                     .title(title)
@@ -60,4 +54,17 @@ public class CalendarDto {
                     .build();
         }
     }
+
+    @Builder
+    @Getter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    public static class promiseScheduleDto {
+        private String nickName;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        private Date startDate;
+        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        private Date endDate;
+    }
+
 }
