@@ -97,9 +97,8 @@ public class CalendarServiceImpl implements CalendarService {
 
     @Override
     public List<CalendarDto.promiseScheduleDto> getPromiseSchedule(List<Long> userIdList) {
-        List<CalendarDto> result = new ArrayList<>();
-        List<Calendar> calendarList = calendarRepository.findByUserId_Id(userIdList);
 
+        List<Calendar> calendarList = calendarRepository.findByUserId_Id(userIdList);
 
         return calendarList.stream()
                 .map(Calendar::entityToPromiseDto)
