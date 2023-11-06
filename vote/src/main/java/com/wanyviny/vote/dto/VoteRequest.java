@@ -15,7 +15,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 @JsonInclude(Include.NON_NULL)
-public class VoteCreateRequest {
+public class VoteRequest {
 
     Map<String, Object> date;
     Map<String, Object> time;
