@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -37,22 +38,24 @@ public class CalendarServiceImpl implements CalendarService {
 
         Calendar calendar = calendarRepository.save(schedule.dtoToEntity(user));
 
-        RedisCalendarDto.setSchedule redisCalendar = calendar.entityToRedis();
+        RedisCalendarDto redisCalendar = calendar.entityToRedis();
 
-        Map<String, RedisCalendarDto.setSchedule> value = objectMapper.convertValue(redisCalendar, HashMap.class);
+        Map<String, RedisCalendarDto> value = objectMapper.convertValue(redisCalendar, HashMap.class);
 
         scheduleRedisTemplate.opsForHash().put("Calendar_" + id, String.valueOf(calendar.getId()), value);
     }
 
 
     @Override
-    public Map<String, RedisCalendarDto> getMySchedule(Long id) {
+    public List<RedisCalendarDto> getMySchedule(Long id) {
 
         Map<Object, Object> calendarList = scheduleRedisTemplate.opsForHash().entries("Calendar_" + id);
 
         Map<String, RedisCalendarDto> stringRedisCalendarDtoMap = objectMapper.convertValue(calendarList, HashMap.class);
 
-        return stringRedisCalendarDtoMap;
+        Collection<RedisCalendarDto> redisCalendarDtoCollection = stringRedisCalendarDtoMap.values();
+
+        return redisCalendarDtoCollection.stream().toList();
     }
 
     @Override
@@ -73,10 +76,14 @@ public class CalendarServiceImpl implements CalendarService {
         } else if (privacy == PRIVACY.FOLLOWING) { // following 일 경우 following 여부를 파악 후 일정 가져옴
             if (followRepository.existsFollowByUserId_IdAndFollowingId_Id(userId, id)) {
                 List<Calendar> calendarList = calendarRepository.findByUserId_id(userId);
-
                 return calendarList.stream()
                         .map(Calendar::entityToPromiseDto)
                         .toList();
+
+//                Map<Object, Object> calendarList = scheduleRedisTemplate.opsForHash().entries("Calendar_" + userId);
+//
+//                Map<String, RedisCalendarDto> stringRedisCalendarDtoMap = objectMapper.convertValue(calendarList, HashMap.class);
+
             } else {
                 return null;
             }
@@ -99,9 +106,9 @@ public class CalendarServiceImpl implements CalendarService {
         );
         calendar.update(schedule);
 
-        RedisCalendarDto.setSchedule redisCalendar = calendar.entityToRedis();
+        RedisCalendarDto redisCalendar = calendar.entityToRedis();
 
-        Map<String, RedisCalendarDto.setSchedule> value = objectMapper.convertValue(redisCalendar, HashMap.class);
+        Map<String, RedisCalendarDto> value = objectMapper.convertValue(redisCalendar, HashMap.class);
 
         scheduleRedisTemplate.opsForHash().put("Calendar_" + id, String.valueOf(calendar.getId()), value);
     }

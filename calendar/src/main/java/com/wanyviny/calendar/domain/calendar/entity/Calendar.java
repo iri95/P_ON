@@ -65,8 +65,8 @@ public class Calendar {
                 .build();
     }
 
-    public RedisCalendarDto.setSchedule entityToRedis() {
-        return RedisCalendarDto.setSchedule.builder()
+    public RedisCalendarDto entityToRedis() {
+        return RedisCalendarDto.builder()
                 .calendarId(this.id)
                 .title(this.title)
                 .content(this.content)

@@ -22,37 +22,4 @@ public class RedisCalendarDto {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date endDate;
     private String place;
-
-
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    @Getter
-    public static class getDetailSchedule {
-        private Long calendarId;
-        private String title;
-        private String content;
-        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-        private Date startDate;
-        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-        private Date endDate;
-        private String place;
-    }
-
-
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    @Getter
-    public static class setSchedule{
-        private Long calendarId;
-        private String title;
-        private String content;
-        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-        private Date startDate;
-        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-        private Date endDate;
-        private String place;
-    }
-
 }
