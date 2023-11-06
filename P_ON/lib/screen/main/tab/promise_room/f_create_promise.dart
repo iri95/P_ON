@@ -5,9 +5,9 @@ import 'package:velocity_x/velocity_x.dart';
 import '../../../../common/common.dart';
 import '../../../../common/constant/app_colors.dart';
 import '../../../../common/util/app_keyboard_util.dart';
-import '../../../../common/widget/w_basic_appbar.dart';
 import './dto_promise.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart'; // 추가
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 
 
 class CreatePromise extends ConsumerStatefulWidget {
@@ -17,7 +17,8 @@ class CreatePromise extends ConsumerStatefulWidget {
   ConsumerState<CreatePromise> createState() => _CreatePromiseState();
 }
 
-class _CreatePromiseState extends ConsumerState<CreatePromise> with AfterLayoutMixin {
+class _CreatePromiseState extends ConsumerState<CreatePromise>
+    with AfterLayoutMixin {
   final node = FocusNode();
   final TextEditingController textController = TextEditingController();
 
@@ -34,58 +35,68 @@ class _CreatePromiseState extends ConsumerState<CreatePromise> with AfterLayoutM
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: SafeArea(
-          child: Scaffold(
-        // extendBody: extendBody,
-        body: Column(
-          children: [
-            const BasicAppBar(text: '약속 생성', isProgressBar: true, percentage: 33),
-            Container(
-                margin: const EdgeInsets.all(24),
-                alignment: Alignment.topLeft,
-                child: '약속명을 입력해 주세요'.text.black.size(16).semiBold.make()),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 24),
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              width: double.infinity,
-              height: 50,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(
-                    color: textController.text.isEmpty && !node.hasFocus
-                        ? Colors.grey
-                        : AppColors.mainBlue2,
-                  )),
-              child: TextField(
-                focusNode: node,
-                controller: textController,
-                decoration: const InputDecoration(
-                    enabledBorder: InputBorder.none,
-                    focusedBorder: InputBorder.none),
-              ),
-            )
-          ],
-        ),
-        bottomSheet: Container(
-          width: double.infinity,
-          height: 48,
-          margin: EdgeInsets.all(24),
-          child: FilledButton(
-            style: FilledButton.styleFrom(
-                backgroundColor: textController.text.isEmpty
-                    ? Colors.grey
-                    : AppColors.mainBlue),
-            onPressed: () {
-              ref.read(promiseProvider.notifier).setPromiseTitle(textController.text);
-              Nav.push(const SelectedFriends());
-            },
-            child: const Text('다음'),
+    return Scaffold(
+      appBar: AppBar(
+        title: '약속 생성'.text.bold.black.make(),
+        // backgroundColor: Colors.white,
+      ),
+      body: Column(
+        children: [
+          LinearPercentIndicator(
+            padding: EdgeInsets.zero,
+            percent: 33 / 100,
+            lineHeight: 3,
+            backgroundColor: const Color(0xffCACFD8),
+            progressColor: AppColors.mainBlue2,
+            width: MediaQuery.of(context).size.width,
           ),
+          Container(
+              margin: const EdgeInsets.all(24),
+              alignment: Alignment.topLeft,
+              child: '약속명을 입력해 주세요'.text.black.size(16).semiBold.make()),
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            width: double.infinity,
+            height: 50,
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                  color: textController.text.isEmpty && !node.hasFocus
+                      ? Colors.grey
+                      : AppColors.mainBlue2,
+                )),
+            child: TextField(
+              focusNode: node,
+              controller: textController,
+              decoration: const InputDecoration(
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none),
+            ),
+          )
+        ],
+      ),
+      bottomSheet: Container(
+        width: double.infinity,
+        height: 48,
+        margin: EdgeInsets.all(24),
+        child: FilledButton(
+          style: FilledButton.styleFrom(
+              backgroundColor: textController.text.isEmpty
+                  ? Colors.grey
+                  : AppColors.mainBlue),
+          onPressed: () {
+            ref
+                .read(promiseProvider.notifier)
+                .setPromiseTitle(textController.text);
+            Nav.push(const SelectedFriends());
+          },
+          child: const Text('다음'),
         ),
-      )),
+      ),
     );
+    // ),
+    // );
   }
 
   @override

@@ -42,7 +42,7 @@ class MyPlanAndPromise extends StatelessWidget {
                   margin: const EdgeInsets.only(bottom: 10),
                   child: Text(
                       promise.Plantitle.length > 12
-                          ? promise.Plantitle.substring(0, 12) + '...'
+                          ? '${promise.Plantitle.substring(0, 12)}...'
                           : promise.Plantitle,
                       style: TextStyle(
                           fontSize: 24,
@@ -55,7 +55,7 @@ class MyPlanAndPromise extends StatelessWidget {
                   child: Row(children: [
                     CustomText(text: '일시 | ', textColor: isClose),
                     promise.PlanDate == '미정'
-                        ? CreateVote()
+                        ? const CreateVote()
                         : CustomText(
                             text: promise.PlanDate, textColor: isClose),
                   ]),
@@ -66,7 +66,7 @@ class MyPlanAndPromise extends StatelessWidget {
                     children: [
                       CustomText(text: '시간 | ', textColor: isClose),
                       promise.PlanTime == '미정'
-                          ? CreateVote()
+                          ? const CreateVote()
                           : CustomText(
                               text: promise.PlanTime, textColor: isClose),
                     ],
@@ -81,7 +81,7 @@ class MyPlanAndPromise extends StatelessWidget {
                         children: [
                           CustomText(text: '장소 | ', textColor: isClose),
                           promise.PlanLocation == '미정'
-                              ? CreateVote()
+                              ? const CreateVote()
                               : CustomText(
                                   text: promise.PlanLocation,
                                   textColor: isClose),
@@ -143,13 +143,13 @@ class CreateVote extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(left: 5),
+      margin: const EdgeInsets.only(left: 5),
       width: 80,
       height: 25,
       child: FilledButton(
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(Colors.white),
-          foregroundColor: MaterialStateProperty.all(Color(0xFFFF7F27)),
+          foregroundColor: MaterialStateProperty.all(const Color(0xFFFF7F27)),
         ),
         onPressed: () {},
         child: const Row(

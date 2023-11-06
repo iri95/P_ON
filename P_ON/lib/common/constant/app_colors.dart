@@ -15,9 +15,16 @@ class AppColors {
   static const Color darkOrange = Color.fromARGB(255, 222, 112, 48);
   static const Color faleBlue = Color.fromARGB(255, 160, 206, 222);
   static const Color brightBlue = Color.fromARGB(255, 123, 182, 212);
+  static const Color background = Color(0xffF4F7FA);
   static const Color salmon = Color(0xffff6666);
   static const Color mainBlue = Color(0xff3F48CC);
   static const Color mainBlue2 = Color(0xff778CE3);
   static const Color mainBlue3 = Color(0xffA3B4ED);
+  static const Color grey50 = Color(0xffF9F9FA);
+  static const Color grey100 = Color(0xffEFF3F9);
   static const Color grey200 = Color(0xffE4E8EF);
+  static const Color grey300 = Color(0xffCACFD8);
+  static const Color grey400 = Color(0xff959CB1);
+  static const Color grey500 = Color(0xff676E83);
+  static const Color black1 = Color(0xff1F2024);
 }
