@@ -32,15 +32,13 @@ export default function Nav() {
               {active === '/' && <div className={styles.line} />}
             </Link>
             <ul className={styles.dropdown}>
-              <li>
-                <Link href="/#section2">Section2</Link>
-              </li>
-              <li>
-                <Link href="/#section3">Section3</Link>
-              </li>
-              <li>
-                <Link href="/#section4">Section4</Link>
-              </li>
+              {['약속', '소통', '추억', '챗봇', '일정'].map((item, index) => (
+                <li key={item}>
+                  <Link style={{ display: 'inline-block', width: '100%' }} href={`/#section${index + 1}`}>
+                    {item} {index}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </li>
           <li
