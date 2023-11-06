@@ -1,6 +1,6 @@
 import 'package:p_on/common/common.dart';
 import 'package:p_on/common/widget/w_rounded_container.dart';
-import 'package:p_on/screen/main/tab/stock/tab/w_interest_stock_list.dart';
+import 'package:p_on/screen/main/tab/schedule/tab/w_interest_stock_list.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../common/widget/w_arrow.dart';

@@ -4,7 +4,7 @@ import '../../../../common/common.dart';
 import '../../../notification/s_notification.dart';
 
 class PONAppBar extends StatefulWidget {
-  static const double appBarHeight = 60;
+  static const double appBarHeight = 60.0;
 
   const PONAppBar({super.key});
 
@@ -65,10 +65,10 @@ class _PONAppBar extends State<PONAppBar> {
           width10,
           IconButton(
               onPressed: () {
-                Nav.push(const NotificationScreen()); // 여기 설정화면으로 넘어가게 바꾸기
+                Nav.push(const NotificationScreen()); // 여기 검색화면으로 넘어가게 바꾸기
               },
               icon: const Icon(
-                Icons.settings_outlined,
+                Icons.search,
                 size: 32,
                 color: Colors.black,
               )),

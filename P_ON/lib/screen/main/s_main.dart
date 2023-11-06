@@ -106,7 +106,8 @@ class MainScreenState extends ConsumerState<MainScreen> with SingleTickerProvide
                 )
             ),
             AnimatedOpacity(
-              opacity: _currentTab != TabItem.plan ? 1 : 0,
+              opacity: _currentTab != TabItem.history ? 1 : 0,
+              // opacity: 1,
               duration: 300.ms,
               child: BottomFloatingActionButton(),
             )

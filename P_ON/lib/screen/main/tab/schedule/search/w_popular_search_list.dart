@@ -1,6 +1,6 @@
 import 'package:p_on/common/common.dart';
 import 'package:p_on/common/dart/extension/datetime_extension.dart';
-import 'package:p_on/screen/main/tab/stock/search/dummy_popular_stocks.dart';
+import 'package:p_on/screen/main/tab/schedule/search/dummy_popular_stocks.dart';
 import 'package:flutter/material.dart';
 
 class PopularSearchList extends StatefulWidget {

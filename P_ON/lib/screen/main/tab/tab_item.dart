@@ -1,8 +1,9 @@
 import 'package:p_on/common/common.dart';
 import 'package:p_on/screen/main/tab/all/f_all.dart';
 import 'package:p_on/screen/main/tab/home/f_home.dart';
-import 'package:p_on/screen/main/tab/stock/f_stock.dart';
-import 'package:p_on/screen/main/tab/ttospay/f_ttospay.dart';
+import 'package:p_on/screen/main/tab/schedule/f_schedule.dart';
+import 'package:p_on/screen/main/tab/schedule/f_stock.dart';
+import 'package:p_on/screen/main/tab/nothing/f_nothing.dart';
 import 'package:flutter/material.dart';
 
 import 'benefit/f_benefit.dart';
@@ -10,8 +11,9 @@ import 'benefit/f_benefit.dart';
 enum TabItem {
   home(Icons.home_outlined, '홈', HomeFragment()),
   history(Icons.menu_book, '추억', BenefitFragment()),
-  blankFeild(null, '', TtospayFragment()),
-  plan(Icons.calendar_today_outlined, '일정', StockFragment()),
+  blankFeild(null, '', NothingFragment()),
+  plan(Icons.calendar_today_outlined, '일정', ScheduleFragment()),
+  // plan(Icons.calendar_today_outlined, '일정', StockFragment()),
   my(Icons.person_outline, 'MY', AllFragment());
 
   final IconData? activeIcon;

@@ -38,7 +38,8 @@ class _CreatePromiseState extends ConsumerState<CreatePromise>
     return Scaffold(
       appBar: AppBar(
         title: '약속 생성'.text.bold.black.make(),
-        // backgroundColor: Colors.white,
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: Column(
         children: [

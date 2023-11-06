@@ -29,7 +29,9 @@ class _SelectedFriendsState extends ConsumerState<SelectedFriends> {
       //   child:
         Scaffold(
           appBar: AppBar(
-            title: '약속 생성'.text.bold.make(),
+            title: '약속 생성'.text.bold.black.make(),
+            backgroundColor: Colors.white,
+            iconTheme: const IconThemeData(color: Colors.black),
           ),
           body: Column(
             children: [
