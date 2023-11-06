@@ -35,20 +35,21 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        try{
+        try {
             CustomOAuth2User oAuth2User = (CustomOAuth2User) authentication.getPrincipal();
 
             // User의 Role이 GUEST일 경우 처음 요청한 회원이므로 회원가입 페이지로 리다이렉트
             if (oAuth2User.getRole() == ROLE.GUEST) {
                 String accessToken = jwtService.createAccessToken(oAuth2User.getId());
                 response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
+                response.addHeader("id", String.valueOf(oAuth2User.getId()));
                 response.sendRedirect(
                         "http://k9e102.p.ssafy.io/main/home?" + "access_token=Bearer " + accessToken + "&is_user=F"
                 );
-            }else{
+            } else {
                 loginSuccess(response, oAuth2User);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             throw e;
         }
     }
@@ -59,9 +60,10 @@ public class OAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
         String refreshToken = jwtService.createRefreshToken();
         response.addHeader(jwtService.getAccessHeader(), "Bearer " + accessToken);
         response.addHeader(jwtService.getRefreshHeader(), "Bearer " + refreshToken);
+        response.addHeader("id", String.valueOf(oAuth2User.getId()));
         response.sendRedirect(
                 "http://k9e102.p.ssafy.io/main/home?" + "access_token=Bearer " + accessToken + "&refresh_token="
-                        + "Bearer " + refreshToken + "&is_user=T"
+                        + "Bearer " + refreshToken + "&id=" + oAuth2User.getId() + "&is_user=T"
         );
 
         jwtService.updateRefreshToken(oAuth2User.getId(), refreshToken);
