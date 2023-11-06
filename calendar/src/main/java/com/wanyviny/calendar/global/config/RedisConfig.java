@@ -1,7 +1,6 @@
 package com.wanyviny.calendar.global.config;
 
-import com.wanyviny.calendar.domain.calendar.dto.CalendarDto;
-import com.wanyviny.calendar.domain.calendar.entity.Calendar;
+import com.wanyviny.calendar.domain.calendar.dto.RedisCalendarDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -13,9 +12,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
-
-import java.util.List;
-import java.util.Map;
 
 @Configuration
 @RequiredArgsConstructor
@@ -55,12 +51,12 @@ public class RedisConfig {
         return redisTemplate;
     }
     @Bean
-    public RedisTemplate<String, Calendar> calendarRedisTemplate(){
-        RedisTemplate<String, Calendar> redisTemplate = new RedisTemplate<>();
+    public RedisTemplate<String, RedisCalendarDto> calendarRedisTemplate(){
+        RedisTemplate<String, RedisCalendarDto> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer()); //key 깨짐 방지
-        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Calendar.class)); //value 깨짐 방지 -- 이것 때문인가.. 맞음
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(RedisCalendarDto.class)); //value 깨짐 방지 -- 이것 때문인가.. 맞음
         redisTemplate.setHashKeySerializer(new StringRedisSerializer()); //key 깨짐 방지
-        redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(Calendar.class));
+        redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(RedisCalendarDto.class));
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         return redisTemplate;
     }

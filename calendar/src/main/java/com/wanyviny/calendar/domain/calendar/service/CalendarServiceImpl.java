@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wanyviny.calendar.domain.PRIVACY;
 import com.wanyviny.calendar.domain.calendar.dto.CalendarDto;
 import com.wanyviny.calendar.domain.calendar.entity.Calendar;
+import com.wanyviny.calendar.domain.calendar.dto.RedisCalendarDto;
 import com.wanyviny.calendar.domain.calendar.repository.CalendarRepository;
 import com.wanyviny.calendar.domain.follow.repository.FollowRepository;
 import com.wanyviny.calendar.domain.user.entity.User;
@@ -13,6 +14,9 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -22,7 +26,7 @@ public class CalendarServiceImpl implements CalendarService {
     private final CalendarRepository calendarRepository;
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
-    private final RedisTemplate<String, Calendar> scheduleRedisTemplate;
+    private final RedisTemplate<String, RedisCalendarDto> scheduleRedisTemplate;
     private final ObjectMapper objectMapper;
 
 
@@ -36,10 +40,13 @@ public class CalendarServiceImpl implements CalendarService {
 
         Calendar calendar = calendarRepository.save(schedule.dtoToEntity(user));
 
-        Map<String, Object> value = objectMapper.convertValue(calendar, HashMap.class);
+        RedisCalendarDto redisCalendar = calendar.entityToRedis();
+
+        Map<String, RedisCalendarDto> value = objectMapper.convertValue(redisCalendar, HashMap.class);
 
         scheduleRedisTemplate.opsForHash().put("Calendar_" + id,String.valueOf(calendar.getId()), value);
     }
+
 
     @Override
     public List<CalendarDto.getSchedule> getMySchedule(Long id) {
@@ -115,17 +122,25 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
+    public void deleteScheduleList(Long id, List<Long> deleteList) {
+        calendarRepository.deleteByUserId_IdAndIdList(id, deleteList);
+    }
+
+    @Override
     public List<CalendarDto.promiseScheduleDto> getPromiseSchedule(List<Long> userIdList) {
 
         List<Calendar> calendarList = calendarRepository.findByUserId_Id(userIdList);
 
+        java.util.Calendar cal = java.util.Calendar.getInstance();
+        cal.setTime(new Date());
+        cal.add(java.util.Calendar.MONTH, 6);
+
         return calendarList.stream()
+                .filter(calendar -> !(calendar.getEndDate().before(new Date())
+                        || calendar.getStartDate().after(cal.getTime())))
                 .map(Calendar::entityToPromiseDto)
                 .toList();
     }
 
-    @Override
-    public void deleteScheduleList(Long id, List<Long> deleteList) {
-        calendarRepository.deleteByUserId_IdAndIdList(id, deleteList);
-    }
+
 }

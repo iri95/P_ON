@@ -1,12 +1,15 @@
 package com.wanyviny.calendar.domain.calendar.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.wanyviny.calendar.domain.calendar.dto.CalendarDto;
+import com.wanyviny.calendar.domain.calendar.dto.RedisCalendarDto;
 import com.wanyviny.calendar.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -32,9 +35,11 @@ public class Calendar {
     private String content;
 
     @Column(name = "CALENDAR_START_DATE")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date startDate;
 
     @Column(name = "CALENDAR_END_DATE")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date endDate;
 
     @Column(name = "CALENDAR_PLACE")
@@ -66,4 +71,15 @@ public class Calendar {
                 .endDate(this.endDate)
                 .build();
     }
+
+    public RedisCalendarDto entityToRedis() {
+        return RedisCalendarDto.builder()
+                .title(this.title)
+                .content(this.content)
+                .startDate(this.startDate)
+                .endDate(this.endDate)
+                .place(this.place)
+                .build();
+    }
+
 }
