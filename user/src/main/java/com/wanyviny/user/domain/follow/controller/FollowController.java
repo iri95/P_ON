@@ -20,7 +20,6 @@ import java.util.List;
 public class FollowController {
 
     private final FollowService followService;
-    private final JwtService jwtService;
 
     // 팔로잉 조회
     @GetMapping("/following")
