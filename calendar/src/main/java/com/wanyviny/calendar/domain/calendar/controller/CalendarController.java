@@ -27,11 +27,7 @@ public class CalendarController {
     @PostMapping("/schedule")
     @Transactional
     public ResponseEntity<BasicResponse> postSchedule(HttpServletRequest request, @RequestBody CalendarDto.setSchedule schedule) {
-//        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
-//
-//        Long id = jwtService.extractId(accessToken).orElseThrow(
-//                () -> new IllegalArgumentException("Access Token에 해당하는 id가 없습니다.")
-//        );
+//        Long id = Long.parseLong(request.getHeader("id"));
         Long id = 1L;
         calendarService.postSchdule(id, schedule);
 
@@ -47,11 +43,8 @@ public class CalendarController {
     // 일정 조회
     @GetMapping("/schedule")
     public ResponseEntity<BasicResponse> getSchedule(HttpServletRequest request) {
-//        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
-//
-//        Long id = jwtService.extractId(accessToken).orElseThrow(
-//                () -> new IllegalArgumentException("Access Token에 해당하는 id가 없습니다.")
-//        );
+//        Long id = Long.parseLong(request.getHeader("id"));
+
         Long id = 1L;
 
         List<CalendarDto.getSchedule> calendarDto = calendarService.getMySchedule(id);
@@ -70,11 +63,8 @@ public class CalendarController {
     // 일정 상세 조회
     @GetMapping("/schedule/detail/{calendarId}")
     public ResponseEntity<BasicResponse> getDetailSchedule(@PathVariable(name = "calendarId") Long calendarId) {
-        //        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
-//
-//        Long id = jwtService.extractId(accessToken).orElseThrow(
-//                () -> new IllegalArgumentException("Access Token에 해당하는 id가 없습니다.")
-//        );
+//        Long id = Long.parseLong(request.getHeader("id"));
+
         Long id = 1L;
 
         CalendarDto.getSchedule schedule = calendarService.getDetailSchedule(id, calendarId);
@@ -93,14 +83,11 @@ public class CalendarController {
     // 타인 일정 조회 -> 조회하려는 사람의 PRIVACY를 알아야 함, 어떤 일정인지는 상세하게 X
     @GetMapping("/schedule/user/{userId}")
     public ResponseEntity<BasicResponse> getUserSchedule(HttpServletRequest request, @PathVariable(name = "userId") Long userId) {
-//        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
-//
-//        Long id = jwtService.extractId(accessToken).orElseThrow(
-//                () -> new IllegalArgumentException("Access Token에 해당하는 id가 없습니다.")
-//        );
+//        Long id = Long.parseLong(request.getHeader("id"));
+
         Long id = 4L;
 
-        List<CalendarDto.getSchedule> getScheduleList = calendarService.getUserSchedule(id, userId);
+        List<CalendarDto.promiseScheduleDto> getScheduleList = calendarService.getUserSchedule(id, userId);
 
         if (getScheduleList == null) {
             BasicResponse basicResponse = BasicResponse.builder()
@@ -128,11 +115,8 @@ public class CalendarController {
     @PutMapping("/schedule/{calendarId}")
     @Transactional
     public ResponseEntity<BasicResponse> updateSchedule(@PathVariable(name = "calendarId") Long calendarId, @RequestBody CalendarDto.setSchedule schedule) {
-//        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
-//
-//        Long id = jwtService.extractId(accessToken).orElseThrow(
-//                () -> new IllegalArgumentException("Access Token에 해당하는 id가 없습니다.")
-//        );
+//        Long id = Long.parseLong(request.getHeader("id"));
+
         Long id = 1L;
 
         calendarService.updateSchedule(id, calendarId, schedule);
@@ -149,13 +133,26 @@ public class CalendarController {
     // 일정 삭제
     @DeleteMapping("/schedule/{calendarId}")
     public ResponseEntity<BasicResponse> deleteSchedule(@PathVariable(name = "calendarId") Long calendarId) {
-//        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
-//
-//        Long id = jwtService.extractId(accessToken).orElseThrow(
-//                () -> new IllegalArgumentException("Access Token에 해당하는 id가 없습니다.")
-//        );
+//        Long id = Long.parseLong(request.getHeader("id"));
+
         Long id = 1L;
         calendarService.deleteSchedule(id, calendarId);
+
+        BasicResponse basicResponse = BasicResponse.builder()
+                .code(HttpStatus.OK.value())
+                .httpStatus(HttpStatus.OK)
+                .message("일정 삭제 성공!")
+                .build();
+
+        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+    }
+
+    @DeleteMapping("/schedule/deleteList/{calendarId}")
+    public ResponseEntity<BasicResponse> deleteSchedule(@PathVariable(name = "calendarId") Long calendarId, @RequestParam List<Long> deleteList) {
+//        Long id = Long.parseLong(request.getHeader("id"));
+
+        Long id = 1L;
+        calendarService.deleteScheduleList(id, deleteList);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())

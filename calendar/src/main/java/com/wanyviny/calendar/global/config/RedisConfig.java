@@ -15,6 +15,7 @@ import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.util.List;
+import java.util.Map;
 
 @Configuration
 @RequiredArgsConstructor
@@ -58,6 +59,15 @@ public class RedisConfig {
         RedisTemplate<String, Calendar> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer()); //key 깨짐 방지
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Calendar.class)); //value 깨짐 방지 -- 이것 때문인가.. 맞음
+        redisTemplate.setConnectionFactory(redisConnectionFactory());
+        return redisTemplate;
+    }
+
+    @Bean
+    public RedisTemplate<String, String> stringCalendarRedisTemplate(){
+        RedisTemplate<String, String> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setKeySerializer(new StringRedisSerializer()); //key 깨짐 방지
+        redisTemplate.setValueSerializer(new StringRedisSerializer()); //value 깨짐 방지 -- 이것 때문인가.. 맞음
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         return redisTemplate;
     }

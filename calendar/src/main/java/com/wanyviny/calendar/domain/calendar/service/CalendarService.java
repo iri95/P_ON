@@ -11,11 +11,13 @@ public interface CalendarService {
 
     CalendarDto.getSchedule getDetailSchedule(Long id, Long calendarId);
 
-    List<CalendarDto.getSchedule> getUserSchedule(Long id, Long userId);
+    List<CalendarDto.promiseScheduleDto> getUserSchedule(Long id, Long userId);
 
     void updateSchedule(Long id, Long calendarId, CalendarDto.setSchedule schedule);
 
     void deleteSchedule(Long id, Long calendarId);
 
     List<CalendarDto.promiseScheduleDto> getPromiseSchedule(List<Long> userIdList);
+
+    void deleteScheduleList(Long id, List<Long> deleteList);
 }

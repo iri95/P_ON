@@ -10,6 +10,7 @@ import com.wanyviny.calendar.domain.user.entity.User;
 import com.wanyviny.calendar.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -32,10 +33,10 @@ public class CalendarServiceImpl implements CalendarService {
                 () -> new IllegalArgumentException("ID에 해당하는 유저가 없습니다.")
         );
 
-        scheduleRedisTemplate.opsForList().rightPush("User_" + id, schedule.dtoToEntity(user));
+        Calendar calendar = calendarRepository.save(schedule.dtoToEntity(user));
 
+        scheduleRedisTemplate.opsForList().set("Calendar_" + id, calendar.getId(), schedule.dtoToEntity(user));
 
-        calendarRepository.save(schedule.dtoToEntity(user));
     }
 
     @Override
@@ -51,22 +52,24 @@ public class CalendarServiceImpl implements CalendarService {
 
     @Override
     public CalendarDto.getSchedule getDetailSchedule(Long id, Long calendarId) {
-//        Calendar calendar = calendarRepository.findById(calendarId).orElseThrow(
-//                () -> new IllegalArgumentException("해당 일정이 없습니다.")
-//        );
+        Calendar calendar = calendarRepository.findById(calendarId).orElseThrow(
+                () -> new IllegalArgumentException("해당 일정이 없습니다.")
+        );
 
-        List<Calendar> calendarList = scheduleRedisTemplate.opsForList().range("User_" + id, 0, -1);
+        return calendar.entityToDto();
 
-        return calendarList.stream()
-                .filter(calendar -> Objects.equals(calendar.getId(), calendarId))
-                .map(Calendar::entityToDto)
-                .findAny().orElseThrow(
-                        () -> new IllegalArgumentException("해당하는 일정이 없습니다.")
-                );
+//        List<Calendar> calendarList = scheduleRedisTemplate.opsForList().range("User_" + id, 0, -1);
+//
+//        return calendarList.stream()
+//                .filter(calendar -> Objects.equals(calendar.getId(), calendarId))
+//                .map(Calendar::entityToDto)
+//                .findAny().orElseThrow(
+//                        () -> new IllegalArgumentException("해당하는 일정이 없습니다.")
+//                );
     }
 
     @Override
-    public List<CalendarDto.getSchedule> getUserSchedule(Long id, Long userId) {
+    public List<CalendarDto.promiseScheduleDto> getUserSchedule(Long id, Long userId) {
 
         // user의 privacy를 먼저 보고
         PRIVACY privacy = userRepository.findPrivacyById(userId);
@@ -78,7 +81,7 @@ public class CalendarServiceImpl implements CalendarService {
                 List<Calendar> calendarList = calendarRepository.findByUserId_id(userId);
 
                 return calendarList.stream()
-                        .map(Calendar::entityToDto)
+                        .map(Calendar::entityToPromiseDto)
                         .toList();
             }else{
                 return null;
@@ -87,7 +90,7 @@ public class CalendarServiceImpl implements CalendarService {
             List<Calendar> calendarList = calendarRepository.findByUserId_id(userId);
 
             return calendarList.stream()
-                    .map(Calendar::entityToDto)
+                    .map(Calendar::entityToPromiseDto)
                     .toList();
         }
 
@@ -117,5 +120,10 @@ public class CalendarServiceImpl implements CalendarService {
         return calendarList.stream()
                 .map(Calendar::entityToPromiseDto)
                 .toList();
+    }
+
+    @Override
+    public void deleteScheduleList(Long id, List<Long> deleteList) {
+        calendarRepository.deleteByUserId_IdAndIdList(id, deleteList);
     }
 }
