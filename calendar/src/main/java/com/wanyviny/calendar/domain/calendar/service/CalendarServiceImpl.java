@@ -1,5 +1,6 @@
 package com.wanyviny.calendar.domain.calendar.service;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wanyviny.calendar.domain.PRIVACY;
 import com.wanyviny.calendar.domain.calendar.dto.CalendarDto;
@@ -14,9 +15,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -49,34 +47,20 @@ public class CalendarServiceImpl implements CalendarService {
 
 
     @Override
-    public Map<String, RedisCalendarDto> getMySchedule(Long id) {
+    public Map<String, RedisCalendarDto.getSchedule> getMySchedule(Long id) {
 
-//        List<Calendar> calendarList = calendarRepository.findByUserId_id(id);
         Map<Object, Object> calendarList = scheduleRedisTemplate.opsForHash().entries("Calendar_" + id);
-        Map<String, RedisCalendarDto> stringRedisCalendarDtoMap =  objectMapper.convertValue(calendarList, HashMap.class);
-//                .stream()
-//                .map(object -> objectMapper.convertValue(object, RedisCalendarDto.class))
-//                .toList();
+
+        Map<String, RedisCalendarDto.getSchedule> stringRedisCalendarDtoMap =  objectMapper.convertValue(calendarList, HashMap.class);
 
         return stringRedisCalendarDtoMap;
     }
 
     @Override
     public CalendarDto.getSchedule getDetailSchedule(Long id, Long calendarId) {
-        Calendar calendar = calendarRepository.findById(calendarId).orElseThrow(
-                () -> new IllegalArgumentException("해당 일정이 없습니다.")
-        );
 
-        return calendar.entityToDto();
-
-//        List<Calendar> calendarList = scheduleRedisTemplate.opsForList().range("User_" + id, 0, -1);
-//
-//        return calendarList.stream()
-//                .filter(calendar -> Objects.equals(calendar.getId(), calendarId))
-//                .map(Calendar::entityToDto)
-//                .findAny().orElseThrow(
-//                        () -> new IllegalArgumentException("해당하는 일정이 없습니다.")
-//                );
+        return objectMapper.convertValue(scheduleRedisTemplate.opsForHash()
+                .get("Calendar_" + id, String.valueOf(calendarId)), CalendarDto.getSchedule.class);
     }
 
     @Override

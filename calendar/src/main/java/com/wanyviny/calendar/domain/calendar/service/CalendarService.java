@@ -9,7 +9,7 @@ import java.util.Map;
 public interface CalendarService {
     void postSchdule(Long id, CalendarDto.setSchedule schedule);
 
-    Map<String, RedisCalendarDto> getMySchedule(Long id);
+    Map<String, RedisCalendarDto.getSchedule> getMySchedule(Long id);
 
     CalendarDto.getSchedule getDetailSchedule(Long id, Long calendarId);
 

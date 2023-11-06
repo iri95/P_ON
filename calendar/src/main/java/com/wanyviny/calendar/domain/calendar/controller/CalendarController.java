@@ -49,14 +49,14 @@ public class CalendarController {
 
         Long id = 1L;
 
-        Map<String, RedisCalendarDto> calendarDto = calendarService.getMySchedule(id);
+        Map<String, RedisCalendarDto.getSchedule> calendarDto = calendarService.getMySchedule(id);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
                 .httpStatus(HttpStatus.OK)
                 .message("일정 조회 성공!")
                 .count(calendarDto.size())
-                .result(Arrays.asList(calendarDto))
+                .result(List.of(calendarDto))
                 .build();
 
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());

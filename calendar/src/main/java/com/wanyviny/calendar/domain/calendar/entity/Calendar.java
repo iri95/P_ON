@@ -49,18 +49,6 @@ public class Calendar {
     @Column(name = "CALENDAR_TYPE")
     private CALENDAR type;
 
-    public CalendarDto.getSchedule entityToDto() {
-
-        return CalendarDto.getSchedule.builder()
-                .calendarId(this.getId())
-                .title(this.title)
-                .content(this.content)
-                .startDate(this.startDate)
-                .endDate(this.endDate)
-                .place(this.place)
-                .build();
-    }
-
     public void update(CalendarDto.setSchedule schedule) {
         this.title = schedule.getTitle();
         this.content = schedule.getContent();
@@ -79,6 +67,7 @@ public class Calendar {
 
     public RedisCalendarDto.setSchedule entityToRedis() {
         return RedisCalendarDto.setSchedule.builder()
+                .calendarId(this.id)
                 .title(this.title)
                 .content(this.content)
                 .startDate(this.startDate)
