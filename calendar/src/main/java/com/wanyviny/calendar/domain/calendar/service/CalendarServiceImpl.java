@@ -28,7 +28,6 @@ public class CalendarServiceImpl implements CalendarService {
     private final ObjectMapper objectMapper;
 
 
-
     @Override
     @Transactional
     public void postSchdule(Long id, CalendarDto.setSchedule schedule) {
@@ -42,7 +41,7 @@ public class CalendarServiceImpl implements CalendarService {
 
         Map<String, RedisCalendarDto.setSchedule> value = objectMapper.convertValue(redisCalendar, HashMap.class);
 
-        scheduleRedisTemplate.opsForHash().put("Calendar_" + id,String.valueOf(calendar.getId()), value);
+        scheduleRedisTemplate.opsForHash().put("Calendar_" + id, String.valueOf(calendar.getId()), value);
     }
 
 
@@ -51,7 +50,7 @@ public class CalendarServiceImpl implements CalendarService {
 
         Map<Object, Object> calendarList = scheduleRedisTemplate.opsForHash().entries("Calendar_" + id);
 
-        Map<String, RedisCalendarDto> stringRedisCalendarDtoMap =  objectMapper.convertValue(calendarList, HashMap.class);
+        Map<String, RedisCalendarDto> stringRedisCalendarDtoMap = objectMapper.convertValue(calendarList, HashMap.class);
 
         return stringRedisCalendarDtoMap;
     }
@@ -78,10 +77,10 @@ public class CalendarServiceImpl implements CalendarService {
                 return calendarList.stream()
                         .map(Calendar::entityToPromiseDto)
                         .toList();
-            }else{
+            } else {
                 return null;
             }
-        }else{ // all 일경우 그냥 가져옴
+        } else { // all 일경우 그냥 가져옴
             List<Calendar> calendarList = calendarRepository.findByUserId_id(userId);
 
             return calendarList.stream()
@@ -104,18 +103,23 @@ public class CalendarServiceImpl implements CalendarService {
 
         Map<String, RedisCalendarDto.setSchedule> value = objectMapper.convertValue(redisCalendar, HashMap.class);
 
-        scheduleRedisTemplate.opsForHash().put("Calendar_" + id,String.valueOf(calendar.getId()), value);
+        scheduleRedisTemplate.opsForHash().put("Calendar_" + id, String.valueOf(calendar.getId()), value);
     }
 
     @Override
     @Transactional
     public void deleteSchedule(Long id, Long calendarId) {
         calendarRepository.deleteByUserId_IdAndId(id, calendarId);
+        scheduleRedisTemplate.opsForHash().delete("Calendar_" + id, String.valueOf(calendarId));
     }
 
     @Override
     public void deleteScheduleList(Long id, List<Long> deleteList) {
         calendarRepository.deleteByUserId_IdAndIdList(id, deleteList);
+        deleteList.forEach(calendarId -> {
+                    scheduleRedisTemplate.opsForHash().delete("Calendar_" + id, String.valueOf(calendarId));
+                }
+        );
     }
 
     @Override
