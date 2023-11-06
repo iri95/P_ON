@@ -40,23 +40,25 @@ public class CalendarServiceImpl implements CalendarService {
 
         Calendar calendar = calendarRepository.save(schedule.dtoToEntity(user));
 
-        RedisCalendarDto redisCalendar = calendar.entityToRedis();
+        RedisCalendarDto.setSchedule redisCalendar = calendar.entityToRedis();
 
-        Map<String, RedisCalendarDto> value = objectMapper.convertValue(redisCalendar, HashMap.class);
+        Map<String, RedisCalendarDto.setSchedule> value = objectMapper.convertValue(redisCalendar, HashMap.class);
 
         scheduleRedisTemplate.opsForHash().put("Calendar_" + id,String.valueOf(calendar.getId()), value);
     }
 
 
     @Override
-    public List<CalendarDto.getSchedule> getMySchedule(Long id) {
+    public Map<String, RedisCalendarDto> getMySchedule(Long id) {
 
-        List<Calendar> calendarList = calendarRepository.findByUserId_id(id);
-//        List<Calendar> calendarList = scheduleRedisTemplate.opsForList().range("User_" + id, 0, -1);
+//        List<Calendar> calendarList = calendarRepository.findByUserId_id(id);
+        Map<Object, Object> calendarList = scheduleRedisTemplate.opsForHash().entries("Calendar_" + id);
+        Map<String, RedisCalendarDto> stringRedisCalendarDtoMap =  objectMapper.convertValue(calendarList, HashMap.class);
+//                .stream()
+//                .map(object -> objectMapper.convertValue(object, RedisCalendarDto.class))
+//                .toList();
 
-        return calendarList.stream()
-                .map(Calendar::entityToDto)
-                .toList();
+        return stringRedisCalendarDtoMap;
     }
 
     @Override

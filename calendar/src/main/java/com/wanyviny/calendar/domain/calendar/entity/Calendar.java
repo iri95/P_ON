@@ -1,6 +1,7 @@
 package com.wanyviny.calendar.domain.calendar.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.wanyviny.calendar.domain.CALENDAR;
 import com.wanyviny.calendar.domain.calendar.dto.CalendarDto;
 import com.wanyviny.calendar.domain.calendar.dto.RedisCalendarDto;
 import com.wanyviny.calendar.domain.user.entity.User;
@@ -45,7 +46,11 @@ public class Calendar {
     @Column(name = "CALENDAR_PLACE")
     private String place;
 
-    public CalendarDto.getSchedule entityToDto(){
+    @Column(name = "CALENDAR_TYPE")
+    private CALENDAR type;
+
+    public CalendarDto.getSchedule entityToDto() {
+
         return CalendarDto.getSchedule.builder()
                 .calendarId(this.getId())
                 .title(this.title)
@@ -72,8 +77,8 @@ public class Calendar {
                 .build();
     }
 
-    public RedisCalendarDto entityToRedis() {
-        return RedisCalendarDto.builder()
+    public RedisCalendarDto.setSchedule entityToRedis() {
+        return RedisCalendarDto.setSchedule.builder()
                 .title(this.title)
                 .content(this.content)
                 .startDate(this.startDate)

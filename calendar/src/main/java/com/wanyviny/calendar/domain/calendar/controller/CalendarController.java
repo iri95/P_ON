@@ -1,6 +1,7 @@
 package com.wanyviny.calendar.domain.calendar.controller;
 
 import com.wanyviny.calendar.domain.calendar.dto.CalendarDto;
+import com.wanyviny.calendar.domain.calendar.dto.RedisCalendarDto;
 import com.wanyviny.calendar.domain.calendar.service.CalendarService;
 import com.wanyviny.calendar.domain.common.BasicResponse;
 import com.wanyviny.calendar.global.service.JwtService;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -47,14 +49,14 @@ public class CalendarController {
 
         Long id = 1L;
 
-        List<CalendarDto.getSchedule> calendarDto = calendarService.getMySchedule(id);
+        Map<String, RedisCalendarDto> calendarDto = calendarService.getMySchedule(id);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
                 .httpStatus(HttpStatus.OK)
                 .message("일정 조회 성공!")
                 .count(calendarDto.size())
-                .result(Arrays.asList(calendarDto.toArray()))
+                .result(Arrays.asList(calendarDto))
                 .build();
 
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
