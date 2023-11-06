@@ -99,6 +99,12 @@ public class CalendarServiceImpl implements CalendarService {
                 () -> new IllegalArgumentException("해당하는 일정이 없습니다.")
         );
         calendar.update(schedule);
+
+        RedisCalendarDto.setSchedule redisCalendar = calendar.entityToRedis();
+
+        Map<String, RedisCalendarDto.setSchedule> value = objectMapper.convertValue(redisCalendar, HashMap.class);
+
+        scheduleRedisTemplate.opsForHash().put("Calendar_" + id,String.valueOf(calendar.getId()), value);
     }
 
     @Override
