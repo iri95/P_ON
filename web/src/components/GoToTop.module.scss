@@ -1,0 +1,18 @@
+.button {
+  position: fixed;
+  right: 50px;
+  bottom: 50px;
+  z-index: 999;
+
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  background-color: var(--color-main2);
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+}

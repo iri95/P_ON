@@ -27,7 +27,7 @@ export default function Nav() {
       <nav className={styles['nav-items']}>
         <ul>
           <li className={`${styles['nav-item']} ${active === '/' ? styles.active : ''}`}>
-            <Link href="/" scroll={false} className={styles['main-item']}>
+            <Link href="/" className={styles['main-item']}>
               서비스 소개
               {active === '/' && <div className={styles.line} />}
             </Link>
