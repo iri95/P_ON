@@ -28,11 +28,7 @@ public class UserController {
 
     @GetMapping("/kakao-profile")
     public ResponseEntity<BasicResponse> getKakaoProfile(HttpServletRequest request) {
-        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
-
-        Long id = jwtService.extractId(accessToken).orElseThrow(
-                () -> new IllegalArgumentException("Access Token에 해당하는 id가 없습니다.")
-        );
+        Long id = Long.parseLong(request.getHeader("id"));
 
         User userProfile = userService.getUserProfile(id);
 
@@ -57,9 +53,7 @@ public class UserController {
     public ResponseEntity<BasicResponse> signup(HttpServletRequest request, @RequestBody UserSignUpDto userSignUpDto) {
         String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
 
-        Long id = jwtService.extractId(accessToken).orElseThrow(
-                () -> new IllegalArgumentException("Access Token에 해당하는 id가 없습니다.")
-        );
+        Long id = Long.parseLong(request.getHeader("id"));
 
         userService.signUp(userSignUpDto, id);
 
@@ -83,11 +77,7 @@ public class UserController {
 
     @GetMapping("/profile")
     public ResponseEntity<BasicResponse> getProfile(HttpServletRequest request) {
-        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
-
-        Long id = jwtService.extractId(accessToken).orElseThrow(
-                () -> new IllegalArgumentException("Access Token에 해당하는 id가 없습니다.")
-        );
+        Long id = Long.parseLong(request.getHeader("id"));
 
         User userProfile = userService.getUserProfile(id);
 
@@ -112,11 +102,7 @@ public class UserController {
 
     @PutMapping("/update")
     public ResponseEntity<BasicResponse> userUpdate(HttpServletRequest request, @RequestBody UserDto userDto) {
-        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
-
-        Long id = jwtService.extractId(accessToken).orElseThrow(
-                () -> new IllegalArgumentException("Access Token에 해당하는 id가 없습니다.")
-        );
+        Long id = Long.parseLong(request.getHeader("id"));
 
         userService.update(userDto, id);
 
@@ -131,11 +117,7 @@ public class UserController {
 
     @GetMapping("/logout")
     public ResponseEntity<BasicResponse> logout(HttpServletRequest request) throws Exception {
-        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
-
-        Long id = jwtService.extractId(accessToken).orElseThrow(
-                () -> new IllegalArgumentException("Access Token에 해당하는 id가 없습니다.")
-        );
+        Long id = Long.parseLong(request.getHeader("id"));
 
         userService.logout(id);
 
@@ -150,11 +132,7 @@ public class UserController {
 
     @DeleteMapping("/withdrawal")
     public ResponseEntity<BasicResponse> withdrawal(HttpServletRequest request) throws Exception {
-        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
-
-        Long id = jwtService.extractId(accessToken).orElseThrow(
-                () -> new IllegalArgumentException("Access Token에 해당하는 id가 없습니다.")
-        );
+        Long id = Long.parseLong(request.getHeader("id"));
 
         userService.withdrawal(id);
 
@@ -195,11 +173,7 @@ public class UserController {
 
     @GetMapping("/search/{keyword}")
     public ResponseEntity<BasicResponse> searchUser(HttpServletRequest request, @PathVariable(name = "keyword") String keyword) {
-        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
-
-        Long id = jwtService.extractId(accessToken).orElseThrow(
-                () -> new IllegalArgumentException("Access Token에 해당하는 id가 없습니다.")
-        );
+        Long id = Long.parseLong(request.getHeader("id"));
 
         List<UserDto> userDtoList = userService.searchUser(id, keyword);
 
@@ -213,10 +187,4 @@ public class UserController {
 
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
-
-    @GetMapping("/test")
-    public String aa() {
-        return "sdfds";
-    }
-
 }
