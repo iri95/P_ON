@@ -1,5 +1,5 @@
-import 'package:p_on/screen/main/tab/stock/search/stock_search_data.dart';
-import 'package:p_on/screen/main/tab/stock/search/w_search_history_item.dart';
+import 'package:p_on/screen/main/tab/schedule/search/stock_search_data.dart';
+import 'package:p_on/screen/main/tab/schedule/search/w_search_history_item.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

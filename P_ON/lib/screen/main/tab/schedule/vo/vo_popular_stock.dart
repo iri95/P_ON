@@ -1,4 +1,4 @@
-import 'package:p_on/screen/main/tab/stock/vo/vo_simple_stock.dart';
+import 'package:p_on/screen/main/tab/schedule/vo/vo_simple_stock.dart';
 
 import 'stock_percentage_data_provider.dart';
 

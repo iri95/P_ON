@@ -1,4 +1,4 @@
-import 'package:p_on/screen/main/tab/stock/vo/vo_popular_stock.dart';
+import 'package:p_on/screen/main/tab/schedule/vo/vo_popular_stock.dart';
 
 class Stock extends PopularStock {
   final String stockImagePath;
