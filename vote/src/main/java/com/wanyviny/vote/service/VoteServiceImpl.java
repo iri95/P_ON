@@ -1,7 +1,7 @@
 package com.wanyviny.vote.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.wanyviny.vote.dto.VoteCreateRequest;
+import com.wanyviny.vote.dto.VoteRequest;
 import com.wanyviny.vote.dto.VoteResponse;
 import com.wanyviny.vote.entity.Vote;
 import com.wanyviny.vote.repository.VoteRepository;
@@ -22,7 +22,7 @@ public class VoteServiceImpl implements VoteService {
     private final VoteRepository voteRepository;
 
     @Override
-    public void createVote(String roomId, VoteCreateRequest request) {
+    public void createVote(String roomId, VoteRequest request) {
 
         Vote vote = modelMapper.map(request, Vote.class);
         vote.setId(roomId);
@@ -38,5 +38,19 @@ public class VoteServiceImpl implements VoteService {
 
         return objectMapper.convertValue(redisTemplate.opsForHash()
                 .entries(roomId), VoteResponse.class);
+    }
+
+    @Override
+    public void modifyVote(String roomId, VoteRequest request) {
+
+        Vote vote = modelMapper.map(request, Vote.class);
+        vote.setId(roomId);
+        voteRepository.save(vote);
+
+        redisTemplate.delete(roomId);
+
+        Map<String, Object> field = objectMapper.convertValue(vote, HashMap.class);
+        redisTemplate.opsForHash()
+                .putAll(roomId, field);
     }
 }
