@@ -4,7 +4,6 @@ import com.wanyviny.user.domain.common.BasicResponse;
 import com.wanyviny.user.domain.follow.dto.FollowDto;
 import com.wanyviny.user.domain.follow.service.FollowService;
 
-import com.wanyviny.user.global.jwt.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
