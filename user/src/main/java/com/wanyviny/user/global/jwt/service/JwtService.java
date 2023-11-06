@@ -43,7 +43,7 @@ public class JwtService {
      */
     private static final String ACCESS_TOKEN_SUBJECT = "AccessToken";
     private static final String REFRESH_TOKEN_SUBJECT = "RefreshToken";
-    private static final String ID_CLAIM = "id";
+//    private static final String ID_CLAIM = "id";
     private static final String BEARER = "Bearer ";
 
     private final UserRepository userRepository;
@@ -61,7 +61,7 @@ public class JwtService {
                 // 클레임으로는 socialId 하나만 사용
                 // 추가적으로 식별자나, 이름 등의 정보를 더 추가 가능
                 // 추가할 경우 .withClaim(클레임 이름, 클레임 값)으로 설정
-                .withClaim(ID_CLAIM, id)
+//                .withClaim(ID_CLAIM, id)
                 .sign(Algorithm.HMAC512(secretKey)); // HMAC512 알고리즘 사용
     }
 
@@ -126,19 +126,19 @@ public class JwtService {
      * 유효하다면 getClaim()으로 id 추출
      * 유효하지 않다면 빈 Optional 객체 반환
      */
-    public Optional<Long> extractId(String accessToken) {
-        try {
-            // 토큰 유혀성 검사하는 데에 사용할 알고리즘이 있는 JWT verifier builder 반환
-            return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secretKey))
-                    .build() // 반환된 빌더로 JWT verifier 생성
-                    .verify(accessToken) // accessToken을 검증하고 유효하지 않다면 예외 발생
-                    .getClaim(ID_CLAIM) // claim(Id) 가져오기
-                    .asLong());
-        } catch (Exception e) {
-            log.error("액세스 토큰이 유효하지 않습니다.");
-            return Optional.empty();
-        }
-    }
+//    public Optional<Long> extractId(String accessToken) {
+//        try {
+//            // 토큰 유혀성 검사하는 데에 사용할 알고리즘이 있는 JWT verifier builder 반환
+//            return Optional.ofNullable(JWT.require(Algorithm.HMAC512(secretKey))
+//                    .build() // 반환된 빌더로 JWT verifier 생성
+//                    .verify(accessToken) // accessToken을 검증하고 유효하지 않다면 예외 발생
+//                    .getClaim(ID_CLAIM) // claim(Id) 가져오기
+//                    .asLong());
+//        } catch (Exception e) {
+//            log.error("액세스 토큰이 유효하지 않습니다.");
+//            return Optional.empty();
+//        }
+//    }
 
     /**
      * AccessToken 헤더 설정
