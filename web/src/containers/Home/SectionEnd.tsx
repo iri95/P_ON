@@ -2,7 +2,7 @@ import Image from 'next/image';
 import styles from './Home.module.scss';
 import GoogleBtn from './downloadBtn';
 
-export default function SectionEnd(params) {
+export default function SectionEnd() {
   return (
     <div className={styles['end-container']}>
       <div className={styles.image}>
