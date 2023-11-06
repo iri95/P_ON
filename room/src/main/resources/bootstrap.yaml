@@ -4,5 +4,5 @@ spring:
 
   cloud:
     config:
-      name: chat
+      name: room
       profile: dev
