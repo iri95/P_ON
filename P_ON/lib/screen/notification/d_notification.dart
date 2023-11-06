@@ -8,7 +8,7 @@ class NotificationDialog extends DialogWidget {
   final List<TtossNotification> notifications;
 
   NotificationDialog(this.notifications,
-      {super.key, super.animation = NavAni.Bottom, super.barrierDismissible = false});
+      {super.key, super.animation = NavAni.Fade, super.barrierDismissible = true});
 
   @override
   DialogState<NotificationDialog> createState() => _NotificationDialogState();
@@ -20,7 +20,7 @@ class _NotificationDialogState extends DialogState<NotificationDialog> {
     return Material(
       type: MaterialType.transparency,
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           ...widget.notifications
               .map((element) => NotificationItemWidget(

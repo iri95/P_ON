@@ -1,8 +1,8 @@
 import 'package:p_on/common/common.dart';
-import 'package:p_on/screen/main/tab/stock/search/stock_search_data.dart';
-import 'package:p_on/screen/main/tab/stock/search/w_popular_search_list.dart';
-import 'package:p_on/screen/main/tab/stock/search/w_search_bar.dart';
-import 'package:p_on/screen/main/tab/stock/search/w_search_history_list.dart';
+import 'package:p_on/screen/main/tab/schedule/search/stock_search_data.dart';
+import 'package:p_on/screen/main/tab/schedule/search/w_popular_search_list.dart';
+import 'package:p_on/screen/main/tab/schedule/search/w_search_bar.dart';
+import 'package:p_on/screen/main/tab/schedule/search/w_search_history_list.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
