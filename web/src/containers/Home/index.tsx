@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
-import { motion, useScroll, useTransform, MotionValue } from 'framer-motion';
+import { motion, useScroll, useTransform, MotionValue, AnimatePresence } from 'framer-motion';
 import Image from 'next/Image';
 import styles from './Home.module.scss';
 import Section1 from './Section1';
@@ -60,46 +60,30 @@ export default function Index() {
   const y = useParallax(scrollYProgress, 300);
 
   return (
-    <div className={`${styles.scroll}`}>
-      <div className={styles.section} id="section1">
-        <Section1 />
+    <AnimatePresence>
+      <div className={`${styles.scroll}`}>
+        <div className={styles.section}>
+          <Section1 />
+        </div>
+
+        {serviceFunction.map((service) => (
+          <section
+            key={service.id}
+            className={`${styles.section} ${styles.section2} ${styles.service}`}
+            id={`section${service.id}`}
+          >
+            <motion.div className={styles['text-container']} style={{ y }}>
+              소개
+            </motion.div>
+            <div className={styles['image-container']} ref={ref}>
+              <div className={styles.screen}>{/* <Image /> */}</div>
+            </div>
+          </section>
+        ))}
+
+        <SectionEnd />
+        <div className={`${styles.section} ${styles.lastSection}`} />
       </div>
-
-      <section className={`${styles.section} ${styles.section2} ${styles.service}`} id="section2">
-        <motion.div className={styles['text-container']} style={{ y }}>
-          소개
-        </motion.div>
-        <div className={styles['image-container']} ref={ref}>
-          <div className={styles.screen}>{/* <Image /> */}</div>
-        </div>
-      </section>
-      <section className={`${styles.section} ${styles.section2} ${styles.service}`} id="section2">
-        <motion.div className={styles['text-container']} style={{ y }}>
-          소개
-        </motion.div>
-        <div className={styles['image-container']} ref={ref}>
-          <div className={styles.screen}>{/* <Image /> */}</div>
-        </div>
-      </section>
-      <section className={`${styles.section} ${styles.section2} ${styles.service}`} id="section2">
-        <motion.div className={styles['text-container']} style={{ y }}>
-          소개
-        </motion.div>
-        <div className={styles['image-container']} ref={ref}>
-          <div className={styles.screen}>{/* <Image /> */}</div>
-        </div>
-      </section>
-      <section className={`${styles.section} ${styles.section2} ${styles.service}`} id="section2">
-        <motion.div className={styles['text-container']} style={{ y }}>
-          소개
-        </motion.div>
-        <div className={styles['image-container']} ref={ref}>
-          <div className={styles.screen}>{/* <Image /> */}</div>
-        </div>
-      </section>
-
-      <SectionEnd />
-      <div className={`${styles.section} ${styles.lastSection}`} />
-    </div>
+    </AnimatePresence>
   );
 }
