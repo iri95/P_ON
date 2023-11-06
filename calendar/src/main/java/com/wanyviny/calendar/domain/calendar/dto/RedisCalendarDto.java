@@ -23,19 +23,6 @@ public class RedisCalendarDto {
     private Date endDate;
     private String place;
 
-    @NoArgsConstructor
-    @AllArgsConstructor
-    @Builder
-    @Getter
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class getSchedule{
-        private Long calendarId;
-        private String title;
-        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-        private Date startDate;
-        @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-        private Date endDate;
-    }
 
     @NoArgsConstructor
     @AllArgsConstructor

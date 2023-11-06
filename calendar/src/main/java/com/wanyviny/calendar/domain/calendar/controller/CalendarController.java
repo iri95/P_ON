@@ -49,7 +49,7 @@ public class CalendarController {
 
         Long id = 1L;
 
-        Map<String, RedisCalendarDto.getSchedule> calendarDto = calendarService.getMySchedule(id);
+        Map<String, RedisCalendarDto> calendarDto = calendarService.getMySchedule(id);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
@@ -69,7 +69,7 @@ public class CalendarController {
 
         Long id = 1L;
 
-        CalendarDto.getSchedule schedule = calendarService.getDetailSchedule(id, calendarId);
+        RedisCalendarDto schedule = calendarService.getDetailSchedule(id, calendarId);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())

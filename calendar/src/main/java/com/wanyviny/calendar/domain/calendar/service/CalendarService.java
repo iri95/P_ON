@@ -9,9 +9,9 @@ import java.util.Map;
 public interface CalendarService {
     void postSchdule(Long id, CalendarDto.setSchedule schedule);
 
-    Map<String, RedisCalendarDto.getSchedule> getMySchedule(Long id);
+    Map<String, RedisCalendarDto> getMySchedule(Long id);
 
-    CalendarDto.getSchedule getDetailSchedule(Long id, Long calendarId);
+    RedisCalendarDto getDetailSchedule(Long id, Long calendarId);
 
     List<CalendarDto.promiseScheduleDto> getUserSchedule(Long id, Long userId);
 

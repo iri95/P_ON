@@ -47,20 +47,20 @@ public class CalendarServiceImpl implements CalendarService {
 
 
     @Override
-    public Map<String, RedisCalendarDto.getSchedule> getMySchedule(Long id) {
+    public Map<String, RedisCalendarDto> getMySchedule(Long id) {
 
         Map<Object, Object> calendarList = scheduleRedisTemplate.opsForHash().entries("Calendar_" + id);
 
-        Map<String, RedisCalendarDto.getSchedule> stringRedisCalendarDtoMap =  objectMapper.convertValue(calendarList, HashMap.class);
+        Map<String, RedisCalendarDto> stringRedisCalendarDtoMap =  objectMapper.convertValue(calendarList, HashMap.class);
 
         return stringRedisCalendarDtoMap;
     }
 
     @Override
-    public CalendarDto.getSchedule getDetailSchedule(Long id, Long calendarId) {
+    public RedisCalendarDto getDetailSchedule(Long id, Long calendarId) {
 
         return objectMapper.convertValue(scheduleRedisTemplate.opsForHash()
-                .get("Calendar_" + id, String.valueOf(calendarId)), CalendarDto.getSchedule.class);
+                .get("Calendar_" + id, String.valueOf(calendarId)), RedisCalendarDto.class);
     }
 
     @Override
