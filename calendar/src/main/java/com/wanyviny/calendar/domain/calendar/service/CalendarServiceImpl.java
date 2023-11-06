@@ -9,10 +9,7 @@ import com.wanyviny.calendar.domain.follow.repository.FollowRepository;
 import com.wanyviny.calendar.domain.user.entity.User;
 import com.wanyviny.calendar.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +23,10 @@ public class CalendarServiceImpl implements CalendarService {
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
     private final RedisTemplate<String, Calendar> scheduleRedisTemplate;
+    private final ObjectMapper objectMapper;
+
+
+
     @Override
     @Transactional
     public void postSchdule(Long id, CalendarDto.setSchedule schedule) {
@@ -35,15 +36,16 @@ public class CalendarServiceImpl implements CalendarService {
 
         Calendar calendar = calendarRepository.save(schedule.dtoToEntity(user));
 
-        scheduleRedisTemplate.opsForList().set("Calendar_" + id, calendar.getId(), schedule.dtoToEntity(user));
+        Map<String, Object> value = objectMapper.convertValue(calendar, HashMap.class);
 
+        scheduleRedisTemplate.opsForHash().put("Calendar_" + id,String.valueOf(calendar.getId()), value);
     }
 
     @Override
     public List<CalendarDto.getSchedule> getMySchedule(Long id) {
 
-//        List<Calendar> calendarList = calendarRepository.findByUserId_id(id);
-        List<Calendar> calendarList = scheduleRedisTemplate.opsForList().range("User_" + id, 0, -1);
+        List<Calendar> calendarList = calendarRepository.findByUserId_id(id);
+//        List<Calendar> calendarList = scheduleRedisTemplate.opsForList().range("User_" + id, 0, -1);
 
         return calendarList.stream()
                 .map(Calendar::entityToDto)

@@ -59,6 +59,8 @@ public class RedisConfig {
         RedisTemplate<String, Calendar> redisTemplate = new RedisTemplate<>();
         redisTemplate.setKeySerializer(new StringRedisSerializer()); //key 깨짐 방지
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(Calendar.class)); //value 깨짐 방지 -- 이것 때문인가.. 맞음
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer()); //key 깨짐 방지
+        redisTemplate.setHashValueSerializer(new Jackson2JsonRedisSerializer<>(Calendar.class));
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         return redisTemplate;
     }
