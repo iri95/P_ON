@@ -1,7 +1,7 @@
 package com.wanyviny.calendar.domain.calendar.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.wanyviny.calendar.domain.CALENDAR;
+import com.wanyviny.calendar.domain.CALENDAR_TYPE;
 import com.wanyviny.calendar.domain.calendar.dto.CalendarDto;
 import com.wanyviny.calendar.domain.calendar.dto.RedisCalendarDto;
 import com.wanyviny.calendar.domain.user.entity.User;
@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -47,7 +46,7 @@ public class Calendar {
     private String place;
 
     @Column(name = "CALENDAR_TYPE")
-    private CALENDAR type;
+    private CALENDAR_TYPE type;
 
     public void update(CalendarDto.setSchedule schedule) {
         this.title = schedule.getTitle();
