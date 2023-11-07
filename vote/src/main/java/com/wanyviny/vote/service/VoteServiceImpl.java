@@ -8,6 +8,7 @@ import com.wanyviny.vote.repository.VoteRepository;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -34,86 +35,95 @@ public class VoteServiceImpl implements VoteService {
         VoteResponse response = modelMapper.map(voteRepository.findById(roomId), VoteResponse.class);
 
         if (response.getDate().size() > 1) {
-            String date = String.valueOf(objectMapper.convertValue(response.getDate()
-                                    .get("deadLine"), HashMap.class)
-                            .get("date"))
-                    .substring(0, 10);
+            Map<String, Object> map = objectMapper.convertValue(response.getDate()
+                            .get("deadLine"), HashMap.class);
 
-            String temp = String.valueOf(objectMapper.convertValue(response.getDate()
-                            .get("deadLine"), HashMap.class)
-                    .get("time"));
+            if (map.get("date") != null) {
+                String date = String.valueOf(map.get("date"))
+                        .substring(0, 10);
 
-            String time = temp.substring(3);
+                String temp = String.valueOf(objectMapper.convertValue(response.getDate()
+                                .get("deadLine"), HashMap.class)
+                        .get("time"));
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH시 mm분");
-            LocalDateTime localDateTime = LocalDateTime.parse(date + " " + time, formatter);
+                String time = temp.substring(3);
 
-            if (temp.startsWith("오후")) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH시 mm분");
+                LocalDateTime localDateTime = LocalDateTime.parse(date + " " + time, formatter);
 
-                localDateTime = localDateTime.plusHours(12);
-            }
+                if (temp.startsWith("오후")) {
 
-            if (localDateTime.compareTo(LocalDateTime.now()) > 0) {
-                response.getDate().put("isComplete", "false");
+                    localDateTime = localDateTime.plusHours(12);
+                }
 
-            } else {
-                response.getDate().put("isComplete", "true");
+                if (localDateTime.compareTo(LocalDateTime.now()) > 0) {
+                    response.getDate().put("isComplete", "false");
+
+                } else {
+                    response.getDate().put("isComplete", "true");
+                }
             }
         }
 
         if (response.getTime().size() > 1) {
-            String date = String.valueOf(objectMapper.convertValue(response.getTime()
-                                    .get("deadLine"), HashMap.class)
-                            .get("date"))
-                    .substring(0, 10);
+            Map<String, Object> map = objectMapper.convertValue(response.getTime()
+                    .get("deadLine"), HashMap.class);
 
-            String temp = String.valueOf(objectMapper.convertValue(response.getTime()
-                            .get("deadLine"), HashMap.class)
-                    .get("time"));
+            if (map.get("date") != null) {
+                String date = String.valueOf(map.get("date"))
+                        .substring(0, 10);
 
-            String time = temp.substring(3);
+                String temp = String.valueOf(objectMapper.convertValue(response.getTime()
+                                .get("deadLine"), HashMap.class)
+                        .get("time"));
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH시 mm분");
-            LocalDateTime localDateTime = LocalDateTime.parse(date + " " + time, formatter);
+                String time = temp.substring(3);
 
-            if (temp.startsWith("오후")) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH시 mm분");
+                LocalDateTime localDateTime = LocalDateTime.parse(date + " " + time, formatter);
 
-                localDateTime = localDateTime.plusHours(12);
-            }
+                if (temp.startsWith("오후")) {
 
-            if (localDateTime.compareTo(LocalDateTime.now()) > 0) {
-                response.getTime().put("isComplete", "false");
+                    localDateTime = localDateTime.plusHours(12);
+                }
 
-            } else {
-                response.getTime().put("isComplete", "true");
+                if (localDateTime.compareTo(LocalDateTime.now()) > 0) {
+                    response.getTime().put("isComplete", "false");
+
+                } else {
+                    response.getTime().put("isComplete", "true");
+                }
             }
         }
 
         if (response.getLocation().size() > 1) {
-            String date = String.valueOf(objectMapper.convertValue(response.getLocation()
-                                    .get("deadLine"), HashMap.class)
-                            .get("date"))
-                    .substring(0, 10);
+            Map<String, Object> map = objectMapper.convertValue(response.getLocation()
+                    .get("deadLine"), HashMap.class);
 
-            String temp = String.valueOf(objectMapper.convertValue(response.getLocation()
-                            .get("deadLine"), HashMap.class)
-                    .get("time"));
+            if (map.get("date") != null) {
+                String date = String.valueOf(map.get("date"))
+                        .substring(0, 10);
 
-            String time = temp.substring(3);
+                String temp = String.valueOf(objectMapper.convertValue(response.getLocation()
+                                .get("deadLine"), HashMap.class)
+                        .get("time"));
 
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH시 mm분");
-            LocalDateTime localDateTime = LocalDateTime.parse(date + " " + time, formatter);
+                String time = temp.substring(3);
 
-            if (temp.startsWith("오후")) {
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH시 mm분");
+                LocalDateTime localDateTime = LocalDateTime.parse(date + " " + time, formatter);
 
-                localDateTime = localDateTime.plusHours(12);
-            }
+                if (temp.startsWith("오후")) {
 
-            if (localDateTime.compareTo(LocalDateTime.now()) > 0) {
-                response.getLocation().put("isComplete", "false");
+                    localDateTime = localDateTime.plusHours(12);
+                }
 
-            } else {
-                response.getLocation().put("isComplete", "true");
+                if (localDateTime.compareTo(LocalDateTime.now()) > 0) {
+                    response.getLocation().put("isComplete", "false");
+
+                } else {
+                    response.getLocation().put("isComplete", "true");
+                }
             }
         }
 
