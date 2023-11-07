@@ -1,6 +1,7 @@
 package com.wanyviny.user.domain.user.controller;
 
 import com.wanyviny.user.domain.common.BasicResponse;
+import com.wanyviny.user.domain.user.dto.KakaoDto;
 import com.wanyviny.user.domain.user.dto.KakaoUserDto;
 import com.wanyviny.user.domain.user.dto.UserDto;
 import com.wanyviny.user.domain.user.dto.UserSignUpDto;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,6 +27,22 @@ public class UserController {
 
     private final UserService userService;
     private final JwtService jwtService;
+
+
+    @PostMapping("/kakao-login")
+    public ResponseEntity<BasicResponse> kakaoLogin(@RequestParam String accessToken) throws Exception {
+        Map<String, String> tokenMap = userService.kakaoLogin(accessToken);
+
+        BasicResponse basicResponse = BasicResponse.builder()
+                .code(HttpStatus.OK.value())
+                .httpStatus(HttpStatus.OK)
+                .message("카카오에서 받은 유저 정보 조회 성공")
+                .count(1)
+                .result(Collections.singletonList(tokenMap))
+                .build();
+
+        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+    }
 
     @GetMapping("/kakao-profile")
     public ResponseEntity<BasicResponse> getKakaoProfile(HttpServletRequest request) {
@@ -152,7 +170,7 @@ public class UserController {
 
         User findUser = userService.getUserByRefreshToken(refreshToken);
 
-        String reissueAccessToken = jwtService.createAccessToken(findUser.getId());
+        String reissueAccessToken = jwtService.createAccessToken();
         String reissueRefreshToken = jwtService.createRefreshToken();
 
         // 헤더에 토큰 정보 추가

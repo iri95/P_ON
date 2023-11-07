@@ -43,7 +43,7 @@ public class User {
     private ROLE role;
 
     @Column(name = "USER_SOCIAL_ID", nullable = false)
-    private String socialId;
+    private Long socialId;
 
     @Column(name = "USER_PASSWORD")
     private String password;
