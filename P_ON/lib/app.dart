@@ -145,13 +145,14 @@ class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
         }
       ),
       GoRoute(
-          path: '/create/vote/:id/:voteType',
+          path: '/create/vote/:id/:voteType/:isUpdate',
           pageBuilder: (BuildContext context, GoRouterState state) {
             final id = state.pathParameters['id'] ?? 'unknown';
             final voteTypeString = state.pathParameters['voteType'] ?? 'Date';
+            final isUpdate = (state.pathParameters['isUpdate'] ?? 'false').toLowerCase() == 'true';
             final voteType = VoteType.values.firstWhere((e) => e.toString() == 'VoteType.$voteTypeString', orElse: () => VoteType.Date);
             return MaterialPage(
-              child: CreateVoteRoom(id: id, voteType: voteType),
+              child: CreateVoteRoom(id: id, voteType: voteType, isUpdate: isUpdate,),
             );
           }
       ),
