@@ -77,41 +77,43 @@ class MainScreenState extends ConsumerState<MainScreen> with SingleTickerProvide
         child: Stack(
           children: [
             Scaffold(
-              extendBody: extendBody,
-              //bottomNavigationBar 아래 영역 까지 그림
-              drawer: const MenuDrawer(),
-              drawerEnableOpenDragGesture: !Platform.isIOS,
-              body: Container(
-                padding:
-                EdgeInsets.only(bottom: extendBody ? 60 - bottomNavigationBarBorderRadius : 0),
-                child: SafeArea(
-                  bottom: !extendBody,
-                  child: pages,
+              body: Scaffold(
+                extendBody: extendBody,
+                //bottomNavigationBar 아래 영역 까지 그림
+                drawer: const MenuDrawer(),
+                drawerEnableOpenDragGesture: !Platform.isIOS,
+                body: Container(
+                  padding:
+                  EdgeInsets.only(bottom: extendBody ? 60 - bottomNavigationBarBorderRadius : 0),
+                  child: SafeArea(
+                    bottom: !extendBody,
+                    child: pages,
+                  ),
                 ),
-              ),
-              resizeToAvoidBottomInset: false,
-              bottomNavigationBar: _buildBottomNavigationBar(context),
+                resizeToAvoidBottomInset: false,
+                bottomNavigationBar: _buildBottomNavigationBar(context),
 
-                floatingActionButtonLocation: ref.read(fabLocationProvider),
-                // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-                floatingActionButton: InkWell(
-                  onHover: (e) {
-                    setState(() {
-                      currentImage = "assets/image/main/핑키3.png";
-                    });
-                  },
-                  child: Container(
-                    height: 70,
-                    width: 70,
-                    child: FittedBox(
-                      child: FloatingActionButton(
-                        elevation: 4,
-                        onPressed: () {},
-                        child: Image.asset(currentImage),
+                  floatingActionButtonLocation: ref.read(fabLocationProvider),
+                  // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+                  floatingActionButton: InkWell(
+                    onHover: (e) {
+                      setState(() {
+                        currentImage = "assets/image/main/핑키3.png";
+                      });
+                    },
+                    child: Container(
+                      height: 75.0,
+                      width: 75.0,
+                      child: FittedBox(
+                        child: FloatingActionButton(
+                          elevation: 4,
+                          onPressed: () {},
+                          child: Image.asset(currentImage),
+                        ),
                       ),
                     ),
-                  ),
-                )
+                  )
+              ),
             ),
             AnimatedOpacity(
               opacity: _currentTab == TabItem.home ? 1 : 0,

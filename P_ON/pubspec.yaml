@@ -89,6 +89,7 @@ dependencies:
   smooth_page_indicator: ^1.1.0
   firebase_core: ^2.21.0
   firebase_messaging: ^14.7.3
+  kakao_flutter_sdk: ^1.6.1
 
 dev_dependencies:
   flutter_test:
