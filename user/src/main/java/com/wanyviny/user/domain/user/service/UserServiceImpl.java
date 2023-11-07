@@ -119,7 +119,7 @@ public class UserServiceImpl implements UserService {
 
         if (user == null) {
             String createdAccessToken = jwtService.createAccessToken();
-            tokenMap.put("Authorization", "bearer " + createdAccessToken);
+            tokenMap.put("Authorization", "Bearer " + createdAccessToken);
             tokenMap.put("ROLE", "GUEST");
             User createdUser = userRepository.save(User.builder()
                     .socialId(kakaoDto.getSocialId())
@@ -133,7 +133,7 @@ public class UserServiceImpl implements UserService {
 
         if (user.getRole() == ROLE.GUEST) {
             String createdAccessToken = jwtService.createAccessToken();
-            tokenMap.put("Authorization", "bearer " + createdAccessToken);
+            tokenMap.put("Authorization", "Bearer " + createdAccessToken);
             tokenMap.put("ROLE", "GUEST");
             tokenMap.put("id", String.valueOf(user.getId()));
             return tokenMap;
@@ -143,7 +143,7 @@ public class UserServiceImpl implements UserService {
         String createdAccessToken = jwtService.createAccessToken();
         String createdRefreshToken = jwtService.createRefreshToken();
         jwtService.updateRefreshToken(user.getId(), createdRefreshToken);
-        tokenMap.put("Authorization", "bearer " + createdAccessToken);
+        tokenMap.put("Authorization", "Bearer " + createdAccessToken);
         tokenMap.put("Authorization_refresh", "Bearer " + createdRefreshToken);
         tokenMap.put("ROLE", "USER");
         tokenMap.put("id", String.valueOf(user.getId()));
