@@ -16,11 +16,6 @@ class AuthService {
 
   // 카카오 로그인을 통해 서버 토큰을 발급받는 함수
   Future<String> fetchToken() async {
-    final storedToken = ref.read(tokenProvider);
-    if (storedToken != null && storedToken.isNotEmpty) {
-      return storedToken;
-    }
-
     // 카카오 로그인 로직으로 토큰 발급
     final kakaoToken = await kakaoLogin();
 
@@ -35,10 +30,18 @@ class AuthService {
 
       final serverToken =
           response.headers.map['authorization']?.first; // 응답에서 서버 토큰 추출
-      // dynamic serverId = response.headers.map['id']?.first;
-      ref.read(tokenProvider.notifier).setToken(serverToken);
+      dynamic serverId = response.headers.map['id']?.first;
+
       print('서버토큰 ${serverToken} ================');
-      return serverToken!;
+      print('아이디 ${serverId} ================');
+
+      if (serverToken != null) {
+        // StateNotifier를 통해 토큰 상태를 업데이트합니다.
+        ref.read(tokenProvider.notifier).setToken(serverToken);
+        return serverToken;
+      } else {
+        throw Exception('토큰을 추출할 수 없습니다.');
+      }
     } catch (e) {
       // 에러 처리
       throw Exception('서버 토큰을 가져오는데 실패했습니다: $e');
@@ -109,6 +112,10 @@ class AuthService {
     }
   }
 }
+
+final authServiceProvider = Provider<AuthService>((ref) {
+  return AuthService(ref);
+});
 
 class ApiService {
   Dio dio;
@@ -211,10 +218,6 @@ class ApiService {
   //   }
   // }
 }
-
-final authServiceProvider = Provider<AuthService>((ref) {
-  return AuthService(ref);
-});
 
 final apiServiceProvider = Provider<ApiService>((ref) {
   return ApiService(ref);
