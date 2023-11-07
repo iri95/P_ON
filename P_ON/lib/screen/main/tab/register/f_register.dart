@@ -47,7 +47,8 @@ class _RegisterFragmentState extends State<RegisterFragment> {
             ),
           ),
         ),
-        body: RegisterBody(nickName: widget.nickName, profileImage: widget.profileImage),
+        body: RegisterBody(
+            nickName: widget.nickName, profileImage: widget.profileImage),
         bottomSheet: Container(
           width: double.infinity,
           height: 48,
@@ -56,7 +57,9 @@ class _RegisterFragmentState extends State<RegisterFragment> {
               color: AppColors.mainBlue,
               borderRadius: BorderRadius.circular(10)),
           child: TextButton(
-            onPressed: () {},
+            onPressed: () {
+              // TODO: 회원가입 로직 작성
+            },
             child: '확인'.text.semiBold.white.make(),
           ),
         ),
