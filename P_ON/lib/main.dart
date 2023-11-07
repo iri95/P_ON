@@ -13,17 +13,27 @@ import 'common/theme/custom_theme_app.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
+import 'package:flutter/foundation.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await NaverMapSdk.instance.initialize(clientId: Naver_Map_Id);
+
+  // 안드로이드 플랫폼인 경우에만 NaverMapSdk 초기화
+  if (defaultTargetPlatform == TargetPlatform.android) {
+    await NaverMapSdk.instance.initialize(clientId: Naver_Map_Id);
+  }
+
   final bindings = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: bindings);
   await EasyLocalization.ensureInitialized();
   await AppPreferences.init();
 
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  if (defaultTargetPlatform == TargetPlatform.android) {
+    // 안드로이드 플랫폼인 경우 Firebase 초기화를 실행합니다.
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
 
   timeago.setLocaleMessages('ko', timeago.KoMessages());
   runApp(EasyLocalization(
@@ -31,6 +41,7 @@ void main() async {
       fallbackLocale: const Locale('ko'),
       path: 'assets/translations',
       useOnlyLangCode: true,
-      child: const CustomThemeApp(child: const ProviderScope(child: App()),
+      child: const CustomThemeApp(
+        child: const ProviderScope(child: App()),
       )));
 }
