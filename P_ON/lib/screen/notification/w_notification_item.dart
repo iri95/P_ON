@@ -8,7 +8,8 @@ class NotificationItemWidget extends StatefulWidget {
   final TtossNotification notification;
   final VoidCallback onTap;
 
-  const NotificationItemWidget({required this.onTap, super.key, required this.notification});
+  const NotificationItemWidget(
+      {required this.onTap, super.key, required this.notification});
 
   @override
   State<NotificationItemWidget> createState() => _NotificationItemWidgetState();
@@ -16,7 +17,7 @@ class NotificationItemWidget extends StatefulWidget {
 
 class _NotificationItemWidgetState extends State<NotificationItemWidget> {
   static const leftPadding = 15.0;
-  static const iconWidth = 25.0;
+  // static const iconWidth = 25.0;
 
   @override
   void initState() {
@@ -29,32 +30,44 @@ class _NotificationItemWidgetState extends State<NotificationItemWidget> {
       onTap: widget.onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10),
-        color: widget.notification.isRead ? context.backgroundColor : context.appColors.unreadColor,
+        color: widget.notification.isRead
+            ? context.backgroundColor
+            : context.appColors.unreadColor,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                const Width(leftPadding),
-                Image.asset(
-                  widget.notification.type.iconPath,
-                  width: iconWidth,
-                ),
-                widget.notification.type.name.text
-                    .size(12)
-                    .color(context.appColors.lessImportant)
-                    .make(),
-                emptyExpanded,
-                timeago
-                    .format(widget.notification.time, locale: context.locale.languageCode)
-                    .text
-                    .size(13)
-                    .color(context.appColors.lessImportant)
-                    .make(),
-                width10,
-              ],
+            Container(
+              child: Column(
+                children: [
+                  Row(
+                    children: [
+                      const Width(leftPadding),
+                      // Image.asset(
+                      //   widget.notification.iconPath,
+                      //   width: iconWidth,
+                      // ),
+                      // 분류
+                      widget.notification.type.text
+                          .size(18)
+                          .color(AppColors.grey700)
+                          .make(),
+                      emptyExpanded,
+                      // 남은 시간
+                      timeago
+                          .format(widget.notification.time,
+                              locale: context.locale.languageCode)
+                          .text
+                          .size(14)
+                          .color(context.appColors.lessImportant)
+                          .make(),
+                      width10,
+                    ],
+                  ),
+                ],
+              ),
             ),
-            widget.notification.description.text.make().pOnly(left: leftPadding + iconWidth)
+            // 메시지
+            widget.notification.description.text.make().pOnly(left: leftPadding)
           ],
         ),
       ),
