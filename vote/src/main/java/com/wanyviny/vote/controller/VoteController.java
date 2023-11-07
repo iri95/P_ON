@@ -1,6 +1,5 @@
 package com.wanyviny.vote.controller;
 
-
 import com.wanyviny.vote.common.BasicResponse;
 import com.wanyviny.vote.dto.VoteRequest;
 import com.wanyviny.vote.dto.VoteResponse;
