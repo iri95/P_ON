@@ -8,7 +8,7 @@ public abstract class OAuth2UserInfo {
 
     public OAuth2UserInfo(Map<String, Object> attributes) { this.attributes = attributes;}
 
-    public abstract String getId(); // 카카오 - "id"
+    public abstract Long getId(); // 카카오 - "id"
 
     public abstract String getNickname();
 

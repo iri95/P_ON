@@ -1,6 +1,9 @@
 package com.wanyviny.user.domain.user.service;
 
 import com.wanyviny.user.domain.follow.repository.FollowRepository;
+import com.wanyviny.user.domain.user.PRIVACY;
+import com.wanyviny.user.domain.user.ROLE;
+import com.wanyviny.user.domain.user.dto.KakaoDto;
 import com.wanyviny.user.domain.user.dto.UserDto;
 import com.wanyviny.user.domain.user.dto.UserSignUpDto;
 import com.wanyviny.user.domain.user.entity.User;
@@ -9,7 +12,9 @@ import com.wanyviny.user.global.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
+import net.minidev.json.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -20,7 +25,9 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -29,8 +36,12 @@ public class UserServiceImpl implements UserService {
     @Value("${kakao.admin}")
     private String SERVICE_APP_ADMIN_KEY;
 
+    private final static String KAKAO_API_URI = "https://kapi.kakao.com";
+
+
     private final UserRepository userRepository;
     private final JwtService jwtService;
+    private final RedisTemplate redisTemplate;
     private final FollowRepository followRepository;
 
     @Override
@@ -100,8 +111,83 @@ public class UserServiceImpl implements UserService {
                 .toList();
     }
 
+    @Override
+    public Map<String, String> kakaoLogin(String accessToken) throws Exception {
+        KakaoDto kakaoDto = getUserInfoWithToken(accessToken);
+        User user = userRepository.findBySocialId(kakaoDto.getSocialId()).orElse(null);
+        Map<String, String> tokenMap = new HashMap<>();
 
-    public void kakaoApi(String api, String socialId) throws Exception {
+        if (user == null) {
+            String createdAccessToken = jwtService.createAccessToken();
+            tokenMap.put("Authorization", "bearer " + createdAccessToken);
+            tokenMap.put("ROLE", "GUEST");
+            userRepository.save(User.builder()
+                    .socialId(kakaoDto.getSocialId())
+                    .role(ROLE.GUEST)
+                    .nickname(kakaoDto.getNickname())
+                    .profileImage(kakaoDto.getProfileImage())
+                    .build());
+            return tokenMap;
+        }
+
+        if (user.getRole() == ROLE.GUEST) {
+            String createdAccessToken = jwtService.createAccessToken();
+            tokenMap.put("Authorization", "bearer " + createdAccessToken);
+            tokenMap.put("ROLE", "GUEST");
+            return tokenMap;
+        }
+
+        // ROLE 이 USER 일 경우
+        String createdAccessToken = jwtService.createAccessToken();
+        String createdRefreshToken = jwtService.createRefreshToken();
+        jwtService.updateRefreshToken(user.getId(), createdRefreshToken);
+        tokenMap.put("Authorization", "bearer " + createdAccessToken);
+        tokenMap.put("Authorization_refresh", "Bearer " + createdRefreshToken);
+        tokenMap.put("ROLE", "USER");
+        return tokenMap;
+
+
+    }
+
+
+    @Override
+    public KakaoDto getUserInfoWithToken(String accessToken) throws Exception {
+        //HttpHeader 생성
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + accessToken);
+        headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+
+        //HttpHeader 담기
+        RestTemplate rt = new RestTemplate();
+        HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(headers);
+        ResponseEntity<String> response = rt.exchange(
+                KAKAO_API_URI + "/v2/user/me",
+                HttpMethod.POST,
+                httpEntity,
+                String.class
+        );
+
+        //Response 데이터 파싱
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jsonObj = (JSONObject) jsonParser.parse(response.getBody());
+        JSONObject account = (JSONObject) jsonObj.get("kakao_account");
+        JSONObject profile = (JSONObject) account.get("profile");
+
+        Long id = (Long) jsonObj.get("id");
+        String email = String.valueOf(account.get("email"));
+        String nickname = String.valueOf(profile.get("nickname"));
+        String profileImage = (String) profile.get("thumbnail_image_url");
+
+        return KakaoDto.builder()
+                .socialId(id)
+                .email(email)
+                .nickname(nickname)
+                .profileImage(profileImage)
+                .build();
+    }
+
+
+    public void kakaoApi(String api, Long socialId) throws Exception {
         String KAKAO_API_URL = "https://kapi.kakao.com/v1/user/";
         try {
             HttpHeaders headers = new HttpHeaders();
@@ -109,7 +195,7 @@ public class UserServiceImpl implements UserService {
 
             MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
             params.add("target_id_type", "user_id");
-            params.add("target_id", socialId);
+            params.add("target_id", String.valueOf(socialId));
 
             RestTemplate restTemplate = new RestTemplate();
             HttpEntity<MultiValueMap<String, String>> httpEntity = new HttpEntity<>(params, headers);

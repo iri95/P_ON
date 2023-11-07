@@ -53,7 +53,7 @@ public class JwtService {
     /**
      * AccessToken 생성 메소드
      */
-    public String createAccessToken(Long id) {
+    public String createAccessToken() {
         Date now = new Date();
         return JWT.create() // JWT토큰을 생성하는 빌더 반환
                 .withSubject(ACCESS_TOKEN_SUBJECT)
