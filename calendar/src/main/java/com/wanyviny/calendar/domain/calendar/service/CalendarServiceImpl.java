@@ -37,25 +37,17 @@ public class CalendarServiceImpl implements CalendarService {
         );
 
         Calendar calendar = calendarRepository.save(schedule.dtoToEntity(user));
-
-        RedisCalendarDto redisCalendar = calendar.entityToRedis();
-
-        Map<String, RedisCalendarDto> value = objectMapper.convertValue(redisCalendar, HashMap.class);
-
-        scheduleRedisTemplate.opsForHash().put("Calendar_" + id, String.valueOf(calendar.getId()), value);
     }
 
 
     @Override
-    public List<RedisCalendarDto> getMySchedule(Long id) {
+    public List<CalendarDto.getSchedule> getMySchedule(Long id) {
+        List<Calendar> calendarList = calendarRepository.findByUserId_id(id);
 
-        Map<Object, Object> calendarList = scheduleRedisTemplate.opsForHash().entries("Calendar_" + id);
+        return calendarList.stream()
+                .map(Calendar::entityToDto)
+                .toList();
 
-        Map<String, RedisCalendarDto> stringRedisCalendarDtoMap = objectMapper.convertValue(calendarList, HashMap.class);
-
-        Collection<RedisCalendarDto> redisCalendarDtoCollection = stringRedisCalendarDtoMap.values();
-
-        return redisCalendarDtoCollection.stream().toList();
     }
 
     @Override

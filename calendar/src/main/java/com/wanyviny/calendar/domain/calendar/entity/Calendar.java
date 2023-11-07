@@ -56,6 +56,17 @@ public class Calendar {
         this.place = schedule.getPlace();
     }
 
+    public CalendarDto.getSchedule entityToDto(){
+        return CalendarDto.getSchedule.builder()
+                .calendarId(this.id)
+                .title(this.title)
+                .content(this.content)
+                .startDate(this.startDate)
+                .endDate(this.endDate)
+                .place(this.place)
+                .build();
+    }
+
     public CalendarDto.promiseScheduleDto entityToPromiseDto() {
         return CalendarDto.promiseScheduleDto.builder()
                 .nickName(this.userId.getNickname())
