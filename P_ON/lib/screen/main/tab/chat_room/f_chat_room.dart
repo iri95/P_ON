@@ -36,6 +36,10 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
   List<Map<String, dynamic>> messages = [];
   Map<String, dynamic> chatRoomInfo = {};
 
+  var votesDate;
+  var votesTime;
+  var votesLocation;
+
   void onConnect(StompFrame? frame) {
     client.subscribe(
         destination: '/topic/chat/${widget.id}',
@@ -90,6 +94,10 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
     print('==================================');
     print('==================================');
     print(response);
+    print(response.data['result'][0]['votes']);
+    // var votesDate = response.data['result'][0]['votes']['date'];
+    // var votesTime = response.data['result'][0]['votes']['Time'];
+    // var votesLocation = response.data['result'][0]['votes']['Location'];
   }
 
   @override
@@ -186,6 +194,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                                 Vote(
                                   voteType: VoteType.Date,
                                   roomId: widget.id,
+                                  // isVote: votesDate
                                 )
                               else
                                 ChatHeadText(
@@ -204,6 +213,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                                 Vote(
                                   voteType: VoteType.Time,
                                   roomId: widget.id,
+                                  // isVote: votesTime
                                 )
                               else
                                 ChatHeadText(
@@ -222,6 +232,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                                 Vote(
                                   voteType: VoteType.Location,
                                   roomId: widget.id,
+                                  // isVote : votesLocation
                                 )
                               else
                                 ChatHeadText(

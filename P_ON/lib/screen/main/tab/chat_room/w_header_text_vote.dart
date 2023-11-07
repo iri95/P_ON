@@ -11,6 +11,7 @@ enum VoteType {
 class Vote extends StatefulWidget {
   final VoteType voteType;
   final String roomId;
+  // final bool isVote;
   const Vote({super.key, required this.roomId, required this.voteType});
 
   @override
@@ -45,7 +46,8 @@ class _VoteState extends State<Vote> {
               case VoteType.Location:
                 print('location');
                 print(widget.voteType);
-                router.go('/create/vote/${widget.roomId}/${voteTypeToString(widget.voteType)}');
+                // router.go('/create/vote/${widget.roomId}/${voteTypeToString(widget.voteType)}');
+                router.go('/selecte/vote/${widget.roomId}');
                 break;
             }
           },
