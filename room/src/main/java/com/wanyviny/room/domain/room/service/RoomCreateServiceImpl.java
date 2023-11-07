@@ -26,21 +26,20 @@ public class RoomCreateServiceImpl implements RoomCreateService {
     public RoomResponse createRoom(RoomCreateRequest request) {
 
         Room room = modelMapper.map(request, Room.class);
-
-        if (StringUtils.hasText(room.getPromiseTitle())) {
-            room.setDefaultTitle("false");
-
-        } else {
-            room.changeDefaultTitle();
-            room.setDefaultTitle("true");
-        }
-
+        room.defaultVotes();
         roomRepository.save(room);
+
         Map<String, Object> value = objectMapper.convertValue(room, HashMap.class);
 
         redisTemplate.opsForHash()
                 .putAll(room.getId(), value);
 
-        return modelMapper.map(room, RoomResponse.class);
+        RoomResponse response = modelMapper.map(room, RoomResponse.class);
+
+        if (!StringUtils.hasText(room.getPromiseTitle())) {
+            response.changeDefaultTitle();
+        }
+
+        return response;
     }
 }

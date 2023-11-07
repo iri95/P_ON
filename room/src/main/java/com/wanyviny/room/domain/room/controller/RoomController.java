@@ -75,7 +75,7 @@ public class RoomController {
                 .result(Collections.singletonList(response))
                 .build();
 
-        response.setUsers(request.getUsers());
+//        response.setUsers(request.getUsers());
         roomListService.addRooms(response);
 
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
