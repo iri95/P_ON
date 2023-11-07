@@ -30,7 +30,7 @@ public class UserController {
 
 
     @PostMapping("/kakao-login")
-    public ResponseEntity<BasicResponse> kakaoLogin(@RequestParam String accessToken) throws Exception {
+    public ResponseEntity<BasicResponse> kakaoLogin(@RequestBody String accessToken) throws Exception {
         Map<String, String> tokenMap = userService.kakaoLogin(accessToken);
 
         BasicResponse basicResponse = BasicResponse.builder()
