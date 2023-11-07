@@ -51,10 +51,13 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
-    public RedisCalendarDto getDetailSchedule(Long id, Long calendarId) {
+    public CalendarDto.getSchedule getDetailSchedule(Long id, Long calendarId) {
+        Calendar calendar = calendarRepository.findById(calendarId).orElseThrow(
+                () -> new IllegalArgumentException("해당 일정이 없습니다.")
+        );
 
-        return objectMapper.convertValue(scheduleRedisTemplate.opsForHash()
-                .get("Calendar_" + id, String.valueOf(calendarId)), RedisCalendarDto.class);
+        return calendar.entityToDto();
+
     }
 
     @Override

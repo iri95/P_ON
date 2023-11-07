@@ -11,7 +11,7 @@ public interface CalendarService {
 
     List<CalendarDto.getSchedule> getMySchedule(Long id);
 
-    RedisCalendarDto getDetailSchedule(Long id, Long calendarId);
+    CalendarDto.getSchedule getDetailSchedule(Long id, Long calendarId);
 
     List<CalendarDto.promiseScheduleDto> getUserSchedule(Long id, Long userId);
 

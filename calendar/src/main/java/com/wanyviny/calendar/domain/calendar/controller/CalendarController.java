@@ -69,7 +69,7 @@ public class CalendarController {
 
         Long id = 1L;
 
-        RedisCalendarDto schedule = calendarService.getDetailSchedule(id, calendarId);
+        CalendarDto.getSchedule schedule = calendarService.getDetailSchedule(id, calendarId);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
