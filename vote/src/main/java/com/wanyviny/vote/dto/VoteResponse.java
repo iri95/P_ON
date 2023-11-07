@@ -17,6 +17,8 @@ import lombok.Setter;
 @JsonInclude(Include.NON_NULL)
 public class VoteResponse {
 
+    String id;
+    String roomId;
     Map<String, Object> date;
     Map<String, Object> time;
     Map<String, Object> location;

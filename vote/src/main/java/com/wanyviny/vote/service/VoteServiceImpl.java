@@ -27,17 +27,12 @@ public class VoteServiceImpl implements VoteService {
         Vote vote = modelMapper.map(request, Vote.class);
         vote.setId(roomId);
         voteRepository.save(vote);
-
-        Map<String, Object> field = objectMapper.convertValue(vote, HashMap.class);
-        redisTemplate.opsForHash()
-                .putAll(roomId, field);
     }
 
     @Override
     public VoteResponse findVote(String roomId) {
 
-        return objectMapper.convertValue(redisTemplate.opsForHash()
-                .entries(roomId), VoteResponse.class);
+        return modelMapper.map(voteRepository.findById(roomId), VoteResponse.class);
     }
 
     @Override
@@ -46,11 +41,5 @@ public class VoteServiceImpl implements VoteService {
         Vote vote = modelMapper.map(request, Vote.class);
         vote.setId(roomId);
         voteRepository.save(vote);
-
-        redisTemplate.delete(roomId);
-
-        Map<String, Object> field = objectMapper.convertValue(vote, HashMap.class);
-        redisTemplate.opsForHash()
-                .putAll(roomId, field);
     }
 }
