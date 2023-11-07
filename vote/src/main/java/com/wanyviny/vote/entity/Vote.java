@@ -22,6 +22,7 @@ public class Vote {
 
     @Id
     String id;
+    String roomId;
     Map<String, Object> date;
     Map<String, Object> time;
     Map<String, Object> location;
