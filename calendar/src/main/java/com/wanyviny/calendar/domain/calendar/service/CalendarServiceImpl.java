@@ -1,16 +1,13 @@
 package com.wanyviny.calendar.domain.calendar.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wanyviny.calendar.domain.PRIVACY;
 import com.wanyviny.calendar.domain.calendar.dto.CalendarDto;
 import com.wanyviny.calendar.domain.calendar.entity.Calendar;
-import com.wanyviny.calendar.domain.calendar.dto.RedisCalendarDto;
 import com.wanyviny.calendar.domain.calendar.repository.CalendarRepository;
 import com.wanyviny.calendar.domain.follow.repository.FollowRepository;
 import com.wanyviny.calendar.domain.user.entity.User;
 import com.wanyviny.calendar.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,8 +20,6 @@ public class CalendarServiceImpl implements CalendarService {
     private final CalendarRepository calendarRepository;
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
-    private final RedisTemplate<String, RedisCalendarDto> scheduleRedisTemplate;
-    private final ObjectMapper objectMapper;
 
 
     @Override

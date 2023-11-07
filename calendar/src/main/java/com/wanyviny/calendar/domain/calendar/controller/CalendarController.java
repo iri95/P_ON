@@ -1,10 +1,8 @@
 package com.wanyviny.calendar.domain.calendar.controller;
 
 import com.wanyviny.calendar.domain.calendar.dto.CalendarDto;
-import com.wanyviny.calendar.domain.calendar.dto.RedisCalendarDto;
 import com.wanyviny.calendar.domain.calendar.service.CalendarService;
 import com.wanyviny.calendar.domain.common.BasicResponse;
-import com.wanyviny.calendar.global.service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +21,6 @@ import java.util.Map;
 public class CalendarController {
 
     private final CalendarService calendarService;
-    private final JwtService jwtService;
 
     // 일정 생성
     @PostMapping("/schedule")

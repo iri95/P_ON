@@ -1,7 +1,6 @@
 package com.wanyviny.calendar.domain.calendar.service;
 
 import com.wanyviny.calendar.domain.calendar.dto.CalendarDto;
-import com.wanyviny.calendar.domain.calendar.dto.RedisCalendarDto;
 
 import java.util.List;
 import java.util.Map;
