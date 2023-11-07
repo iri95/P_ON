@@ -136,7 +136,7 @@ flutter:
     - assets/image/main/핑키2.png
     - assets/image/main/핑키3.png
     - assets/image/icon/kakao.png
-    - assets/
+    - assets/image/main/login.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

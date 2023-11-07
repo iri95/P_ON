@@ -6,7 +6,16 @@ import 'package:velocity_x/velocity_x.dart';
 import 'w_register_body.dart';
 
 class RegisterFragment extends StatefulWidget {
-  const RegisterFragment({super.key});
+  String nickName;
+  String profileImage;
+  String privacy;
+
+  RegisterFragment({
+    super.key,
+    required this.nickName,
+    required this.profileImage,
+    required this.privacy,
+  });
 
   @override
   State<RegisterFragment> createState() => _RegisterFragmentState();
@@ -38,16 +47,14 @@ class _RegisterFragmentState extends State<RegisterFragment> {
             ),
           ),
         ),
-        body: const RegisterBody(),
+        body: RegisterBody(nickName: widget.nickName, profileImage: widget.profileImage),
         bottomSheet: Container(
           width: double.infinity,
           height: 48,
           margin: EdgeInsets.symmetric(vertical: 24, horizontal: 24),
           decoration: BoxDecoration(
-            color: AppColors.mainBlue,
-            borderRadius: BorderRadius.circular(10)
-                
-          ),
+              color: AppColors.mainBlue,
+              borderRadius: BorderRadius.circular(10)),
           child: TextButton(
             onPressed: () {},
             child: '확인'.text.semiBold.white.make(),
