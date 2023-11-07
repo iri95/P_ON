@@ -1,5 +1,6 @@
 package com.wanyviny.room.entity;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -10,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.util.StringUtils;
 
 @Document
 @Getter
@@ -26,14 +28,15 @@ public class Room {
     private String promiseDate;
     private String promiseTime;
     private String promiseLocation;
-    private String defaultTitle;
+    private Map<String, Object> votes;
 
-    public void changeDefaultTitle() {
-        StringBuilder sb = new StringBuilder();
+    public void defaultVotes() {
 
-        users.forEach(user -> sb.append(user.get("nickname")).append(", "));
-        sb.setLength(sb.length() - 2);
-        promiseTitle = sb.toString();
+        this.votes = new HashMap<>();
+
+        votes.put("date", StringUtils.hasText(promiseDate));
+        votes.put("time", StringUtils.hasText(promiseTime));
+        votes.put("location", StringUtils.hasText(promiseLocation));
     }
 
     public void addUser(List<Map<String, String>> users) {

@@ -51,8 +51,6 @@ public class RoomListServiceImpl implements RoomListService {
                     Map<String, Object> map = objectMapper.convertValue(redisTemplate.opsForHash()
                             .entries(room.get("roomId")), HashMap.class);
 
-                    map.put("")
-
                     response.getRooms()
                             .add(objectMapper.convertValue(redisTemplate.opsForHash()
                                     .entries(room.get("roomId")), HashMap.class));
@@ -67,11 +65,11 @@ public class RoomListServiceImpl implements RoomListService {
         roomDto.setRoomId(response.getId());
         roomDto.setRead("읽음");
 
-        response.getUsers()
-                .forEach(user -> {
-                    String userId = user.get("userId");
-                    addRoom(userId, roomDto);
-                });
+//        response.getUsers()
+//                .forEach(user -> {
+//                    String userId = user.get("userId");
+//                    addRoom(userId, roomDto);
+//                });
     }
 
 //    @Override

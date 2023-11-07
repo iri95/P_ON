@@ -22,15 +22,12 @@ public class RoomCreateRequest {
     @Schema(nullable = true)
     private String promiseTitle;
 
-    @Builder.Default
     @Schema(nullable = true)
-    private String promiseDate = "미정";
+    private String promiseDate;
 
-    @Builder.Default
     @Schema(nullable = true)
-    private String promiseTime = "미정";
+    private String promiseTime;
 
-    @Builder.Default
     @Schema(nullable = true)
-    private String promiseLocation = "미정";
+    private String promiseLocation;
 }

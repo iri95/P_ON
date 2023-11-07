@@ -63,10 +63,6 @@ public class RoomModifyServiceImpl implements RoomModifyService {
 
         room.removeUser(userId);
 
-        if (room.getDefaultTitle().equals("true")) {
-            room.changeDefaultTitle();
-        }
-
         roomRepository.save(room);
         redisTemplate.delete(roomId);
 
@@ -81,21 +77,9 @@ public class RoomModifyServiceImpl implements RoomModifyService {
     public void addUser(Room room, RoomModifyRequest request) {
 
         room.addUser(request.getUsers());
-
-        if (room.getDefaultTitle().equals("true")) {
-            room.changeDefaultTitle();
-        }
     }
 
     public void modifyTitle(Room room, RoomModifyRequest request) {
-
-        if (StringUtils.hasText(request.getPromiseTitle())) {
-            room.setDefaultTitle("false");
-
-        } else {
-            room.changeDefaultTitle();
-            room.setDefaultTitle("true");
-        }
 
         room.setPromiseTitle(request.getPromiseTitle());
     }

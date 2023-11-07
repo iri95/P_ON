@@ -8,5 +8,9 @@ import lombok.Setter;
 public class RoomListRequest {
 
     private String roomId;
+    private String promiseTitle;
+    private String promiseDate;
+    private String promiseTime;
+    private String promiseLocation;
     private String read;
 }
