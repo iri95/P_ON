@@ -24,7 +24,7 @@ public interface UserService {
 
     List<UserDto> searchUser(Long userId, String keyword);
 
-    Map<String, String> kakaoLogin(String accessToken) throws Exception;
+    Map<String, String> kakaoLogin(String accessToken, String phoneId) throws Exception;
 
     KakaoDto getUserInfoWithToken(String accessToken) throws Exception;
 }

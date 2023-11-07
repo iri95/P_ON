@@ -56,6 +56,10 @@ public class User {
         this.role = ROLE.USER;
     }
 
+    public void updatePhoneId(String phoneId) {
+        this.phoneId = phoneId;
+    }
+
     public void update(UserDto userDto) {
         this.nickname = userDto.getNickName();
         this.profileImage = userDto.getProfileImage();
