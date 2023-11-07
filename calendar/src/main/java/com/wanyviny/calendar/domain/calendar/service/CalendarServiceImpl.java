@@ -74,11 +74,6 @@ public class CalendarServiceImpl implements CalendarService {
                 return calendarList.stream()
                         .map(Calendar::entityToPromiseDto)
                         .toList();
-
-//                Map<Object, Object> calendarList = scheduleRedisTemplate.opsForHash().entries("Calendar_" + userId);
-//
-//                Map<String, RedisCalendarDto> stringRedisCalendarDtoMap = objectMapper.convertValue(calendarList, HashMap.class);
-
             } else {
                 return null;
             }
@@ -100,28 +95,17 @@ public class CalendarServiceImpl implements CalendarService {
                 () -> new IllegalArgumentException("해당하는 일정이 없습니다.")
         );
         calendar.update(schedule);
-
-        RedisCalendarDto redisCalendar = calendar.entityToRedis();
-
-        Map<String, RedisCalendarDto> value = objectMapper.convertValue(redisCalendar, HashMap.class);
-
-        scheduleRedisTemplate.opsForHash().put("Calendar_" + id, String.valueOf(calendar.getId()), value);
     }
 
     @Override
     @Transactional
     public void deleteSchedule(Long id, Long calendarId) {
         calendarRepository.deleteByUserId_IdAndId(id, calendarId);
-        scheduleRedisTemplate.opsForHash().delete("Calendar_" + id, String.valueOf(calendarId));
     }
 
     @Override
     public void deleteScheduleList(Long id, List<Long> deleteList) {
         calendarRepository.deleteByUserId_IdAndIdList(id, deleteList);
-        deleteList.forEach(calendarId -> {
-                    scheduleRedisTemplate.opsForHash().delete("Calendar_" + id, String.valueOf(calendarId));
-                }
-        );
     }
 
     @Override
