@@ -30,18 +30,28 @@ public class UserController {
 
 
     @PostMapping("/kakao-login")
-    public ResponseEntity<BasicResponse> kakaoLogin(@RequestBody String accessToken) throws Exception {
+    public ResponseEntity<BasicResponse> kakaoLogin(HttpServletRequest request) throws Exception {
+        String accessToken = request.getHeader("accessToken");
         Map<String, String> tokenMap = userService.kakaoLogin(accessToken);
+        HttpHeaders headers = new HttpHeaders();
+        if (tokenMap.get("ROLE").equals("GUEST")) {
+            headers.add("Authorization", tokenMap.get("Authorization"));
+            headers.add("id", tokenMap.get("id"));
+            headers.add("ROLE", tokenMap.get("ROLE"));
+        } else {
+            headers.add("Authorization", tokenMap.get("Authorization"));
+            headers.add("Authorization_refresh", tokenMap.get("Authorization_refresh"));
+            headers.add("id", tokenMap.get("id"));
+            headers.add("ROLE", tokenMap.get("ROLE"));
+        }
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
                 .httpStatus(HttpStatus.OK)
-                .message("카카오에서 받은 유저 정보 조회 성공")
-                .count(1)
-                .result(Collections.singletonList(tokenMap))
+                .message("카카오에서 받은 유저 로그인 성공")
                 .build();
 
-        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+        return new ResponseEntity<>(basicResponse, headers, basicResponse.getHttpStatus());
     }
 
     @GetMapping("/kakao-profile")
@@ -90,7 +100,7 @@ public class UserController {
 
         jwtService.updateRefreshToken(id, refreshToken);
 
-        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+        return new ResponseEntity<>(basicResponse, headers, basicResponse.getHttpStatus());
     }
 
     @GetMapping("/profile")

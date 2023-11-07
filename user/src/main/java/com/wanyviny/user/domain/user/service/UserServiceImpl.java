@@ -121,12 +121,13 @@ public class UserServiceImpl implements UserService {
             String createdAccessToken = jwtService.createAccessToken();
             tokenMap.put("Authorization", "bearer " + createdAccessToken);
             tokenMap.put("ROLE", "GUEST");
-            userRepository.save(User.builder()
+            User createdUser = userRepository.save(User.builder()
                     .socialId(kakaoDto.getSocialId())
                     .role(ROLE.GUEST)
                     .nickname(kakaoDto.getNickname())
                     .profileImage(kakaoDto.getProfileImage())
                     .build());
+            tokenMap.put("id", String.valueOf(createdUser.getId()));
             return tokenMap;
         }
 
@@ -134,6 +135,7 @@ public class UserServiceImpl implements UserService {
             String createdAccessToken = jwtService.createAccessToken();
             tokenMap.put("Authorization", "bearer " + createdAccessToken);
             tokenMap.put("ROLE", "GUEST");
+            tokenMap.put("id", String.valueOf(user.getId()));
             return tokenMap;
         }
 
@@ -144,6 +146,7 @@ public class UserServiceImpl implements UserService {
         tokenMap.put("Authorization", "bearer " + createdAccessToken);
         tokenMap.put("Authorization_refresh", "Bearer " + createdRefreshToken);
         tokenMap.put("ROLE", "USER");
+        tokenMap.put("id", String.valueOf(user.getId()));
         return tokenMap;
 
 
