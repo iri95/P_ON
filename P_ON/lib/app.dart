@@ -9,12 +9,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:p_on/screen/main/tab/chat_room/f_chat_room.dart';
 import 'package:p_on/screen/main/tab/chat_room/f_create_vote_room.dart';
+import 'package:p_on/screen/main/tab/chat_room/f_select_vote.dart';
 import 'package:p_on/screen/main/tab/promise_room/f_create_promise.dart';
 import 'package:p_on/screen/main/tab/tab_item.dart';
 
 import 'auth.dart';
 import 'common/widget/w_round_button.dart';
 import 'screen/main/tab/chat_room/w_header_text_vote.dart';
+import 'screen/main/user/f_login.dart';
 
 class App extends ConsumerStatefulWidget {
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
@@ -77,17 +79,18 @@ class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
         path: '/signin',
         pageBuilder: (BuildContext context, GoRouterState state) => FadeTransitionPage(
           key: state.pageKey,
-          child: Container(
-            color: Colors.green,
-            child: Center(
-              child: RoundButton(
-                text: '로그인',
-                onTap: () {
-                  _auth.signIn('hong', '1234');
-                },
-              ),
-            ),
-          ),
+          child: LoginPage()
+          // child: Container(
+          //   color: Colors.green,
+          //   child: Center(
+          //     child: RoundButton(
+          //       text: '로그인',
+          //       onTap: () {
+          //         _auth.signIn('hong', '1234');
+          //       },
+          //     ),
+          //   ),
+          // ),
         ),
       ),
       GoRoute(
@@ -152,6 +155,14 @@ class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
             );
           }
       ),
+      GoRoute(
+        path: '/selecte/vote/:id',
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          final id = state.pathParameters['id'] ?? 'unknown';
+          return MaterialPage(
+            child: SelectVote(id: id));
+        }
+      )
 
 
     ],

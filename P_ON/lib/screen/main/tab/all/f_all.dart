@@ -37,7 +37,7 @@ class _AllFragmentState extends State<AllFragment> {
                 ),
                 TextButton(
                   onPressed: () {
-                    Nav.push(const RegisterFragment());
+                    // Nav.push(const RegisterFragment());
                   },
                   child: const Text('카카오로 시작하기',
                       style: TextStyle(color: Color(0xff371C1D))),
