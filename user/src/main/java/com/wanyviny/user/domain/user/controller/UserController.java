@@ -31,7 +31,7 @@ public class UserController {
 
     @PostMapping("/kakao-login")
     public ResponseEntity<BasicResponse> kakaoLogin(HttpServletRequest request) throws Exception {
-        String accessToken = request.getHeader("Authorization");
+        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
         Map<String, String> tokenMap = userService.kakaoLogin(accessToken);
         HttpHeaders headers = new HttpHeaders();
         if (tokenMap.get("ROLE").equals("GUEST")) {
