@@ -35,9 +35,7 @@ class _CheckedModalState extends ConsumerState<CheckedModal> {
         "promiseDate": promise.promise_date != null
             ? promise.promise_date.toString()
             : "미정",
-        "promiseTime": promise.promise_time != null
-            ? promise.promise_time.toString()
-            : "미정",
+        "promiseTime": promise.promise_time ?? "미정",
         "promiseLocation":
         promise.promise_location ?? "미정"
       };
@@ -50,7 +48,6 @@ class _CheckedModalState extends ConsumerState<CheckedModal> {
       // Nav.removeUntil((route) => false);
       router.go('/chatroom/$room_id');
 
-
     } catch (e) {
     print(e);
     }
@@ -59,6 +56,8 @@ class _CheckedModalState extends ConsumerState<CheckedModal> {
   @override
   Widget build(BuildContext context) {
     final promise = ref.watch(promiseProvider);
+    print(promise.promise_date);
+    print(promise.promise_time);
     return AlertDialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
@@ -104,7 +103,7 @@ class _CheckedModalState extends ConsumerState<CheckedModal> {
                     const Expanded(child: Text('')),
                     MText(text: '제목 : ${promise.promise_title ?? '미정'}',18),
                     MText(
-                        text:'날짜 : ${promise.promise_date ?? '미정'}', 18),
+                        text:'날짜 : ${promise.promise_date != null ? DateFormat('yyyy-MM-dd (E)','ko_kr').format(promise.promise_date!) : '미정'}', 18),
                     MText(
                         text:'시간 : ${promise.promise_time ?? '미정'}',18),
                     MText(

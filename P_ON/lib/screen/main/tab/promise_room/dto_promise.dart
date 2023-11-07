@@ -20,7 +20,7 @@ class Promise {
   String? promise_title;
   List<Friends>? selected_friends;
   DateTime? promise_date;
-  TimeOfDay? promise_time;
+  String? promise_time;
   String? promise_location;
   NLatLng? promise_location_code;
 
@@ -81,7 +81,7 @@ class PromiseNotifier extends StateNotifier<Promise> {
     );
   }
 
-  void setPromiseTime(TimeOfDay promise_time) {
+  void setPromiseTime(String promise_time) {
     state = Promise(
         promise_title: state.promise_title,
         selected_friends: state.selected_friends,

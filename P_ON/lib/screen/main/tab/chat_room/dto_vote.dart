@@ -18,6 +18,10 @@ class VoteDate {
 class VoteNotifier extends StateNotifier<VoteDate> {
   VoteNotifier() : super(VoteDate());
 
+  void setInitialState(VoteDate initialState) {
+    state = initialState;
+  }
+
   void addVoteDate(String date) {
     state = VoteDate(
       vote_date: List.from(state.vote_date ?? [])..add(date),
@@ -34,6 +38,14 @@ class VoteNotifier extends StateNotifier<VoteDate> {
     );
   }
 
+  void updateVoteDate(int index, String newDate) {
+    state = VoteDate(
+        vote_date: List.from(state.vote_date ?? [])..[index] = newDate,
+        vote_time: state.vote_time,
+        vote_location: state.vote_location
+    );
+  }
+
   void addVoteTime(String time) {
     state = VoteDate(
       vote_date: state.vote_date,
@@ -47,6 +59,14 @@ class VoteNotifier extends StateNotifier<VoteDate> {
       vote_date: state.vote_date,
       vote_time: List.from(state.vote_time ?? [])..removeAt(index),
       vote_location: state.vote_location,
+    );
+  }
+
+  void updateVoteTime(int index, String newDate) {
+    state = VoteDate(
+        vote_date: state.vote_date,
+        vote_time: List.from(state.vote_time ?? [])..[index] = newDate,
+        vote_location: state.vote_location
     );
   }
 
@@ -69,6 +89,19 @@ class VoteNotifier extends StateNotifier<VoteDate> {
         vote_location: List.from(state.vote_location ?? [])..removeAt(index)
     );
   }
+
+  void updateVoteLocation(int index, String newLocation, String newLat, String newLng) {
+    state = VoteDate(
+      vote_date: state.vote_date,
+      vote_time: state.vote_time,
+      vote_location: List.from(state.vote_location ?? [])..[index] = {
+        'location' : newLocation,
+        'lat' : newLat,
+        'lng' : newLng
+      },
+    );
+  }
+
 }
 
 class Deadline {
@@ -83,6 +116,10 @@ class Deadline {
 
 class DeadLineNotifier extends StateNotifier<Deadline> {
   DeadLineNotifier() : super(Deadline());
+
+  void setInitialState(Deadline initialState) {
+    state = initialState;
+  }
 
   void setDeadDate(String date) {
     state = Deadline(
