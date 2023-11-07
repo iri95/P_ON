@@ -18,8 +18,7 @@ public interface CalendarRepository extends JpaRepository<Calendar, Long> {
     @Transactional
     void deleteByUserId_IdAndId(Long id, Long calendarId);
 
-    @Query("SELECT c FROM Calendar c where c.userId.id in :userIdList")
-    List<Calendar> findByUserId_Id(List<Long> userIdList);
+    List<Calendar> findByUserId_Id(Long userId);
 
     @Transactional
     @Query("DELETE FROM Calendar c where c.userId.id = :id AND c.id in :deleteList")

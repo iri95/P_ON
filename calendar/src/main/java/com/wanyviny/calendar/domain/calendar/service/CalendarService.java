@@ -19,7 +19,7 @@ public interface CalendarService {
 
     void deleteSchedule(Long id, Long calendarId);
 
-    List<CalendarDto.promiseScheduleDto> getPromiseSchedule(List<Long> userIdList);
+    Map<String, List<CalendarDto.promiseScheduleDto>> getPromiseSchedule(List<Long> userIdList);
 
     void deleteScheduleList(Long id, List<Long> deleteList);
 }

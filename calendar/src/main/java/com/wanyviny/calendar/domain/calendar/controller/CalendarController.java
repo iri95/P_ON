@@ -169,14 +169,14 @@ public class CalendarController {
     @GetMapping("/schedule/promise")
     public ResponseEntity<BasicResponse> getPromiseSchedule(@RequestParam List<Long> userIdList) {
 
-        List<CalendarDto.promiseScheduleDto> calendarDtoList = calendarService.getPromiseSchedule(userIdList);
+        Map<String, List<CalendarDto.promiseScheduleDto>> calendarDtoList = calendarService.getPromiseSchedule(userIdList);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
                 .httpStatus(HttpStatus.OK)
                 .message("약속 일정 조회 성공!")
                 .count(calendarDtoList.size())
-                .result(Arrays.asList(calendarDtoList.toArray()))
+                .result(Collections.singletonList((calendarDtoList)))
                 .build();
 
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());

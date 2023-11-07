@@ -109,19 +109,23 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
-    public List<CalendarDto.promiseScheduleDto> getPromiseSchedule(List<Long> userIdList) {
-
-        List<Calendar> calendarList = calendarRepository.findByUserId_Id(userIdList);
-
+    public Map<String, List<CalendarDto.promiseScheduleDto>> getPromiseSchedule(List<Long> userIdList) {
         java.util.Calendar cal = java.util.Calendar.getInstance();
         cal.setTime(new Date());
         cal.add(java.util.Calendar.MONTH, 6);
 
-        return calendarList.stream()
-                .filter(calendar -> !(calendar.getEndDate().before(new Date())
-                        || calendar.getStartDate().after(cal.getTime())))
-                .map(Calendar::entityToPromiseDto)
-                .toList();
+        Map<String, List<CalendarDto.promiseScheduleDto>> map = new HashMap<>();
+
+        for (Long id : userIdList
+        ) {
+            List<Calendar> calendarList = calendarRepository.findByUserId_Id(id);
+            map.put(String.valueOf(id), calendarList.stream()
+                    .filter(calendar -> !(calendar.getEndDate().before(new Date()) || calendar.getStartDate().after(cal.getTime())))
+                    .map(Calendar::entityToPromiseDto)
+                    .toList());
+        }
+
+        return map;
     }
 
 
