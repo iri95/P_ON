@@ -46,7 +46,8 @@ public class Calendar {
     private String place;
 
     @Column(name = "CALENDAR_TYPE")
-    private CALENDAR_TYPE type;
+    @Builder.Default
+    private CALENDAR_TYPE type = CALENDAR_TYPE.SCHEDULE;
 
     public void update(CalendarDto.setSchedule schedule) {
         this.title = schedule.getTitle();
@@ -64,6 +65,7 @@ public class Calendar {
                 .startDate(this.startDate)
                 .endDate(this.endDate)
                 .place(this.place)
+                .type(this.type)
                 .build();
     }
 
@@ -74,16 +76,4 @@ public class Calendar {
                 .endDate(this.endDate)
                 .build();
     }
-
-    public RedisCalendarDto entityToRedis() {
-        return RedisCalendarDto.builder()
-                .calendarId(this.id)
-                .title(this.title)
-                .content(this.content)
-                .startDate(this.startDate)
-                .endDate(this.endDate)
-                .place(this.place)
-                .build();
-    }
-
 }

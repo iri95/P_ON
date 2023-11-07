@@ -1,6 +1,5 @@
 package com.wanyviny.calendar.domain.calendar.service;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wanyviny.calendar.domain.PRIVACY;
 import com.wanyviny.calendar.domain.calendar.dto.CalendarDto;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor

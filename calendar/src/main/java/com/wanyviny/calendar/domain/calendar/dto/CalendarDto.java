@@ -2,6 +2,7 @@ package com.wanyviny.calendar.domain.calendar.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.wanyviny.calendar.domain.CALENDAR_TYPE;
 import com.wanyviny.calendar.domain.calendar.entity.Calendar;
 import com.wanyviny.calendar.domain.user.entity.User;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,7 @@ public class CalendarDto {
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private Date endDate;
         private String place;
+        private CALENDAR_TYPE type;
     }
 
     @Builder
@@ -43,6 +45,7 @@ public class CalendarDto {
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
         private Date endDate;
         private String place;
+        private CALENDAR_TYPE type;
 
         public Calendar dtoToEntity(User user) {
             return Calendar.builder()

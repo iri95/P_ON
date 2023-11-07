@@ -64,7 +64,7 @@ public class CalendarController {
 
     // 일정 상세 조회
     @GetMapping("/schedule/detail/{calendarId}")
-    public ResponseEntity<BasicResponse> getDetailSchedule(@PathVariable(name = "calendarId") Long calendarId) {
+    public ResponseEntity<BasicResponse> getDetailSchedule(HttpServletRequest request, @PathVariable(name = "calendarId") Long calendarId) {
 //        Long id = Long.parseLong(request.getHeader("id"));
 
         Long id = 1L;
@@ -116,7 +116,7 @@ public class CalendarController {
     // 일정 수정
     @PutMapping("/schedule/{calendarId}")
     @Transactional
-    public ResponseEntity<BasicResponse> updateSchedule(@PathVariable(name = "calendarId") Long calendarId, @RequestBody CalendarDto.setSchedule schedule) {
+    public ResponseEntity<BasicResponse> updateSchedule(HttpServletRequest request, @PathVariable(name = "calendarId") Long calendarId, @RequestBody CalendarDto.setSchedule schedule) {
 //        Long id = Long.parseLong(request.getHeader("id"));
 
         Long id = 1L;
@@ -134,7 +134,7 @@ public class CalendarController {
 
     // 일정 삭제
     @DeleteMapping("/schedule/{calendarId}")
-    public ResponseEntity<BasicResponse> deleteSchedule(@PathVariable(name = "calendarId") Long calendarId) {
+    public ResponseEntity<BasicResponse> deleteSchedule(HttpServletRequest request, @PathVariable(name = "calendarId") Long calendarId) {
 //        Long id = Long.parseLong(request.getHeader("id"));
 
         Long id = 1L;
@@ -150,7 +150,7 @@ public class CalendarController {
     }
 
     @DeleteMapping("/schedule/deleteList/{calendarId}")
-    public ResponseEntity<BasicResponse> deleteSchedule(@PathVariable(name = "calendarId") Long calendarId, @RequestParam List<Long> deleteList) {
+    public ResponseEntity<BasicResponse> deleteSchedule(HttpServletRequest request, @PathVariable(name = "calendarId") Long calendarId, @RequestParam List<Long> deleteList) {
 //        Long id = Long.parseLong(request.getHeader("id"));
 
         Long id = 1L;
