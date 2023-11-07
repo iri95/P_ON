@@ -65,6 +65,7 @@ class _CalendarFragmentState extends ConsumerState<ScheduleFragment> {
                     formatButtonVisible: false,
                     headerPadding: const EdgeInsets.symmetric(vertical: 4.0),
                   ),
+                  // eventLoader: ,
                 ),
                 Container(height: 500, color: Colors.green),
                 Container(height: 500, color: Colors.orange),

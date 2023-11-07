@@ -91,22 +91,30 @@ class MainScreenState extends ConsumerState<MainScreen> with SingleTickerProvide
               ),
               resizeToAvoidBottomInset: false,
               bottomNavigationBar: _buildBottomNavigationBar(context),
-                floatingActionButtonLocation: CenterDockedFloatingActionButtonLocation(15.0),
+
+                floatingActionButtonLocation: ref.read(fabLocationProvider),
+                // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
                 floatingActionButton: InkWell(
                   onHover: (e) {
                     setState(() {
-                      currentImage = "assets/image/main/핑키1.png";
+                      currentImage = "assets/image/main/핑키3.png";
                     });
                   },
-                  child: FloatingActionButton(
-                    elevation: 4,
-                    onPressed: () {},
-                    child: Image.asset(currentImage),
+                  child: Container(
+                    height: 70,
+                    width: 70,
+                    child: FittedBox(
+                      child: FloatingActionButton(
+                        elevation: 4,
+                        onPressed: () {},
+                        child: Image.asset(currentImage),
+                      ),
+                    ),
                   ),
                 )
             ),
             AnimatedOpacity(
-              opacity: _currentTab != TabItem.history ? 1 : 0,
+              opacity: _currentTab == TabItem.home ? 1 : 0,
               // opacity: 1,
               duration: 300.ms,
               child: BottomFloatingActionButton(),
