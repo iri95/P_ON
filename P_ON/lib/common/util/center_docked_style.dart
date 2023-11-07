@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+final fabLocationProvider = StateProvider<CenterDockedFloatingActionButtonLocation>((ref) {
+  return CenterDockedFloatingActionButtonLocation(15.0); // 초기 오프셋 값
+});
 
 class CenterDockedFloatingActionButtonLocation extends FloatingActionButtonLocation {
   final double offsetY; // Y축 오프셋 값
