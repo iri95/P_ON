@@ -1,6 +1,9 @@
+import 'package:dio/dio.dart';
 import 'package:p_on/common/common.dart';
 import 'package:p_on/screen/main/tab/register/f_register.dart';
 import 'package:flutter/material.dart';
+
+import '../promise_room/vo_server_url.dart';
 
 class AllFragment extends StatefulWidget {
   const AllFragment({Key? key}) : super(key: key);
@@ -10,6 +13,23 @@ class AllFragment extends StatefulWidget {
 }
 
 class _AllFragmentState extends State<AllFragment> {
+  final Dio dio =Dio();
+
+  void getLogIn() async {
+    print('$server/oauth2/authorization/kakao');
+    final response = await dio.get('$server/oauth2/authorization/kakao');
+    print('==================================');
+    print('==================================');
+    print('==================================');
+    print('==================================');
+    print('==================================');
+    print('==================================');
+    print(response);
+    print('==================================');
+    print('==================================');
+    print('==================================');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -38,6 +58,7 @@ class _AllFragmentState extends State<AllFragment> {
                 TextButton(
                   onPressed: () {
                     // Nav.push(const RegisterFragment());
+                    getLogIn();
                   },
                   child: const Text('카카오로 시작하기',
                       style: TextStyle(color: Color(0xff371C1D))),

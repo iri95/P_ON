@@ -79,22 +79,21 @@ class MainScreenState extends ConsumerState<MainScreen>
           children: [
             Scaffold(
               body: Scaffold(
-                  extendBody: extendBody,
-                  //bottomNavigationBar 아래 영역 까지 그림
-                  drawer: const MenuDrawer(),
-                  drawerEnableOpenDragGesture: !Platform.isIOS,
-                  body: Container(
-                    padding: EdgeInsets.only(
-                        bottom: extendBody
-                            ? 60 - bottomNavigationBarBorderRadius
-                            : 0),
-                    child: SafeArea(
-                      bottom: !extendBody,
-                      child: pages,
-                    ),
+                extendBody: extendBody,
+                //bottomNavigationBar 아래 영역 까지 그림
+                drawer: const MenuDrawer(),
+                drawerEnableOpenDragGesture: !Platform.isIOS,
+                body: Container(
+                  padding:
+                  EdgeInsets.only(bottom: extendBody ? 60 - bottomNavigationBarBorderRadius : 0),
+                  child: SafeArea(
+                    bottom: !extendBody,
+                    child: pages,
                   ),
-                  resizeToAvoidBottomInset: false,
-                  bottomNavigationBar: _buildBottomNavigationBar(context),
+                ),
+                resizeToAvoidBottomInset: false,
+                bottomNavigationBar: _buildBottomNavigationBar(context),
+
                   floatingActionButtonLocation: ref.read(fabLocationProvider),
                   // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
                   floatingActionButton: InkWell(
@@ -104,8 +103,8 @@ class MainScreenState extends ConsumerState<MainScreen>
                       });
                     },
                     child: Container(
-                      height: 70,
-                      width: 70,
+                      height: 75.0,
+                      width: 75.0,
                       child: FittedBox(
                         child: FloatingActionButton(
                           elevation: 4,
@@ -114,7 +113,8 @@ class MainScreenState extends ConsumerState<MainScreen>
                         ),
                       ),
                     ),
-                  )),
+                  )
+              ),
             ),
             AnimatedOpacity(
               opacity: _currentTab == TabItem.home ? 1 : 0,
