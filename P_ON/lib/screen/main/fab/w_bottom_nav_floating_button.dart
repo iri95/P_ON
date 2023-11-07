@@ -39,7 +39,14 @@ class BottomFloatingActionButton extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: 18),
               decoration: BoxDecoration(
                   color: const Color(0xff3F48CC),
-                  borderRadius: BorderRadius.circular(30)),
+                  borderRadius: BorderRadius.circular(30),
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black.withOpacity(0.3),
+                        spreadRadius: 0,
+                        blurRadius: 2,
+                        offset: Offset(0, 4))
+                  ]),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -47,13 +54,20 @@ class BottomFloatingActionButton extends ConsumerWidget {
                   AnimatedWidthCollapse(
                     visible: !isSmall,
                     duration: duration,
-                    child: '일정 생성'.text.white.make(),
+                    child: SizedBox(width: 10), // 텍스트가 보일 때 사이 간격
+                  ),
+                  AnimatedWidthCollapse(
+                    visible: !isSmall,
+                    duration: duration,
+                    child: '약속 생성'.text.white.make(),
                   )
                 ],
               ),
             ),
           ).pOnly(
-              bottom: MainScreenState.bottomNavigatorHeight + context.viewPaddingBottom + 10,
+              bottom: MainScreenState.bottomNavigatorHeight +
+                  context.viewPaddingBottom +
+                  10,
               right: 20),
         ],
       ),
