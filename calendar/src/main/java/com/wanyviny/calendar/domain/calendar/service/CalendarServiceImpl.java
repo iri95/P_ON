@@ -28,8 +28,7 @@ public class CalendarServiceImpl implements CalendarService {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("ID에 해당하는 유저가 없습니다.")
         );
-
-        Calendar calendar = calendarRepository.save(schedule.dtoToEntity(user));
+        calendarRepository.save(schedule.dtoToEntity(user));
     }
 
 
