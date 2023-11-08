@@ -43,57 +43,62 @@ class _RegisterFragmentState extends ConsumerState<RegisterFragment> {
     currentNickName = widget.nickName;
   }
 
-  Future<void> signUp(context) async {
-    final loginState = ref.read(loginStateProvider);
-    final token = loginState.serverToken;
-    final id = loginState.id;
-    var headers = {'Authorization': '$token', 'id': '$id'};
-    if (token == null) {
-      await kakaoLogin(ref);
-      await fetchToken(ref);
-
-      // 토큰을 다시 읽습니다.
-      final newToken = ref.read(loginStateProvider).serverToken;
-      final newId = ref.read(loginStateProvider).id;
-
-      headers['Authorization'] = ' $newToken';
-      headers['id'] = '$newId';
-    }
-
-    final apiService = ApiService();
-    var newUser = UserState(
-        profileImage: widget.profileImage,
-        nickName: currentNickName,
-        privacy: widget.privacy,
-        stateMessage: widget.stateMessage);
-    final data = {
-      'profileImage': widget.profileImage,
-      'nickName': currentNickName,
-      'privacy': widget.privacy,
-      'stateMessage': widget.stateMessage
-    };
-
-    // 바뀐 값으로 데이터를 저장, 요청
-    ref.read(userStateProvider.notifier).setUserState(newUser);
-    // final router = GoRouter.of(context);
-
-    try {
-      Response response = await apiService.sendRequest(
-          method: 'POST',
-          path: '/api/user/sign-up',
-          headers: headers,
-          data: data);
-      print(response);
-
-      print('메인으로 ㄱㄱ');
-      context.go('/main');
-    } catch (e) {
-      print(e);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    void goToMainPage() async {
+      // 'context'는 현재 위젯의 BuildContext입니다.
+      GoRouter.of(context).go('/main');
+    }
+
+    Future<void> signUp() async {
+      final loginState = ref.read(loginStateProvider);
+      final token = loginState.serverToken;
+      final id = loginState.id;
+      var headers = {'Authorization': '$token', 'id': '$id'};
+      if (token == null) {
+        await kakaoLogin(ref);
+        await fetchToken(ref);
+
+        // 토큰을 다시 읽습니다.
+        final newToken = ref.read(loginStateProvider).serverToken;
+        final newId = ref.read(loginStateProvider).id;
+
+        headers['Authorization'] = ' $newToken';
+        headers['id'] = '$newId';
+      }
+
+      final apiService = ApiService();
+      var newUser = UserState(
+          profileImage: widget.profileImage,
+          nickName: currentNickName,
+          privacy: widget.privacy,
+          stateMessage: widget.stateMessage);
+      final data = {
+        'profileImage': widget.profileImage,
+        'nickName': currentNickName,
+        'privacy': widget.privacy,
+        'stateMessage': widget.stateMessage
+      };
+
+      // 바뀐 값으로 데이터를 저장, 요청
+      ref.read(userStateProvider.notifier).setUserState(newUser);
+
+      try {
+        Response response = await apiService.sendRequest(
+            method: 'POST',
+            path: '/api/user/sign-up',
+            headers: headers,
+            data: data);
+        print(response);
+
+        print('메인으로 ㄱㄱ');
+        // TODO: 메인으로 라우팅 안됨
+        goToMainPage();
+      } catch (e) {
+        print(e);
+      }
+    }
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -139,7 +144,7 @@ class _RegisterFragmentState extends ConsumerState<RegisterFragment> {
             onPressed: () async {
               // TODO: 회원가입 로직 작성
               print('진짜 회원가입 ㄱㄱ');
-              await signUp(context);
+              await signUp();
             },
             child: '확인'.text.semiBold.white.make(),
           ),

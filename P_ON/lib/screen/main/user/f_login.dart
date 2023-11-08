@@ -31,82 +31,84 @@ class _LoginPageState extends ConsumerState<LoginPage>
     FlutterNativeSplash.remove();
   }
 
-  Future<void> fetchProfile() async {
-    // 현재 저장된 서버 토큰을 가져옵니다.
-    final loginState = ref.read(loginStateProvider);
-    final token = loginState.serverToken;
-    final id = loginState.id;
-
-    print('토큰 있나 =========${loginState.serverToken} ${token}');
-
-    var headers = {'Authorization': '$token', 'id': '$id'};
-    print('헤더1 ========== $headers');
-
-    // 서버 토큰이 없으면
-    if (token == null) {
-      print('여기 오나?');
-      await kakaoLogin(ref);
-      await fetchToken(ref);
-
-      // 토큰을 다시 읽습니다.
-      final newToken = ref.read(loginStateProvider).serverToken;
-      final newId = ref.read(loginStateProvider).id;
-
-      headers['Authorization'] = '$newToken';
-      headers['id'] = '$newId';
-    } else {
-      print('여기가 맞음');
-    }
-
-    final apiService = ApiService();
-    try {
-      Response response = await apiService.sendRequest(
-          method: 'GET', path: '/api/user/profile', headers: headers);
-
-      print('헤더2 ========== $headers');
-      // 여기서 회원 정보 프로바이더 저장 후 전달
-      var user = UserState(
-        profileImage: response.data['result'][0]['profileImage'] as String,
-        nickName: response.data['result'][0]['nickName'] as String,
-        privacy: response.data['result'][0]['privacy'] as String,
-        stateMessage: response.data['result'][0]['stateMessage'] as String?,
-      );
-
-      ref.read(userStateProvider.notifier).setUserState(user);
-      print('프로필 조회 끝 ${ref.read(userStateProvider)?.nickName}');
-      await goLogin();
-    } catch (e) {
-      print('프로필 에러 $e');
-    }
-  }
-
-  Future<void> goLogin() async {
-    // role이 user이면 회원, guest이면 비회원
-    final router = GoRouter.of(context);
-
-    // 비회원이면, 회원 가입으로
-    if (ref.read(loginStateProvider).role == 'GUEST') {
-      print('난 게스트고 가입으로');
-
-      // 저장된 userState
-      final userState = ref.watch(userStateProvider);
-      await Nav.push(RegisterFragment(
-        nickName: userState?.nickName ?? "",
-        profileImage: userState?.profileImage ?? "",
-        privacy: userState?.privacy ?? "PRIVATE",
-        stateMessage: userState?.stateMessage ?? "",
-      ));
-    } else {
-      // 회원이면 메인 페이지로
-      // TODO: 메인 페이지 라우팅
-      print('난 유저고 메인으로');
-
-      router.go('/main');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    void goToMainPage() async {
+      // 'context'는 현재 위젯의 BuildContext입니다.
+      GoRouter.of(context).go('/main/home');
+    }
+
+    Future<void> goLogin() async {
+      // role이 user이면 회원, guest이면 비회원
+      // 비회원이면, 회원 가입으로
+      if (ref.read(loginStateProvider).role == 'GUEST') {
+        print('난 게스트고 가입으로');
+
+        // 저장된 userState
+        final userState = ref.watch(userStateProvider);
+        await Nav.push(RegisterFragment(
+          nickName: userState?.nickName ?? "",
+          profileImage: userState?.profileImage ?? "",
+          privacy: userState?.privacy ?? "PRIVATE",
+          stateMessage: userState?.stateMessage ?? "",
+        ));
+      } else {
+        // 회원이면 메인 페이지로
+        // TODO: 메인 페이지 라우팅 안됨
+        print('난 유저고 메인으로');
+        goToMainPage();
+      }
+    }
+
+    Future<void> fetchProfile() async {
+      // 현재 저장된 서버 토큰을 가져옵니다.
+      final loginState = ref.read(loginStateProvider);
+      final token = loginState.serverToken;
+      final id = loginState.id;
+
+      print('토큰 있나 =========${loginState.serverToken} ${token}');
+
+      var headers = {'Authorization': '$token', 'id': '$id'};
+      print('헤더1 ========== $headers');
+
+      // 서버 토큰이 없으면
+      if (token == null) {
+        print('여기 오나?');
+        await kakaoLogin(ref);
+        await fetchToken(ref);
+
+        // 토큰을 다시 읽습니다.
+        final newToken = ref.read(loginStateProvider).serverToken;
+        final newId = ref.read(loginStateProvider).id;
+
+        headers['Authorization'] = '$newToken';
+        headers['id'] = '$newId';
+      } else {
+        print('여기가 맞음');
+      }
+
+      final apiService = ApiService();
+      try {
+        Response response = await apiService.sendRequest(
+            method: 'GET', path: '/api/user/profile', headers: headers);
+
+        print('헤더2 ========== $headers');
+        // 여기서 회원 정보 프로바이더 저장 후 전달
+        var user = UserState(
+          profileImage: response.data['result'][0]['profileImage'] as String,
+          nickName: response.data['result'][0]['nickName'] as String,
+          privacy: response.data['result'][0]['privacy'] as String,
+          stateMessage: response.data['result'][0]['stateMessage'] as String?,
+        );
+
+        ref.read(userStateProvider.notifier).setUserState(user);
+        print('프로필 조회 끝 ${ref.read(userStateProvider)?.nickName}');
+        await goLogin();
+      } catch (e) {
+        print('프로필 에러 $e');
+      }
+    }
+
     return Container(
       color: Colors.white,
       child: Column(
