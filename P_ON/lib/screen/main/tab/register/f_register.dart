@@ -9,12 +9,14 @@ class RegisterFragment extends StatefulWidget {
   String nickName;
   String profileImage;
   String privacy;
+  String? stateMessage;
 
   RegisterFragment({
     super.key,
     required this.nickName,
     required this.profileImage,
     required this.privacy,
+    this.stateMessage,
   });
 
   @override
