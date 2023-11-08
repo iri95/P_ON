@@ -40,7 +40,7 @@ public class VoteServiceImpl implements VoteService {
             Map<String, Object> map = objectMapper.convertValue(response.getDate()
                             .get("deadline"), HashMap.class);
 
-            if (map.get("date") != null) {
+            if (!map.get("date").equals("null")) {
                 String date = String.valueOf(map.get("date"))
                         .substring(0, 10);
 
@@ -71,7 +71,7 @@ public class VoteServiceImpl implements VoteService {
             Map<String, Object> map = objectMapper.convertValue(response.getTime()
                     .get("deadline"), HashMap.class);
 
-            if (map.get("date") != null) {
+            if (!map.get("date").equals("null")) {
                 String date = String.valueOf(map.get("date"))
                         .substring(0, 10);
 
@@ -102,7 +102,7 @@ public class VoteServiceImpl implements VoteService {
             Map<String, Object> map = objectMapper.convertValue(response.getLocation()
                     .get("deadline"), HashMap.class);
 
-            if (map.get("date") != null) {
+            if (!map.get("date").equals("null")) {
                 String date = String.valueOf(map.get("date"))
                         .substring(0, 10);
 
