@@ -1,14 +1,21 @@
 package com.wanyviny.chat.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.Notification;
 import com.wanyviny.chat.dto.ChatRequest;
 import com.wanyviny.chat.dto.ChatResponse;
 import com.wanyviny.chat.entity.Chat;
 import com.wanyviny.chat.repository.ChatRepository;
+
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -24,9 +31,11 @@ public class ChatServiceImpl implements ChatService {
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
     private final ChatRepository chatRepository;
+    private final FirebaseMessaging firebaseMessaging;
 
     @Override
     @Transactional
+
     public ChatResponse.SendDto sendChat(ChatRequest.SendDto request) {
 
         Chat chat = modelMapper.map(request, Chat.class);
@@ -38,6 +47,26 @@ public class ChatServiceImpl implements ChatService {
 
         redisTemplate.opsForHash()
                 .putAll(chat.getRoomId(), field);
+
+
+
+        String body = "채팅방 알림임다.";
+
+        Notification notification = Notification.builder()
+                .setTitle("채팅방 알림")
+                .setBody(body)
+                .build();
+
+        Message message = Message.builder()
+                .setToken("e408feff12bed36c")  // 친구의 FCM 토큰 설정
+                .setNotification(notification)
+                .build();
+        try {
+            firebaseMessaging.send(message);
+        } catch (FirebaseMessagingException e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException("알림을 보낼 유저를 찾을 수 없습니다.");
+        }
 
         return modelMapper.map(chat, ChatResponse.SendDto.class);
     }

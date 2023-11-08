@@ -5,4 +5,4 @@ spring:
   cloud:
     config:
       name: chat
-      profile: prob
+      profile: dev
