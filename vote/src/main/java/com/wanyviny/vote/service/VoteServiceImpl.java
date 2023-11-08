@@ -22,10 +22,11 @@ public class VoteServiceImpl implements VoteService {
     private final VoteRepository voteRepository;
 
     @Override
-    public void createVote(String roomId, VoteRequest request) {
+    public void createVote(String userId, String roomId, VoteRequest request) {
 
         Vote vote = modelMapper.map(request, Vote.class);
         vote.setId(roomId);
+        vote.setUserId(userId);
         voteRepository.save(vote);
     }
 
@@ -34,16 +35,17 @@ public class VoteServiceImpl implements VoteService {
 
         VoteResponse response = modelMapper.map(voteRepository.findById(roomId), VoteResponse.class);
 
-        if (response.getDate().size() > 1) {
+        if (!response.getDate().isEmpty()) {
+
             Map<String, Object> map = objectMapper.convertValue(response.getDate()
-                            .get("deadLine"), HashMap.class);
+                            .get("deadline"), HashMap.class);
 
             if (map.get("date") != null) {
                 String date = String.valueOf(map.get("date"))
                         .substring(0, 10);
 
                 String temp = String.valueOf(objectMapper.convertValue(response.getDate()
-                                .get("deadLine"), HashMap.class)
+                                .get("deadline"), HashMap.class)
                         .get("time"));
 
                 String time = temp.substring(3);
@@ -65,16 +67,16 @@ public class VoteServiceImpl implements VoteService {
             }
         }
 
-        if (response.getTime().size() > 1) {
+        if (!response.getTime().isEmpty()) {
             Map<String, Object> map = objectMapper.convertValue(response.getTime()
-                    .get("deadLine"), HashMap.class);
+                    .get("deadline"), HashMap.class);
 
             if (map.get("date") != null) {
                 String date = String.valueOf(map.get("date"))
                         .substring(0, 10);
 
                 String temp = String.valueOf(objectMapper.convertValue(response.getTime()
-                                .get("deadLine"), HashMap.class)
+                                .get("deadline"), HashMap.class)
                         .get("time"));
 
                 String time = temp.substring(3);
@@ -96,16 +98,16 @@ public class VoteServiceImpl implements VoteService {
             }
         }
 
-        if (response.getLocation().size() > 1) {
+        if (!response.getLocation().isEmpty()) {
             Map<String, Object> map = objectMapper.convertValue(response.getLocation()
-                    .get("deadLine"), HashMap.class);
+                    .get("deadline"), HashMap.class);
 
             if (map.get("date") != null) {
                 String date = String.valueOf(map.get("date"))
                         .substring(0, 10);
 
                 String temp = String.valueOf(objectMapper.convertValue(response.getLocation()
-                                .get("deadLine"), HashMap.class)
+                                .get("deadline"), HashMap.class)
                         .get("time"));
 
                 String time = temp.substring(3);
@@ -131,10 +133,11 @@ public class VoteServiceImpl implements VoteService {
     }
 
     @Override
-    public void modifyVote(String roomId, VoteRequest request) {
+    public void modifyVote(String userId, String roomId, VoteRequest request) {
 
         Vote vote = modelMapper.map(request, Vote.class);
         vote.setId(roomId);
+        vote.setUserId(userId);
         voteRepository.save(vote);
     }
 }

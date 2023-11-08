@@ -19,7 +19,7 @@ import lombok.Setter;
 public class VoteResponse {
 
     String id;
-    String roomId;
+    String userId;
 
     @Builder.Default
     Map<String, Object> date = new HashMap<>();

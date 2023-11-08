@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -24,11 +25,12 @@ public class VoteController {
 
     @PostMapping("/api/vote/{roomId}")
     public ResponseEntity<BasicResponse> createVote(
+            @RequestHeader("id") String userId,
             @PathVariable String roomId,
             @RequestBody VoteRequest request
     ) {
 
-        voteService.createVote(roomId, request);
+        voteService.createVote(userId, roomId, request);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .message("투표 생성 성공")
@@ -53,11 +55,12 @@ public class VoteController {
 
     @PutMapping("/api/vote/{roomId}")
     public ResponseEntity<BasicResponse> modifyVote(
+            @RequestHeader("id") String userId,
             @PathVariable String roomId,
             @RequestBody VoteRequest request
     ) {
 
-        voteService.modifyVote(roomId, request);
+        voteService.modifyVote(userId, roomId, request);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .message("투표 수정 성공")
