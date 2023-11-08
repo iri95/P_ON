@@ -29,4 +29,6 @@ class AppColors {
   static const Color grey600 = Color(0xff333b4f);
   static const Color grey700 = Color(0xff1f2123);
   static const Color black1 = Color(0xff1F2024);
+  static const Color calendarYellow = Color(0xffffca38);
+  static const Color calendarBlue = Color(0xff778ce3);
 }

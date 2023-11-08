@@ -4,6 +4,16 @@
 
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
+<<<<<<< Updated upstream
+=======
+import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:p_on/screen/main/user/fn_kakao.dart';
+import 'package:p_on/screen/main/user/token_state.dart';
+
+// 로그인 상태 파악
+>>>>>>> Stashed changes
 
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -47,6 +57,7 @@ class PonAuth extends ChangeNotifier {
   String? guard(BuildContext context, GoRouterState state) {
     final bool signedIn = this.signedIn;
     final bool signingIn = state.matchedLocation == '/signin';
+    final bool registeringIn = state.matchedLocation =='/register';
 
     // Go to /signin if the user is not signed in
     if (!signedIn && !signingIn) {
