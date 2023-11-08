@@ -45,7 +45,7 @@ public class User {
     @Column(name = "USER_PASSWORD")
     private String password;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="USER_ROOM")
     private List<Room> rooms;
 

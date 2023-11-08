@@ -40,7 +40,6 @@ public class ChatServiceImpl implements ChatService {
 
     @Override
     @Transactional
-
     public ChatResponse.SendDto sendChat(ChatRequest.SendDto request) {
 
         Chat chat = modelMapper.map(request, Chat.class);
