@@ -101,12 +101,14 @@ Future<String> fetchToken(WidgetRef ref) async {
 
   // 발급받은 카카오 토큰을 이용해 서버 로그인 요청
   try {
-    Response response = await dio.post(
-      'http://k9e102.p.ssafy.io:8000/api/user/kakao-login',
-      options: Options(headers: {
-        'Authorization': 'Bearer ${ref.read(kakaoTokenProvider)}',
-      }),
-    );
+    Response response =
+        await dio.post('http://k9e102.p.ssafy.io:8000/api/user/kakao-login',
+            options: Options(
+              headers: {
+                'Authorization': 'Bearer ${ref.read(kakaoTokenProvider)}',
+              },
+            ),
+            data: {'phoneId': '내폰아이디'});
 
     final serverToken = response.headers.map['authorization']?.first;
     final role = response.headers.map['ROLE']?.first;

@@ -20,7 +20,6 @@ class _RegisterBodyState extends State<RegisterBody> with AfterLayoutMixin {
   final textController = TextEditingController();
   final node = FocusNode();
 
-
   @override
   void initState() {
     super.initState();
@@ -62,6 +61,9 @@ class _RegisterBodyState extends State<RegisterBody> with AfterLayoutMixin {
                 counterText: '',
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none),
+            onChanged: (text) {
+              print(text);
+            },
           ),
         )
       ],

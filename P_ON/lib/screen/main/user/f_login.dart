@@ -1,5 +1,4 @@
 import 'package:after_layout/after_layout.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
@@ -10,6 +9,7 @@ import 'package:flutter/material.dart';
 
 import 'fn_kakao.dart';
 import 'package:p_on/common/util/dio.dart';
+import 'package:dio/dio.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:p_on/screen/main/user/token_state.dart';
