@@ -58,6 +58,7 @@ public class UserServiceImpl implements UserService {
                 () -> new IllegalArgumentException("Id에 해당하는 유저가 없습니다.")
         );
         user.signUp(userSignUpDto);
+        userRepository.save(user);
     }
 
     @Override
@@ -67,6 +68,7 @@ public class UserServiceImpl implements UserService {
                 () -> new IllegalArgumentException("Id에 해당하는 유저가 없습니다.")
         );
         user.update(userDto);
+        userRepository.save(user);
     }
 
     @Override
@@ -113,6 +115,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Map<String, String> kakaoLogin(String accessToken, String phoneId) throws Exception {
+        System.out.println("phoneId :" + phoneId);
         KakaoDto kakaoDto = getUserInfoWithToken(accessToken);
         User user = userRepository.findBySocialId(kakaoDto.getSocialId()).orElse(null);
         Map<String, String> tokenMap = new HashMap<>();
@@ -134,6 +137,7 @@ public class UserServiceImpl implements UserService {
 
         if (user.getRole() == ROLE.GUEST) {
             user.updatePhoneId(phoneId);
+            userRepository.save(user);
             String createdAccessToken = jwtService.createAccessToken();
             tokenMap.put("Authorization", "Bearer " + createdAccessToken);
             tokenMap.put("ROLE", "GUEST");
@@ -143,6 +147,7 @@ public class UserServiceImpl implements UserService {
 
         // ROLE 이 USER 일 경우
         user.updatePhoneId(phoneId);
+        userRepository.save(user);
         String createdAccessToken = jwtService.createAccessToken();
         String createdRefreshToken = jwtService.createRefreshToken();
         jwtService.updateRefreshToken(user.getId(), createdRefreshToken);

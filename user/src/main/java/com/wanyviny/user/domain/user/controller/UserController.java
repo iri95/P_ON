@@ -33,9 +33,10 @@ public class UserController {
 
     @PostMapping("/kakao-login")
     @Operation(summary = "카카오 로그인", description = "카카오 토큰과 phoneId를 받아 가입 or 로그인합니다.")
-    public ResponseEntity<BasicResponse> kakaoLogin(HttpServletRequest request, @RequestBody String phoneId) throws Exception {
+    public ResponseEntity<BasicResponse> kakaoLogin(HttpServletRequest request, @RequestBody Map<String,String> phoneId) throws Exception {
         String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
-        Map<String, String> tokenMap = userService.kakaoLogin(accessToken, phoneId);
+        System.out.println("phoneId :" + phoneId.get("phoneId"));
+        Map<String, String> tokenMap = userService.kakaoLogin(accessToken, phoneId.get("phoneId"));
         HttpHeaders headers = new HttpHeaders();
         if (tokenMap.get("ROLE").equals("GUEST")) {
             headers.add("Authorization", tokenMap.get("Authorization"));
