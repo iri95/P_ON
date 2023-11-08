@@ -13,6 +13,9 @@ import 'package:p_on/common/util/dio.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:p_on/screen/main/user/token_state.dart';
+import 'package:p_on/screen/main/user/user_state.dart';
+
+import 'package:go_router/go_router.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -58,7 +61,15 @@ class _LoginPageState extends ConsumerState<LoginPage>
       Response response = await apiService.sendRequest(
           method: 'GET', path: '/api/user/profile', headers: headers);
 
-      print(response);
+      // 여기서 회원 정보 프로바이더 저장 후 전달
+      var user = UserState(
+        profileImage: response.data['result'][0]['profileImage'] as String,
+        nickName: response.data['result'][0]['nickName'] as String,
+        privacy: response.data['result'][0]['privacy'] as String,
+        stateMessage: response.data['result'][0]['stateMessage'] as String?,
+      );
+
+      ref.read(userStateProvider.notifier).setUserState(user);
     } catch (e) {
       print(e);
     }
@@ -89,17 +100,35 @@ class _LoginPageState extends ConsumerState<LoginPage>
                 // print(await KakaoSdk.origin);
                 // 카카오로그인 -> 토큰
                 // await fetchToken();
-
+                print('111111111111111111111111111111');
                 await kakaoLogin(ref);
+                print('222222222222222222222222222222');
                 await fetchToken(ref);
-
+                print('333333333333333333333333333333');
                 await fetchProfile();
 
-                // await Nav.push(RegisterFragment(
-                //   nickName: '',
-                //   profileImage: "이미지 주소",
-                //   privacy: "PRIVATE",
-                // ));
+                // role이 user이면 회원, guest이면 비회원
+                final router = GoRouter.of(context);
+
+                // 비회원이면, 회원 가입으로
+                if (ref.read(loginStateProvider).role == 'GUEST') {
+                  print('난 게스트고 가입으로');
+
+                  // 저장된 userState
+                  final userState = ref.watch(userStateProvider);
+                  await Nav.push(RegisterFragment(
+                    nickName: userState?.nickName ?? "",
+                    profileImage: userState?.profileImage ?? "",
+                    privacy: userState?.privacy ?? "PRIVATE",
+                    stateMessage: userState?.stateMessage ?? "",
+                  ));
+                } else {
+                  // 회원이면 메인 페이지로
+                  // TODO: 메인 페이지 라우팅
+                  print('난 유저고 메인으로');
+
+                  // router.go('/main');
+                }
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
