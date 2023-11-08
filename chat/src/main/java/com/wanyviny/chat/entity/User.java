@@ -3,6 +3,8 @@ package com.wanyviny.chat.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Builder
@@ -42,5 +44,10 @@ public class User {
 
     @Column(name = "USER_PASSWORD")
     private String password;
+
+    @ManyToMany
+    @JoinTable(name="USER_ROOM")
+    private List<Room> rooms;
+
 
 }

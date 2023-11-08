@@ -8,6 +8,8 @@ import com.google.firebase.messaging.Notification;
 import com.wanyviny.chat.dto.ChatRequest;
 import com.wanyviny.chat.dto.ChatResponse;
 import com.wanyviny.chat.entity.Chat;
+import com.wanyviny.chat.entity.Room;
+import com.wanyviny.chat.entity.User;
 import com.wanyviny.chat.repository.ChatRepository;
 
 
@@ -16,6 +18,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.wanyviny.chat.repository.RoomRepository;
+import com.wanyviny.chat.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -32,6 +36,7 @@ public class ChatServiceImpl implements ChatService {
     private final ModelMapper modelMapper;
     private final ChatRepository chatRepository;
     private final FirebaseMessaging firebaseMessaging;
+    private final RoomRepository roomRepository;
 
     @Override
     @Transactional
@@ -48,21 +53,35 @@ public class ChatServiceImpl implements ChatService {
         redisTemplate.opsForHash()
                 .putAll(chat.getRoomId(), field);
 
-
-
-        String body = "채팅방 알림임다.";
-
         Notification notification = Notification.builder()
-                .setTitle("채팅방 알림")
-                .setBody(body)
+                .setTitle(chat.getSender())
+                .setBody(chat.getContent())
+                .setImage(chat.getSenderProfile())
                 .build();
 
-        Message message = Message.builder()
-                .setToken("e408feff12bed36c")  // 친구의 FCM 토큰 설정
-                .setNotification(notification)
-                .build();
+        Long roomId = objectMapper.convertValue(chat.getRoomId(), Long.class);
+
+        Room room = roomRepository.findById(roomId).orElseThrow(
+                () -> new IllegalArgumentException("해당 약속방이 없습니다.")
+        );
+
+        List<String> userPhoneIdList = room.getUserList().stream()
+                .filter(user -> chat.getSenderId().equals(String.valueOf(user.getId())))
+                .map(User::getPhoneId)
+                .filter(phoneId -> phoneId.length() != 0)
+                .toList();
+
+        List<Message> messageList = new ArrayList<>();
+        for (String phoneId : userPhoneIdList
+        ) {
+            messageList.add(Message.builder()
+                    .setToken(phoneId)  // 친구의 FCM 토큰 설정
+                    .setNotification(notification)
+                    .build());
+        }
+
         try {
-            firebaseMessaging.send(message);
+            firebaseMessaging.sendAll(messageList);
         } catch (FirebaseMessagingException e) {
             e.printStackTrace();
             throw new IllegalArgumentException("알림을 보낼 유저를 찾을 수 없습니다.");
