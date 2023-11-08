@@ -35,7 +35,7 @@ public class VoteServiceImpl implements VoteService {
 
         VoteResponse response = modelMapper.map(voteRepository.findById(roomId), VoteResponse.class);
 
-        if (!response.getDate().isEmpty()) {
+        if (!response.getDate().isEmpty() && response.getDate().size() > 1) {
 
             Map<String, Object> map = objectMapper.convertValue(response.getDate()
                             .get("deadline"), HashMap.class);
@@ -67,7 +67,7 @@ public class VoteServiceImpl implements VoteService {
             }
         }
 
-        if (!response.getTime().isEmpty()) {
+        if (!response.getTime().isEmpty() && response.getTime().size() > 1) {
             Map<String, Object> map = objectMapper.convertValue(response.getTime()
                     .get("deadline"), HashMap.class);
 
@@ -98,7 +98,7 @@ public class VoteServiceImpl implements VoteService {
             }
         }
 
-        if (!response.getLocation().isEmpty()) {
+        if (!response.getLocation().isEmpty() && response.getLocation().size() > 1) {
             Map<String, Object> map = objectMapper.convertValue(response.getLocation()
                     .get("deadline"), HashMap.class);
 
