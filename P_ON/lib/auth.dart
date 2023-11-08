@@ -8,8 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter/services.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 
-// 로긍니 상태 파악
-//
+// 로그인 상태 파악
 
 /// A mock authentication service.
 class PonAuth extends ChangeNotifier {

@@ -10,25 +10,34 @@ import 'package:velocity_x/velocity_x.dart';
 class RegisterBody extends StatefulWidget {
   String nickName;
   String profileImage;
-  RegisterBody({super.key, required this.nickName, required this.profileImage});
+  Function(String) onNickNameChanged;
 
+  RegisterBody(
+      {super.key,
+      required this.nickName,
+      required this.profileImage,
+      required this.onNickNameChanged});
   @override
   State<RegisterBody> createState() => _RegisterBodyState();
 }
 
 class _RegisterBodyState extends State<RegisterBody> with AfterLayoutMixin {
-  final textController = TextEditingController();
+  final nicknameController = TextEditingController();
   final node = FocusNode();
 
   @override
   void initState() {
     super.initState();
-    textController.text = widget.nickName;
-    textController.addListener(updateTextLength);
+    nicknameController.text = widget.nickName;
+    nicknameController.addListener(updateTextLength);
   }
 
   void updateTextLength() {
     setState(() {});
+  }
+
+  void dispose() {
+    nicknameController.dispose();
   }
 
   @override
@@ -40,10 +49,12 @@ class _RegisterBodyState extends State<RegisterBody> with AfterLayoutMixin {
             margin: EdgeInsets.all(24),
             alignment: Alignment.topLeft,
             child: '친구들에게 보여질 프로필을 설정하세요'.text.black.size(16).semiBold.make()),
+        // 프로필 사진
         Container(
             height: 80,
             alignment: Alignment.center,
             child: ProfileImage(profileImage: widget.profileImage)),
+        // 닉네임
         Container(
           margin: EdgeInsets.all(24),
           padding: EdgeInsets.symmetric(horizontal: 10),
@@ -54,16 +65,14 @@ class _RegisterBodyState extends State<RegisterBody> with AfterLayoutMixin {
               border: Border.all(color: AppColors.mainBlue2)),
           child: TextField(
             focusNode: node,
-            controller: textController,
+            controller: nicknameController,
             maxLength: 10,
             decoration: InputDecoration(
-                suffix: Text('${textController.text.length}/10'),
+                suffix: Text('${nicknameController.text.length}/10'),
                 counterText: '',
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none),
-            onChanged: (text) {
-              print(text);
-            },
+            onChanged: widget.onNickNameChanged,
           ),
         )
       ],

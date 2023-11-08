@@ -12,6 +12,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:p_on/screen/main/user/token_state.dart';
 import 'package:p_on/screen/main/user/user_state.dart';
+import 'package:go_router/go_router.dart';
 
 class RegisterFragment extends ConsumerStatefulWidget {
   String nickName;
@@ -32,15 +33,21 @@ class RegisterFragment extends ConsumerStatefulWidget {
 }
 
 class _RegisterFragmentState extends ConsumerState<RegisterFragment> {
-  Future<void> signUp() async {
-    // 현재 저장된 서버 토큰을 가져옵니다.
+  // temp
+  late String currentNickName;
+  late String currentProfileImage;
+
+  @override
+  void initState() {
+    super.initState();
+    currentNickName = widget.nickName;
+  }
+
+  Future<void> signUp(context) async {
     final loginState = ref.read(loginStateProvider);
     final token = loginState.serverToken;
     final id = loginState.id;
-
-    var headers = {'Authorization': 'Bearer $token', 'id': '$id'};
-
-    // 서버 토큰이 없으면
+    var headers = {'Authorization': '$token', 'id': '$id'};
     if (token == null) {
       await kakaoLogin(ref);
       await fetchToken(ref);
@@ -49,20 +56,37 @@ class _RegisterFragmentState extends ConsumerState<RegisterFragment> {
       final newToken = ref.read(loginStateProvider).serverToken;
       final newId = ref.read(loginStateProvider).id;
 
-      headers['Authorization'] = 'Bearer $newToken';
-      headers['id'] = 'Bearer $newId';
+      headers['Authorization'] = ' $newToken';
+      headers['id'] = '$newId';
     }
 
     final apiService = ApiService();
-    const data = {};
+    var newUser = UserState(
+        profileImage: widget.profileImage,
+        nickName: currentNickName,
+        privacy: widget.privacy,
+        stateMessage: widget.stateMessage);
+    final data = {
+      'profileImage': widget.profileImage,
+      'nickName': currentNickName,
+      'privacy': widget.privacy,
+      'stateMessage': widget.stateMessage
+    };
+
+    // 바뀐 값으로 데이터를 저장, 요청
+    ref.read(userStateProvider.notifier).setUserState(newUser);
+    // final router = GoRouter.of(context);
+
     try {
       Response response = await apiService.sendRequest(
           method: 'POST',
           path: '/api/user/sign-up',
           headers: headers,
           data: data);
-
       print(response);
+
+      print('메인으로 ㄱㄱ');
+      context.go('/main');
     } catch (e) {
       print(e);
     }
@@ -94,7 +118,16 @@ class _RegisterFragmentState extends ConsumerState<RegisterFragment> {
           ),
         ),
         body: RegisterBody(
-            nickName: widget.nickName, profileImage: widget.profileImage),
+          nickName: widget.nickName,
+          profileImage: widget.profileImage,
+          onNickNameChanged: (newNickName) {
+            // 이 부분에서 새로운 닉네임을 사용합니다.
+            // 예를 들어, 상태 변수에 저장하거나, 다른 로직을 수행합니다.
+            setState(() {
+              currentNickName = newNickName;
+            });
+          },
+        ),
         bottomSheet: Container(
           width: double.infinity,
           height: 48,
@@ -105,8 +138,8 @@ class _RegisterFragmentState extends ConsumerState<RegisterFragment> {
           child: TextButton(
             onPressed: () async {
               // TODO: 회원가입 로직 작성
-              // await signUp();
-              print('');
+              print('진짜 회원가입 ㄱㄱ');
+              await signUp(context);
             },
             child: '확인'.text.semiBold.white.make(),
           ),
