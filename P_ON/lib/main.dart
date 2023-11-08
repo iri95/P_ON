@@ -14,7 +14,7 @@ import 'common/theme/custom_theme_app.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
-import 'package:p_on/common/util/token_state.dart';
+import 'package:p_on/screen/main/user/token_state.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
