@@ -137,8 +137,8 @@ public class CalendarController {
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
 
-    @DeleteMapping("/schedule/deleteList/{calendarId}")
-    public ResponseEntity<BasicResponse> deleteSchedule(HttpServletRequest request, @PathVariable(name = "calendarId") Long calendarId, @RequestParam List<Long> deleteList) {
+    @DeleteMapping("/schedule/deleteList")
+    public ResponseEntity<BasicResponse> deleteScheduleList(HttpServletRequest request,  @RequestParam List<Long> deleteList) {
         Long id = Long.parseLong(request.getHeader("id"));
 
         calendarService.deleteScheduleList(id, deleteList);
