@@ -870,7 +870,7 @@ packages:
     source: hosted
     version: "1.6.1"
   kakao_flutter_sdk_user:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: kakao_flutter_sdk_user
       sha256: "84466e5539c1ff396fd07e512170135f15651072da295737ddffc0c78cf04db6"

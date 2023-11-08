@@ -90,6 +90,11 @@ dependencies:
   firebase_core: ^2.21.0
   firebase_messaging: ^14.7.3
   kakao_flutter_sdk: ^1.6.1
+<<<<<<< Updated upstream
+=======
+  kakao_flutter_sdk_user:
+  device_info: ^2.0.0
+>>>>>>> Stashed changes
 
 dev_dependencies:
   flutter_test:
