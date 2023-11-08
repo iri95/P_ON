@@ -26,8 +26,8 @@ public class CalendarController {
     @PostMapping("/schedule")
     @Transactional
     public ResponseEntity<BasicResponse> postSchedule(HttpServletRequest request, @RequestBody CalendarDto.setSchedule schedule) {
-//        Long id = Long.parseLong(request.getHeader("id"));
-        Long id = 1L;
+        Long id = Long.parseLong(request.getHeader("id"));
+
         calendarService.postSchdule(id, schedule);
 
         BasicResponse basicResponse = BasicResponse.builder()
@@ -42,9 +42,7 @@ public class CalendarController {
     // 일정 조회
     @GetMapping("/schedule")
     public ResponseEntity<BasicResponse> getSchedule(HttpServletRequest request) {
-//        Long id = Long.parseLong(request.getHeader("id"));
-
-        Long id = 1L;
+        Long id = Long.parseLong(request.getHeader("id"));
 
         List<CalendarDto.getSchedule> redisCalendarDtoList = calendarService.getMySchedule(id);
 
@@ -62,9 +60,7 @@ public class CalendarController {
     // 일정 상세 조회
     @GetMapping("/schedule/detail/{calendarId}")
     public ResponseEntity<BasicResponse> getDetailSchedule(HttpServletRequest request, @PathVariable(name = "calendarId") Long calendarId) {
-//        Long id = Long.parseLong(request.getHeader("id"));
-
-        Long id = 1L;
+        Long id = Long.parseLong(request.getHeader("id"));
 
         CalendarDto.getSchedule schedule = calendarService.getDetailSchedule(id, calendarId);
 
@@ -82,9 +78,7 @@ public class CalendarController {
     // 타인 일정 조회 -> 조회하려는 사람의 PRIVACY를 알아야 함, 어떤 일정인지는 상세하게 X
     @GetMapping("/schedule/user/{userId}")
     public ResponseEntity<BasicResponse> getUserSchedule(HttpServletRequest request, @PathVariable(name = "userId") Long userId) {
-//        Long id = Long.parseLong(request.getHeader("id"));
-
-        Long id = 4L;
+        Long id = Long.parseLong(request.getHeader("id"));
 
         List<CalendarDto.promiseScheduleDto> getScheduleList = calendarService.getUserSchedule(id, userId);
 
@@ -114,9 +108,7 @@ public class CalendarController {
     @PutMapping("/schedule/{calendarId}")
     @Transactional
     public ResponseEntity<BasicResponse> updateSchedule(HttpServletRequest request, @PathVariable(name = "calendarId") Long calendarId, @RequestBody CalendarDto.setSchedule schedule) {
-//        Long id = Long.parseLong(request.getHeader("id"));
-
-        Long id = 1L;
+        Long id = Long.parseLong(request.getHeader("id"));
 
         calendarService.updateSchedule(id, calendarId, schedule);
 
@@ -132,9 +124,8 @@ public class CalendarController {
     // 일정 삭제
     @DeleteMapping("/schedule/{calendarId}")
     public ResponseEntity<BasicResponse> deleteSchedule(HttpServletRequest request, @PathVariable(name = "calendarId") Long calendarId) {
-//        Long id = Long.parseLong(request.getHeader("id"));
+        Long id = Long.parseLong(request.getHeader("id"));
 
-        Long id = 1L;
         calendarService.deleteSchedule(id, calendarId);
 
         BasicResponse basicResponse = BasicResponse.builder()
@@ -148,9 +139,8 @@ public class CalendarController {
 
     @DeleteMapping("/schedule/deleteList/{calendarId}")
     public ResponseEntity<BasicResponse> deleteSchedule(HttpServletRequest request, @PathVariable(name = "calendarId") Long calendarId, @RequestParam List<Long> deleteList) {
-//        Long id = Long.parseLong(request.getHeader("id"));
+        Long id = Long.parseLong(request.getHeader("id"));
 
-        Long id = 1L;
         calendarService.deleteScheduleList(id, deleteList);
 
         BasicResponse basicResponse = BasicResponse.builder()
