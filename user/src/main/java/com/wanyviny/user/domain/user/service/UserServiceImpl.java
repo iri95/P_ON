@@ -1,7 +1,6 @@
 package com.wanyviny.user.domain.user.service;
 
 import com.wanyviny.user.domain.follow.repository.FollowRepository;
-import com.wanyviny.user.domain.user.PRIVACY;
 import com.wanyviny.user.domain.user.ROLE;
 import com.wanyviny.user.domain.user.dto.KakaoDto;
 import com.wanyviny.user.domain.user.dto.UserDto;
@@ -12,7 +11,6 @@ import com.wanyviny.user.global.jwt.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
-import net.minidev.json.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpEntity;
@@ -41,7 +39,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final JwtService jwtService;
-    private final RedisTemplate redisTemplate;
     private final FollowRepository followRepository;
 
     @Override
