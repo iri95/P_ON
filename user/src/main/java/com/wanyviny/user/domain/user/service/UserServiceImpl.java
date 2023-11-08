@@ -112,7 +112,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Map<String, String> kakaoLogin(String accessToken) throws Exception {
+    public Map<String, String> kakaoLogin(String accessToken, String phoneId) throws Exception {
         KakaoDto kakaoDto = getUserInfoWithToken(accessToken);
         User user = userRepository.findBySocialId(kakaoDto.getSocialId()).orElse(null);
         Map<String, String> tokenMap = new HashMap<>();
@@ -126,12 +126,14 @@ public class UserServiceImpl implements UserService {
                     .role(ROLE.GUEST)
                     .nickname(kakaoDto.getNickname())
                     .profileImage(kakaoDto.getProfileImage())
+                    .phoneId(phoneId)
                     .build());
             tokenMap.put("id", String.valueOf(createdUser.getId()));
             return tokenMap;
         }
 
         if (user.getRole() == ROLE.GUEST) {
+            user.updatePhoneId(phoneId);
             String createdAccessToken = jwtService.createAccessToken();
             tokenMap.put("Authorization", "Bearer " + createdAccessToken);
             tokenMap.put("ROLE", "GUEST");
@@ -140,6 +142,7 @@ public class UserServiceImpl implements UserService {
         }
 
         // ROLE 이 USER 일 경우
+        user.updatePhoneId(phoneId);
         String createdAccessToken = jwtService.createAccessToken();
         String createdRefreshToken = jwtService.createRefreshToken();
         jwtService.updateRefreshToken(user.getId(), createdRefreshToken);
