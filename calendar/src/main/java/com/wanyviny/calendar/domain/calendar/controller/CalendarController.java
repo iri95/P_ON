@@ -3,6 +3,8 @@ package com.wanyviny.calendar.domain.calendar.controller;
 import com.wanyviny.calendar.domain.calendar.dto.CalendarDto;
 import com.wanyviny.calendar.domain.calendar.service.CalendarService;
 import com.wanyviny.calendar.domain.common.BasicResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,7 @@ import java.util.Map;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/calendar")
+@Tag(name = "일정", description = "일정 관련 API")
 public class CalendarController {
 
     private final CalendarService calendarService;
@@ -25,6 +28,7 @@ public class CalendarController {
     // 일정 생성
     @PostMapping("/schedule")
     @Transactional
+    @Operation(summary = "일정 생성", description = "개인 일정을 생성합니다.(헤더에 id 필요)")
     public ResponseEntity<BasicResponse> postSchedule(HttpServletRequest request, @RequestBody CalendarDto.setSchedule schedule) {
         Long id = Long.parseLong(request.getHeader("id"));
 
@@ -41,6 +45,7 @@ public class CalendarController {
 
     // 일정 조회
     @GetMapping("/schedule")
+    @Operation(summary = "일정 조회", description = "사용자 일정을 조회합니다.(헤더에 id 필요)")
     public ResponseEntity<BasicResponse> getSchedule(HttpServletRequest request) {
         Long id = Long.parseLong(request.getHeader("id"));
 
@@ -59,6 +64,7 @@ public class CalendarController {
 
     // 일정 상세 조회
     @GetMapping("/schedule/detail/{calendarId}")
+    @Operation(summary = "상세 일정 조회", description = "상세 일정을 조회합니다.(헤더에 id 필요)")
     public ResponseEntity<BasicResponse> getDetailSchedule(HttpServletRequest request, @PathVariable(name = "calendarId") Long calendarId) {
         Long id = Long.parseLong(request.getHeader("id"));
 
@@ -77,6 +83,7 @@ public class CalendarController {
 
     // 타인 일정 조회 -> 조회하려는 사람의 PRIVACY를 알아야 함, 어떤 일정인지는 상세하게 X
     @GetMapping("/schedule/user/{userId}")
+    @Operation(summary = "타인 일정 조회", description = "타인의 일정을 조회합니다.(헤더에 id 필요 & 조회 상대의 공개범위에 따라 결과 다름)")
     public ResponseEntity<BasicResponse> getUserSchedule(HttpServletRequest request, @PathVariable(name = "userId") Long userId) {
         Long id = Long.parseLong(request.getHeader("id"));
 
@@ -107,6 +114,7 @@ public class CalendarController {
     // 일정 수정
     @PutMapping("/schedule/{calendarId}")
     @Transactional
+    @Operation(summary = "일정 수정", description = "사용자 일정을 수정합니다.(헤더에 id 필요)")
     public ResponseEntity<BasicResponse> updateSchedule(HttpServletRequest request, @PathVariable(name = "calendarId") Long calendarId, @RequestBody CalendarDto.setSchedule schedule) {
         Long id = Long.parseLong(request.getHeader("id"));
 
@@ -123,6 +131,7 @@ public class CalendarController {
 
     // 일정 삭제
     @DeleteMapping("/schedule/{calendarId}")
+    @Operation(summary = "일정 삭제", description = "사용자 일정을 삭제합니다.(헤더에 id 필요)")
     public ResponseEntity<BasicResponse> deleteSchedule(HttpServletRequest request, @PathVariable(name = "calendarId") Long calendarId) {
         Long id = Long.parseLong(request.getHeader("id"));
 
@@ -138,6 +147,7 @@ public class CalendarController {
     }
 
     @DeleteMapping("/schedule/deleteList")
+    @Operation(summary = "일정 다중 삭제", description = "사용자 일정들을 삭제합니다.(헤더에 id 필요)")
     public ResponseEntity<BasicResponse> deleteScheduleList(HttpServletRequest request,  @RequestParam List<Long> deleteList) {
         Long id = Long.parseLong(request.getHeader("id"));
 
@@ -154,6 +164,7 @@ public class CalendarController {
 
     // 여러명의 일정 가져오기 -> 그사람의 PRIVACY에 상관 없이 가져옴, 상세적인 일정은 가져가지 않음
     @GetMapping("/schedule/promise")
+    @Operation(summary = "약속방 일정 조회", description = "약속방 인원들의 일정을 조회합니다.")
     public ResponseEntity<BasicResponse> getPromiseSchedule(@RequestParam List<Long> userIdList) {
 
         Map<String, List<CalendarDto.promiseScheduleDto>> calendarDtoList = calendarService.getPromiseSchedule(userIdList);
