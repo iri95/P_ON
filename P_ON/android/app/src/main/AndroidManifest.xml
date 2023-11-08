@@ -24,7 +24,6 @@
                 <data android:scheme="kakaoe61e6e5be260e142ffbc2ebf12d15f09" android:host="oauth"/>
             </intent-filter>
         </activity>
-    
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
