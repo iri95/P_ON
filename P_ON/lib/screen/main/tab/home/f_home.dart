@@ -24,7 +24,6 @@ class HomeFragment extends ConsumerStatefulWidget {
   ConsumerState<HomeFragment> createState() => _HomeFragmentState();
 }
 
-
 class _HomeFragmentState extends ConsumerState<HomeFragment> {
   final scrollController = ScrollController();
 
@@ -35,13 +34,13 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
 
       if (scrollController.position.pixels > 100 && !floatingState.isSmall) {
         ref.read(floatingButtonStateProvider.notifier).changeButtonSize(true);
-      } else if (scrollController.position.pixels < 100 && floatingState.isSmall) {
+      } else if (scrollController.position.pixels < 100 &&
+          floatingState.isSmall) {
         ref.read(floatingButtonStateProvider.notifier).changeButtonSize(false);
       }
     });
     super.initState();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -57,7 +56,10 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
               await sleepAsync(500.ms);
             },
             child: SingleChildScrollView(
-              padding: const EdgeInsets.only(top: PONAppBar.appBarHeight + 10, bottom: BottomFloatingActionButton.height,),
+              padding: const EdgeInsets.only(
+                top: PONAppBar.appBarHeight + 10,
+                bottom: BottomFloatingActionButton.height,
+              ),
               // 반응형으로 만들기위해서 컨트롤넣음
               controller: scrollController,
               // 리스트가 적을때는 스크롤이 되지 않도록 기본 설정이 되어있는 문제해결.
@@ -65,6 +67,7 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // 상단 멘트
                   RoundedContainer(
                       child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -72,10 +75,11 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          // TODO: User 닉네임 받아서 이름 넣기
                           '수완'
                               .text
-                              .semiBold
-                              .size(24)
+                              .fontWeight(FontWeight.w800)
+                              .size(26)
                               .color(AppColors.mainBlue)
                               .make(),
                           '님,'
@@ -94,7 +98,8 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
                           .make(),
                     ], // 로그인한 유저 이름으로 변경하기
                   )),
-                  RoundedContainer(
+                  // 약속방들
+                  Container(
                       child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -103,28 +108,10 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
                   )),
                   height100
                 ],
-
               ),
             ),
           ),
           const PONAppBar(),
-          // Positioned(
-          //     bottom: 40,
-          //     right: 10,
-          //     child: FloatingActionButton(
-          //       backgroundColor: const Color(0xffEFF3F9),
-          //       elevation: 4,
-          //       onPressed: () {
-          //         Navigator.push(
-          //           context,
-          //           MaterialPageRoute(builder: (context) => CreatePromise())
-          //         );
-          //       },
-          //       child: Icon(
-          //         Icons.add,
-          //         color: context.appColors.navButton,
-          //       ),
-          //     ))
         ],
       ),
     );

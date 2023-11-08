@@ -8,25 +8,36 @@ import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class RegisterBody extends StatefulWidget {
-  const RegisterBody({super.key});
+  String nickName;
+  String profileImage;
+  Function(String) onNickNameChanged;
 
+  RegisterBody(
+      {super.key,
+      required this.nickName,
+      required this.profileImage,
+      required this.onNickNameChanged});
   @override
   State<RegisterBody> createState() => _RegisterBodyState();
 }
 
 class _RegisterBodyState extends State<RegisterBody> with AfterLayoutMixin {
-  final textController = TextEditingController();
+  final nicknameController = TextEditingController();
   final node = FocusNode();
-
 
   @override
   void initState() {
     super.initState();
-    textController.addListener(updateTextLength);
+    nicknameController.text = widget.nickName;
+    nicknameController.addListener(updateTextLength);
   }
 
   void updateTextLength() {
     setState(() {});
+  }
+
+  void dispose() {
+    nicknameController.dispose();
   }
 
   @override
@@ -38,10 +49,12 @@ class _RegisterBodyState extends State<RegisterBody> with AfterLayoutMixin {
             margin: EdgeInsets.all(24),
             alignment: Alignment.topLeft,
             child: '친구들에게 보여질 프로필을 설정하세요'.text.black.size(16).semiBold.make()),
+        // 프로필 사진
         Container(
             height: 80,
             alignment: Alignment.center,
-            child: const ProfileImage()),
+            child: ProfileImage(profileImage: widget.profileImage)),
+        // 닉네임
         Container(
           margin: EdgeInsets.all(24),
           padding: EdgeInsets.symmetric(horizontal: 10),
@@ -52,14 +65,14 @@ class _RegisterBodyState extends State<RegisterBody> with AfterLayoutMixin {
               border: Border.all(color: AppColors.mainBlue2)),
           child: TextField(
             focusNode: node,
-            controller: textController,
+            controller: nicknameController,
             maxLength: 10,
             decoration: InputDecoration(
-                hintText: '카카오에서 받아온 닉넴',
-                suffix: Text('${textController.text.length}/10'),
+                suffix: Text('${nicknameController.text.length}/10'),
                 counterText: '',
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none),
+            onChanged: widget.onNickNameChanged,
           ),
         )
       ],

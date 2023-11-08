@@ -1,28 +1,31 @@
-import 'dart:isolate';
-
 import 'package:day_night_time_picker/day_night_time_picker.dart';
 import 'package:day_night_time_picker/lib/daynight_timepicker.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:location/location.dart';
 import 'package:p_on/common/common.dart';
+import 'package:p_on/screen/main/tab/chat_room/dto_vote.dart';
 import '../promise_room/vo_naver_headers.dart';
+import '../promise_room/vo_server_url.dart';
 import 'w_header_text_vote.dart';
 
-class CreateVoteRoom extends StatefulWidget {
+class CreateVoteRoom extends ConsumerStatefulWidget {
   final String id;
   final VoteType voteType;
+  final bool isUpdate;
 
-  const CreateVoteRoom({super.key, required this.id, required this.voteType});
+  const CreateVoteRoom({super.key, required this.id, required this.voteType, required this.isUpdate});
 
   @override
-  State<CreateVoteRoom> createState() => _CreateVoteRoomState();
+  ConsumerState<CreateVoteRoom> createState() => _CreateVoteRoomState();
 }
 
-class _CreateVoteRoomState extends State<CreateVoteRoom> {
+class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
   VoteType? selectedVoteType;
-  bool isEndTimeSet = true;
+  bool isEndTimeSet = false;
   bool isMultipleChoice = false;
   bool isAnoymous = false;
   TextEditingController _endDateController = TextEditingController();
@@ -30,18 +33,28 @@ class _CreateVoteRoomState extends State<CreateVoteRoom> {
   double? _lat;
   double? _lng;
   List<NMarker> _markers = [];
+
   List<NMarker> get markers => _markers;
   late Future<LocationData> locationData;
   late NaverMapController _mapController;
 
-  void addMarker(double lat, double lng, String id) {
+  void addMarker(double lat, double lng, String id, [int? index]) {
     final marker = NMarker(id: id, position: NLatLng(lat, lng));
+    final onMarkerInfoWindow = NInfoWindow.onMarker(id: id, text: id);
 
-    _markers.add(marker);
+    if (index != null && index < _markers.length) {
+      _mapController.clearOverlays();
+      _markers[index] = marker;
+    } else {
+      _markers.add(marker);
+    }
+
     for (var marker in _markers) {
       _mapController.addOverlay(marker);
+      marker.openInfoWindow(onMarkerInfoWindow);
     }
-    _mapController.updateCamera(NCameraUpdate.withParams(target: marker.position, zoom: 12));
+    _mapController.updateCamera(
+        NCameraUpdate.withParams(target: marker.position, zoom: 12));
   }
 
   Future<LocationData> _getCurrentLocation() async {
@@ -85,12 +98,89 @@ class _CreateVoteRoomState extends State<CreateVoteRoom> {
     VoteType.Location: [TextEditingController(), TextEditingController()]
   };
 
+  Future<void> PostVote(vote, deadline) async {
+    final Dio dio = Dio();
+    dio.options.headers['content-Type'] = 'application/json';
+    String url = '$server/api/vote/${widget.id}';
+
+    // 여기에 유저아이디 담아 보내기 => 만든사람
+    var data = {
+      'date': {
+        'multiple': isMultipleChoice.toString(),
+        'anonymous': isAnoymous.toString(),
+        'deadline': {
+          'date': deadline.dead_date.toString(),
+          'time': deadline.dead_time.toString()
+        },
+        'items': vote.vote_date
+      },
+      'time': {
+        'multiple': isMultipleChoice.toString(),
+        'anonymous': isAnoymous.toString(),
+        'deadline': {
+          'date': deadline.dead_date.toString(),
+          'time': deadline.dead_time.toString()
+        },
+        'items': vote.vote_time
+      },
+      'location': {
+        'multiple': isMultipleChoice.toString(),
+        'anonymous': isAnoymous.toString(),
+        'deadline': {
+          'date': deadline.dead_date.toString(),
+          'time': deadline.dead_time.toString()
+        },
+        'items': vote.vote_location,
+      }
+    };
+    var response = await dio.post(url, data: data);
+    print('============================');
+    print('============================');
+    print('============================');
+    print('============================');
+    print('============================');
+    print('============================');
+    print(vote.vote_date);
+    print(vote.vote_time);
+    print(vote.vote_location);
+    print(isMultipleChoice);
+    print(isAnoymous);
+    print(isEndTimeSet);
+    print(response);
+    final router = GoRouter.of(context);
+    router.go('/chatroom/${widget.id}');
+  }
+
+  void getVoteDate() {
+    // 투표 정보 받아오기
+    // var voteDateInfo = fetchVoteDateInfo(); // fetchVoteDateInfo는 투표 정보를 반환하는 함수입니다.
+
+    // voteItems에 기본값 넣기
+    // voteItems[VoteType.Date] = voteDateInfo.date;
+    // voteItems[VoteType.Time] = voteDateInfo.time;
+    // voteItems[VoteType.Location] = voteDateInfo.location;
+    //
+    // // textEditingControllers에 기본값 넣기
+    // textEditingControllers[VoteType.Date] = voteDateInfo.date.map((e) => TextEditingController(text: e)).toList();
+    // textEditingControllers[VoteType.Time] = voteDateInfo.time.map((e) => TextEditingController(text: e)).toList();
+    // textEditingControllers[VoteType.Location] = voteDateInfo.location.map((e) => TextEditingController(text: e)).toList();
+
+    // 리버팟에 기본값 추가하는 방법
+    // ref.read(voteProvider.notifier).setInitialState(voteDateInfo);
+    // 여기에는 받아온 정보에 있는 데드라인 값 넣어줘야 함
+    // ref.read(deadLineProvider.notifier).setInitialState(voteDateInfo);
+
+  }
+
+
   @override
   void initState() {
     super.initState();
     selectedVoteType = widget.voteType;
-    _endDateController.text = _formatDate(DateTime.now());
     locationData = _getCurrentLocation();
+    if (widget.isUpdate) {
+      getVoteDate();
+    }
     WidgetsBinding.instance?.addPostFrameCallback((_) {
       setState(() {});
     });
@@ -103,6 +193,17 @@ class _CreateVoteRoomState extends State<CreateVoteRoom> {
 
   @override
   Widget build(BuildContext context) {
+    final vote = ref.watch(voteProvider);
+    final deadline = ref.watch(deadLineProvider);
+    print("========================");
+    print("========================");
+    print("========================");
+    print("========================");
+    print(vote.vote_date);
+    print(vote.vote_time);
+    print(vote.vote_location);
+    print(widget.isUpdate);
+
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         home: FutureBuilder<LocationData>(
@@ -129,14 +230,18 @@ class _CreateVoteRoomState extends State<CreateVoteRoom> {
                               Icons.arrow_back_ios,
                               color: Colors.black,
                             ),
-                            onPressed: () {}),
+                            onPressed: () {
+                              context.go('/chatroom/${widget.id}');
+                            }),
                         title: const Text('투표 만들기',
                             style: TextStyle(
                                 fontFamily: 'Pretendard', color: Colors.black)),
                         centerTitle: true,
                         actions: [
                           TextButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                PostVote(vote, deadline);
+                              },
                               child: const Text(
                                 '저장',
                                 style: TextStyle(
@@ -218,6 +323,12 @@ class _CreateVoteRoomState extends State<CreateVoteRoom> {
                                               value;
                                         });
                                       },
+                                      onSubmitted: (value) {
+                                        if (selectedVoteType ==
+                                            VoteType.Location) {
+                                          SearchPlace(value, index);
+                                        }
+                                      },
                                       decoration: const InputDecoration(
                                           border: InputBorder.none),
                                     ),
@@ -238,6 +349,27 @@ class _CreateVoteRoomState extends State<CreateVoteRoom> {
                                             textEditingControllers[
                                                     selectedVoteType!]
                                                 ?.removeAt(index);
+                                            switch (selectedVoteType) {
+                                              case VoteType.Date:
+                                                ref
+                                                    .read(voteProvider.notifier)
+                                                    .removeVoteDate(index);
+                                                break;
+                                              case VoteType.Time:
+                                                ref
+                                                    .read(voteProvider.notifier)
+                                                    .removeVoteTime(index);
+                                                break;
+                                              case VoteType.Location:
+                                                ref
+                                                    .read(voteProvider.notifier)
+                                                    .removeVoteLocation(index);
+                                                _mapController.clearOverlays();
+                                                _markers.removeAt(index);
+                                                break;
+                                              default:
+                                                break;
+                                            }
                                           });
                                         },
                                       ),
@@ -252,10 +384,11 @@ class _CreateVoteRoomState extends State<CreateVoteRoom> {
                                                               selectedVoteType!]![
                                                           index]
                                                       .text;
-                                              SearchPlace(searchText);
+                                              SearchPlace(searchText, index);
                                             },
                                             child: Container(
-                                                padding: const EdgeInsets.all(6),
+                                                padding:
+                                                    const EdgeInsets.all(6),
                                                 decoration: BoxDecoration(
                                                     borderRadius:
                                                         BorderRadius.circular(
@@ -328,14 +461,7 @@ class _CreateVoteRoomState extends State<CreateVoteRoom> {
                                 final currentMarker = NMarker(
                                     id: '내위치', position: NLatLng(_lat!, _lng!));
                                 controller.addOverlay(currentMarker);
-                                print('========================');
-                                print('========================');
-                                print('========================');
-                                print('========================');
-                                print('========================');
-                                print(currentMarker);
                               },
-
                               onCameraIdle: () {
                                 // 카메라 위치에 대한 좌표 얻어와서 마커 표시하고
                                 //   그 부분 검색해서 모달창으로 검색결과 띄워주고
@@ -417,6 +543,9 @@ class _CreateVoteRoomState extends State<CreateVoteRoom> {
                                     if (date != null) {
                                       _endDateController.text =
                                           _formatDate(date);
+                                      ref
+                                          .read(deadLineProvider.notifier)
+                                          .setDeadDate(date.toString());
                                     }
                                   }),
                             ),
@@ -447,8 +576,12 @@ class _CreateVoteRoomState extends State<CreateVoteRoom> {
                                             time.period == DayPeriod.am
                                                 ? '오전'
                                                 : '오후';
-                                        _endTimeController.text =
+                                        final selectedTime =
                                             '$period ${time.hourOfPeriod}시 ${time.minute.toString().padLeft(2, '0')}분';
+                                        _endTimeController.text = selectedTime;
+                                        ref
+                                            .read(deadLineProvider.notifier)
+                                            .setDeadTime(selectedTime);
                                       },
                                       minuteInterval: TimePickerInterval.FIVE,
                                       iosStylePicker: true,
@@ -569,6 +702,13 @@ class _CreateVoteRoomState extends State<CreateVoteRoom> {
     if (picked != null) {
       textEditingControllers[voteType]![index].text =
           DateFormat('yyyy-MM-dd (EEEE)', 'ko_kr').format(picked);
+      if (index < (ref.read(voteProvider).vote_date?.length ?? 0)) {
+        ref
+            .read(voteProvider.notifier)
+            .updateVoteDate(index, picked.toString());
+      } else {
+        ref.read(voteProvider.notifier).addVoteDate(picked.toString());
+      }
     }
   }
 
@@ -580,8 +720,14 @@ class _CreateVoteRoomState extends State<CreateVoteRoom> {
         value: Time(hour: initialTime.hour, minute: initialTime.minute),
         onChange: (TimeOfDay time) {
           final period = time.period == DayPeriod.am ? '오전' : '오후';
-          textEditingControllers[voteType]![index].text =
-              '$period ${time.hourOfPeriod}시 ${time.minute.toString().padLeft(2, '0')}분';
+          final selectedTime =
+              '$period ${time.hourOfPeriod.toString().padLeft(2, '0')}시 ${time.minute.toString().padLeft(2, '0')}분';
+          textEditingControllers[voteType]![index].text = selectedTime;
+          if (index < (ref.read(voteProvider).vote_time?.length ?? 0)) {
+            ref.read(voteProvider.notifier).updateVoteTime(index, selectedTime);
+          } else {
+            ref.read(voteProvider.notifier).addVoteTime(selectedTime);
+          }
         },
         minuteInterval: TimePickerInterval.FIVE,
         iosStylePicker: true,
@@ -594,7 +740,7 @@ class _CreateVoteRoomState extends State<CreateVoteRoom> {
         accentColor: AppColors.mainBlue2));
   }
 
-  void SearchPlace(String text) async {
+  void SearchPlace(String text, int index) async {
     final dio = Dio();
     final response = await dio.get(
       'https://openapi.naver.com/v1/search/local.json?',
@@ -625,12 +771,19 @@ class _CreateVoteRoomState extends State<CreateVoteRoom> {
                   child: Column(
                     children: [
                       ListTile(
-                        title: Text((item['title']).replaceAll(RegExp(r'<[^>]*>'), '')),
+                        title: Text((item['title'])
+                            .replaceAll(RegExp(r'<[^>]*>'), '')
+                            .replaceAll('&amp;', '&')
+                            .replaceAll('&lt;', '<')
+                            .replaceAll('&gt;', '>')
+                            .replaceAll('&quot;', '"')
+                            .replaceAll('&#39;', "'")),
                         subtitle: Text(item['description']),
                         onTap: () async {
                           Navigator.of(context).pop();
                           final xString = (item['mapx']);
-                          buffer..write(xString.substring(0,3))
+                          buffer
+                            ..write(xString.substring(0, 3))
                             ..write('.')
                             ..write(xString.substring(3));
                           final x = double.parse(buffer.toString());
@@ -638,13 +791,32 @@ class _CreateVoteRoomState extends State<CreateVoteRoom> {
                           buffer.clear();
 
                           final yString = (item['mapy']);
-                          buffer..write(yString.substring(0,2))
+                          buffer
+                            ..write(yString.substring(0, 2))
                             ..write('.')
                             ..write(yString.substring(2));
                           final y = double.parse(buffer.toString());
+                          String title = (item['title'])
+                              .replaceAll(RegExp(r'<[^>]*>'), '')
+                              .replaceAll('&amp;', '&')
+                              .replaceAll('&lt;', '<')
+                              .replaceAll('&gt;', '>')
+                              .replaceAll('&quot;', '"')
+                              .replaceAll('&#39;', "'");
 
-                          addMarker(y, x, _markers.length.toString());
+                          addMarker(y, x, title, index);
 
+                          if (index <
+                              (ref.read(voteProvider).vote_location?.length ??
+                                  0)) {
+                            // Update the existing item
+                            ref.read(voteProvider.notifier).updateVoteLocation(
+                                index, text, y.toString(), x.toString());
+                          } else {
+                            // Add a new item
+                            ref.read(voteProvider.notifier).addVoteLocation(
+                                text, y.toString(), x.toString());
+                          }
                         },
                       )
                     ],
@@ -653,10 +825,6 @@ class _CreateVoteRoomState extends State<CreateVoteRoom> {
               }).toList(),
             ),
           );
-        }
-    );
-  print(_markers);
+        });
   }
 }
-
-

@@ -18,7 +18,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # of the product and file versions while build-number is used as the build suffix.
 
 # TODO: 버전 올리고 build
-version: 1.0.0+6
+version: 1.0.0+7
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -91,6 +91,8 @@ dependencies:
   smooth_page_indicator: ^1.1.0
   firebase_core: ^2.21.0
   firebase_messaging: ^14.7.3
+  kakao_flutter_sdk: ^1.6.1
+  device_info: ^2.0.0
 
 dev_dependencies:
   flutter_test:
@@ -138,7 +140,7 @@ flutter:
     - assets/image/main/핑키2.png
     - assets/image/main/핑키3.png
     - assets/image/icon/kakao.png
-    - assets/
+    - assets/image/main/login.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

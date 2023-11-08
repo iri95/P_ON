@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:p_on/common/common.dart';
 import 'package:p_on/common/widget/w_basic_appbar.dart';
 import 'package:stomp_dart_client/stomp.dart';
@@ -35,6 +36,10 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
 
   List<Map<String, dynamic>> messages = [];
   Map<String, dynamic> chatRoomInfo = {};
+
+  var votesDate;
+  var votesTime;
+  var votesLocation;
 
   void onConnect(StompFrame? frame) {
     client.subscribe(
@@ -90,6 +95,10 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
     print('==================================');
     print('==================================');
     print(response);
+    print(response.data['result'][0]['votes']);
+    // var votesDate = response.data['result'][0]['votes']['date'];
+    // var votesTime = response.data['result'][0]['votes']['Time'];
+    // var votesLocation = response.data['result'][0]['votes']['Location'];
   }
 
   @override
@@ -126,6 +135,16 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
     });
   }
 
+  String changeDate(String date) {
+    if (date == null) {
+      return '...';
+    }
+    DateTime chatRoomDate = DateTime.parse(date);
+    DateFormat formatter = DateFormat('yyyy-MM-dd (E)', 'ko_kr');
+    String formatterDate = formatter.format(chatRoomDate);
+    return formatterDate;
+  }
+
   @override
   Widget build(BuildContext context) {
     print(widget.id);
@@ -147,7 +166,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
             leading: IconButton(
               icon: const Icon(Icons.arrow_back_ios, color: Colors.black,),
               onPressed: () {
-                // Nav.push(HomeFragment());
+                context.go('/main');
               },
             ),
             actions: [
@@ -182,15 +201,17 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                             children: [
                               const ChatHeadText(
                                   text: '일시 | ', color: AppColors.grey500),
-                              if (chatRoomInfo['promiseDate'] == '미정')
+                              if (chatRoomInfo['promiseDate'] == null || chatRoomInfo['promiseDate'] == '미정')
                                 Vote(
                                   voteType: VoteType.Date,
                                   roomId: widget.id,
+                                  // isVote: votesDate
                                 )
                               else
                                 ChatHeadText(
-                                    text: chatRoomInfo['promiseDate'] ?? '...',
+                                    text: changeDate(chatRoomInfo['promiseDate']) ?? '...',
                                     color: Colors.black),
+
                             ],
                           ),
                         ),
@@ -204,6 +225,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                                 Vote(
                                   voteType: VoteType.Time,
                                   roomId: widget.id,
+                                  // isVote: votesTime
                                 )
                               else
                                 ChatHeadText(
@@ -222,6 +244,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                                 Vote(
                                   voteType: VoteType.Location,
                                   roomId: widget.id,
+                                  // isVote : votesLocation
                                 )
                               else
                                 ChatHeadText(

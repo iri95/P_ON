@@ -5,7 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfileImage extends StatefulWidget {
-  const ProfileImage({super.key});
+  String profileImage;
+  ProfileImage({super.key, required this.profileImage});
 
   @override
   State<ProfileImage> createState() => _ProfileImageState();

@@ -32,6 +32,7 @@ class _SelectedFriendsState extends ConsumerState<SelectedFriends> {
             title: '약속 생성'.text.bold.black.make(),
             backgroundColor: Colors.white,
             iconTheme: const IconThemeData(color: Colors.black),
+            centerTitle: true,
           ),
           body: Column(
             children: [

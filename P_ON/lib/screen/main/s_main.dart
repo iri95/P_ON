@@ -12,7 +12,6 @@ import '../../common/util/center_docked_style.dart';
 import 'fab/w_bottom_nav_floating_button.dart';
 import 'w_menu_drawer.dart';
 
-
 final currentTabProvider = StateProvider((ref) => TabItem.home);
 
 class MainScreen extends ConsumerStatefulWidget {
@@ -27,10 +26,12 @@ class MainScreen extends ConsumerStatefulWidget {
   ConsumerState<MainScreen> createState() => MainScreenState();
 }
 
-class MainScreenState extends ConsumerState<MainScreen> with SingleTickerProviderStateMixin, AfterLayoutMixin {
+class MainScreenState extends ConsumerState<MainScreen>
+    with SingleTickerProviderStateMixin, AfterLayoutMixin {
   DateTime? lastPressed;
   final tabs = TabItem.values;
-  late final List<GlobalKey<NavigatorState>> navigatorKeys = TabItem.values.map((e) => GlobalKey<NavigatorState>()).toList();
+  late final List<GlobalKey<NavigatorState>> navigatorKeys =
+      TabItem.values.map((e) => GlobalKey<NavigatorState>()).toList();
 
   TabItem get _currentTab => ref.watch(currentTabProvider);
 
@@ -77,36 +78,46 @@ class MainScreenState extends ConsumerState<MainScreen> with SingleTickerProvide
         child: Stack(
           children: [
             Scaffold(
-              extendBody: extendBody,
-              //bottomNavigationBar 아래 영역 까지 그림
-              drawer: const MenuDrawer(),
-              drawerEnableOpenDragGesture: !Platform.isIOS,
-              body: Container(
-                padding:
-                EdgeInsets.only(bottom: extendBody ? 60 - bottomNavigationBarBorderRadius : 0),
-                child: SafeArea(
-                  bottom: !extendBody,
-                  child: pages,
-                ),
-              ),
-              resizeToAvoidBottomInset: false,
-              bottomNavigationBar: _buildBottomNavigationBar(context),
-                floatingActionButtonLocation: CenterDockedFloatingActionButtonLocation(15.0),
-                floatingActionButton: InkWell(
-                  onHover: (e) {
-                    setState(() {
-                      currentImage = "assets/image/main/핑키1.png";
-                    });
-                  },
-                  child: FloatingActionButton(
-                    elevation: 4,
-                    onPressed: () {},
-                    child: Image.asset(currentImage),
+              body: Scaffold(
+                extendBody: extendBody,
+                //bottomNavigationBar 아래 영역 까지 그림
+                drawer: const MenuDrawer(),
+                drawerEnableOpenDragGesture: !Platform.isIOS,
+                body: Container(
+                  padding:
+                  EdgeInsets.only(bottom: extendBody ? 60 - bottomNavigationBarBorderRadius : 0),
+                  child: SafeArea(
+                    bottom: !extendBody,
+                    child: pages,
                   ),
-                )
+                ),
+                resizeToAvoidBottomInset: false,
+                bottomNavigationBar: _buildBottomNavigationBar(context),
+
+                  floatingActionButtonLocation: ref.read(fabLocationProvider),
+                  // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+                  floatingActionButton: InkWell(
+                    onHover: (e) {
+                      setState(() {
+                        currentImage = "assets/image/main/핑키3.png";
+                      });
+                    },
+                    child: Container(
+                      height: 75.0,
+                      width: 75.0,
+                      child: FittedBox(
+                        child: FloatingActionButton(
+                          elevation: 4,
+                          onPressed: () {},
+                          child: Image.asset(currentImage),
+                        ),
+                      ),
+                    ),
+                  )
+              ),
             ),
             AnimatedOpacity(
-              opacity: _currentTab != TabItem.history ? 1 : 0,
+              opacity: _currentTab == TabItem.home ? 1 : 0,
               // opacity: 1,
               duration: 300.ms,
               child: BottomFloatingActionButton(),
