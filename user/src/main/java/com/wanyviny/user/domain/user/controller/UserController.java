@@ -1,7 +1,6 @@
 package com.wanyviny.user.domain.user.controller;
 
 import com.wanyviny.user.domain.common.BasicResponse;
-import com.wanyviny.user.domain.user.dto.KakaoDto;
 import com.wanyviny.user.domain.user.dto.KakaoUserDto;
 import com.wanyviny.user.domain.user.dto.UserDto;
 import com.wanyviny.user.domain.user.dto.UserSignUpDto;
