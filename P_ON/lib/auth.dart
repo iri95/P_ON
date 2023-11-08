@@ -5,29 +5,43 @@
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:p_on/screen/main/user/fn_kakao.dart';
+import 'package:p_on/screen/main/user/token_state.dart';
+
+// 로그인 상태 파악
+
 /// A mock authentication service.
 class PonAuth extends ChangeNotifier {
-  bool _signedIn = true;
+  // 로그인 상태
+  bool _signedIn = false;
 
   /// Whether user has signed in.
   bool get signedIn => _signedIn;
 
-  /// Signs out the current user.
-  Future<void> signOut() async {
-    await Future<void>.delayed(const Duration(milliseconds: 200));
-    // Sign out.
-    _signedIn = false;
+  // /// Signs in a user.
+  // 로그인
+  // 서버 토큰이 있으면, 카카오 로그인 -> 서버 토큰 발급 진행
+  Future<void> signInWithKakao(WidgetRef ref) async {
+    final token = ref.read(loginStateProvider).serverToken;
+    final role = ref.read(loginStateProvider).role;
+
+    if (token != null && role == 'USER') {
+      await kakaoLogin(ref);
+      await fetchToken(ref);
+      _signedIn = true;
+    } else {
+      _signedIn = false;
+    }
+    // 상태 변경을 리스너에게 알림
     notifyListeners();
   }
 
-  /// Signs in a user.
-  Future<bool> signIn(String username, String password) async {
-    await Future<void>.delayed(const Duration(milliseconds: 200));
-
-    // Sign in. Allow any password.
-    _signedIn = true;
+  Future<void> signOut() async {
+    // 로그아웃 처리
+    _signedIn = false;
     notifyListeners();
-    return _signedIn;
   }
 
   String? guard(BuildContext context, GoRouterState state) {
@@ -48,7 +62,6 @@ class PonAuth extends ChangeNotifier {
   }
 }
 
-
 /// An inherited notifier to host [PonAuth] for the subtree.
 class PonAuthScope extends InheritedNotifier<PonAuth> {
   /// Creates a [PonAuthScope].
@@ -59,7 +72,6 @@ class PonAuthScope extends InheritedNotifier<PonAuth> {
   });
 
   /// Gets the [PonAuth] above the context.
-  static PonAuth of(BuildContext context) => context
-      .dependOnInheritedWidgetOfExactType<PonAuthScope>()!
-      .notifier!;
+  static PonAuth of(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<PonAuthScope>()!.notifier!;
 }

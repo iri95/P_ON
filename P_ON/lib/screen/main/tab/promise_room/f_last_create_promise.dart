@@ -66,8 +66,8 @@ class _LastCreatePromiseState extends ConsumerState<LastCreatePromise> {
         onChange: (TimeOfDay time) {
           final period = time.period == DayPeriod.am ? '오전' : '오후';
           timeController.text =
-              '$period ${time.hourOfPeriod}시 ${time.minute.toString().padLeft(2, '0')}분';
-          ref.read(promiseProvider.notifier).setPromiseTime(time);
+              '$period ${time.hourOfPeriod.toString().padLeft(2, '0')}시 ${time.minute.toString().padLeft(2, '0')}분';
+          ref.read(promiseProvider.notifier).setPromiseTime(timeController.text);
         },
         minuteInterval: TimePickerInterval.FIVE,
         iosStylePicker: true,
@@ -120,6 +120,7 @@ class _LastCreatePromiseState extends ConsumerState<LastCreatePromise> {
             title: '약속 생성'.text.bold.black.make(),
             backgroundColor: Colors.white,
             iconTheme: const IconThemeData(color: Colors.black),
+            centerTitle: true,
           ),
           body: Column(
             children: [

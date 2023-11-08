@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:p_on/common/common.dart';
 import 'package:p_on/common/constant/app_colors.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:go_router/go_router.dart';
 
 class VoteItems extends StatefulWidget {
-  String roomId;
-  String text;
+  // 받아온 유저 id 값으로 수정버튼 보이거나 안보이거나 처리
+  final String roomId;
+  final String text;
+  // final Map<String, dynamic>voteDate;
 
-  VoteItems({super.key, required this.roomId, required this.text});
+  const VoteItems({super.key, required this.roomId, required this.text});//, required this.voteDate});
 
   @override
   State<VoteItems> createState() => _VoteItemsState();
@@ -16,7 +19,8 @@ class VoteItems extends StatefulWidget {
 class _VoteItemsState extends State<VoteItems> {
   Color _textColor = AppColors.grey400;
   String? dropdownValue;
-  List<bool> _checkboxValues = List.generate(5, (index) => false); // 체크박스 상태를 추적하는 리스트
+  final List<bool> _checkboxValues = List.generate(5, (index) => false); // 체크박스 상태를 추적하는 리스트
+  final isUpdate = true;
 
 
   @override
@@ -25,7 +29,27 @@ class _VoteItemsState extends State<VoteItems> {
       decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(color: Colors.grey))),
       child: ExpansionTile(
-        title: Text(widget.text, style: TextStyle(color: _textColor)),
+        title: Row(
+          children: [
+            Text(widget.text, style: TextStyle(color: _textColor, fontSize: 20, fontFamily: 'Pretendard', fontWeight: FontWeight.bold)),
+            TextButton(
+              onPressed: () {
+                final router = GoRouter.of(context);
+                router.go('/create/vote/${widget.roomId}/date/$isUpdate');
+              },
+              child: Container(
+                width: 55,
+                height: 25,
+                decoration: BoxDecoration(
+                  color: AppColors.mainBlue,
+                  borderRadius: BorderRadius.circular(20)
+                      
+                ),
+                child: const Center(child: Text('수정', style: TextStyle(color: Colors.white, fontSize: 16, fontFamily: 'Pretendard', fontWeight: FontWeight.bold))),
+              )
+            )
+          ],
+        ),
         backgroundColor: AppColors.grey100,
         // 확장 시 배경 색상 변경
         initiallyExpanded: true,
@@ -42,7 +66,7 @@ class _VoteItemsState extends State<VoteItems> {
         children: [
           for (int i = 0; i < 5; i++)
             (Container(
-              margin: EdgeInsets.symmetric(vertical: 2),
+              margin: const EdgeInsets.symmetric(vertical: 2),
               child: ListTile(
                   title: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -51,6 +75,14 @@ class _VoteItemsState extends State<VoteItems> {
                     value: _checkboxValues[i],
                     onChanged: (bool? newValue) {
                       setState(() {
+                        if (newValue == true) {
+                          // voteDate.isMultipleChoice == false 조건 추가
+                          for (int j = 0; j < _checkboxValues.length; j++) {
+                            if (i != j) {
+                              _checkboxValues[j] = false;
+                            }
+                          }
+                        }
                         _checkboxValues[i] = newValue!;
                       });
                     },
@@ -63,7 +95,7 @@ class _VoteItemsState extends State<VoteItems> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
+                      SizedBox(
                         width: MediaQuery.of(context).size.width - 80,
                         child: Row(
                           children: [
@@ -81,11 +113,11 @@ class _VoteItemsState extends State<VoteItems> {
                                     value: value,
                                     child: Row(
                                       children: <Widget>[
-                                        CircleAvatar(
+                                        const CircleAvatar(
                                           backgroundImage: NetworkImage(
                                               'https://example.com/user-profile.png'), // 이미지 URL
                                         ),
-                                        SizedBox(width: 10),
+                                        const SizedBox(width: 10),
                                         Text(value),
                                       ],
                                     ),
@@ -98,7 +130,7 @@ class _VoteItemsState extends State<VoteItems> {
                       ),
                       LinearPercentIndicator(
                         padding: EdgeInsets.zero,
-                        percent: 33 / 100,
+                        percent: i / 10,
                         lineHeight: 3,
                         backgroundColor: const Color(0xffCACFD8),
                         progressColor: AppColors.mainBlue2,
@@ -110,11 +142,13 @@ class _VoteItemsState extends State<VoteItems> {
               )),
             )),
           Container(
-            margin: EdgeInsets.only(top: 6, bottom: 30),
+            margin: const EdgeInsets.only(top: 6, bottom: 30),
             child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  // 투표 post 요청 보내고 다시 get으로 이방 정보를 받아와야함 즉 새로고침 일어나야함 => setState에 넣으면 될듯
+                },
                 child: Container(
-                  margin: EdgeInsets.symmetric(horizontal: 24),
+                  margin: const EdgeInsets.symmetric(horizontal: 24),
                   width: double.infinity,
                   height: 55,
                   decoration: BoxDecoration(
