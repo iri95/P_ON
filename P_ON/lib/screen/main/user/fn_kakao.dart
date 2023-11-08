@@ -93,7 +93,6 @@ Future<void> kakaoLogin(WidgetRef ref) async {
 
 // kakao 로그인 후 서버 토큰 받아내기
 Future<String> fetchToken(WidgetRef ref) async {
-  print('~~~~~~~~~~~~~~');
   Dio dio = Dio();
   // 카카오 로그인 로직으로 토큰 발급
   if (ref.read(kakaoTokenProvider) == null) {
