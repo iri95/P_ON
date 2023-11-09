@@ -18,6 +18,7 @@ public class SwaggerConfig {
                 .route(r -> r.path("/v3/promise/api-docs").and().method(HttpMethod.GET).uri("lb://PROMISE-SERVICE"))
                 .route(r -> r.path("/v3/vote/api-docs").and().method(HttpMethod.GET).uri("lb://VOTE-SERVICE"))
                 .route(r -> r.path("/v3/calendar/api-docs").and().method(HttpMethod.GET).uri("lb://CALENDAR-SERVICE"))
+                .route(r -> r.path("/v3/alarm/api-docs").and().method(HttpMethod.GET).uri("lb://ALARM-SERVICE"))
                 .build();
     }
 
