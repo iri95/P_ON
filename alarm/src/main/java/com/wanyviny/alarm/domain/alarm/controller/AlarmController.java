@@ -1,5 +1,6 @@
 package com.wanyviny.alarm.domain.alarm.controller;
 
+import com.wanyviny.alarm.domain.alarm.ALARM_TYPE;
 import com.wanyviny.alarm.domain.alarm.dto.AlarmDto;
 import com.wanyviny.alarm.domain.alarm.service.AlarmService;
 import com.wanyviny.alarm.domain.common.BasicResponse;
@@ -36,6 +37,24 @@ public class AlarmController {
 
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
+
+    @GetMapping("/type/{alarmType}")
+    public ResponseEntity<BasicResponse> getAlarmByType(HttpServletRequest request, @PathVariable(name = "alarmType") ALARM_TYPE alarmType) {
+        Long userId = Long.parseLong(request.getHeader("id"));
+
+        List<AlarmDto.getAlarmDto> alarmDto = alarmService.getAlarmByType(userId, alarmType);
+
+        BasicResponse basicResponse = BasicResponse.builder()
+                .code(HttpStatus.OK.value())
+                .httpStatus(HttpStatus.OK)
+                .message("알림 조회 성공")
+                .count(alarmDto.size())
+                .result(Collections.singletonList(alarmDto))
+                .build();
+
+        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+    }
+
     @GetMapping("/count")
     public ResponseEntity<BasicResponse> getAlarmCount(HttpServletRequest request) {
         Long userId = Long.parseLong(request.getHeader("id"));

@@ -1,5 +1,6 @@
 package com.wanyviny.alarm.domain.alarm.service;
 
+import com.wanyviny.alarm.domain.alarm.ALARM_TYPE;
 import com.wanyviny.alarm.domain.alarm.dto.AlarmDto;
 import com.wanyviny.alarm.domain.alarm.entity.Alarm;
 import com.wanyviny.alarm.domain.alarm.repository.AlarmRepository;
@@ -20,6 +21,16 @@ public class AlarmServiceImpl implements AlarmService{
     @Override
     public List<AlarmDto.getAlarmDto> getAlarm(Long userId) {
         List<Alarm> alarmList = alarmRepository.findByUserId(userId);
+
+        return alarmList.stream()
+                .map(Alarm::entityToDto)
+                .sorted()
+                .toList();
+    }
+
+    @Override
+    public List<AlarmDto.getAlarmDto> getAlarmByType(Long userId, ALARM_TYPE alarmType) {
+        List<Alarm> alarmList = alarmRepository.findByUserIdAndAlarmType(userId, alarmType);
 
         return alarmList.stream()
                 .map(Alarm::entityToDto)
