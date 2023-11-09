@@ -40,4 +40,16 @@ public class AlarmServiceImpl implements AlarmService{
 
         alarmRepository.deleteByAlarmId(alarmId);
     }
+
+    @Override
+    public int getAlarmCount(Long userId) {
+        return alarmRepository.findByUserId(userId).size();
+    }
+
+    @Override
+    public Long getAlarmCountNonRead(Long userId) {
+        return alarmRepository.findByUserId(userId).stream()
+                .filter(alarm -> !alarm.getAlarmState())
+                .count();
+    }
 }

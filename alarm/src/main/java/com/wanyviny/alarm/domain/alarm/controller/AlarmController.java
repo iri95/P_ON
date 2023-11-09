@@ -36,6 +36,37 @@ public class AlarmController {
 
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
+    @GetMapping("/count")
+    public ResponseEntity<BasicResponse> getAlarmCount(HttpServletRequest request) {
+        Long userId = Long.parseLong(request.getHeader("id"));
+
+        int alarmDto = alarmService.getAlarmCount(userId);
+
+        BasicResponse basicResponse = BasicResponse.builder()
+                .code(HttpStatus.OK.value())
+                .httpStatus(HttpStatus.OK)
+                .message("알람 개수 조회 성공")
+                .count(alarmDto)
+                .build();
+
+        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+    }
+
+    @GetMapping("/count/non-read")
+    public ResponseEntity<BasicResponse> getAlarmCountNonRead(HttpServletRequest request) {
+        Long userId = Long.parseLong(request.getHeader("id"));
+
+        Long alarmDto = alarmService.getAlarmCountNonRead(userId);
+
+        BasicResponse basicResponse = BasicResponse.builder()
+                .code(HttpStatus.OK.value())
+                .httpStatus(HttpStatus.OK)
+                .message("읽지 않은 알람 개수 조회 성공")
+                .count(Math.toIntExact(alarmDto))
+                .build();
+
+        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+    }
 
 
     // 알림 삭제 -> 알림 확인 시 알림 삭제
