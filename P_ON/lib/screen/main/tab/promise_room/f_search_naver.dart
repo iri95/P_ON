@@ -133,14 +133,18 @@ class _SearchNaverState extends ConsumerState<SearchNaver> {
                             height: 50,
                             margin: const EdgeInsets.only(right: 12),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: AppColors.mainBlue2
-                            ),
+                                borderRadius: BorderRadius.circular(5),
+                                color: AppColors.mainBlue2),
                             child: const Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(Icons.search, size: 24, color: Colors.white),
-                                Text('검색', style: TextStyle(fontFamily: 'Pretendard', color: Colors.white, fontSize: 16))
+                                Icon(Icons.search,
+                                    size: 24, color: Colors.white),
+                                Text('검색',
+                                    style: TextStyle(
+                                        fontFamily: 'Pretendard',
+                                        color: Colors.white,
+                                        fontSize: 16))
                               ],
                             ),
                           ),
@@ -201,20 +205,28 @@ class _SearchNaverState extends ConsumerState<SearchNaver> {
                 child: Column(
                   children: [
                     ListTile(
-                        title: Text((item['title']).replaceAll(RegExp(r'<[^>]*>'), '')),
+                        title: Text((item['title'])
+                            .replaceAll(RegExp(r'<[^>]*>'), '')
+                            .replaceAll('&amp;', '&')
+                            .replaceAll('&lt;', '<')
+                            .replaceAll('&gt;', '>')
+                            .replaceAll('&quot;', '"')
+                            .replaceAll('&#39;', "'")),
                         subtitle: Text(item['description']),
                         onTap: () async {
                           Navigator.of(context).pop(); // 현재 모달 닫고 새로운 모달창 띄우기
                           final xString = (item['mapx']);
-                          buffer..write(xString.substring(0,3))
-                          ..write('.')
-                          ..write(xString.substring(3));
+                          buffer
+                            ..write(xString.substring(0, 3))
+                            ..write('.')
+                            ..write(xString.substring(3));
                           final x = double.parse(buffer.toString());
 
                           buffer.clear();
 
                           final yString = (item['mapy']);
-                          buffer..write(yString.substring(0,2))
+                          buffer
+                            ..write(yString.substring(0, 2))
                             ..write('.')
                             ..write(yString.substring(2));
                           final y = double.parse(buffer.toString());
@@ -238,43 +250,74 @@ class _SearchNaverState extends ConsumerState<SearchNaver> {
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Container(
-                                        child: const Text('약속 장소로 설정할까요?', style: TextStyle(fontFamily: 'Pretendard', fontSize: 20, fontWeight: FontWeight.bold),)
-                                      ),
+                                          child: const Text(
+                                        '약속 장소로 설정할까요?',
+                                        style: TextStyle(
+                                            fontFamily: 'Pretendard',
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold),
+                                      )),
                                       Expanded(child: Container()),
                                       Container(
                                         margin: EdgeInsets.only(bottom: 36),
                                         child: Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
                                           children: [
                                             Container(
                                               height: 40,
-                                              margin: const EdgeInsets.only(right: 6),
+                                              margin: const EdgeInsets.only(
+                                                  right: 6),
                                               decoration: BoxDecoration(
-                                                color: AppColors.mainBlue3,
-                                                borderRadius: BorderRadius.circular(20)
-                                              ),
+                                                  color: AppColors.mainBlue3,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20)),
                                               child: TextButton(
                                                 onPressed: () {
-                                                  ref.read(promiseProvider.notifier).setPromiseLocation(item['title'], NLatLng(y, x)); // 약속 장소와 좌표 저장
-                                                  Navigator.pop(context); // 모달 창 닫기
-                                                  Navigator.pop(context, item['title']); // 이전페이지로 돌아가기
+                                                  ref
+                                                      .read(promiseProvider
+                                                          .notifier)
+                                                      .setPromiseLocation(
+                                                          item['title'],
+                                                          NLatLng(y,
+                                                              x)); // 약속 장소와 좌표 저장
+                                                  Navigator.pop(
+                                                      context); // 모달 창 닫기
+                                                  Navigator.pop(
+                                                      context,
+                                                      item[
+                                                          'title']); // 이전페이지로 돌아가기
                                                 },
-                                                child: const Text('확인', style: TextStyle(fontFamily: 'Pretendard', color: Colors.white)),
+                                                child: const Text('확인',
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                            'Pretendard',
+                                                        color: Colors.white)),
                                               ),
                                             ),
                                             Container(
                                               height: 40,
-                                              margin: const EdgeInsets.only(left: 6),
+                                              margin: const EdgeInsets.only(
+                                                  left: 6),
                                               decoration: BoxDecoration(
-                                                color: AppColors.grey300,
-                                                borderRadius: BorderRadius.circular(20)
-                                              ),
+                                                  color: AppColors.grey300,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20)),
                                               child: TextButton(
                                                 onPressed: () async {
-                                                  await _mapController.deleteOverlay(marker2.info); // 마커 삭제
-                                                  Navigator.pop(context); // 모달 창 닫기
+                                                  await _mapController
+                                                      .deleteOverlay(marker2
+                                                          .info); // 마커 삭제
+                                                  Navigator.pop(
+                                                      context); // 모달 창 닫기
                                                 },
-                                                child: const Text('취소', style: TextStyle(fontFamily: 'Pretendard', color: Colors.white)),
+                                                child: const Text('취소',
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                            'Pretendard',
+                                                        color: Colors.white)),
                                               ),
                                             ),
                                           ],
@@ -286,11 +329,9 @@ class _SearchNaverState extends ConsumerState<SearchNaver> {
                               });
 
                           await _mapController.addOverlay(marker2);
-                          await _mapController
-                              .updateCamera(NCameraUpdate.withParams(
-                            target: endposition,
-                            zoom: 15
-                          ));
+                          await _mapController.updateCamera(
+                              NCameraUpdate.withParams(
+                                  target: endposition, zoom: 15));
                         }),
                     ListTile(
                       title: Text('도로명 주소'),

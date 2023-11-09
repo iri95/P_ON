@@ -9,7 +9,6 @@ import './dto_promise.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 
-
 class CreatePromise extends ConsumerStatefulWidget {
   const CreatePromise({super.key});
 
@@ -21,6 +20,7 @@ class _CreatePromiseState extends ConsumerState<CreatePromise>
     with AfterLayoutMixin {
   final node = FocusNode();
   final TextEditingController textController = TextEditingController();
+  bool _showError = false;
 
   @override
   void initState() {
@@ -30,6 +30,11 @@ class _CreatePromiseState extends ConsumerState<CreatePromise>
   }
 
   void updateText() {
+    if (textController.text.isNotEmpty) {
+      setState(() {
+        _showError = false;
+      });
+    }
     setState(() {});
   }
 
@@ -43,6 +48,7 @@ class _CreatePromiseState extends ConsumerState<CreatePromise>
         centerTitle: true,
       ),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           LinearPercentIndicator(
             padding: EdgeInsets.zero,
@@ -64,9 +70,11 @@ class _CreatePromiseState extends ConsumerState<CreatePromise>
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
                 border: Border.all(
-                  color: textController.text.isEmpty && !node.hasFocus
-                      ? Colors.grey
-                      : AppColors.mainBlue2,
+                  color: _showError
+                      ? Colors.red
+                      : textController.text.isEmpty && !node.hasFocus
+                          ? Colors.grey
+                          : AppColors.mainBlue2,
                 )),
             child: TextField(
               focusNode: node,
@@ -75,23 +83,37 @@ class _CreatePromiseState extends ConsumerState<CreatePromise>
                   enabledBorder: InputBorder.none,
                   focusedBorder: InputBorder.none),
             ),
-          )
+          ),
+          if (_showError)
+            Container(
+                margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 24),
+                child: const Text('약속명을 입력해 주세요!!',
+                    style: TextStyle(
+                        fontFamily: 'Pretendard',
+                        fontSize: 14,
+                        color: Colors.red)))
         ],
       ),
       bottomSheet: Container(
         width: double.infinity,
         height: 48,
-        margin: EdgeInsets.all(24),
+        margin: const EdgeInsets.all(24),
         child: FilledButton(
           style: FilledButton.styleFrom(
               backgroundColor: textController.text.isEmpty
                   ? Colors.grey
                   : AppColors.mainBlue),
           onPressed: () {
-            ref
-                .read(promiseProvider.notifier)
-                .setPromiseTitle(textController.text);
-            Nav.push(const SelectedFriends());
+            if (textController.text.isEmpty) {
+              setState(() {
+                _showError = true;
+              });
+            } else {
+              ref
+                  .read(promiseProvider.notifier)
+                  .setPromiseTitle(textController.text);
+              Nav.push(const SelectedFriends());
+            }
           },
           child: const Text('다음'),
         ),

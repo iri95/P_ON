@@ -11,7 +11,7 @@ import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
 /// A mock authentication service.
 class PonAuth extends ChangeNotifier {
   // 로그인 상태
-  bool _signedIn = false;
+  bool _signedIn = true;
   // KakaoToken? _kakaoToken;
 
   /// Whether user has signed in.

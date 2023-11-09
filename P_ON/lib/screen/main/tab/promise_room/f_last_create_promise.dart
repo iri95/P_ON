@@ -53,7 +53,8 @@ class _LastCreatePromiseState extends ConsumerState<LastCreatePromise> {
       lastDate: DateTime(2100),
     );
     if (picked != null) {
-      dateController.text = DateFormat('yyyy-MM-dd (E)', 'ko_kr').format(picked);
+      dateController.text =
+          DateFormat('yyyy-MM-dd (E)', 'ko_kr').format(picked);
       ref.read(promiseProvider.notifier).setPromiseDate(picked);
     }
   }
@@ -67,7 +68,9 @@ class _LastCreatePromiseState extends ConsumerState<LastCreatePromise> {
           final period = time.period == DayPeriod.am ? '오전' : '오후';
           timeController.text =
               '$period ${time.hourOfPeriod.toString().padLeft(2, '0')}시 ${time.minute.toString().padLeft(2, '0')}분';
-          ref.read(promiseProvider.notifier).setPromiseTime(timeController.text);
+          ref
+              .read(promiseProvider.notifier)
+              .setPromiseTime(timeController.text);
         },
         minuteInterval: TimePickerInterval.FIVE,
         iosStylePicker: true,
@@ -83,7 +86,13 @@ class _LastCreatePromiseState extends ConsumerState<LastCreatePromise> {
   void _searchPlace() async {
     final result = await Nav.push(SearchNaver());
     if (result != null) {
-      placeController.text = result;
+      placeController.text = result
+          .replaceAll(RegExp(r'<[^>]*>'), '')
+          .replaceAll('&amp;', '&')
+          .replaceAll('&lt;', '<')
+          .replaceAll('&gt;', '>')
+          .replaceAll('&quot;', '"')
+          .replaceAll('&#39;', "'");
     }
   }
 
@@ -109,54 +118,53 @@ class _LastCreatePromiseState extends ConsumerState<LastCreatePromise> {
 
   @override
   Widget build(BuildContext context) {
-
     return
-      // MaterialApp(
-      // debugShowCheckedModeBanner: false,
-      // home: SafeArea(
-      //   child:
+        // MaterialApp(
+        // debugShowCheckedModeBanner: false,
+        // home: SafeArea(
+        //   child:
         Scaffold(
-          appBar: AppBar(
-            title: '약속 생성'.text.bold.black.make(),
-            backgroundColor: Colors.white,
-            iconTheme: const IconThemeData(color: Colors.black),
-            centerTitle: true,
+      appBar: AppBar(
+        title: '약속 생성'.text.bold.black.make(),
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.black),
+        centerTitle: true,
+      ),
+      body: Column(
+        children: [
+          // const BasicAppBar(
+          //     text: '약속 생성', isProgressBar: true, percentage: 100),
+          LinearPercentIndicator(
+            padding: EdgeInsets.zero,
+            percent: 100 / 100,
+            lineHeight: 3,
+            backgroundColor: const Color(0xffCACFD8),
+            progressColor: AppColors.mainBlue2,
+            width: MediaQuery.of(context).size.width,
           ),
-          body: Column(
-            children: [
-              // const BasicAppBar(
-              //     text: '약속 생성', isProgressBar: true, percentage: 100),
-              LinearPercentIndicator(
-                padding: EdgeInsets.zero,
-                percent: 100 / 100,
-                lineHeight: 3,
-                backgroundColor: const Color(0xffCACFD8),
-                progressColor: AppColors.mainBlue2,
-                width: MediaQuery.of(context).size.width,
-              ),
-              _buildTextField('날짜', dateController, dateNode, timeNode),
-              _buildTextField('시간', timeController, timeNode, placeNode),
-              _buildTextField('장소', placeController, placeNode, null),
-            ],
-          ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
-          floatingActionButton: Container(
-            width: double.infinity,
-            height: 48,
-            margin: const EdgeInsets.all(14),
-            child: FilledButton(
-                onPressed: () {
-                  showDialog(context: context, builder: (BuildContext context) {
+          _buildTextField('날짜', dateController, dateNode, timeNode),
+          _buildTextField('시간', timeController, timeNode, placeNode),
+          _buildTextField('장소', placeController, placeNode, null),
+        ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Container(
+        width: double.infinity,
+        height: 48,
+        margin: const EdgeInsets.all(14),
+        child: FilledButton(
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
                     return const CheckedModal();
                   });
-                },
-                style: FilledButton.styleFrom(
-                    backgroundColor:
-                        isFilled ? AppColors.mainBlue : Colors.grey),
-                child: Text(isFilled ? '다음' : '건너뛰기')),
-          ),
-        );
+            },
+            style: FilledButton.styleFrom(
+                backgroundColor: isFilled ? AppColors.mainBlue : Colors.grey),
+            child: Text(isFilled ? '다음' : '건너뛰기')),
+      ),
+    );
     //   ,),
     // );
   }
@@ -205,6 +213,3 @@ class _LastCreatePromiseState extends ConsumerState<LastCreatePromise> {
     );
   }
 }
-
-
-
