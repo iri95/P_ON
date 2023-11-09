@@ -1,3 +1,4 @@
+import 'package:p_on/auth.dart';
 import 'package:p_on/common/common.dart';
 import 'package:flutter/material.dart';
 import 'package:nav/nav.dart';
@@ -82,7 +83,7 @@ class _RegisterFragmentState extends ConsumerState<RegisterFragment> {
 
       // 바뀐 값으로 데이터를 저장, 요청
       ref.read(userStateProvider.notifier).setUserState(newUser);
-
+      PonAuth().signInWithKakao(ref);
       try {
         Response response = await apiService.sendRequest(
             method: 'POST',
@@ -93,6 +94,7 @@ class _RegisterFragmentState extends ConsumerState<RegisterFragment> {
 
         print('메인으로 ㄱㄱ');
         // TODO: 메인으로 라우팅 안됨
+        PonAuth().signInWithKakao(ref);
         goToMainPage();
       } catch (e) {
         print(e);

@@ -11,6 +11,7 @@ import 'package:p_on/screen/main/tab/chat_room/f_chat_room.dart';
 import 'package:p_on/screen/main/tab/chat_room/f_create_vote_room.dart';
 import 'package:p_on/screen/main/tab/chat_room/f_select_vote.dart';
 import 'package:p_on/screen/main/tab/promise_room/f_create_promise.dart';
+import 'package:p_on/screen/main/tab/register/f_register.dart';
 import 'package:p_on/screen/main/tab/tab_item.dart';
 
 import 'auth.dart';
@@ -80,6 +81,24 @@ class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
         path: '/signin',
         pageBuilder: (BuildContext context, GoRouterState state) =>
             FadeTransitionPage(key: state.pageKey, child: LoginPage()),
+      ),
+      GoRoute(
+        path: '/register',
+        builder: (BuildContext context, GoRouterState state) {
+          // URL 쿼리 파라미터에서 값을 가져옵니다.
+          final nickName = state.uri.queryParameters['nickName'] ?? "";
+          final profileImage = state.uri.queryParameters['profileImage'] ?? "";
+          final privacy = state.uri.queryParameters['privacy'] ?? "PRIVATE";
+          final stateMessage = state.uri.queryParameters['stateMessage'];
+
+          // RegisterFragment를 생성하여 반환합니다.
+          return RegisterFragment(
+            nickName: nickName,
+            profileImage: profileImage,
+            privacy: privacy,
+            stateMessage: stateMessage,
+          );
+        },
       ),
       GoRoute(
         path: '/main',
