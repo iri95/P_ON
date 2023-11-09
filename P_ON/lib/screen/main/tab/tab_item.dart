@@ -11,7 +11,7 @@ import 'benefit/f_benefit.dart';
 enum TabItem {
   home(Icons.home_outlined, '홈', HomeFragment()),
   history(Icons.menu_book, '추억', BenefitFragment()),
-  blankFeild(null, '', NothingFragment()),
+  blankField(null, '', NothingFragment()),
   plan(Icons.calendar_today_outlined, '일정', ScheduleFragment()),
   // plan(Icons.calendar_today_outlined, '일정', StockFragment()),
   my(Icons.person_outline, 'MY', AllFragment());

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:p_on/common/common.dart';
 import 'package:p_on/common/constant/app_colors.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
@@ -8,9 +9,15 @@ class VoteItems extends StatefulWidget {
   // 받아온 유저 id 값으로 수정버튼 보이거나 안보이거나 처리
   final String roomId;
   final String text;
-  // final Map<String, dynamic>voteDate;
+  final Map<String, dynamic>? voteData;
+  final String voteType;
 
-  const VoteItems({super.key, required this.roomId, required this.text});//, required this.voteDate});
+  const VoteItems(
+      {super.key,
+      required this.roomId,
+      required this.text,
+      required this.voteData,
+      required this.voteType});
 
   @override
   State<VoteItems> createState() => _VoteItemsState();
@@ -19,35 +26,67 @@ class VoteItems extends StatefulWidget {
 class _VoteItemsState extends State<VoteItems> {
   Color _textColor = AppColors.grey400;
   String? dropdownValue;
-  final List<bool> _checkboxValues = List.generate(5, (index) => false); // 체크박스 상태를 추적하는 리스트
+  final List<bool> _checkboxValues =
+      List.generate(5, (index) => false); // 체크박스 상태를 추적하는 리스트
+  late NaverMapController _mapController;
   final isUpdate = true;
 
+  String changeDate(String date) {
+    DateTime chatRoomDate = DateTime.parse(date);
+    DateFormat formatter = DateFormat('yyyy-MM-dd (E)', 'ko_kr');
+    String formatterDate = formatter.format(chatRoomDate);
+    return formatterDate;
+  }
 
   @override
   Widget build(BuildContext context) {
+    if (widget.voteData != null) {
+      print('==================');
+      print('==================');
+      print('==================');
+      print(widget.voteData);
+      print(widget.voteData!['items']);
+      print(widget.voteData!['multiple']);
+      print(widget.voteData!['anonymous']);
+      print(widget.voteData!['deadline']['date']);
+      print(widget.voteData!['deadline']['time']);
+      print(widget.voteData!['items'].length);
+      print('==================');
+      print('==================');
+      print('==================');
+    }
+
     return Container(
       decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(color: Colors.grey))),
       child: ExpansionTile(
         title: Row(
           children: [
-            Text(widget.text, style: TextStyle(color: _textColor, fontSize: 20, fontFamily: 'Pretendard', fontWeight: FontWeight.bold)),
+            Text(widget.text,
+                style: TextStyle(
+                    color: _textColor,
+                    fontSize: 20,
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.bold)),
             TextButton(
-              onPressed: () {
-                final router = GoRouter.of(context);
-                router.go('/create/vote/${widget.roomId}/date/$isUpdate');
-              },
-              child: Container(
-                width: 55,
-                height: 25,
-                decoration: BoxDecoration(
-                  color: AppColors.mainBlue,
-                  borderRadius: BorderRadius.circular(20)
-                      
-                ),
-                child: const Center(child: Text('수정', style: TextStyle(color: Colors.white, fontSize: 16, fontFamily: 'Pretendard', fontWeight: FontWeight.bold))),
-              )
-            )
+                onPressed: () {
+                  final router = GoRouter.of(context);
+                  router.go('/create/vote/${widget.roomId}/date/$isUpdate');
+                },
+                child: Container(
+                  width: 55,
+                  height: 25,
+                  decoration: BoxDecoration(
+                      color: AppColors.mainBlue,
+                      borderRadius: BorderRadius.circular(20)),
+                  child: const Center(
+                      child: Text('수정',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.bold))),
+                ))
           ],
         ),
         backgroundColor: AppColors.grey100,
@@ -64,83 +103,103 @@ class _VoteItemsState extends State<VoteItems> {
           });
         },
         children: [
-          for (int i = 0; i < 5; i++)
-            (Container(
-              margin: const EdgeInsets.symmetric(vertical: 2),
-              child: ListTile(
-                  title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Checkbox(
-                    value: _checkboxValues[i],
-                    onChanged: (bool? newValue) {
-                      setState(() {
-                        if (newValue == true) {
-                          // voteDate.isMultipleChoice == false 조건 추가
-                          for (int j = 0; j < _checkboxValues.length; j++) {
-                            if (i != j) {
-                              _checkboxValues[j] = false;
+          if (widget.voteData != null)
+            for (int i = 0; i < widget.voteData!['items'].length; i++)
+              (Container(
+                margin: const EdgeInsets.symmetric(vertical: 2),
+                child: ListTile(
+                    title: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Checkbox(
+                      value: _checkboxValues[i],
+                      onChanged: (bool? newValue) {
+                        setState(() {
+                          if (newValue == true) {
+                            // voteData.isMultipleChoice == false 조건 추가
+                            for (int j = 0; j < _checkboxValues.length; j++) {
+                              if (i != j) {
+                                _checkboxValues[j] = false;
+                              }
                             }
                           }
-                        }
-                        _checkboxValues[i] = newValue!;
-                      });
-                    },
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15)),
-                    checkColor: Colors.white,
-                    activeColor: AppColors.mainBlue,
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width - 80,
-                        child: Row(
-                          children: [
-                            Text('$i번째 i'),
-                            Expanded(child: Container()),
-                            DropdownButtonHideUnderline(
-                              child: DropdownButton<String>(
-                                onChanged: (String? newValue) {},
-                                items: <String>[
-                                  'User 1',
-                                  'User 2',
-                                  'User 3'
-                                ].map<DropdownMenuItem<String>>((String value) {
-                                  return DropdownMenuItem<String>(
-                                    value: value,
-                                    child: Row(
-                                      children: <Widget>[
-                                        const CircleAvatar(
-                                          backgroundImage: NetworkImage(
-                                              'https://example.com/user-profile.png'), // 이미지 URL
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Text(value),
-                                      ],
-                                    ),
-                                  );
-                                }).toList(),
-                              ),
-                            )
-                          ],
+                          _checkboxValues[i] = newValue!;
+                        });
+                      },
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15)),
+                      checkColor: Colors.white,
+                      activeColor: AppColors.mainBlue,
+                    ),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width - 80,
+                          child: Row(
+                            children: [
+                              if (widget.voteType == 'date')
+                                Text(changeDate(widget.voteData!['items'][i])),
+                              if (widget.voteType == 'time')
+                                Text('${widget.voteData!['items'][i]}'),
+                              if (widget.voteType == 'location')
+                                InkWell(
+                                  child: Text(
+                                      '${widget.voteData!['items'][i]['location']}'),
+                                  onTap: () {
+                                    _mapController.updateCamera(
+                                        NCameraUpdate.withParams(
+                                            target: _markers[i].position,
+                                            zoom: 15));
+                                  },
+                                ),
+                              Expanded(child: Container()),
+                              DropdownButtonHideUnderline(
+                                child: DropdownButton<String>(
+                                  onChanged: (String? newValue) {},
+                                  // Map<String, dynamic>widget.voteData!['items'][i]['user'].map<DropdownMenuItem<String>>((String value) {
+                                  //  return DropdownMenuItem<String> (
+                                  //      value: value
+                                  //    )
+                                  // })
+                                  items: <String>['User 1', 'User 2', 'User 3']
+                                      .map<DropdownMenuItem<String>>(
+                                          (String value) {
+                                    return DropdownMenuItem<String>(
+                                      value: value,
+                                      child: Row(
+                                        children: <Widget>[
+                                          const CircleAvatar(
+                                            backgroundImage: NetworkImage(
+                                                'https://example.com/user-profile.png'), // 이미지 URL
+                                          ),
+                                          const SizedBox(width: 10),
+                                          Text(value),
+                                        ],
+                                      ),
+                                    );
+                                  }).toList(),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                      LinearPercentIndicator(
-                        padding: EdgeInsets.zero,
-                        percent: i / 10,
-                        lineHeight: 3,
-                        backgroundColor: const Color(0xffCACFD8),
-                        progressColor: AppColors.mainBlue2,
-                        width: MediaQuery.of(context).size.width - 80,
-                      ),
-                    ],
-                  )
-                ],
+                        LinearPercentIndicator(
+                          padding: EdgeInsets.zero,
+                          // percent: widget.voteData!['items'][i]['count'] / widget.userCount
+                          percent: i / 10,
+                          lineHeight: 3,
+                          backgroundColor: const Color(0xffCACFD8),
+                          progressColor: AppColors.mainBlue2,
+                          width: MediaQuery.of(context).size.width - 80,
+                        ),
+                      ],
+                    )
+                  ],
+                )),
               )),
-            )),
+          if (widget.voteData != null && widget.voteData!['items'].length > 0)
           Container(
             margin: const EdgeInsets.only(top: 6, bottom: 30),
             child: TextButton(
@@ -166,9 +225,50 @@ class _VoteItemsState extends State<VoteItems> {
                     ),
                   ),
                 )),
-          )
+          ),
+          if (widget.voteType == 'date')
+            Container(
+              width: double.infinity,
+              height: 300,
+              color: Colors.green,
+              margin: EdgeInsets.fromLTRB(24, 0, 24, 24),
+            ),
+          if (widget.voteType == 'location' && widget.voteData != null && widget.voteData!['items'].length > 0)
+            Container(
+              width: double.infinity,
+              height: 300,
+              color: Colors.blue,
+              margin: EdgeInsets.fromLTRB(24, 0, 24, 24),
+              child: NaverMap(
+                options: NaverMapViewOptions(
+                    initialCameraPosition: NCameraPosition(
+                        target: NLatLng(
+                            double.parse(widget.voteData!['items'][0]['lat']),
+                            double.parse(widget.voteData!['items'][0]['lng'])),
+                        zoom: 12)),
+                onMapReady: (controller) {
+                  _mapController = controller;
+                  addMarker();
+                },
+              ),
+            )
         ],
       ),
     );
+  }
+
+  List<NMarker> _markers = [];
+
+  addMarker() {
+    for (int i = 0; i < widget.voteData!['items'].length; i++) {
+      var marker = NMarker(
+          id: widget.voteData!['items'][i]['location'],
+          position: NLatLng(double.parse(widget.voteData!['items'][i]['lat']),
+              double.parse(widget.voteData!['items'][i]['lng'])));
+      _markers.add(marker);
+      _mapController.addOverlay(marker);
+      marker.openInfoWindow(
+          NInfoWindow.onMarker(id: marker.info.id, text: '${i + 1} 번'));
+    }
   }
 }

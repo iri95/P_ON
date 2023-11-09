@@ -205,8 +205,13 @@ class _SearchNaverState extends ConsumerState<SearchNaver> {
                 child: Column(
                   children: [
                     ListTile(
-                        title: Text(
-                            (item['title']).replaceAll(RegExp(r'<[^>]*>'), '')),
+                        title: Text((item['title'])
+                            .replaceAll(RegExp(r'<[^>]*>'), '')
+                            .replaceAll('&amp;', '&')
+                            .replaceAll('&lt;', '<')
+                            .replaceAll('&gt;', '>')
+                            .replaceAll('&quot;', '"')
+                            .replaceAll('&#39;', "'")),
                         subtitle: Text(item['description']),
                         onTap: () async {
                           Navigator.of(context).pop(); // 현재 모달 닫고 새로운 모달창 띄우기

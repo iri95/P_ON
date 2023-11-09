@@ -9,15 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:p_on/screen/main/user/fn_kakao.dart';
 import 'package:p_on/screen/main/user/token_state.dart';
-
-// 로그인 상태 파악
-
-import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:p_on/screen/main/user/fn_kakao.dart';
-import 'package:p_on/screen/main/user/token_state.dart';
-
-// 로그인 상태 파악
+import 'package:p_on/screen/main/user/user_state.dart';
 
 /// A mock authentication service.
 class PonAuth extends ChangeNotifier {
@@ -30,19 +22,45 @@ class PonAuth extends ChangeNotifier {
   // /// Signs in a user.
   // 로그인
   // 서버 토큰이 있으면, 카카오 로그인 -> 서버 토큰 발급 진행
-  Future<void> signInWithKakao(WidgetRef ref) async {
+  Future<bool> signInWithKakao(WidgetRef ref) async {
+    print('로그인 ㄱㄱ');
+
+    // 로그인
+    await kakaoLogin(ref);
+    await fetchToken(ref);
+
+    // fetch Token 하면 token, role이 담김
     final token = ref.read(loginStateProvider).serverToken;
     final role = ref.read(loginStateProvider).role;
+    print('1 ${token}, ${role}');
 
     if (token != null && role == 'USER') {
-      await kakaoLogin(ref);
-      await fetchToken(ref);
+      // await kakaoLogin(ref);
+      // await fetchToken(ref);
       _signedIn = true;
+      print('토큰이 있고, role이 user');
+      // 그러면 여기서 토큰으로 프로필을 저장하고 메인으로 이동해야 함
+      print('${ref.read(userStateProvider)?.nickName}');
+    } else if (token != null && role == 'GUEST') {
+      print('토큰이 있고, role이 guest');
+      // _signedIn = true;
+      _signedIn = false;
+
+      // registedIn = false;
     } else {
       _signedIn = false;
     }
     // 상태 변경을 리스너에게 알림
     notifyListeners();
+    return _signedIn;
+  }
+
+  // 진짜 회원가입
+  Future<bool> signUp() async {
+    _signedIn = true;
+    notifyListeners();
+
+    return _signedIn;
   }
 
   Future<void> signOut() async {
@@ -52,19 +70,24 @@ class PonAuth extends ChangeNotifier {
   }
 
   String? guard(BuildContext context, GoRouterState state) {
+    print('~~~~~~~~~~~~~~~~~~~~~~');
+    print(state.matchedLocation);
+
+    // user이면, true, true
+    // guest이면, true, false
+    // 아무것도 아니면 false, false
     final bool signedIn = this.signedIn;
     final bool signingIn = state.matchedLocation == '/signin';
-    final bool registeringIn = state.matchedLocation =='/register';
 
     // Go to /signin if the user is not signed in
     if (!signedIn && !signingIn) {
+      // 회원이 아니고, 다른 페이지임
       return '/signin';
     }
     // Go to /books if the user is signed in and tries to go to /signin.
     else if (signedIn && signingIn) {
       return '/';
     }
-
     // no redirect
     return null;
   }

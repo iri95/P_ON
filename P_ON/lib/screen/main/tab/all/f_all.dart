@@ -13,7 +13,7 @@ class AllFragment extends StatefulWidget {
 }
 
 class _AllFragmentState extends State<AllFragment> {
-  final Dio dio =Dio();
+  final Dio dio = Dio();
 
   void getLogIn() async {
     print('$server/oauth2/authorization/kakao');
