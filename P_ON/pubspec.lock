@@ -25,6 +25,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  amazon_cognito_identity_dart_2:
+    dependency: transitive
+    description:
+      name: amazon_cognito_identity_dart_2
+      sha256: ad550b054e19c1879f729f9f1b612f91f21f2c595623942a283564f9218ca6c8
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.5"
   analyzer:
     dependency: transitive
     description:
@@ -486,6 +494,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  flutter_aws_s3_client:
+    dependency: "direct main"
+    description:
+      name: flutter_aws_s3_client
+      sha256: f3c23940a9cd3befaf1499dd6c1b367977858f98673a0e9a5d43b579b84e3ce9
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.0"
   flutter_bloc:
     dependency: "direct main"
     description:
@@ -1706,6 +1722,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.3.0"
+  xml2json:
+    dependency: transitive
+    description:
+      name: xml2json
+      sha256: c8cb35b83cce879c2ea86951fd257f4e765b0030a0298b35cf94f2b3d0f32095
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.3.6"
   xxh3:
     dependency: transitive
     description:
