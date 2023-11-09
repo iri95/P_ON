@@ -22,7 +22,7 @@ import 'package:p_on/screen/main/user/token_state.dart';
 /// A mock authentication service.
 class PonAuth extends ChangeNotifier {
   // 로그인 상태
-  bool _signedIn = false;
+  bool _signedIn = true;
 
   /// Whether user has signed in.
   bool get signedIn => _signedIn;

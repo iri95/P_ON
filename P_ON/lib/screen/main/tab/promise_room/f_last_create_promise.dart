@@ -1,30 +1,28 @@
 // ignore_for_file: use_build_context_synchronously
-
 import 'dart:async';
-import 'dart:math';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:p_on/common/constant/app_colors.dart';
-import 'package:p_on/common/util/app_keyboard_util.dart';
-import 'package:p_on/common/widget/w_basic_appbar.dart';
 import 'package:p_on/screen/main/tab/promise_room/vo_naver_headers.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:day_night_time_picker/day_night_time_picker.dart';
-import 'package:flutter_naver_map/flutter_naver_map.dart';
-import 'package:get/get.dart';
 import 'package:nav/nav.dart';
+import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:velocity_x/velocity_x.dart';
+import 'dto_promise.dart';
+import 'f_search_naver.dart';
+import 'widget/w_checked_modal.dart';
 
-class LastCreatePromise extends StatefulWidget {
+class LastCreatePromise extends ConsumerStatefulWidget {
   const LastCreatePromise({super.key});
 
   @override
-  State<LastCreatePromise> createState() => _LastCreatePromiseState();
+  ConsumerState<LastCreatePromise> createState() => _LastCreatePromiseState();
 }
 
-class _LastCreatePromiseState extends State<LastCreatePromise> {
+class _LastCreatePromiseState extends ConsumerState<LastCreatePromise> {
   final TextEditingController dateController = TextEditingController();
   final TextEditingController timeController = TextEditingController();
   final TextEditingController placeController = TextEditingController();
@@ -108,7 +106,6 @@ class _LastCreatePromiseState extends State<LastCreatePromise> {
   @override
   void initState() {
     super.initState();
-    dateController.text = DateFormat('yyyy-MM-dd').format(DateTime.now());
     dateController.addListener(updateState);
     timeController.addListener(updateState);
     placeController.addListener(updateState);
