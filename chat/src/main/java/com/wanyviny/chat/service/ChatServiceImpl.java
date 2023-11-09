@@ -43,14 +43,14 @@ public class ChatServiceImpl implements ChatService {
     public ChatResponse.SendDto sendChat(ChatRequest.SendDto request) {
 
         Chat chat = modelMapper.map(request, Chat.class);
-        chatRepository.save(chat);
-
-        Map<String, Object> value = objectMapper.convertValue(chat, HashMap.class);
-        Map<String, Object> field = new HashMap<>();
-        field.put(chat.getId(), value);
-
-        redisTemplate.opsForHash()
-                .putAll(chat.getRoomId(), field);
+//        chatRepository.save(chat);
+//
+//        Map<String, Object> value = objectMapper.convertValue(chat, HashMap.class);
+//        Map<String, Object> field = new HashMap<>();
+//        field.put(chat.getId(), value);
+//
+//        redisTemplate.opsForHash()
+//                .putAll(chat.getRoomId(), field);
 
         Notification notification = Notification.builder()
                 .setTitle(chat.getSender())

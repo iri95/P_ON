@@ -9,6 +9,7 @@ import com.wanyviny.chat.dto.ChatRequest;
 import com.wanyviny.chat.dto.ChatResponse;
 import com.wanyviny.chat.entity.*;
 import com.wanyviny.chat.repository.RoomRepository;
+import com.wanyviny.chat.repository.UserRepository;
 import com.wanyviny.chat.service.ChatService;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -37,8 +38,13 @@ class ChatApplicationTests {
 
     @Autowired
     private RoomRepository roomRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
     @Autowired
     private ObjectMapper objectMapper;
+
     @Autowired
     private ModelMapper modelMapper;
 
@@ -54,11 +60,22 @@ class ChatApplicationTests {
                         .role(ROLE.USER)
                         .nickname("이상훈")
                         .profileImage("/images/profile/default.png")
+                        .socialId("12323231223")
+                        .phoneId("01bb24f625671854")
                         .build();
 
+                userRepository.save(createdUser);
+
                 List<User> list = new ArrayList<>();
+
                 list.add(createdUser);
-                roomRepository.save(Room.builder().id(2L).userList(list).build());
+
+                Room room1 = Room.builder()
+                        .id(1L)
+                        .userList(list)
+                        .build();
+
+                roomRepository.save(room1);
 
                 Chat chat = Chat.builder()
                         .chatType(request.getChatType())
@@ -84,8 +101,8 @@ class ChatApplicationTests {
                         () -> new IllegalArgumentException("해당 약속방이 없습니다.")
                 );
 
-                List<String> userPhoneIdList = room.getUserList().stream()
-                        .filter(user -> chat.getSenderId().equals(String.valueOf(user.getId())))
+                List<String> userPhoneIdList = room1.getUserList().stream()
+                        .filter(user -> !chat.getSenderId().equals(String.valueOf(user.getId())))
                         .map(User::getPhoneId)
                         .filter(phoneId -> phoneId.length() != 0)
                         .toList();
@@ -99,8 +116,14 @@ class ChatApplicationTests {
                             .build());
                 }
 
+                Message msg = Message.builder()
+                        .setToken("01bb24f625671854")
+                        .setNotification(notification)
+                        .build();
+
                 try {
                     firebaseMessaging.sendAll(messageList);
+                    firebaseMessaging.send(msg);
                 } catch (FirebaseMessagingException e) {
                     e.printStackTrace();
                     throw new IllegalArgumentException("알림을 보낼 유저를 찾을 수 없습니다.");
