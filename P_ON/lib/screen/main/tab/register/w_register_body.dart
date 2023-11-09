@@ -38,6 +38,11 @@ class _RegisterBodyState extends State<RegisterBody> with AfterLayoutMixin {
 
   void dispose() {
     nicknameController.dispose();
+    // FocusNode도 dispose 해야 합니다.
+    node.dispose();
+
+    // 항상 맨 마지막에 super.dispose()를 호출합니다.
+    super.dispose();
   }
 
   @override
