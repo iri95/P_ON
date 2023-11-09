@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 public class Follow {
     @Id
     @Column(name = "FOLLOW_ID")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne
