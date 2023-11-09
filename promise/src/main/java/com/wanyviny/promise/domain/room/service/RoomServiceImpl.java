@@ -11,7 +11,9 @@ import com.wanyviny.promise.domain.room.repository.UserRoomRepository;
 import com.wanyviny.promise.domain.user.entity.User;
 import com.wanyviny.promise.domain.user.repository.UserRepository;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -35,18 +37,23 @@ public class RoomServiceImpl implements RoomService {
         request.getUsers()
                 .add(userId);
 
+        List<Map<String, Object>> users = new ArrayList<>();
         Room room = modelMapper.map(request, Room.class);
         roomRepository.save(room);
 
         for (Long id : request.getUsers()) {
 
+            Map<String, Object> userInfo = new HashMap<>();
             User user = userRepository.findById(id).orElseThrow();
             UserRoom userRoom = UserRoom.builder()
                     .room(room)
                     .user(user)
                     .build();
 
+            userInfo.put("userId", user.getId());
+            userInfo.put("nickname", user.getNickname());
             userRoomRepository.save(userRoom);
+            users.add(userInfo);
         }
 
         RoomResponse.Create response = modelMapper.map(room, RoomResponse.Create.class);
@@ -55,6 +62,7 @@ public class RoomServiceImpl implements RoomService {
         response.setDate(itemRepository.existsByRoom_IdAndItemType(room.getId(), ItemType.DATE));
         response.setTime(itemRepository.existsByRoom_IdAndItemType(room.getId(), ItemType.TIME));
         response.setLocation(itemRepository.existsByRoom_IdAndItemType(room.getId(), ItemType.LOCATION));
+        response.setUsers(users);
 
         return response;
     }
@@ -62,12 +70,23 @@ public class RoomServiceImpl implements RoomService {
     @Override
     public RoomResponse.Find findRoom(Long roomId) {
 
+        List<UserRoom> userRooms = userRoomRepository.findAllByRoomId(roomId);
         Room room = roomRepository.findById(roomId).orElseThrow();
         RoomResponse.Find response = modelMapper.map(room, RoomResponse.Find.class);
+        List<Map<String, Object>> users = new ArrayList<>();
+
+        userRooms.forEach(userRoom -> {
+            Map<String, Object> userInfo = new HashMap<>();
+            User user = userRoom.getUser();
+            userInfo.put("userId", user.getId());
+            userInfo.put("nickname", user.getNickname());
+            users.add(userInfo);
+        });
 
         response.setDate(itemRepository.existsByRoom_IdAndItemType(roomId, ItemType.DATE));
         response.setTime(itemRepository.existsByRoom_IdAndItemType(roomId, ItemType.TIME));
         response.setLocation(itemRepository.existsByRoom_IdAndItemType(roomId, ItemType.LOCATION));
+        response.setUsers(users);
 
         return response;
     }

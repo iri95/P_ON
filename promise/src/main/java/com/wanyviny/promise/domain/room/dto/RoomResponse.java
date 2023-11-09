@@ -1,6 +1,8 @@
 package com.wanyviny.promise.domain.room.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.util.List;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,6 +36,7 @@ public class RoomResponse {
         private String promiseLocation;
         private String deadDate;
         private String deadTime;
+        private List<Map<String, Object>> users;
     }
 
     @ToString
@@ -60,6 +63,7 @@ public class RoomResponse {
         private String promiseLocation;
         private String deadDate;
         private String deadTime;
+        private List<Map<String, Object>> users;
     }
 
     @ToString

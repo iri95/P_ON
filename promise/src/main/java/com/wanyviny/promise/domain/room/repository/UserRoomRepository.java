@@ -8,4 +8,5 @@ public interface UserRoomRepository extends JpaRepository<UserRoom, Long> {
 
     int countAllByRoom_Id(Long roomId);
     List<UserRoom> findAllByUserId(Long userId);
+    List<UserRoom> findAllByRoomId(Long roomId);
 }
