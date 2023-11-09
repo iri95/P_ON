@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'dart:io'; //Platform 사용을 위한 패키지
 import 'package:flutter/services.dart'; //PlatformException 사용을 위한 패키지
 import 'package:device_info/device_info.dart'; // 디바이스 정보 사용 패키지
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 // 디바이스 아이디 받아오기
 Future<String> getMobileId() async {
@@ -39,6 +40,12 @@ Future<String> getMobileId() async {
   print('id: $id');
   // 값 리턴
   return id;
+}
+
+// FCM 토큰 받아오기
+Future getFCMToken() async {
+  String? token = await FirebaseMessaging.instance.getToken();
+  return token;
 }
 
 // 카카오 로그인
@@ -131,8 +138,10 @@ Future<void> fetchToken(WidgetRef ref) async {
   if (ref.read(kakaoTokenProvider) == null) {
     await kakaoLogin(ref);
   }
-  final String mobileId = await getMobileId();
-  print('이거다 =========== ${mobileId}');
+  // final String mobileId = await getMobileId();
+
+  final String FCMToken = await getFCMToken();
+  print('진짜토큰 $FCMToken');
 
   // 발급받은 카카오 토큰을 이용해 서버 로그인 요청
   try {
@@ -143,7 +152,7 @@ Future<void> fetchToken(WidgetRef ref) async {
                 'Authorization': 'Bearer ${ref.read(kakaoTokenProvider)}',
               },
             ),
-            data: {'phoneId': mobileId});
+            data: {'phoneId': FCMToken});
 
     print('$response, ============================');
 
