@@ -104,8 +104,8 @@ class MainScreenState extends ConsumerState<MainScreen>
                       });
                     },
                     child: Container(
-                      height: 70,
-                      width: 70,
+                      height: 75.0,
+                      width: 75.0,
                       child: FittedBox(
                         child: FloatingActionButton(
                           elevation: 4,
@@ -116,11 +116,28 @@ class MainScreenState extends ConsumerState<MainScreen>
                     ),
                   )),
             ),
-            AnimatedOpacity(
-              opacity: _currentTab == TabItem.home ? 1 : 0,
-              // opacity: 1,
-              duration: 300.ms,
-              child: BottomFloatingActionButton(),
+            Stack(
+              children: [
+                AnimatedOpacity(
+                  opacity: _currentTab == TabItem.home ? 1 : 0,
+                  duration: Duration(milliseconds: 300),
+                  child: IgnorePointer(
+                    ignoring: _currentTab != TabItem.home,
+                    child: BottomFloatingActionButton(),
+                  ),
+                ),
+
+                /// TODO: 나중에 캘린더 일정 추가
+                // AnimatedOpacity(
+                //   opacity: _currentTab == TabItem.plan ? 1 : 0,
+                //   duration: Duration(milliseconds: 300),
+                //   child: IgnorePointer(
+                //     ignoring: _currentTab != TabItem.plan,
+                //     child: PlanFloatingActionButton(),
+                //   ),
+                // ),
+                // 다른 TabItem에 대한 AnimatedOpacity가 필요하다면, 여기에 추가합니다.
+              ],
             )
           ],
         ),
