@@ -33,14 +33,24 @@ public class AlarmServiceImpl implements AlarmService{
         List<Alarm> alarmList = alarmRepository.findByUserIdAndAlarmType(userId, alarmType);
 
         return alarmList.stream()
-                .map(Alarm::entityToDto)
+                .map(alarm -> {
+                    if(alarm.getAlarmType() == ALARM_TYPE.FRIEND){
+                        return alarm.entityToDto();
+                    }else {
+                        return alarm.entityToPromiseDto();
+                    }
+                })
                 .sorted()
                 .toList();
     }
 
     @Override
     public void postAlarm(User user, AlarmDto.setAlarmDto alarmDto) {
-        alarmRepository.save(alarmDto.dtoToEntity(user));
+        if(alarmDto.getAlarmType() == ALARM_TYPE.FRIEND) {
+            alarmRepository.save(alarmDto.dtoToEntity(user));
+        }else{
+            alarmRepository.save(alarmDto.dtoToPromiseEntity(user));
+        }
     }
 
     @Override
