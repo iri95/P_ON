@@ -2,11 +2,12 @@ package com.wanyviny.promise.domain.room.service;
 
 import com.wanyviny.promise.domain.room.dto.RoomRequest;
 import com.wanyviny.promise.domain.room.dto.RoomResponse;
-import com.wanyviny.promise.domain.vote.entity.Vote;
+import java.util.List;
 
 public interface RoomService {
 
-    RoomResponse.CreateDto createRoom(RoomRequest.CreateDto request);
-    RoomResponse.FindDto findRoom(String roomId);
-    void deleteRoom(String roomId);
+    RoomResponse.Create createRoom(Long userId, RoomRequest.Create request);
+    RoomResponse.Find findRoom(Long roomId);
+    List<RoomResponse.FindAll> findAllRoom(Long userId);
+    void deleteRoom(Long roomId);
 }

@@ -1,35 +1,81 @@
 package com.wanyviny.promise.domain.room.dto;
 
-import java.util.List;
-import java.util.Map;
+import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
 public class RoomResponse {
 
+    @ToString
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
     @Builder
-    public record CreateDto(
+    @Schema(name = "RoomResponse.Create")
+    public static class Create {
 
-            String id,
-            List<Map<String, String>> users,
-            String promiseTitle,
-            boolean isDefaultTitle,
-            String promiseDate,
-            String promiseTime,
-            String promiseLocation,
-            List<Map<String, String>> chats,
-            List<Map<String, String>> votes
-    ) {}
+        private Long id;
+        private Long userId;
+        private int userCount;
+        private boolean complete;
+        private boolean anonymous;
+        private boolean multipleChoice;
+        private boolean date;
+        private boolean time;
+        private boolean location;
+        private String promiseTitle;
+        private String promiseDate;
+        private String promiseTime;
+        private String promiseLocation;
+        private String deadDate;
+        private String deadTime;
+    }
 
+    @ToString
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
     @Builder
-    public record FindDto(
+    @Schema(name = "RoomResponse.Find")
+    public static class Find {
 
-            String id,
-            List<Map<String, String>> users,
-            String promiseTitle,
-            String promiseDate,
-            String promiseTime,
-            String promiseLocation,
-            List<Map<String, String>> chats,
-            List<Map<String, String>> votes
-    ) {}
+        private Long id;
+        private Long userId;
+        private int userCount;
+        private boolean complete;
+        private boolean anonymous;
+        private boolean multipleChoice;
+        private boolean date;
+        private boolean time;
+        private boolean location;
+        private String promiseTitle;
+        private String promiseDate;
+        private String promiseTime;
+        private String promiseLocation;
+        private String deadDate;
+        private String deadTime;
+    }
+
+    @ToString
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @Schema(name = "RoomResponse.FindAll")
+    public static class FindAll {
+
+        private Long id;
+        private String promiseTitle;
+        private String promiseDate;
+        private String promiseTime;
+        private String promiseLocation;
+        private boolean read;
+    }
 }

@@ -2,37 +2,36 @@ package com.wanyviny.promise.domain.chat.service;
 
 import com.wanyviny.promise.domain.chat.dto.ChatRequest;
 import com.wanyviny.promise.domain.chat.dto.ChatResponse;
-import com.wanyviny.promise.domain.chat.dto.ChatResponse.CreateDto;
 import com.wanyviny.promise.domain.chat.entity.Chat;
-import com.wanyviny.promise.domain.room.entity.Room;
-import com.wanyviny.promise.domain.room.repository.RoomRepository;
-import java.time.LocalDateTime;
+import com.wanyviny.promise.domain.chat.repository.ChatRepository;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService {
 
-    private final RoomRepository roomRepository;
+    private final ModelMapper modelMapper;
+    private final ChatRepository chatRepository;
 
     @Override
-    public CreateDto sendChat(String roomId, String senderId, ChatRequest.CreateDto createDto) {
+    public ChatResponse sendChat(String senderId, String roomId, ChatRequest request) {
 
         Chat chat = Chat.builder()
+                .roomId(roomId)
                 .senderId(senderId)
-                .sender(createDto.sender())
-                .chatType(createDto.chatType())
-                .content(createDto.content())
-                .createAt(LocalDateTime.now())
+                .sender(request.getSender())
+                .chatType(request.getChatType())
+                .content(request.getContent())
                 .build();
 
-        Room room = roomRepository.findById(roomId).orElseThrow();
-        room.addChat(chat);
-        roomRepository.save(room);
+        chatRepository.save(chat);
 
-        return ChatResponse.CreateDto
-                .builder()
+        return ChatResponse.builder()
+                .id(chat.getId())
                 .roomId(roomId)
                 .senderId(senderId)
                 .sender(chat.getSender())
@@ -40,5 +39,15 @@ public class ChatServiceImpl implements ChatService {
                 .content(chat.getContent())
                 .createAt(chat.getCreateAt())
                 .build();
+    }
+
+    @Override
+    public List<ChatResponse> findAllChat(String roomId) {
+
+        List<Chat> chats = chatRepository.findAllByRoomId(roomId);
+        List<ChatResponse> response = new ArrayList<>();
+
+        chats.forEach(chat -> response.add(modelMapper.map(chat, ChatResponse.class)));
+        return response;
     }
 }

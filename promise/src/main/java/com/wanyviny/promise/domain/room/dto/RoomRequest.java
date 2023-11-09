@@ -2,26 +2,23 @@ package com.wanyviny.promise.domain.room.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.util.List;
-import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 public class RoomRequest {
 
+    @ToString
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
-    @Schema(name = "RoomRequest.CreateDto")
-    public static class CreateDto {
+    @Schema(name = "RoomRequest.Create")
+    public static class Create {
 
-        @Schema(example = "[{\"userId\" : \"string\", \"nickname\" : \"string\"},"
-                + "{\"userId\" : \"string\", \"nickname\" : \"string\"}]")
-        private List<Map<String, String>> users;
-
-        @Schema(nullable = true)
+        private List<Long> users;
         private String promiseTitle;
 
         @Builder.Default
