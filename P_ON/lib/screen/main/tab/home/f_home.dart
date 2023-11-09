@@ -15,7 +15,13 @@ import '../../fab/w_bottom_nav_floating_button.dart';
 import '../../fab/w_bottom_nav_floating_button.riverpod.dart';
 import '../../s_main.dart';
 import 'bank_accounts_dummy.dart';
+
 import 'package:dio/dio.dart';
+import 'package:p_on/common/util/dio.dart';
+import 'package:p_on/screen/main/user/fn_kakao.dart';
+
+import 'package:p_on/screen/main/user/token_state.dart';
+import 'package:p_on/screen/main/user/user_state.dart';
 
 class HomeFragment extends ConsumerStatefulWidget {
   const HomeFragment({super.key});
@@ -39,7 +45,49 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
         ref.read(floatingButtonStateProvider.notifier).changeButtonSize(false);
       }
     });
+    _fetchProfile();
+
     super.initState();
+  }
+
+  void _fetchProfile() async {
+    final loginState = ref.read(loginStateProvider);
+    final token = loginState.serverToken;
+    final id = loginState.id;
+
+    var headers = {'Authorization': '$token', 'id': '$id'};
+
+    // 서버 토큰이 없으면
+    if (token == null) {
+      await kakaoLogin(ref);
+      await fetchToken(ref);
+
+      // 토큰을 다시 읽습니다.
+      final newToken = ref.read(loginStateProvider).serverToken;
+      final newId = ref.read(loginStateProvider).id;
+
+      headers['Authorization'] = '$newToken';
+      headers['id'] = '$newId';
+    }
+
+    final apiService = ApiService();
+    try {
+      Response response = await apiService.sendRequest(
+          method: 'GET', path: '/api/user/profile', headers: headers);
+
+      // 여기서 회원 정보 프로바이더 저장 후 전달
+      var user = UserState(
+        profileImage: response.data['result'][0]['profileImage'] as String,
+        nickName: response.data['result'][0]['nickName'] as String,
+        privacy: response.data['result'][0]['privacy'] as String,
+        stateMessage: response.data['result'][0]['stateMessage'] as String?,
+      );
+
+      ref.read(userStateProvider.notifier).setUserState(user);
+      print('여긴 메인이고 프로필 조회 끝 ');
+    } catch (e) {
+      print('여긴 메인이고 프로필 에러 $e');
+    }
   }
 
   @override
@@ -76,7 +124,7 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // TODO: User 닉네임 받아서 이름 넣기
-                          '수완'
+                          '${ref.read(userStateProvider)?.nickName}'
                               .text
                               .fontWeight(FontWeight.w800)
                               .size(26)

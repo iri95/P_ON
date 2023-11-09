@@ -9,19 +9,12 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:p_on/screen/main/user/fn_kakao.dart';
 import 'package:p_on/screen/main/user/token_state.dart';
-
-// 로그인 상태 파악
-
-import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:p_on/screen/main/user/fn_kakao.dart';
-// import 'package:p_on/screen/main/user/token_state.dart';
+import 'package:p_on/screen/main/user/user_state.dart';
 
 /// A mock authentication service.
 class PonAuth extends ChangeNotifier {
   // 로그인 상태
   bool _signedIn = false;
-  bool registedIn = false;
 
   /// Whether user has signed in.
   bool get signedIn => _signedIn;
@@ -45,8 +38,9 @@ class PonAuth extends ChangeNotifier {
       // await kakaoLogin(ref);
       // await fetchToken(ref);
       _signedIn = true;
-      registedIn = true;
-      print('토큰이 있고, role이 user ${signedIn}');
+      print('토큰이 있고, role이 user');
+      // 그러면 여기서 토큰으로 프로필을 저장하고 메인으로 이동해야 함
+      print('${ref.read(userStateProvider)?.nickName}');
     } else if (token != null && role == 'GUEST') {
       print('토큰이 있고, role이 guest');
       // _signedIn = true;
@@ -55,7 +49,6 @@ class PonAuth extends ChangeNotifier {
       // registedIn = false;
     } else {
       _signedIn = false;
-      registedIn = false;
     }
     // 상태 변경을 리스너에게 알림
     notifyListeners();
@@ -84,7 +77,6 @@ class PonAuth extends ChangeNotifier {
     // guest이면, true, false
     // 아무것도 아니면 false, false
     final bool signedIn = this.signedIn;
-    final bool registedIn = this.registedIn;
     final bool signingIn = state.matchedLocation == '/signin';
 
     // Go to /signin if the user is not signed in

@@ -8,7 +8,7 @@ import 'package:p_on/screen/main/tab/promise_room/vo_server_url.dart';
 import 'package:p_on/screen/main/tab/register/f_register.dart';
 import 'package:flutter/material.dart';
 
-import 'fn_kakao.dart';
+import 'package:p_on/screen/main/user/fn_kakao.dart';
 import 'package:p_on/common/util/dio.dart';
 import 'package:dio/dio.dart';
 
@@ -17,8 +17,6 @@ import 'package:p_on/screen/main/user/token_state.dart';
 import 'package:p_on/screen/main/user/user_state.dart';
 
 import 'package:go_router/go_router.dart';
-
-import 'package:p_on/auth.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -38,38 +36,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
   Widget build(BuildContext context) {
     final auth = PonAuthScope.of(context);
 
-    Future<void> goLogin() async {
-      // role이 user이면 회원, guest이면 비회원
-      // 비회원이면, 회원 가입으로
-      if (ref.read(loginStateProvider).role == 'GUEST') {
-        print('난 게스트고 가입으로');
-
-        // 저장된 userState
-        final userState = ref.watch(userStateProvider);
-        print('${userState}');
-        await Nav.push(RegisterFragment(
-          nickName: userState?.nickName ?? "",
-          profileImage: userState?.profileImage ?? "",
-          privacy: userState?.privacy ?? "PRIVATE",
-          stateMessage: userState?.stateMessage ?? "",
-        ));
-
-        // GoRouter.of(context).go('/register', extra: {
-        //   'nickName': userState?.nickName ?? "",
-        //   'profileImage': userState?.profileImage ?? "",
-        //   'privacy': userState?.privacy ?? "PRIVATE",
-        //   'stateMessage': userState?.stateMessage ?? "",
-        // });
-      } else {
-        // 회원이면 메인 페이지로
-        // TODO: 메인 페이지 라우팅 안됨
-        print('난 유저고 메인으로 ${auth.signedIn}');
-        GoRouter.of(context).go('/');
-      }
-    }
-
     Future<void> fetchProfile() async {
-      // 현재 저장된 서버 토큰을 가져옵니다.
       final loginState = ref.read(loginStateProvider);
       final token = loginState.serverToken;
       final id = loginState.id;
@@ -103,9 +70,42 @@ class _LoginPageState extends ConsumerState<LoginPage>
         );
 
         ref.read(userStateProvider.notifier).setUserState(user);
-        print('프로필 조회 끝 ${ref.read(userStateProvider)?.nickName}');
+        print('여긴 로그인이고 프로필 조회 끝 ${ref.read(userStateProvider)?.nickName}');
       } catch (e) {
-        print('프로필 에러 $e');
+        print('여긴 로그인이고 프로필 에러 $e');
+      }
+    }
+
+    Future<void> goLogin() async {
+      await auth.signInWithKakao(ref);
+
+      // role이 user이면 회원, guest이면 비회원
+      // 비회원이면, 회원 가입으로
+      if (ref.read(loginStateProvider).role == 'GUEST') {
+        print('난 게스트고 가입으로');
+        await fetchProfile();
+        // 저장된 userState
+        final userState = ref.watch(userStateProvider);
+        print('${userState}');
+        await Nav.push(RegisterFragment(
+          nickName: userState?.nickName ?? "",
+          profileImage: userState?.profileImage ?? "",
+          privacy: userState?.privacy ?? "PRIVATE",
+          stateMessage: userState?.stateMessage ?? "",
+        ));
+
+        // GoRouter.of(context).go('/register', extra: {
+        //   'nickName': userState?.nickName ?? "",
+        //   'profileImage': userState?.profileImage ?? "",
+        //   'privacy': userState?.privacy ?? "PRIVATE",
+        //   'stateMessage': userState?.stateMessage ?? "",
+        // });
+      } else {
+        // 회원이면 메인 페이지로
+        // TODO: 메인 페이지 라우팅 안됨
+        // await fetchProfile();
+        // GoRouter.of(context).go('/');
+        print('난 유저고 메인으로 ${auth.signedIn}');
       }
     }
 
@@ -128,16 +128,9 @@ class _LoginPageState extends ConsumerState<LoginPage>
                 color: const Color(0xffF9E000)),
             child: TextButton(
               onPressed: () async {
-                // 이게 키해시임
-                print(await KakaoSdk.origin);
-                // 카카오로그인 -> 토큰
-                // await fetchToken();
-                // print('111111111111111111111111111111');
-                // await kakaoLogin(ref);
-                // print('222222222222222222222222222222');
-                // await fetchToken(ref);
-                await auth.signInWithKakao(ref);
-                await fetchProfile();
+                // FIXME: 이게 키해시임
+                // print(await KakaoSdk.origin);
+
                 await goLogin();
               },
               child: Row(

@@ -88,8 +88,7 @@ class _RegisterFragmentState extends ConsumerState<RegisterFragment> {
             headers: headers,
             data: data);
         print(response);
-
-        print('메인으로 ㄱㄱ');
+        print('회원가입 그리고 메인으로');
         auth.signUp();
         GoRouter.of(context).go('/');
       } catch (e) {
