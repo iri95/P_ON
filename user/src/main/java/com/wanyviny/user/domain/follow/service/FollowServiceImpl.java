@@ -1,5 +1,9 @@
 package com.wanyviny.user.domain.follow.service;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.Notification;
 import com.wanyviny.user.domain.follow.dto.FollowDto;
 import com.wanyviny.user.domain.follow.entity.Follow;
 import com.wanyviny.user.domain.follow.repository.FollowRepository;
@@ -18,6 +22,7 @@ public class FollowServiceImpl implements FollowService {
 
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
+    private final FirebaseMessaging firebaseMessaging;
 
     @Override
     @Transactional
@@ -61,6 +66,12 @@ public class FollowServiceImpl implements FollowService {
                 .userId(user)
                 .followingId(following)
                 .build());
+
+        String title = "FOLLOW!";
+        String body = user.getNickname() + "님이 당신을 팔로우했습니다.";
+        String token = following.getPhoneId();
+
+        firebasePushAlarm(title, body, token);
     }
 
     @Override
@@ -74,5 +85,26 @@ public class FollowServiceImpl implements FollowService {
         );
 
         followRepository.deleteByUserIdAndFollowingId(user, following);
+    }
+
+    @Transactional
+    public void firebasePushAlarm(String title, String Body, String token) {
+        Notification notification = Notification.builder()
+                .setTitle(title)
+                .setBody(Body)
+                .setImage("/static/images/default.png")
+                .build();
+
+        Message message = Message.builder()
+                .setToken(token)  // 친구의 FCM 토큰 설정
+                .setNotification(notification)
+                .build();
+        try {
+            firebaseMessaging.send(message);
+        } catch (FirebaseMessagingException e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException("token에 해당하는 유저를 찾을 수 없습니다.");
+        }
+
     }
 }
