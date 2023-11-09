@@ -34,7 +34,6 @@ class App extends ConsumerStatefulWidget {
 class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
   final ValueKey<String> _scaffoldKey = const ValueKey<String>('App scaffold');
 
-  final _auth = PonAuth();
 
   @override
   void initState() {
@@ -50,11 +49,13 @@ class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
     super.dispose();
   }
 
+  final auth = PonAuth();
   @override
   Widget build(BuildContext context) {
+
     return ProviderScope(
       child: PonAuthScope(
-        notifier: _auth,
+        notifier: auth,
         child: MaterialApp.router(
           debugShowCheckedModeBanner: false,
           scaffoldMessengerKey: App.scaffoldMessengerKey,
@@ -79,7 +80,7 @@ class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
       GoRoute(
         path: '/signin',
         pageBuilder: (BuildContext context, GoRouterState state) =>
-            FadeTransitionPage(key: state.pageKey, child: LoginPage()),
+            FadeTransitionPage(key: state.pageKey, child: const LoginPage()),
       ),
       GoRoute(
         path: '/main',
@@ -160,8 +161,8 @@ class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
             return MaterialPage(child: SelectVote(id: id));
           })
     ],
-    redirect: _auth.guard,
-    refreshListenable: _auth,
+    redirect: auth.guard,
+    refreshListenable: auth,
     debugLogDiagnostics: true,
   );
 
