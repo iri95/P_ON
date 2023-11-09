@@ -2,10 +2,12 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:p_on/common/common.dart';
+import 'package:p_on/common/util/dio.dart';
 import 'package:p_on/screen/main/tab/chat_room/f_chat_room.dart';
 import 'package:p_on/screen/main/tab/promise_room/dto_promise.dart';
 import 'package:go_router/go_router.dart';
-
+import 'package:p_on/screen/main/user/token_state.dart';
+import '../../../user/fn_kakao.dart';
 import '../vo_server_url.dart';
 
 class CheckedModal extends ConsumerStatefulWidget {
@@ -16,43 +18,6 @@ class CheckedModal extends ConsumerStatefulWidget {
 }
 
 class _CheckedModalState extends ConsumerState<CheckedModal> {
-  Future<void> PostCreatePromiseRoom(Promise promise) async {
-    try {
-      Dio dio = Dio();
-      dio.options.headers['content-Type'] = 'application/json';
-      String url = "$server/api/promise/room";
-      var data = {
-        "users": [
-          {"nickname": "김태환", "userId": "1"},
-          {"nickname": "정수완", "userId": "2"},
-          {"nickname": "김현빈", "userId": "3"},
-          {"nickname": "이상훈", "userId": "4"},
-          {"nickname": "구희영", "userId": "5"},
-          {"nickname": "김나연", "userId": "6"},
-        ],
-        "promiseTitle":
-        promise.promise_title ?? "미정",
-        "promiseDate": promise.promise_date != null
-            ? promise.promise_date.toString()
-            : "미정",
-        "promiseTime": promise.promise_time ?? "미정",
-        "promiseLocation":
-        promise.promise_location ?? "미정"
-      };
-      var response = await dio.post(url, data: data);
-      print(response);
-      print(response.data['result'][0]['id']);
-
-      String room_id = response.data['result'][0]['id'];
-      final router = GoRouter.of(context);
-      // Nav.removeUntil((route) => false);
-      router.go('/chatroom/$room_id');
-
-    } catch (e) {
-    print(e);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final promise = ref.watch(promiseProvider);
@@ -71,19 +36,23 @@ class _CheckedModalState extends ConsumerState<CheckedModal> {
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 6),
                 decoration: const BoxDecoration(
-                  color: AppColors.mainBlue2,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(20),
-                    topRight: Radius.circular(20)
-                  )
-                ),
+                    color: AppColors.mainBlue2,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(20),
+                        topRight: Radius.circular(20))),
                 child: Row(
                   children: [
                     Container(
                       margin: const EdgeInsets.only(left: 12),
                       child: Text(
-                        promise.promise_title != null ? '${promise.promise_title} 약속' : '약속 정하기',
-                        style: const TextStyle(fontSize: 20, fontFamily: 'Pretendard', color: Colors.white, fontWeight: FontWeight.bold),
+                        promise.promise_title != null
+                            ? '${promise.promise_title} 약속'
+                            : '약속 정하기',
+                        style: const TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'Pretendard',
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                     Expanded(child: Container()),
@@ -91,7 +60,8 @@ class _CheckedModalState extends ConsumerState<CheckedModal> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: const Icon(Icons.close, color: Colors.white, size: 24),
+                      icon: const Icon(Icons.close,
+                          color: Colors.white, size: 24),
                     )
                   ],
                 ),
@@ -101,21 +71,20 @@ class _CheckedModalState extends ConsumerState<CheckedModal> {
                 child: Column(
                   children: [
                     const Expanded(child: Text('')),
-                    MText(text: '제목 : ${promise.promise_title ?? '미정'}',18),
+                    MText(text: '제목 : ${promise.promise_title ?? '미정'}', 18),
                     MText(
-                        text:'날짜 : ${promise.promise_date != null ? DateFormat('yyyy-MM-dd (E)','ko_kr').format(promise.promise_date!) : '미정'}', 18),
-                    MText(
-                        text:'시간 : ${promise.promise_time ?? '미정'}',18),
-                    MText(
-                        text:'장소 : ${promise
-                            .promise_location ?? '미정'}', 18),
-                    MText(18, text:
-                    '총 N명'),
+                        text:
+                            '날짜 : ${promise.promise_date != null ? DateFormat('yyyy-MM-dd (E)', 'ko_kr').format(promise.promise_date!) : '미정'}',
+                        18),
+                    MText(text: '시간 : ${promise.promise_time ?? '미정'}', 18),
+                    MText(text: '장소 : ${promise.promise_location ?? '미정'}', 18),
+                    MText(text: '${promise.selected_friends?[0].nickName} 외 ${promise.selected_friends?.length} 명', 18),
+                    
+
                     const Expanded(child: Text('')),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-
                         Container(
                           width: 80,
                           height: 40,
@@ -125,9 +94,12 @@ class _CheckedModalState extends ConsumerState<CheckedModal> {
                                 Navigator.pop(context);
                               },
                               style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(AppColors.grey300)
-                              ),
-                              child: const Text('취소', style: TextStyle(fontFamily: 'Pretendard', color: Colors.white))),
+                                  backgroundColor: MaterialStateProperty.all(
+                                      AppColors.grey300)),
+                              child: const Text('취소',
+                                  style: TextStyle(
+                                      fontFamily: 'Pretendard',
+                                      color: Colors.white))),
                         ),
                         Container(
                           height: 40,
@@ -138,9 +110,12 @@ class _CheckedModalState extends ConsumerState<CheckedModal> {
                                 await PostCreatePromiseRoom(promise);
                               },
                               style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all(AppColors.mainBlue2)
-                              ),
-                              child: const Text('확인', style: TextStyle(fontFamily: 'Pretendard', color: Colors.white))),
+                                  backgroundColor: MaterialStateProperty.all(
+                                      AppColors.mainBlue2)),
+                              child: const Text('확인',
+                                  style: TextStyle(
+                                      fontFamily: 'Pretendard',
+                                      color: Colors.white))),
                         ),
                       ],
                     )
@@ -153,6 +128,58 @@ class _CheckedModalState extends ConsumerState<CheckedModal> {
       ),
     );
   }
+
+  Future<void> PostCreatePromiseRoom(Promise promise) async {
+    // 현재 저장된 서버 토큰을 가져옵니다.
+    final loginState = ref.read(loginStateProvider);
+    final token = loginState.serverToken;
+    final id = loginState.id;
+    var headers = {'Authorization': '$token', 'id': '$id'};
+    final apiService = ApiService();
+
+    // 서버 토큰이 없으면
+    if (token == null) {
+      await kakaoLogin(ref);
+      await fetchToken(ref);
+
+      // 토큰을 다시 읽습니다.
+      final newToken = ref.read(loginStateProvider).serverToken;
+      final newId = ref.read(loginStateProvider).id;
+
+      headers['Authorization'] = '$newToken';
+      headers['id'] = '$newId';
+    }
+
+    var users = promise.selected_friends?.map((friend) => friend.id).toList();
+
+    var data = {
+      "users": users,
+      "promiseTitle": promise.promise_title ?? "미정",
+      "promiseDate":
+          promise.promise_date != null ? promise.promise_date.toString() : "미정",
+      "promiseTime": promise.promise_time ?? "미정",
+      "promiseLocation": promise.promise_location ?? "미정"
+    };
+
+    try {
+      // method: '대문자', path: 'end-point', headers:headers고정, data: {POST data 있을 때 key:valure}'
+      Response response = await apiService.sendRequest(
+          method: 'POST',
+          path: '$server/api/promise/room',
+          headers: headers,
+          data: data);
+
+      // print(response);
+      int room_id = response.data['result'][0]['id'];
+
+      final router = GoRouter.of(context);
+      router.go('/chatroom/$room_id');
+
+      ref.read(promiseProvider.notifier).reset();
+    } catch (e) {
+      print(e);
+    }
+  }
 }
 
 class MText extends StatelessWidget {
@@ -163,11 +190,10 @@ class MText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text(text, style: TextStyle(
-      fontFamily: 'Pretendard',
-      fontSize: size,
-      color: Colors.black
-    ),);
+    return Text(
+      text,
+      style: TextStyle(
+          fontFamily: 'Pretendard', fontSize: size, color: Colors.black),
+    );
   }
 }
-

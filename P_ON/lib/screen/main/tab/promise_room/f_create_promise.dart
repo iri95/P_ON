@@ -42,6 +42,13 @@ class _CreatePromiseState extends ConsumerState<CreatePromise>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Nav.pop(context);
+            ref.read(promiseProvider.notifier).reset();
+          },
+        ),
         title: '약속 생성'.text.bold.black.make(),
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.black),
