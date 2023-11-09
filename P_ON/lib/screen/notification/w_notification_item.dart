@@ -5,7 +5,7 @@ import 'package:timeago/timeago.dart' as timeago;
 import './vo/vo_notification.dart';
 
 class NotificationItemWidget extends StatefulWidget {
-  final TtossNotification notification;
+  final MyNotification notification;
   final VoidCallback onTap;
 
   const NotificationItemWidget(

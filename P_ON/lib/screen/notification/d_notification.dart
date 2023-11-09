@@ -5,10 +5,12 @@ import 'package:nav/dialog/dialog.dart';
 import 'package:nav/enum/enum_nav_ani.dart';
 
 class NotificationDialog extends DialogWidget {
-  final List<TtossNotification> notifications;
+  final List<MyNotification> notifications;
 
   NotificationDialog(this.notifications,
-      {super.key, super.animation = NavAni.Fade, super.barrierDismissible = true});
+      {super.key,
+      super.animation = NavAni.Fade,
+      super.barrierDismissible = true});
 
   @override
   DialogState<NotificationDialog> createState() => _NotificationDialogState();
