@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfileImage extends StatefulWidget {
-  String profileImage;
+  final String profileImage;
   ProfileImage({super.key, required this.profileImage});
 
   @override
@@ -15,23 +15,23 @@ class ProfileImage extends StatefulWidget {
 class _ProfileImageState extends State<ProfileImage> {
   final ImagePicker _picker = ImagePicker();
   XFile? selectedImage;
-  File? profileImage;
+  File? profileImageFile;
 
+  // late File? profileImage;
+
+// 갤러리에서 선택
   void getImage() async {
     selectedImage = await _picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      profileImage = File(selectedImage!.path);
-    });
-  }
-
-  void showImage() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: Image.file(profileImage!),
-          );
-        });
+    print('전전 ${widget.profileImage}');
+    print('전 ${profileImageFile?.path}');
+    print('이건뭐지 ${selectedImage?.path}');
+    if (selectedImage != null) {
+      setState(() {
+        // 선택된 이미지를 File 객체로 변환하여 profileImageFile에 저장
+        profileImageFile = File(selectedImage!.path);
+      });
+      print('후 ${profileImageFile?.path}');
+    }
   }
 
   @override
@@ -39,31 +39,32 @@ class _ProfileImageState extends State<ProfileImage> {
     return Stack(
       children: [
         GestureDetector(
-          onTap: showImage,
+          onTap: () {},
           child: CircleAvatar(
             radius: 40,
-            backgroundImage: profileImage != null
-                ? FileImage(profileImage!) as ImageProvider<Object>?
-                : AssetImage('assets/image/main/핑키1.png')
-                    as ImageProvider<Object>?,
+            backgroundImage: profileImageFile != null
+                ? FileImage(profileImageFile!) as ImageProvider
+                : NetworkImage(widget.profileImage),
           ),
         ),
-        Positioned(
-          bottom: 0,
-          right: 0,
-          child: CircleAvatar(
-            radius: 15,
-            backgroundColor: AppColors.mainBlue,
-            child: IconButton(
-              onPressed: getImage,
-              icon: const Icon(
-                Icons.edit,
-                color: Colors.white,
-                size: 14,
-              ),
-            ),
-          ),
-        )
+        // TODO: S3 연결 안해서 사진 선택 못함
+
+        // Positioned(
+        //   bottom: 0,
+        //   right: 0,
+        //   child: CircleAvatar(
+        //     radius: 15,
+        //     backgroundColor: AppColors.mainBlue,
+        //     child: IconButton(
+        //       onPressed: getImage,
+        //       icon: const Icon(
+        //         Icons.edit,
+        //         color: Colors.white,
+        //         size: 14,
+        //       ),
+        //     ),
+        //   ),
+        // )
       ],
     );
   }

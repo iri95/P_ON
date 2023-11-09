@@ -4,6 +4,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk_user.dart';
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 
 import 'app.dart';
 import 'package:timeago/timeago.dart' as timeago;
@@ -13,6 +14,8 @@ import 'screen/main/tab/promise_room/vo_naver_headers.dart';
 import 'common/theme/custom_theme_app.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+
+import 'package:p_on/screen/main/user/token_state.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -33,12 +36,17 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
+  KakaoSdk.init(
+    nativeAppKey: 'e61e6e5be260e142ffbc2ebf12d15f09',
+    javaScriptAppKey: '257ed79230fb398c5b7d48ae7ddb916d',
+  );
   timeago.setLocaleMessages('ko', timeago.KoMessages());
   runApp(EasyLocalization(
       supportedLocales: const [Locale('ko')],
       fallbackLocale: const Locale('ko'),
       path: 'assets/translations',
       useOnlyLangCode: true,
-      child: const CustomThemeApp(child: const ProviderScope(child: App()),
+      child: const CustomThemeApp(
+        child: const ProviderScope(child: App()),
       )));
 }

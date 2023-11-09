@@ -20,7 +20,8 @@ import 'screen/main/user/f_login.dart';
 
 class App extends ConsumerStatefulWidget {
   static final GlobalKey<NavigatorState> navigatorKey = GlobalKey();
-  static final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey();
+  static final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey =
+      GlobalKey();
 
   static bool isForeground = true;
 
@@ -34,7 +35,7 @@ class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
   final ValueKey<String> _scaffoldKey = const ValueKey<String>('App scaffold');
 
   final _auth = PonAuth();
-  
+
   @override
   void initState() {
     super.initState();
@@ -77,21 +78,8 @@ class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
       ),
       GoRoute(
         path: '/signin',
-        pageBuilder: (BuildContext context, GoRouterState state) => FadeTransitionPage(
-          key: state.pageKey,
-          child: LoginPage()
-          // child: Container(
-          //   color: Colors.green,
-          //   child: Center(
-          //     child: RoundButton(
-          //       text: '로그인',
-          //       onTap: () {
-          //         _auth.signIn('hong', '1234');
-          //       },
-          //     ),
-          //   ),
-          // ),
-        ),
+        pageBuilder: (BuildContext context, GoRouterState state) =>
+            FadeTransitionPage(key: state.pageKey, child: LoginPage()),
       ),
       GoRoute(
         path: '/main',
@@ -104,7 +92,8 @@ class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
       // ),
       GoRoute(
         path: '/main/:kind(home|history|blankFeild|plan|my)',
-        pageBuilder: (BuildContext context, GoRouterState state) => FadeTransitionPage(
+        pageBuilder: (BuildContext context, GoRouterState state) =>
+            FadeTransitionPage(
           key: _scaffoldKey,
           child: MainScreen(
             firstTab: TabItem.find(state.pathParameters['kind']),
@@ -128,44 +117,48 @@ class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
         //   ),
         // ],
       ),
-      GoRoute(path: '/createpromise',
-          builder: (BuildContext context, GoRouterState state){
-        // 'state.extra' 로 'extra' 로 넘겨준 데이터 사용 한다.
-           return const CreatePromise();
-          }
-      ),
       GoRoute(
-        path: '/chatroom/:id',
-        pageBuilder: (BuildContext context, GoRouterState state) {
-          final id = state.pathParameters['id'] ?? 'unknown';
-          return MaterialPage(
-            // key: ValueKey(id),
-            child: ChatRoom(id: id),
-          );
-        }
-      ),
+          path: '/createpromise',
+          builder: (BuildContext context, GoRouterState state) {
+            // 'state.extra' 로 'extra' 로 넘겨준 데이터 사용 한다.
+            return const CreatePromise();
+          }),
+      GoRoute(
+          path: '/chatroom/:id',
+          pageBuilder: (BuildContext context, GoRouterState state) {
+            final id = state.pathParameters['id'] ?? 'unknown';
+            return MaterialPage(
+              // key: ValueKey(id),
+              child: ChatRoom(id: id),
+            );
+          }),
       GoRoute(
           path: '/create/vote/:id/:voteType/:isUpdate',
           pageBuilder: (BuildContext context, GoRouterState state) {
             final id = state.pathParameters['id'] ?? 'unknown';
             final voteTypeString = state.pathParameters['voteType'] ?? 'Date';
-            final isUpdate = (state.pathParameters['isUpdate'] ?? 'false').toLowerCase() == 'true';
-            final voteType = VoteType.values.firstWhere((e) => e.toString() == 'VoteType.$voteTypeString', orElse: () => VoteType.Date);
+
+            final isUpdate =
+                (state.pathParameters['isUpdate'] ?? 'false').toLowerCase() ==
+                    'true';
+            final voteType = VoteType.values.firstWhere(
+                (e) => e.toString() == 'VoteType.$voteTypeString',
+                orElse: () => VoteType.Date);
+
             return MaterialPage(
-              child: CreateVoteRoom(id: id, voteType: voteType, isUpdate: isUpdate,),
+              child: CreateVoteRoom(
+                id: id,
+                voteType: voteType,
+                isUpdate: isUpdate,
+              ),
             );
-          }
-      ),
+          }),
       GoRoute(
-        path: '/selecte/vote/:id',
-        pageBuilder: (BuildContext context, GoRouterState state) {
-          final id = state.pathParameters['id'] ?? 'unknown';
-          return MaterialPage(
-            child: SelectVote(id: id));
-        }
-      )
-
-
+          path: '/selecte/vote/:id',
+          pageBuilder: (BuildContext context, GoRouterState state) {
+            final id = state.pathParameters['id'] ?? 'unknown';
+            return MaterialPage(child: SelectVote(id: id));
+          })
     ],
     redirect: _auth.guard,
     refreshListenable: _auth,
@@ -190,6 +183,7 @@ class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
     }
     super.didChangeAppLifecycleState(state);
   }
+
   @override
   GlobalKey<NavigatorState> get navigatorKey => App.navigatorKey;
 }
