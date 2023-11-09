@@ -2,6 +2,7 @@ import 'package:after_layout/after_layout.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:p_on/auth.dart';
 import 'package:p_on/common/common.dart';
 import 'package:p_on/screen/main/tab/promise_room/vo_server_url.dart';
 import 'package:p_on/screen/main/tab/register/f_register.dart';
@@ -45,12 +46,19 @@ class _LoginPageState extends ConsumerState<LoginPage>
 
         // 저장된 userState
         final userState = ref.watch(userStateProvider);
-        await Nav.push(RegisterFragment(
-          nickName: userState?.nickName ?? "",
-          profileImage: userState?.profileImage ?? "",
-          privacy: userState?.privacy ?? "PRIVATE",
-          stateMessage: userState?.stateMessage ?? "",
-        ));
+        // await Nav.push(RegisterFragment(
+        //   nickName: userState?.nickName ?? "",
+        //   profileImage: userState?.profileImage ?? "",
+        //   privacy: userState?.privacy ?? "PRIVATE",
+        //   stateMessage: userState?.stateMessage ?? "",
+        // ));
+        GoRouter.of(context).go('/register', extra: {
+          'nickName': userState?.nickName ?? "",
+          'profileImage': userState?.profileImage ?? "",
+          'privacy': userState?.privacy ?? "PRIVATE",
+          'stateMessage': userState?.stateMessage ?? "",
+        });
+        PonAuth().signInWithKakao(ref);
       } else {
         // 회원이면 메인 페이지로
         // TODO: 메인 페이지 라우팅 안됨

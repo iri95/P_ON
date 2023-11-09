@@ -14,10 +14,9 @@ import 'package:p_on/screen/main/user/token_state.dart';
 
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:p_on/screen/main/user/fn_kakao.dart';
-import 'package:p_on/screen/main/user/token_state.dart';
+// import 'package:p_on/screen/main/user/fn_kakao.dart';
+// import 'package:p_on/screen/main/user/token_state.dart';
 
-// 로그인 상태 파악
 
 /// A mock authentication service.
 class PonAuth extends ChangeNotifier {
@@ -49,6 +48,9 @@ class PonAuth extends ChangeNotifier {
       _signedIn = true;
       print('토큰이 있고, role이 user ${signedIn}');
     } else {
+      print('signWithKakao');
+      print(token);
+      print(role);
       _signedIn = false;
     }
     // 상태 변경을 리스너에게 알림

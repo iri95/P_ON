@@ -36,10 +36,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  KakaoSdk.init(
-    nativeAppKey: 'e61e6e5be260e142ffbc2ebf12d15f09',
-    javaScriptAppKey: '257ed79230fb398c5b7d48ae7ddb916d',
-  );
   timeago.setLocaleMessages('ko', timeago.KoMessages());
   runApp(EasyLocalization(
       supportedLocales: const [Locale('ko')],
@@ -47,6 +43,6 @@ void main() async {
       path: 'assets/translations',
       useOnlyLangCode: true,
       child: const CustomThemeApp(
-        child: const ProviderScope(child: App()),
+        child: ProviderScope(child: App()),
       )));
 }
