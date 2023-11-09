@@ -92,6 +92,7 @@ dependencies:
   kakao_flutter_sdk: ^1.6.1
   kakao_flutter_sdk_user:
   device_info: ^2.0.0
+  flutter_aws_s3_client: ^0.6.0
 
 dev_dependencies:
   flutter_test:

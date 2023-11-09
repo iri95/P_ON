@@ -47,22 +47,24 @@ class _ProfileImageState extends State<ProfileImage> {
                 : NetworkImage(widget.profileImage),
           ),
         ),
-        Positioned(
-          bottom: 0,
-          right: 0,
-          child: CircleAvatar(
-            radius: 15,
-            backgroundColor: AppColors.mainBlue,
-            child: IconButton(
-              onPressed: getImage,
-              icon: const Icon(
-                Icons.edit,
-                color: Colors.white,
-                size: 14,
-              ),
-            ),
-          ),
-        )
+        // TODO: S3 연결 안해서 사진 선택 못함
+
+        // Positioned(
+        //   bottom: 0,
+        //   right: 0,
+        //   child: CircleAvatar(
+        //     radius: 15,
+        //     backgroundColor: AppColors.mainBlue,
+        //     child: IconButton(
+        //       onPressed: getImage,
+        //       icon: const Icon(
+        //         Icons.edit,
+        //         color: Colors.white,
+        //         size: 14,
+        //       ),
+        //     ),
+        //   ),
+        // )
       ],
     );
   }
