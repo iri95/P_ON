@@ -7,4 +7,4 @@ RUN pip install -r requirements.txt
 
 EXPOSE 7070
 
-CMD ["uvicorn", "main:app"]
+CMD ["uvicorn", "main:app", "--port", "7070"]
