@@ -10,9 +10,9 @@ enum VoteType {
 
 class Vote extends StatefulWidget {
   final VoteType voteType;
-  final String roomId;
-  // final bool isVote;
-  const Vote({super.key, required this.roomId, required this.voteType});
+  final int roomId;
+  final bool isVote;
+  const Vote({super.key, required this.roomId, required this.voteType, required this.isVote});
 
   @override
   State<Vote> createState() => _VoteState();
@@ -23,7 +23,7 @@ class _VoteState extends State<Vote> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 90,
+      width: 140,
       height: 26,
       child: FilledButton(
           style: ButtonStyle(
@@ -52,12 +52,15 @@ class _VoteState extends State<Vote> {
                 break;
             }
           },
-          child: const Row(
+          child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Text('투표',
+              widget.isVote! ?
+              const Text('투표하기',
+                  style: TextStyle(fontSize: 18, color: AppColors.background)) :
+              const Text('투표만들기',
                   style: TextStyle(fontSize: 18, color: AppColors.background)),
-              Icon(
+              const Icon(
                 Icons.arrow_forward_ios,
                 size: 18,
                 color: AppColors.background,

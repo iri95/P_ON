@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final voteProvider = StateNotifierProvider<VoteNotifier, VoteDate>((ref) => VoteNotifier());
-final deadLineProvider = StateNotifierProvider<DeadLineNotifier, Deadline>((ref) => DeadLineNotifier());
+final voteInfoProvider = StateNotifierProvider<VoteInfoNotifier, VoteInfo>((ref) => VoteInfoNotifier());
 
 class VoteDate {
   List<String>? vote_date;
@@ -104,34 +104,60 @@ class VoteNotifier extends StateNotifier<VoteDate> {
 
 }
 
-class Deadline {
+class VoteInfo {
+  bool? is_anonymous;
+  bool? is_multiple_choice;
   String? dead_date;
   String? dead_time;
 
-  Deadline({
-    this.dead_date,
-    this.dead_time
-  });
+  VoteInfo(
+      {this.is_anonymous,
+        this.is_multiple_choice,
+        this.dead_date,
+        this.dead_time,
+      });
 }
 
-class DeadLineNotifier extends StateNotifier<Deadline> {
-  DeadLineNotifier() : super(Deadline());
+class VoteInfoNotifier extends StateNotifier<VoteInfo> {
+  VoteInfoNotifier() : super(VoteInfo());
 
-  void setInitialState(Deadline initialState) {
-    state = initialState;
+  void setVoteInfo(VoteInfo newVoteInfo) {
+    state = newVoteInfo;
   }
 
-  void setDeadDate(String date) {
-    state = Deadline(
-      dead_date: date,
+  void setAnonymous(bool anonymous) {
+    state = VoteInfo(
+      is_anonymous: anonymous,
+      is_multiple_choice: state.is_multiple_choice,
+      dead_date: state.dead_date,
       dead_time: state.dead_time
     );
   }
 
-  void setDeadTime(String time) {
-    state = Deadline(
+  void setMultiple(bool multiple) {
+    state = VoteInfo(
+      is_anonymous: state.is_anonymous,
+      is_multiple_choice: multiple,
       dead_date: state.dead_date,
-      dead_time: time
+      dead_time: state.dead_time
+    );
+  }
+
+  void setDeadDate(String deaddate) {
+    state = VoteInfo(
+      is_anonymous: state.is_anonymous,
+      is_multiple_choice: state.is_multiple_choice,
+      dead_date: deaddate,
+      dead_time: state.dead_time
+    );
+  }
+
+  void setDeadTime(String deadtime) {
+    state = VoteInfo(
+      is_anonymous: state.is_anonymous,
+      is_multiple_choice: state.is_multiple_choice,
+      dead_date: state.dead_date,
+      dead_time: deadtime
     );
   }
 }
