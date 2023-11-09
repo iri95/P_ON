@@ -2,6 +2,8 @@ package com.wanyviny.vote.entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+import java.util.List;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +25,7 @@ public class Vote {
     @Id
     String id;
     String userId;
-    Map<String, Object> date;
-    Map<String, Object> time;
-    Map<String, Object> location;
+    List<String> date;
+    List<String> time;
+    List<Map<String,String>> location;
 }

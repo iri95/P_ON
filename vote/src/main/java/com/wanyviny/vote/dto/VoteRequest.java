@@ -2,6 +2,8 @@ package com.wanyviny.vote.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
+import java.util.List;
 import java.util.Map;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,7 +19,7 @@ import lombok.Setter;
 @JsonInclude(Include.NON_NULL)
 public class VoteRequest {
 
-    Map<String, Object> date;
-    Map<String, Object> time;
-    Map<String, Object> location;
+    List<String> date;
+    List<String> time;
+    List<Map<String,String>> location;
 }
