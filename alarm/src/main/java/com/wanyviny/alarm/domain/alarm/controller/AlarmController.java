@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/alarm")
@@ -87,11 +88,25 @@ public class AlarmController {
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
 
+    @PutMapping("/read-only")
+    public ResponseEntity<BasicResponse> putAlarmState(HttpServletRequest request, @RequestBody Map<String, String> alarmId) {
+
+        alarmService.putAlarmState(Long.parseLong(alarmId.get("alarmId")));
+
+        BasicResponse basicResponse = BasicResponse.builder()
+                .code(HttpStatus.OK.value())
+                .httpStatus(HttpStatus.OK)
+                .message("해당 알람 읽음 처리 완료")
+                .build();
+
+        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+    }
+
     @PutMapping("/read-all")
     public ResponseEntity<BasicResponse> putAlarmState(HttpServletRequest request) {
         Long userId = Long.parseLong(request.getHeader("id"));
 
-        alarmService.putAlarmState(userId);
+        alarmService.putAlarmStateAll(userId);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())

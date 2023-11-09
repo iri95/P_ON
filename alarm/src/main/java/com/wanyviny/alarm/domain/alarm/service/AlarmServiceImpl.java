@@ -65,7 +65,12 @@ public class AlarmServiceImpl implements AlarmService{
     }
 
     @Override
-    public void putAlarmState(Long userId) {
-        alarmRepository.updateStateByUserId(userId);
+    public void putAlarmState(Long alarmId) {
+        alarmRepository.updateStateByAlarmId(alarmId);
+    }
+
+    @Override
+    public void putAlarmStateAll(Long userId) {
+        alarmRepository.updateStateAllByUserId(userId);
     }
 }
