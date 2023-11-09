@@ -5,6 +5,6 @@ WORKDIR /app
 
 RUN pip install -r requirements.txt
 
-EXPOSE 80
+EXPOSE 7070
 
 CMD ["uvicorn", "main:app"]
