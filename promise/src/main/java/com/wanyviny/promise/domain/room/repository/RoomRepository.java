@@ -1,8 +1,8 @@
 package com.wanyviny.promise.domain.room.repository;
 
 import com.wanyviny.promise.domain.room.entity.Room;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface RoomRepository extends MongoRepository<Room, String> {
+public interface RoomRepository extends JpaRepository<Room, Long> {
 
 }

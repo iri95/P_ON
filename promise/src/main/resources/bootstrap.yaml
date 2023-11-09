@@ -6,31 +6,3 @@ spring:
     config:
       name: promise
       profile: prob
-
-#server:
-#  port: 8080
-#
-#spring:
-#  application:
-#    name: promise-service
-#
-#  data:
-#    mongodb:
-#      host: localhost
-#      port: 27017
-#      database: local
-
-  # datasource:
-  #   driver-class-name: com.mysql.cj.jdbc.Driver
-  #   url: jdbc:mysql://localhost:3306/local?characterEncoding=UTF-8&serverTimezone=UTC
-  #   username: root
-  #   password: 1234
-
-  # jpa:
-  #   show-sql: true
-  #   hibernate:
-  #     ddl-auto: update
-
-  #   properties:
-  #     hibernate:
-  #       format_sql: true
