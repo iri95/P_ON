@@ -1,5 +1,4 @@
 import 'package:day_night_time_picker/day_night_time_picker.dart';
-import 'package:day_night_time_picker/lib/daynight_timepicker.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
@@ -7,10 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:location/location.dart';
 import 'package:p_on/common/common.dart';
+import 'package:p_on/common/util/dio.dart';
 import 'package:p_on/screen/main/tab/chat_room/dto_vote.dart';
 import '../promise_room/vo_naver_headers.dart';
 import '../promise_room/vo_server_url.dart';
 import 'w_header_text_vote.dart';
+import 'package:p_on/screen/main/user/fn_kakao.dart';
+import 'package:p_on/screen/main/user/token_state.dart';
+
 
 class CreateVoteRoom extends ConsumerStatefulWidget {
   final String id;
@@ -28,8 +31,8 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
   bool isEndTimeSet = false;
   bool isMultipleChoice = false;
   bool isAnoymous = false;
-  TextEditingController _endDateController = TextEditingController();
-  TextEditingController _endTimeController = TextEditingController();
+  final TextEditingController _endDateController = TextEditingController();
+  final TextEditingController _endTimeController = TextEditingController();
   double? _lat;
   double? _lng;
   List<NMarker> _markers = [];
@@ -98,9 +101,31 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
     VoteType.Location: [TextEditingController(), TextEditingController()]
   };
 
-  Future<void> PostVote(vote, deadline) async {
+  Future<void> postVote(vote, deadline) async {
+    // 현재 저장된 서버 토큰을 가져옵니다.
+    // final loginState = ref.read(loginStateProvider);
+    // final token = loginState.serverToken;
+    // final id = loginState.id;
+
+    // var headers = {'Authorization': '$token', 'id': '$id'};
+    // 서버 토큰이 없으면
+    // if (token == null) {
+    //   await kakaoLogin(ref);
+    //   await fetchToken(ref);
+    //
+    //   // 토큰을 다시 읽습니다.
+    //   final newToken = ref.read(loginStateProvider).serverToken;
+    //   final newId = ref.read(loginStateProvider).id;
+    //
+    //   headers['Authorization'] = '$newToken';
+    //   headers['id'] = '$newId';
+    // }
+    //
+    // final apiService = ApiService();
+
     final Dio dio = Dio();
     dio.options.headers['content-Type'] = 'application/json';
+    dio.options.headers['id'] = '1';
     String url = '$server/api/vote/${widget.id}';
 
     // 여기에 유저아이디 담아 보내기 => 만든사람
@@ -133,57 +158,107 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
         'items': vote.vote_location,
       }
     };
-    var response = await dio.post(url, data: data);
-    print('============================');
-    print('============================');
-    print('============================');
-    print('============================');
-    print('============================');
-    print('============================');
-    print(vote.vote_date);
-    print(vote.vote_time);
-    print(vote.vote_location);
-    print(isMultipleChoice);
-    print(isAnoymous);
-    print(isEndTimeSet);
-    print(response);
+    if (widget.isUpdate) {
+      var response = await dio.put(url, data: data);
+    } else {
+
+      var response = await dio.post(url, data: data);
+    }
     final router = GoRouter.of(context);
     router.go('/chatroom/${widget.id}');
   }
 
-  void getVoteDate() {
-    // 투표 정보 받아오기
-    // var voteDateInfo = fetchVoteDateInfo(); // fetchVoteDateInfo는 투표 정보를 반환하는 함수입니다.
+  void getVoteDate() async {
+    Dio dio = Dio();
+    String url = '$server/api/vote/${widget.id}';
 
-    // voteItems에 기본값 넣기
-    // voteItems[VoteType.Date] = voteDateInfo.date;
-    // voteItems[VoteType.Time] = voteDateInfo.time;
-    // voteItems[VoteType.Location] = voteDateInfo.location;
-    //
-    // // textEditingControllers에 기본값 넣기
-    // textEditingControllers[VoteType.Date] = voteDateInfo.date.map((e) => TextEditingController(text: e)).toList();
-    // textEditingControllers[VoteType.Time] = voteDateInfo.time.map((e) => TextEditingController(text: e)).toList();
-    // textEditingControllers[VoteType.Location] = voteDateInfo.location.map((e) => TextEditingController(text: e)).toList();
+    var response = await dio.get(url);
+    // 유저 정보 받아와서 비교해서 지금 현재 유저랑 만든사람이 동일하면 수정버튼 보이게 처리
+    print(response);
+    final date = await response.data['result'][0]['date'];
+    final time = await response.data['result'][0]['time'];
+    final location = await response.data['result'][0]['location'];
+    // 리스트 길이가 모자라면 길이 늘려주기
+    if (date['items'].length > voteItems[VoteType.Date]?.length) {
+      for (int i=0; i < date['items'].length - voteItems[VoteType.Date]?.length; i++)
+        {
+          voteItems[VoteType.Date]?.add('');
+          textEditingControllers[VoteType.Date]
+              ?.add(TextEditingController());
+        }
+    }
+    if (time['items'].length > voteItems[VoteType.Time]?.length) {
+      for (int i=0; i < time['items'].length - voteItems[VoteType.Time]?.length; i++)
+        {
+          voteItems[VoteType.Time]?.add('');
+          textEditingControllers[VoteType.Time]
+              ?.add(TextEditingController());
+        }
+    }
+    if (location['items'].length > voteItems[VoteType.Location]?.length) {
+      for (int i=0; i < location['items'].length - voteItems[VoteType.Location]?.length; i++)
+        {
+          voteItems[VoteType.Location]?.add('');
+          textEditingControllers[VoteType.Location]
+              ?.add(TextEditingController());
+        }
+    }
+    for (int j=0; j < date['items'].length; j++) {
+      print('date 부분 실행');
+      voteItems[VoteType.Date]![j] = date['items'][j];
+      textEditingControllers[VoteType.Date]![j].text = changeDate(date['items'][j]);
+    }
+    for (int j=0; j < time['items'].length; j++) {
+      print('time 부분 실행');
+      voteItems[VoteType.Time]![j] = time['items'][j];
+      textEditingControllers[VoteType.Time]![j].text = time['items'][j];
+    }
+    for (int j=0; j < location['items'].length; j++) {
+      print('location 부분 실행');
+      voteItems[VoteType.Location]![j] = location['items'][j]['location'];
+      textEditingControllers[VoteType.Location]![j].text = location['items'][j]['location'];
+    }
+    List<String> dateItems = await response.data['result'][0]['date']['items'];
+    List<String> timeItems = await response.data['result'][0]['time']['items'];
+    List<Map<String, String>> locationItems = await response.data['result'][0]['location']['items'];
 
-    // 리버팟에 기본값 추가하는 방법
-    // ref.read(voteProvider.notifier).setInitialState(voteDateInfo);
-    // 여기에는 받아온 정보에 있는 데드라인 값 넣어줘야 함
-    // ref.read(deadLineProvider.notifier).setInitialState(voteDateInfo);
-
+    VoteDate newVoteDate = VoteDate(
+        vote_date: dateItems,
+        vote_time: timeItems,
+        vote_location: locationItems
+    );
+    ref.read(voteProvider.notifier).setState(newVoteDate);
+    setState(() {});
   }
 
+  String changeDate(String date) {
+    DateTime chatRoomDate = DateTime.parse(date);
+    DateFormat formatter = DateFormat('yyyy-MM-dd (E)', 'ko_kr');
+    String formatterDate = formatter.format(chatRoomDate);
+    return formatterDate;
+  }
+
+  putVote() {
+
+  }
 
   @override
   void initState() {
     super.initState();
     selectedVoteType = widget.voteType;
     locationData = _getCurrentLocation();
+
     if (widget.isUpdate) {
-      getVoteDate();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+          getVoteDate();
+        });
+      });
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {});
+      });
     }
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      setState(() {});
-    });
   }
 
   String _formatDate(DateTime date) {
@@ -195,14 +270,6 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
   Widget build(BuildContext context) {
     final vote = ref.watch(voteProvider);
     final deadline = ref.watch(deadLineProvider);
-    print("========================");
-    print("========================");
-    print("========================");
-    print("========================");
-    print(vote.vote_date);
-    print(vote.vote_time);
-    print(vote.vote_location);
-    print(widget.isUpdate);
 
     return MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -210,9 +277,9 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
             future: locationData,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
-                return Center(child: Text('404 Error!'));
+                return const Center(child: Text('404 Error!'));
               } else {
                 _lat = snapshot.data!.latitude;
                 _lng = snapshot.data!.longitude;
@@ -240,7 +307,7 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
                         actions: [
                           TextButton(
                               onPressed: () {
-                                PostVote(vote, deadline);
+                                postVote(vote, deadline);
                               },
                               child: const Text(
                                 '저장',
@@ -701,7 +768,7 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
     );
     if (picked != null) {
       textEditingControllers[voteType]![index].text =
-          DateFormat('yyyy-MM-dd (EEEE)', 'ko_kr').format(picked);
+          DateFormat('yyyy-MM-dd (E)', 'ko_kr').format(picked);
       if (index < (ref.read(voteProvider).vote_date?.length ?? 0)) {
         ref
             .read(voteProvider.notifier)

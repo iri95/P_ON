@@ -57,7 +57,9 @@ class _LastCreatePromiseState extends State<LastCreatePromise> {
       lastDate: DateTime(2100),
     );
     if (picked != null) {
-      dateController.text = DateFormat('yyyy-MM-dd').format(picked);
+      dateController.text =
+          DateFormat('yyyy-MM-dd (E)', 'ko_kr').format(picked);
+      ref.read(promiseProvider.notifier).setPromiseDate(picked);
     }
   }
 
@@ -69,7 +71,10 @@ class _LastCreatePromiseState extends State<LastCreatePromise> {
         onChange: (TimeOfDay time) {
           final period = time.period == DayPeriod.am ? '오전' : '오후';
           timeController.text =
-              '$period ${time.hourOfPeriod}:${time.minute.toString().padLeft(2, '0')}';
+              '$period ${time.hourOfPeriod.toString().padLeft(2, '0')}시 ${time.minute.toString().padLeft(2, '0')}분';
+          ref
+              .read(promiseProvider.notifier)
+              .setPromiseTime(timeController.text);
         },
         minuteInterval: TimePickerInterval.FIVE,
         iosStylePicker: true,
@@ -82,8 +87,17 @@ class _LastCreatePromiseState extends State<LastCreatePromise> {
         accentColor: AppColors.mainBlue2));
   }
 
-  void _searchPlace() {
-    Nav.push(SearchNaver());
+  void _searchPlace() async {
+    final result = await Nav.push(SearchNaver());
+    if (result != null) {
+      placeController.text = result
+          .replaceAll(RegExp(r'<[^>]*>'), '')
+          .replaceAll('&amp;', '&')
+          .replaceAll('&lt;', '<')
+          .replaceAll('&gt;', '>')
+          .replaceAll('&quot;', '"')
+          .replaceAll('&#39;', "'");
+    }
   }
 
   bool get isFilled =>
@@ -109,35 +123,55 @@ class _LastCreatePromiseState extends State<LastCreatePromise> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: SafeArea(
-        child: Scaffold(
-          body: Column(
-            children: [
-              const BasicAppBar(
-                  text: '약속 생성', isProgressBar: true, percentage: 100),
-              _buildTextField('날짜', dateController, dateNode, timeNode),
-              _buildTextField('시간', timeController, timeNode, placeNode),
-              _buildTextField('장소', placeController, placeNode, null),
-            ],
+    return
+        // MaterialApp(
+        // debugShowCheckedModeBanner: false,
+        // home: SafeArea(
+        //   child:
+        Scaffold(
+      appBar: AppBar(
+        title: '약속 생성'.text.bold.black.make(),
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Colors.black),
+        centerTitle: true,
+      ),
+      body: Column(
+        children: [
+          // const BasicAppBar(
+          //     text: '약속 생성', isProgressBar: true, percentage: 100),
+          LinearPercentIndicator(
+            padding: EdgeInsets.zero,
+            percent: 100 / 100,
+            lineHeight: 3,
+            backgroundColor: const Color(0xffCACFD8),
+            progressColor: AppColors.mainBlue2,
+            width: MediaQuery.of(context).size.width,
           ),
-          floatingActionButtonLocation:
-              FloatingActionButtonLocation.centerDocked,
-          floatingActionButton: Container(
-            width: double.infinity,
-            height: 48,
-            margin: const EdgeInsets.all(14),
-            child: FilledButton(
-                onPressed: () {},
-                style: FilledButton.styleFrom(
-                    backgroundColor:
-                        isFilled ? AppColors.mainBlue : Colors.grey),
-                child: Text(isFilled ? '다음' : '건너뛰기')),
-          ),
-        ),
+          _buildTextField('날짜', dateController, dateNode, timeNode),
+          _buildTextField('시간', timeController, timeNode, placeNode),
+          _buildTextField('장소', placeController, placeNode, null),
+        ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Container(
+        width: double.infinity,
+        height: 48,
+        margin: const EdgeInsets.all(14),
+        child: FilledButton(
+            onPressed: () {
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return const CheckedModal();
+                  });
+            },
+            style: FilledButton.styleFrom(
+                backgroundColor: isFilled ? AppColors.mainBlue : Colors.grey),
+            child: Text(isFilled ? '다음' : '건너뛰기')),
       ),
     );
+    //   ,),
+    // );
   }
 
   Widget _buildTextField(String label, TextEditingController controller,

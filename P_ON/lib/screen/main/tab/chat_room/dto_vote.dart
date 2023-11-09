@@ -18,8 +18,8 @@ class VoteDate {
 class VoteNotifier extends StateNotifier<VoteDate> {
   VoteNotifier() : super(VoteDate());
 
-  void setInitialState(VoteDate initialState) {
-    state = initialState;
+  void setState(VoteDate newVoteDate) {
+    state = newVoteDate;
   }
 
   void addVoteDate(String date) {
