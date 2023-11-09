@@ -42,18 +42,21 @@ class FcmManager {
     final firstMessage = await FirebaseMessaging.instance.getInitialMessage();
     if (firstMessage != null) {
       await sleepUntil(() =>
-          App.navigatorKey.currentContext != null && App.navigatorKey.currentContext!.mounted);
+          App.navigatorKey.currentContext != null &&
+          App.navigatorKey.currentContext!.mounted);
       // ignore: use_build_context_synchronously
       App.navigatorKey.currentContext!.go(firstMessage.data['deeplink']);
     }
 
     final token = await FirebaseMessaging.instance.getToken();
-  //   FirebaseMessaging.instance.onTokenRefresh.listen((event) {
-  //     /// API로 token 전송 (백에다 보냄)
-  //
-  //   });
-  //
-  //
+    // 이거 회원가입 시 보내야함
+
+    //   FirebaseMessaging.instance.onTokenRefresh.listen((event) {
+    //     /// API로 token 전송 (백에다 보냄)
+    //
+    //   });
+    //
+    //
     print(token);
   }
 }

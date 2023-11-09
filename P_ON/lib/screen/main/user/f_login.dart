@@ -129,7 +129,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
             child: TextButton(
               onPressed: () async {
                 // 이게 키해시임
-                // print(await KakaoSdk.origin);
+                print(await KakaoSdk.origin);
                 // 카카오로그인 -> 토큰
                 // await fetchToken();
                 print('111111111111111111111111111111');

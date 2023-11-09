@@ -99,6 +99,8 @@ class _RegisterFragmentState extends ConsumerState<RegisterFragment> {
       }
     }
 
+    // TODO: 프로필 이미지를 S3로 전달
+
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -142,8 +144,7 @@ class _RegisterFragmentState extends ConsumerState<RegisterFragment> {
               borderRadius: BorderRadius.circular(10)),
           child: TextButton(
             onPressed: () async {
-              // TODO: 회원가입 로직 작성
-              print('진짜 회원가입 ㄱㄱ');
+              // 회원가입 로직 작성
               await signUp();
             },
             child: '확인'.text.semiBold.white.make(),
