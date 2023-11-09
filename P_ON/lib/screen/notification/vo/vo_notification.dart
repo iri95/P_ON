@@ -1,7 +1,5 @@
-import 'package:p_on/screen/notification/vo/notification_type.dart';
-
 class TtossNotification {
-  final NotificationType type;
+  final String type;
   final String description;
   final DateTime time;
   bool isRead;
