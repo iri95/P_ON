@@ -15,36 +15,23 @@ class ProfileImage extends StatefulWidget {
 class _ProfileImageState extends State<ProfileImage> {
   final ImagePicker _picker = ImagePicker();
   XFile? selectedImage;
-  late final File? profileImage;
+  File? profileImageFile;
 
-  @override
-  void initState() {
-    super.initState();
-    print('init===================');
-    print(widget.profileImage);
-    // 여기서 widget.profileImage를 사용하여 File 객체를 초기화하거나, 다른 로직을 적용할 수 있습니다.
-    if (widget.profileImage.isNotEmpty) {
-      profileImage = File(widget.profileImage);
-      print('$profileImage ==========');
-    }
-  }
+  // late File? profileImage;
 
+// 갤러리에서 선택
   void getImage() async {
     selectedImage = await _picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      profileImage = File(selectedImage!.path);
-    });
-  }
-
-  // 클릭 시 이미지 팝업
-  void showImage() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: Image.file(profileImage!),
-          );
-        });
+    print('전전 ${widget.profileImage}');
+    print('전 ${profileImageFile?.path}');
+    print('이건뭐지 ${selectedImage?.path}');
+    if (selectedImage != null) {
+      setState(() {
+        // 선택된 이미지를 File 객체로 변환하여 profileImageFile에 저장
+        profileImageFile = File(selectedImage!.path);
+      });
+      print('후 ${profileImageFile?.path}');
+    }
   }
 
   @override
@@ -52,13 +39,12 @@ class _ProfileImageState extends State<ProfileImage> {
     return Stack(
       children: [
         GestureDetector(
-          onTap: showImage,
+          onTap: () {},
           child: CircleAvatar(
             radius: 40,
-            backgroundImage: profileImage != null
-                ? FileImage(profileImage!)
-                : AssetImage('assets/image/main/핑키1.png')
-                    as ImageProvider<Object>?,
+            backgroundImage: profileImageFile != null
+                ? FileImage(profileImageFile!) as ImageProvider
+                : NetworkImage(widget.profileImage),
           ),
         ),
         Positioned(
