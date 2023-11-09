@@ -36,8 +36,8 @@ class _LoginPageState extends ConsumerState<LoginPage>
 
   @override
   Widget build(BuildContext context) {
-
     final auth = PonAuthScope.of(context);
+
     Future<void> goLogin() async {
       // role이 user이면 회원, guest이면 비회원
       // 비회원이면, 회원 가입으로
@@ -46,24 +46,25 @@ class _LoginPageState extends ConsumerState<LoginPage>
 
         // 저장된 userState
         final userState = ref.watch(userStateProvider);
-        // await Nav.push(RegisterFragment(
-        //   nickName: userState?.nickName ?? "",
-        //   profileImage: userState?.profileImage ?? "",
-        //   privacy: userState?.privacy ?? "PRIVATE",
-        //   stateMessage: userState?.stateMessage ?? "",
-        // ));
-        GoRouter.of(context).go('/register', extra: {
-          'nickName': userState?.nickName ?? "",
-          'profileImage': userState?.profileImage ?? "",
-          'privacy': userState?.privacy ?? "PRIVATE",
-          'stateMessage': userState?.stateMessage ?? "",
-        });
-        PonAuth().signInWithKakao(ref);
+        print('${userState}');
+        await Nav.push(RegisterFragment(
+          nickName: userState?.nickName ?? "",
+          profileImage: userState?.profileImage ?? "",
+          privacy: userState?.privacy ?? "PRIVATE",
+          stateMessage: userState?.stateMessage ?? "",
+        ));
+
+        // GoRouter.of(context).go('/register', extra: {
+        //   'nickName': userState?.nickName ?? "",
+        //   'profileImage': userState?.profileImage ?? "",
+        //   'privacy': userState?.privacy ?? "PRIVATE",
+        //   'stateMessage': userState?.stateMessage ?? "",
+        // });
       } else {
         // 회원이면 메인 페이지로
         // TODO: 메인 페이지 라우팅 안됨
         print('난 유저고 메인으로 ${auth.signedIn}');
-        GoRouter.of(context).go('/main');
+        GoRouter.of(context).go('/');
       }
     }
 
@@ -103,12 +104,10 @@ class _LoginPageState extends ConsumerState<LoginPage>
 
         ref.read(userStateProvider.notifier).setUserState(user);
         print('프로필 조회 끝 ${ref.read(userStateProvider)?.nickName}');
-        await goLogin();
       } catch (e) {
         print('프로필 에러 $e');
       }
     }
-
 
     return Container(
       color: Colors.white,
@@ -138,8 +137,8 @@ class _LoginPageState extends ConsumerState<LoginPage>
                 // print('222222222222222222222222222222');
                 // await fetchToken(ref);
                 await auth.signInWithKakao(ref);
-                print('---------------------- ${auth.signedIn}');
                 await fetchProfile();
+                await goLogin();
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,

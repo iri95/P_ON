@@ -46,16 +46,14 @@ class _RegisterFragmentState extends ConsumerState<RegisterFragment> {
 
   @override
   Widget build(BuildContext context) {
-    void goToMainPage() async {
-      // 'context'는 현재 위젯의 BuildContext입니다.
-      GoRouter.of(context).go('/main');
-    }
+    final auth = PonAuthScope.of(context);
 
     Future<void> signUp() async {
       final loginState = ref.read(loginStateProvider);
       final token = loginState.serverToken;
       final id = loginState.id;
       var headers = {'Authorization': '$token', 'id': '$id'};
+
       if (token == null) {
         await kakaoLogin(ref);
         await fetchToken(ref);
@@ -83,7 +81,6 @@ class _RegisterFragmentState extends ConsumerState<RegisterFragment> {
 
       // 바뀐 값으로 데이터를 저장, 요청
       ref.read(userStateProvider.notifier).setUserState(newUser);
-      PonAuth().signInWithKakao(ref);
       try {
         Response response = await apiService.sendRequest(
             method: 'POST',
@@ -93,9 +90,8 @@ class _RegisterFragmentState extends ConsumerState<RegisterFragment> {
         print(response);
 
         print('메인으로 ㄱㄱ');
-        // TODO: 메인으로 라우팅 안됨
-        PonAuth().signInWithKakao(ref);
-        goToMainPage();
+        auth.signUp();
+        GoRouter.of(context).go('/');
       } catch (e) {
         print(e);
       }
@@ -130,8 +126,7 @@ class _RegisterFragmentState extends ConsumerState<RegisterFragment> {
           nickName: widget.nickName,
           profileImage: widget.profileImage,
           onNickNameChanged: (newNickName) {
-            // 이 부분에서 새로운 닉네임을 사용합니다.
-            // 예를 들어, 상태 변수에 저장하거나, 다른 로직을 수행합니다.
+            // 새로운 닉네임 전달
             setState(() {
               currentNickName = newNickName;
             });
