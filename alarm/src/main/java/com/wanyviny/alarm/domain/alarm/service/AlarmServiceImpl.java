@@ -20,7 +20,7 @@ public class AlarmServiceImpl implements AlarmService{
 
     @Override
     public List<AlarmDto.getAlarmDto> getAlarm(Long userId) {
-        List<Alarm> alarmList = alarmRepository.findByUserId(userId);
+        List<Alarm> alarmList = alarmRepository.findByUserId_Id(userId);
 
         return alarmList.stream()
                 .map(Alarm::entityToDto)
@@ -55,12 +55,12 @@ public class AlarmServiceImpl implements AlarmService{
 
     @Override
     public int getAlarmCount(Long userId) {
-        return alarmRepository.findByUserId(userId).size();
+        return alarmRepository.findByUserId_Id(userId).size();
     }
 
     @Override
     public Long getAlarmCountNonRead(Long userId) {
-        return alarmRepository.findByUserId(userId).stream()
+        return alarmRepository.findByUserId_Id(userId).stream()
                 .filter(alarm -> !alarm.getAlarmState())
                 .count();
     }
