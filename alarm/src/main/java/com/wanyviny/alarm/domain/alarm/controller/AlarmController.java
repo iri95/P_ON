@@ -111,7 +111,7 @@ public class AlarmController {
     }
 
     @PutMapping("/read-all")
-    @Operation(summary = " 모든 알람 읽음 처리", description = "유저의 모든 알람을 읽음 처리합니다.")
+    @Operation(summary = " 모든 알람 읽음 처리", description = "유저의 모든 알람을 읽음 처리합니다.(헤더에 id 필요)")
     public ResponseEntity<BasicResponse> putAlarmState(HttpServletRequest request) {
         Long userId = Long.parseLong(request.getHeader("id"));
 
@@ -144,6 +144,7 @@ public class AlarmController {
 
     // 알림 모두 삭제 -> 사용자의 Id로 알림을 모두 삭제
     @DeleteMapping("/delete/all")
+    @Operation(summary = " 모든 알람 삭제 처리", description = "유저의 모든 알람을 삭제 처리합니다.(헤더에 id 필요)")
     public ResponseEntity<BasicResponse> deleteAlarmAll(HttpServletRequest request) {
         Long userId = Long.parseLong(request.getHeader("id"));
 
