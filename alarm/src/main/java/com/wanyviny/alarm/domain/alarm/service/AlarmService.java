@@ -20,4 +20,5 @@ public interface AlarmService {
     Long getAlarmCountNonRead(Long userId);
 
 
+    void putAlarmState(Long userId);
 }

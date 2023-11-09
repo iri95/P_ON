@@ -87,9 +87,23 @@ public class AlarmController {
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
 
+    @PutMapping("/read-all")
+    public ResponseEntity<BasicResponse> putAlarmState(HttpServletRequest request) {
+        Long userId = Long.parseLong(request.getHeader("id"));
+
+        alarmService.putAlarmState(userId);
+
+        BasicResponse basicResponse = BasicResponse.builder()
+                .code(HttpStatus.OK.value())
+                .httpStatus(HttpStatus.OK)
+                .message("모든 알람 읽음 처리 완료")
+                .build();
+
+        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+    }
 
     // 알림 삭제 -> 알림 확인 시 알림 삭제
-    @DeleteMapping("/{alarmId}")
+    @DeleteMapping("/delete/{alarmId}")
     public ResponseEntity<BasicResponse> deleteAlarm(HttpServletRequest request, @PathVariable(name = "alarmId") Long alarmId) {
         Long userId = Long.parseLong(request.getHeader("id"));
 

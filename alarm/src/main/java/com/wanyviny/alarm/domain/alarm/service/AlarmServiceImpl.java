@@ -63,4 +63,9 @@ public class AlarmServiceImpl implements AlarmService{
                 .filter(alarm -> !alarm.getAlarmState())
                 .count();
     }
+
+    @Override
+    public void putAlarmState(Long userId) {
+        alarmRepository.updateStateByUserId(userId);
+    }
 }
