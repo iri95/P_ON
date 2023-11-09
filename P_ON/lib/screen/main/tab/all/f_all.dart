@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:go_router/go_router.dart';
 import 'package:p_on/common/common.dart';
 import 'package:p_on/screen/main/tab/register/f_register.dart';
 import 'package:flutter/material.dart';
@@ -57,7 +58,9 @@ class _AllFragmentState extends State<AllFragment> {
                 ),
                 TextButton(
                   onPressed: () {
+                    final router = GoRouter.of(context);
                     // Nav.push(const RegisterFragment());
+                    router.go('/chatroom/5');
                     getLogIn();
                   },
                   child: const Text('카카오로 시작하기',
