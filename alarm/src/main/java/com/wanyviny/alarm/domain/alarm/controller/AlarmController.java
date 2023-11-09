@@ -29,7 +29,7 @@ public class AlarmController {
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
                 .httpStatus(HttpStatus.OK)
-                .message("카카오에서 받은 유저 정보 조회 성공")
+                .message("알림 조회 성공")
                 .count(alarmDto.size())
                 .result(Collections.singletonList(alarmDto))
                 .build();
@@ -37,21 +37,6 @@ public class AlarmController {
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
 
-    // 알림 생성 -> 유저 & 알림이 있을 경우 update, 없을경우 create
-//    @PostMapping
-//    public ResponseEntity<BasicResponse> postAlarm(HttpServletRequest request, @RequestBody AlarmDto alarmDto) {
-//
-//
-//        BasicResponse basicResponse = BasicResponse.builder()
-//                .code(HttpStatus.OK.value())
-//                .httpStatus(HttpStatus.OK)
-//                .message("카카오에서 받은 유저 정보 조회 성공")
-////                .count(1)
-////                .result()
-//                .build();
-//
-//        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
-//    }
 
     // 알림 삭제 -> 알림 확인 시 알림 삭제
 //    @DeleteMapping
