@@ -9,19 +9,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:p_on/screen/main/user/fn_kakao.dart';
 import 'package:p_on/screen/main/user/token_state.dart';
-
-// 로그인 상태 파악
-
-import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-// import 'package:p_on/screen/main/user/fn_kakao.dart';
-// import 'package:p_on/screen/main/user/token_state.dart';
-
+import 'package:p_on/screen/main/user/user_state.dart';
 
 /// A mock authentication service.
 class PonAuth extends ChangeNotifier {
   // 로그인 상태
-  // 디버깅용 true
   bool _signedIn = false;
 
   /// Whether user has signed in.
@@ -33,30 +25,40 @@ class PonAuth extends ChangeNotifier {
   Future<bool> signInWithKakao(WidgetRef ref) async {
     print('로그인 ㄱㄱ');
 
-    // 로그인을 진행함
+    // 로그인
     await kakaoLogin(ref);
     await fetchToken(ref);
 
+    // fetch Token 하면 token, role이 담김
     final token = ref.read(loginStateProvider).serverToken;
     final role = ref.read(loginStateProvider).role;
-
-    print('${token}, ${role}');
+    print('1 ${token}, ${role}');
 
     if (token != null && role == 'USER') {
       // await kakaoLogin(ref);
       // await fetchToken(ref);
       _signedIn = true;
-      print('토큰이 있고, role이 user ${signedIn}');
+      print('토큰이 있고, role이 user');
+      // 그러면 여기서 토큰으로 프로필을 저장하고 메인으로 이동해야 함
+      print('${ref.read(userStateProvider)?.nickName}');
+    } else if (token != null && role == 'GUEST') {
+      print('토큰이 있고, role이 guest');
+      // _signedIn = true;
+      _signedIn = false;
+
+      // registedIn = false;
     } else {
-      print('signWithKakao');
-      print(token);
-      print(role);
       _signedIn = false;
     }
     // 상태 변경을 리스너에게 알림
-    print('상태변경 알리기 전임 ${_signedIn}');
     notifyListeners();
-    print('상태변경 알림 ${_signedIn}');
+    return _signedIn;
+  }
+
+  // 진짜 회원가입
+  Future<bool> signUp() async {
+    _signedIn = true;
+    notifyListeners();
 
     return _signedIn;
   }
@@ -71,34 +73,21 @@ class PonAuth extends ChangeNotifier {
     print('~~~~~~~~~~~~~~~~~~~~~~');
     print(state.matchedLocation);
 
-    print(this._signedIn);
-    print(PonAuth().signedIn);
-    print(this.signedIn);
-
+    // user이면, true, true
+    // guest이면, true, false
+    // 아무것도 아니면 false, false
     final bool signedIn = this.signedIn;
-    print('이건뭐지 ================= ${this.signedIn}');
     final bool signingIn = state.matchedLocation == '/signin';
-    final bool registeringIn = state.matchedLocation == '/register';
 
     // Go to /signin if the user is not signed in
     if (!signedIn && !signingIn) {
-      print('11111111111111111111111111111111111111');
+      // 회원이 아니고, 다른 페이지임
       return '/signin';
-    }
-    else if (!signedIn && registeringIn) {
-      print('111111111111111222222222222222222');
-      return '/';
     }
     // Go to /books if the user is signed in and tries to go to /signin.
     else if (signedIn && signingIn) {
-      print('22222222222222222222222222222222');
       return '/';
     }
-    else if (signedIn && registeringIn) {
-      print('222222222222222333333333333333');
-      return '/';
-    }
-    print('3333333333333333333333333333333333');
     // no redirect
     return null;
   }
