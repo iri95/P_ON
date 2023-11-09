@@ -1,44 +1,70 @@
 import 'package:p_on/common/dart/extension/num_duration_extension.dart';
-import 'package:p_on/screen/notification/vo/notification_type.dart';
 
 import 'vo/vo_notification.dart';
 
-final notificationDummies = <TtossNotification>[
-  TtossNotification(
-    NotificationType.tossPay,
-    '이번주에 영화 한편 어때요? CGV 할인 쿠폰이 도착했어요',
+final notificationDummies = <MyNotification>[
+  MyNotification(
+    '약속방 초대',
+    '{약속생성자}님께서 {약속방이름}에 초대했습니다.',
     DateTime.now().subtract(27.minutes),
   ),
-  TtossNotification(
-    NotificationType.stock,
-    '인적분할에 대해 알려드릴게요.',
+  MyNotification(
+    '투표 생성',
+    '{약속방이름}에 {투표종류} 투표가 시작되었습니다. \n투표에 참여하세요',
     DateTime.now().subtract(1.hours),
   ),
-  TtossNotification(
-    NotificationType.walk,
-    '1000걸음 이상 걸었다면 포인트 받으세요.',
+  MyNotification(
+    '투표 마감',
+    '{약속방이름}에 {투표종류} 투표가 종료되었습니다. \n투표 결과를 확인해보세요',
     DateTime.now().subtract(1.hours),
     isRead: true,
   ),
-  TtossNotification(
-    NotificationType.moneyTip,
-    '유럽 식품 물가가 치솟고 있어요.\n남반석님, 유럽여행에 관심이 있다면 확인해보세요.',
+  MyNotification(
+    '약속 임박',
+    '{약속방이름} 까지 ?시간 남았습니다. \n서둘러 준비하세요!',
     DateTime.now().subtract(8.hours),
     isRead: true,
   ),
-  TtossNotification(
-    NotificationType.walk,
-    '오늘 1000걸음을 넘겼어요. 포인트를 받아보세요.',
-    DateTime.now().subtract(11.hours),
+  MyNotification(
+    '약속 종료',
+    '{약속방이름}이 종료되었습니다. \n함께한 시간을 추억해보세요',
+    DateTime.now().subtract(8.hours),
+    isRead: true,
   ),
-  TtossNotification(
-    NotificationType.luck,
-    '6월 5일, 행운 복권이 도착했어요.',
-    DateTime.now().subtract(12.hours),
+  MyNotification(
+    '친구',
+    '{상대회원닉네임}님이 당신을 팔로우했습니다.',
+    DateTime.now().subtract(8.hours),
+    isRead: true,
   ),
-  TtossNotification(
-    NotificationType.people,
-    '띵동! 월요일 공동구매 보러가기',
-    DateTime.now().subtract(1.days),
+  MyNotification(
+    '친구',
+    '{상대회원닉네임}님이 당신을 팔로우했습니다.',
+    DateTime.now().subtract(8.hours),
+    isRead: true,
+  ),
+  MyNotification(
+    '친구',
+    '{상대회원닉네임}님이 당신을 팔로우했습니다.',
+    DateTime.now().subtract(8.hours),
+    isRead: true,
+  ),
+  MyNotification(
+    '친구',
+    '{상대회원닉네임}님이 당신을 팔로우했습니다.',
+    DateTime.now().subtract(8.hours),
+    isRead: true,
+  ),
+  MyNotification(
+    '친구',
+    '{상대회원닉네임}님이 당신을 팔로우했습니다.',
+    DateTime.now().subtract(8.hours),
+    isRead: true,
+  ),
+  MyNotification(
+    '친구',
+    '{상대회원닉네임}님이 당신을 팔로우했습니다.',
+    DateTime.now().subtract(8.hours),
+    isRead: true,
   ),
 ];

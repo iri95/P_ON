@@ -17,6 +17,8 @@ import 'package:p_on/screen/main/user/user_state.dart';
 
 import 'package:go_router/go_router.dart';
 
+import 'package:p_on/auth.dart';
+
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
@@ -33,11 +35,8 @@ class _LoginPageState extends ConsumerState<LoginPage>
 
   @override
   Widget build(BuildContext context) {
-    void goToMainPage() async {
-      // 'context'는 현재 위젯의 BuildContext입니다.
-      GoRouter.of(context).go('/main/home');
-    }
 
+    final auth = PonAuthScope.of(context);
     Future<void> goLogin() async {
       // role이 user이면 회원, guest이면 비회원
       // 비회원이면, 회원 가입으로
@@ -55,8 +54,8 @@ class _LoginPageState extends ConsumerState<LoginPage>
       } else {
         // 회원이면 메인 페이지로
         // TODO: 메인 페이지 라우팅 안됨
-        print('난 유저고 메인으로');
-        goToMainPage();
+        print('난 유저고 메인으로 ${auth.signedIn}');
+        GoRouter.of(context).go('/main');
       }
     }
 
@@ -66,14 +65,10 @@ class _LoginPageState extends ConsumerState<LoginPage>
       final token = loginState.serverToken;
       final id = loginState.id;
 
-      print('토큰 있나 =========${loginState.serverToken} ${token}');
-
       var headers = {'Authorization': '$token', 'id': '$id'};
-      print('헤더1 ========== $headers');
 
       // 서버 토큰이 없으면
       if (token == null) {
-        print('여기 오나?');
         await kakaoLogin(ref);
         await fetchToken(ref);
 
@@ -83,8 +78,6 @@ class _LoginPageState extends ConsumerState<LoginPage>
 
         headers['Authorization'] = '$newToken';
         headers['id'] = '$newId';
-      } else {
-        print('여기가 맞음');
       }
 
       final apiService = ApiService();
@@ -92,7 +85,6 @@ class _LoginPageState extends ConsumerState<LoginPage>
         Response response = await apiService.sendRequest(
             method: 'GET', path: '/api/user/profile', headers: headers);
 
-        print('헤더2 ========== $headers');
         // 여기서 회원 정보 프로바이더 저장 후 전달
         var user = UserState(
           profileImage: response.data['result'][0]['profileImage'] as String,
@@ -108,6 +100,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
         print('프로필 에러 $e');
       }
     }
+
 
     return Container(
       color: Colors.white,
@@ -132,11 +125,12 @@ class _LoginPageState extends ConsumerState<LoginPage>
                 print(await KakaoSdk.origin);
                 // 카카오로그인 -> 토큰
                 // await fetchToken();
-                print('111111111111111111111111111111');
-                await kakaoLogin(ref);
-                print('222222222222222222222222222222');
-                await fetchToken(ref);
-                print('333333333333333333333333333333');
+                // print('111111111111111111111111111111');
+                // await kakaoLogin(ref);
+                // print('222222222222222222222222222222');
+                // await fetchToken(ref);
+                await auth.signInWithKakao(ref);
+                print('---------------------- ${auth.signedIn}');
                 await fetchProfile();
               },
               child: Row(

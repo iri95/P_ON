@@ -53,7 +53,7 @@ Future<void> kakaoLogin(WidgetRef ref) async {
   if (await isKakaoTalkInstalled()) {
     try {
       OAuthToken token = await UserApi.instance.loginWithKakaoTalk();
-      print('카카오톡으로 로그인 ${token.accessToken}');
+      // print('카카오톡으로 로그인 ${token.accessToken}');
       ref.read(kakaoTokenProvider.notifier).state = token.accessToken;
 
       // 여기서 카카오 토큰으로 서버 트콘 발급받고 저장하기
@@ -69,7 +69,7 @@ Future<void> kakaoLogin(WidgetRef ref) async {
       // 카카오톡에 연결된 카카오계정이 없는 경우, 카카오계정으로 로그인
       try {
         OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
-        print('카카오톡 계정 로그인 ${token.accessToken}');
+        // print('카카오톡 계정 로그인 ${token.accessToken}');
         ref.read(kakaoTokenProvider.notifier).state = token.accessToken;
       } catch (error) {
         print('카카오계정으로 로그인 실패 $error');
@@ -79,7 +79,7 @@ Future<void> kakaoLogin(WidgetRef ref) async {
   } else {
     try {
       OAuthToken token = await UserApi.instance.loginWithKakaoAccount();
-      print('카카오톡 계정 로그인 ${token.accessToken}');
+      // print('카카오톡 계정 로그인 ${token.accessToken}');
       ref.read(kakaoTokenProvider.notifier).state = token.accessToken;
     } catch (error) {
       print('카카오계정으로 로그인 실패 $error');
@@ -141,7 +141,7 @@ Future<void> fetchToken(WidgetRef ref) async {
   // final String mobileId = await getMobileId();
 
   final String FCMToken = await getFCMToken();
-  print('진짜토큰 $FCMToken');
+  // print('진짜토큰 $FCMToken');
 
   // 발급받은 카카오 토큰을 이용해 서버 로그인 요청
   try {
@@ -153,8 +153,6 @@ Future<void> fetchToken(WidgetRef ref) async {
               },
             ),
             data: {'phoneId': FCMToken});
-
-    print('$response, ============================');
 
     final serverToken = response.headers.map['authorization']?.first;
     final role = response.headers.map['ROLE']?.first;
