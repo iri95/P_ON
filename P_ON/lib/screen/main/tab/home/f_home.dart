@@ -123,7 +123,6 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // TODO: User 닉네임 받아서 이름 넣기
                           '${ref.watch(userStateProvider)?.nickName ?? ''}'
                               .text
                               .fontWeight(FontWeight.w800)
