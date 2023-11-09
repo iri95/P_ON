@@ -39,20 +39,20 @@ public class AlarmController {
 
 
     // 알림 삭제 -> 알림 확인 시 알림 삭제
-//    @DeleteMapping
-//    public ResponseEntity<BasicResponse> deleteAlarm(HttpServletRequest request, @RequestBody AlarmDto alarmDto) {
-//
-//
-//        BasicResponse basicResponse = BasicResponse.builder()
-//                .code(HttpStatus.OK.value())
-//                .httpStatus(HttpStatus.OK)
-//                .message("카카오에서 받은 유저 정보 조회 성공")
-////                .count(1)
-////                .result()
-//                .build();
-//
-//        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
-//    }
+    @DeleteMapping("/{alarmId}")
+    public ResponseEntity<BasicResponse> deleteAlarm(HttpServletRequest request, @PathVariable(name = "alarmId") Long alarmId) {
+        Long userId = Long.parseLong(request.getHeader("id"));
+
+        alarmService.deleteAlarm(userId, alarmId);
+
+        BasicResponse basicResponse = BasicResponse.builder()
+                .code(HttpStatus.OK.value())
+                .httpStatus(HttpStatus.OK)
+                .message("알림 삭제 완료")
+                .build();
+
+        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+    }
 
     // 알림 모두 삭제 -> 사용자의 Id로 알림을 모두 삭제
 //    @DeleteMapping

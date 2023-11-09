@@ -31,4 +31,13 @@ public class AlarmServiceImpl implements AlarmService{
     public void postAlarm(User user, AlarmDto.setAlarmDto alarmDto) {
         alarmRepository.save(alarmDto.dtoToEntity(user));
     }
+
+    @Override
+    public void deleteAlarm(Long userId, Long alarmId) {
+        userRepository.findById(userId).orElseThrow(
+                () -> new IllegalArgumentException("해당하는 유저가 없습니다.")
+        );
+
+        alarmRepository.deleteByAlarmId(alarmId);
+    }
 }

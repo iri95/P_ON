@@ -9,4 +9,6 @@ public interface AlarmService {
     List<AlarmDto.getAlarmDto> getAlarm(Long userId);
 
     void postAlarm(User user, AlarmDto.setAlarmDto alarmDto);
+
+    void deleteAlarm(Long userId, Long alarmId);
 }
