@@ -13,7 +13,7 @@ public interface AlarmService {
 
     void postAlarm(User user, AlarmDto.setAlarmDto alarmDto);
 
-    void deleteAlarm(Long userId, Long alarmId);
+    void deleteAlarm(Long alarmId);
 
     int getAlarmCount(Long userId);
 
@@ -24,4 +24,5 @@ public interface AlarmService {
     void putAlarmStateAll(Long userId);
 
 
+    void deleteAlarmAll(Long userId);
 }

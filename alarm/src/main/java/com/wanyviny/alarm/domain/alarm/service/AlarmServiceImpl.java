@@ -54,15 +54,6 @@ public class AlarmServiceImpl implements AlarmService{
     }
 
     @Override
-    public void deleteAlarm(Long userId, Long alarmId) {
-        userRepository.findById(userId).orElseThrow(
-                () -> new IllegalArgumentException("해당하는 유저가 없습니다.")
-        );
-
-        alarmRepository.deleteByAlarmId(alarmId);
-    }
-
-    @Override
     public int getAlarmCount(Long userId) {
         return alarmRepository.findByUserId(userId).size();
     }
@@ -82,5 +73,15 @@ public class AlarmServiceImpl implements AlarmService{
     @Override
     public void putAlarmStateAll(Long userId) {
         alarmRepository.updateStateAllByUserId(userId);
+    }
+
+    @Override
+    public void deleteAlarm(Long alarmId) {
+        alarmRepository.deleteByAlarmId(alarmId);
+    }
+
+    @Override
+    public void deleteAlarmAll(Long userId) {
+        alarmRepository.deleteByUserId(userId);
     }
 }

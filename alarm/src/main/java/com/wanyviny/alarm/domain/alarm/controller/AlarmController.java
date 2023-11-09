@@ -4,6 +4,8 @@ import com.wanyviny.alarm.domain.alarm.ALARM_TYPE;
 import com.wanyviny.alarm.domain.alarm.dto.AlarmDto;
 import com.wanyviny.alarm.domain.alarm.service.AlarmService;
 import com.wanyviny.alarm.domain.common.BasicResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,12 +19,14 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/alarm")
 @RequiredArgsConstructor
+@Tag(name = "알람", description = "알람 관련 API")
 public class AlarmController {
 
     private final AlarmService alarmService;
 
     // 알림 조회 -> 유저의 Id로 역순
     @GetMapping
+    @Operation(summary = "알람 조회", description = "개인 알람을 모두 조회합니다.(헤더에 id 필요)")
     public ResponseEntity<BasicResponse> getAlarm(HttpServletRequest request) {
         Long userId = Long.parseLong(request.getHeader("id"));
 
@@ -40,6 +44,7 @@ public class AlarmController {
     }
 
     @GetMapping("/type/{alarmType}")
+    @Operation(summary = "타입별 알람 조회", description = "타입별 개인 알람을 모두 조회합니다.(헤더에 id 필요), Type : FRIEND, INVITE, CREATE_POLL, END_POLL, END_PROMISE")
     public ResponseEntity<BasicResponse> getAlarmByType(HttpServletRequest request, @PathVariable(name = "alarmType") ALARM_TYPE alarmType) {
         Long userId = Long.parseLong(request.getHeader("id"));
 
@@ -57,6 +62,7 @@ public class AlarmController {
     }
 
     @GetMapping("/count")
+    @Operation(summary = "알람 개수 조회", description = "개인의 알람 개수를 모두 조회합니다.(헤더에 id 필요)")
     public ResponseEntity<BasicResponse> getAlarmCount(HttpServletRequest request) {
         Long userId = Long.parseLong(request.getHeader("id"));
 
@@ -73,6 +79,7 @@ public class AlarmController {
     }
 
     @GetMapping("/count/non-read")
+    @Operation(summary = "안 읽은 알람 개수 조회", description = "개인의 안 읽은 알람 개수를 모두 조회합니다.(헤더에 id 필요)")
     public ResponseEntity<BasicResponse> getAlarmCountNonRead(HttpServletRequest request) {
         Long userId = Long.parseLong(request.getHeader("id"));
 
@@ -89,6 +96,7 @@ public class AlarmController {
     }
 
     @PutMapping("/read-only")
+    @Operation(summary = "알람 단일 읽음 처리", description = "하나의 알람을 읽음 처리합니다.")
     public ResponseEntity<BasicResponse> putAlarmState(HttpServletRequest request, @RequestBody Map<String, String> alarmId) {
 
         alarmService.putAlarmState(Long.parseLong(alarmId.get("alarmId")));
@@ -103,6 +111,7 @@ public class AlarmController {
     }
 
     @PutMapping("/read-all")
+    @Operation(summary = " 모든 알람 읽음 처리", description = "유저의 모든 알람을 읽음 처리합니다.")
     public ResponseEntity<BasicResponse> putAlarmState(HttpServletRequest request) {
         Long userId = Long.parseLong(request.getHeader("id"));
 
@@ -119,10 +128,10 @@ public class AlarmController {
 
     // 알림 삭제 -> 알림 확인 시 알림 삭제
     @DeleteMapping("/delete/{alarmId}")
+    @Operation(summary = " 해당 알람 삭제 처리", description = "유저의 해당 알람을 삭제 처리합니다.")
     public ResponseEntity<BasicResponse> deleteAlarm(HttpServletRequest request, @PathVariable(name = "alarmId") Long alarmId) {
-        Long userId = Long.parseLong(request.getHeader("id"));
 
-        alarmService.deleteAlarm(userId, alarmId);
+        alarmService.deleteAlarm(alarmId);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
@@ -134,18 +143,19 @@ public class AlarmController {
     }
 
     // 알림 모두 삭제 -> 사용자의 Id로 알림을 모두 삭제
-//    @DeleteMapping
-//    public ResponseEntity<BasicResponse> deleteAlarmAll(HttpServletRequest request, @RequestBody AlarmDto alarmDto) {
-//
-//
-//        BasicResponse basicResponse = BasicResponse.builder()
-//                .code(HttpStatus.OK.value())
-//                .httpStatus(HttpStatus.OK)
-//                .message("카카오에서 받은 유저 정보 조회 성공")
-////                .count(1)
-////                .result()
-//                .build();
-//
-//        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
-//    }
+    @DeleteMapping("/delete/all")
+    public ResponseEntity<BasicResponse> deleteAlarmAll(HttpServletRequest request) {
+        Long userId = Long.parseLong(request.getHeader("id"));
+
+        alarmService.deleteAlarmAll(userId);
+
+
+        BasicResponse basicResponse = BasicResponse.builder()
+                .code(HttpStatus.OK.value())
+                .httpStatus(HttpStatus.OK)
+                .message("카카오에서 받은 유저 정보 조회 성공")
+                .build();
+
+        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+    }
 }
