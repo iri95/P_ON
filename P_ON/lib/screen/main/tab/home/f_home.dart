@@ -46,15 +46,15 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
       }
     });
     _fetchProfile();
-
     super.initState();
   }
 
   void _fetchProfile() async {
     final loginState = ref.read(loginStateProvider);
+    final userState = ref.read(userStateProvider);
     final token = loginState.serverToken;
     final id = loginState.id;
-
+    print('${loginState}, ${token}, ${id}');
     var headers = {'Authorization': '$token', 'id': '$id'};
 
     // 서버 토큰이 없으면
@@ -75,7 +75,7 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
       Response response = await apiService.sendRequest(
           method: 'GET', path: '/api/user/profile', headers: headers);
 
-      // 여기서 회원 정보 프로바이더 저장 후 전달
+      // 여기서 서버에서 받앙온 회원 정보 저장
       var user = UserState(
         profileImage: response.data['result'][0]['profileImage'] as String,
         nickName: response.data['result'][0]['nickName'] as String,
@@ -84,7 +84,7 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
       );
 
       ref.read(userStateProvider.notifier).setUserState(user);
-      print('여긴 메인이고 프로필 조회 끝 ');
+      print('여긴 메인이고 프로필 조회 끝 ${ref.read(userStateProvider)?.nickName}');
     } catch (e) {
       print('여긴 메인이고 프로필 에러 $e');
     }
@@ -124,7 +124,7 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // TODO: User 닉네임 받아서 이름 넣기
-                          '${ref.read(userStateProvider)?.nickName}'
+                          '${ref.watch(userStateProvider)?.nickName ?? ''}'
                               .text
                               .fontWeight(FontWeight.w800)
                               .size(26)

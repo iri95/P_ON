@@ -77,6 +77,8 @@ class _LoginPageState extends ConsumerState<LoginPage>
     }
 
     Future<void> goLogin() async {
+      // 여기서 user이면, 바로 true로 변하고 이동 바로됨
+      // 그러면 프로필 데이터는 어디서 받아옴?
       await auth.signInWithKakao(ref);
 
       // role이 user이면 회원, guest이면 비회원
