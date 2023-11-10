@@ -7,7 +7,6 @@ import com.google.firebase.messaging.Notification;
 import com.wanyviny.user.domain.follow.dto.FollowDto;
 import com.wanyviny.user.domain.follow.entity.Follow;
 import com.wanyviny.user.domain.follow.repository.FollowRepository;
-import com.wanyviny.user.domain.user.dto.UserDto;
 import com.wanyviny.user.domain.user.entity.User;
 import com.wanyviny.user.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
