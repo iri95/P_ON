@@ -23,6 +23,8 @@ import 'package:p_on/screen/main/user/fn_kakao.dart';
 import 'package:p_on/screen/main/user/token_state.dart';
 import 'package:p_on/screen/main/user/user_state.dart';
 
+import 'home_scroll_provider/scroll_controller_provider.dart';
+
 class HomeFragment extends ConsumerStatefulWidget {
   const HomeFragment({super.key});
 
@@ -31,10 +33,13 @@ class HomeFragment extends ConsumerStatefulWidget {
 }
 
 class _HomeFragmentState extends ConsumerState<HomeFragment> {
-  final scrollController = ScrollController();
+  // final scrollController = ScrollController();
+  late final ScrollController scrollController;
+
 
   @override
   void initState() {
+    scrollController = ref.read(homeScrollControllerProvider);
     scrollController.addListener(() {
       final floatingState = ref.read(floatingButtonStateProvider);
 
