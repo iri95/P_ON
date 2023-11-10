@@ -211,6 +211,10 @@ public class ItemServiceImpl implements ItemService {
 
     private boolean isComplete(String deadDate, String deadTime) {
 
+        if (deadDate == null) {
+            return false;
+        }
+
         String date = deadDate.substring(0, 10);
         String time = deadTime.substring(3);
 
