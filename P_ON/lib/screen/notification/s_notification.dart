@@ -2,7 +2,6 @@ import 'package:p_on/screen/notification/w_notification_item.dart';
 import 'package:flutter/material.dart';
 
 import 'd_notification.dart';
-import 'notifications_dummy.dart';
 
 import 'package:p_on/common/common.dart';
 
@@ -25,10 +24,8 @@ class NotificationScreen extends ConsumerStatefulWidget {
 }
 
 class _NotificationScreenState extends ConsumerState<NotificationScreen> {
-  // TODO: 알림 | 읽은 알림 모두 삭제
+  // 읽은 알림 삭제
   Future<void> deleteIsRead() async {
-    print('읽은거 다삭제');
-
     final loginState = ref.read(loginStateProvider);
     final token = loginState.serverToken;
     final id = loginState.id;
@@ -48,21 +45,24 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
 
     final apiService = ApiService();
     try {
-      await apiService.sendRequest(method: '', path: '/api/', headers: headers);
+      await apiService.sendRequest(
+          method: 'DELETE', path: '/api/alarm/delete/read', headers: headers);
+
+      setState(() {
+        notifications.removeWhere((notification) => notification.isRead);
+      });
     } catch (e) {
       print(e);
     }
   }
 
+  // 모두 읽음
   Future<void> allRead() async {
-    print('모두 읽음');
     final loginState = ref.read(loginStateProvider);
     final token = loginState.serverToken;
     final id = loginState.id;
 
-    // FIXME: 테스트용
     var headers = {'Authorization': '$token', 'id': '$id'};
-    // var headers = {'Authorization': '$token', 'id': '1'};
 
     if (token == null) {
       await kakaoLogin(ref);
@@ -79,21 +79,23 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
     try {
       await apiService.sendRequest(
           method: 'PUT', path: '/api/alarm/read-all', headers: headers);
-      // TODO: 여기도 비동기로 화면에서 읽음 처리 보여주기
+      setState(() {
+        for (var notification in notifications) {
+          notification.isRead = true;
+        }
+      });
     } catch (e) {
       print(e);
     }
   }
 
+  // 하나읽음
   Future<void> oneRead(pressId) async {
-    print('하나 읽음 ${pressId}');
     final loginState = ref.read(loginStateProvider);
     final token = loginState.serverToken;
     final id = loginState.id;
 
-    // FIXME: 테스트용
     var headers = {'Authorization': '$token', 'id': '$id'};
-    // var headers = {'Authorization': '$token', 'id': '1'};
 
     if (token == null) {
       await kakaoLogin(ref);
@@ -107,23 +109,28 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
     }
 
     final apiService = ApiService();
-    var data = {
-      // 누른 알림 아이디 전달 key 변동 할 수 있음
-      'alarmId': pressId
-    };
+    var data = {'alarmId': pressId};
     try {
       await apiService.sendRequest(
           method: 'PUT',
           path: '/api/alarm/read-only',
           headers: headers,
           data: data);
-      // TODO: 뿌롱뜨에서 비동기 처리해서 바로 보이게 해야함
+      setState(() {
+        for (var notification in notifications) {
+          if (notification.id == pressId) {
+            notification.isRead = true;
+            break;
+          }
+        }
+      });
     } catch (e) {
       print(e);
     }
+
     // TODO: 눌렀을 때 삭제하는 방법도 고민
-    // 하나 보여주는건데 일단 지움
-    // NotificationDialog([notificationDummies[pressId]]).show();
+    // 하나 보여주는거
+    // NotificationDialog([notifications[pressId]]).show();
   }
 
   // JSON 데이터 파싱
@@ -136,9 +143,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
     final token = loginState.serverToken;
     final id = loginState.id;
 
-    // FIXME: 테스트용 아이디 1
     var headers = {'Authorization': '$token', 'id': '$id'};
-    // var headers = {'Authorization': '$token', 'id': '1'};
 
     if (token == null) {
       await kakaoLogin(ref);
@@ -168,8 +173,11 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
 
   @override
   void initState() {
-    super.initState();
+    // FIXME: 한번 넣고 에러보고 리로드
+    // ref.read(loginStateProvider.notifier).updateId("1");
+
     _fetchData();
+    super.initState();
   }
 
   void _fetchData() async {
@@ -290,7 +298,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                           notification: notifications[index],
                           onTap: () {
                             // 하나 읽음
-                            oneRead(index);
+                            oneRead(notifications[index].id);
                           },
                         ),
                       ))
