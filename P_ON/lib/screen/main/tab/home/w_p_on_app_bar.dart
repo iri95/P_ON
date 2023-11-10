@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:p_on/screen/search/s_search.dart';
 
 import '../../../../common/common.dart';
 import '../../../notification/s_notification.dart';
@@ -71,7 +72,7 @@ class _PONAppBar extends State<PONAppBar> {
           IconButton(
               onPressed: () {
                 // TODO: 여기 검색화면으로 넘어가게 바꾸기
-                Nav.push(const NotificationScreen());
+                Nav.push(const SearchScreen());
               },
               icon: const Icon(
                 Icons.search,
