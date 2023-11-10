@@ -9,6 +9,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @Tag(name = "채팅", description = "채팅 관련 API")
 public class ChatController {
 
@@ -34,6 +36,11 @@ public class ChatController {
             @DestinationVariable String roomId,
             @RequestBody ChatRequest request
     ) {
+
+        log.info("senderId : " + String.valueOf(senderId) + ", type : " + senderId.getClass());
+        log.info("roomId : " + roomId + ", type : " + senderId.getClass());
+        log.info("chatType : " + request.getChatType() + ", type : " + request.getChatType().getClass());
+        log.info("content : " + request.getContent() + ", type : " + request.getContent().getClass());
 
         ChatResponse response = chatService.sendChat(senderId, roomId, request);
 
