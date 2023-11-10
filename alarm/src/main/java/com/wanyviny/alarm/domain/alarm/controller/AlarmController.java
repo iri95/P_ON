@@ -98,7 +98,7 @@ public class AlarmController {
 
     @PutMapping("/read-only")
     @Operation(summary = "알람 단일 읽음 처리", description = "하나의 알람을 읽음 처리합니다.")
-    public ResponseEntity<BasicResponse> putAlarmState(HttpServletRequest request,@Parameter @RequestBody Map<String, String> alarmId) {
+    public ResponseEntity<BasicResponse> putAlarmState(@Parameter @RequestBody Map<String, String> alarmId) {
 
         alarmService.putAlarmState(Long.parseLong(alarmId.get("alarmId")));
 
@@ -130,7 +130,7 @@ public class AlarmController {
     // 알림 삭제 -> 알림 확인 시 알림 삭제
     @DeleteMapping("/delete/{alarmId}")
     @Operation(summary = " 해당 알람 삭제 처리", description = "유저의 해당 알람을 삭제 처리합니다.")
-    public ResponseEntity<BasicResponse> deleteAlarm(HttpServletRequest request, @PathVariable(name = "alarmId") Long alarmId) {
+    public ResponseEntity<BasicResponse> deleteAlarm(@Parameter @PathVariable(name = "alarmId") Long alarmId) {
 
         alarmService.deleteAlarm(alarmId);
 
