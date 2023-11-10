@@ -146,7 +146,8 @@ class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
       GoRoute(
           path: '/chatroom/:id',
           pageBuilder: (BuildContext context, GoRouterState state) {
-            final id = state.pathParameters['id'] ?? 'unknown';
+            final idString = state.pathParameters['id'] ?? 'unknown';
+            final id = int.parse(idString);
             return MaterialPage(
               // key: ValueKey(id),
               child: ChatRoom(id: id),

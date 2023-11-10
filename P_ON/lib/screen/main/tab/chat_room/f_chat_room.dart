@@ -3,19 +3,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:p_on/common/common.dart';
-import 'package:p_on/common/widget/w_basic_appbar.dart';
+import 'package:p_on/screen/main/tab/chat_room/dto_vote.dart';
 import 'package:p_on/screen/main/tab/chat_room/w_right_modal.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 import 'dart:convert';
-import '../home/f_home.dart';
 import '../promise_room/vo_server_url.dart';
 import 'w_header_text_vote.dart';
-import 'w_right_modal.dart';
+import 'package:p_on/screen/main/user/fn_kakao.dart';
+import 'package:p_on/common/util/dio.dart';
+import 'package:dio/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:p_on/screen/main/user/token_state.dart';
 
 class ChatRoom extends ConsumerStatefulWidget {
-  final String id;
+  final int id;
 
   const ChatRoom({super.key, required this.id});
 
@@ -24,26 +27,30 @@ class ChatRoom extends ConsumerStatefulWidget {
 }
 
 class _ChatRoomState extends ConsumerState<ChatRoom> {
+  // 텍스트필드 컨트롤러
   final FocusNode node = FocusNode();
   final TextEditingController textController = TextEditingController();
+
+  // Expanded의 스크롤 컨트롤러
   final ScrollController scrollController = ScrollController();
+
+  // endDrawer의 키값
   final _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  // + 버튼의 모달창 높이 및 활성화 여부
   double keyboardHeight = 0.0;
   bool isModalOpen = false;
-
   final Dio dio = Dio();
   late StompClient client;
-
-  final String userId = "1";
-  final String userName = "김태환";
-
   List<Map<String, dynamic>> messages = [];
   Map<String, dynamic> chatRoomInfo = {};
 
-  var votesDate;
-  var votesTime;
-  var votesLocation;
+  var isDate;
+  var isTime;
+  var isLocation;
+  var userId;
+  var userName;
+
 
   void onConnect(StompFrame? frame) {
     client.subscribe(
@@ -65,8 +72,8 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
         });
   }
 
-  void sendChat(String roomId, String userId, String nickname, String content) {
-    String destination = '/app/api/promise/chat/$roomId/$userId';
+  void sendChat(int roomId, String userId, String nickname, String content) {
+    String destination = '/app/api/promise/chat/$roomId';
     Map<String, dynamic> message = {
       'sender': nickname,
       'chatType': 'TEXT',
@@ -75,6 +82,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
 
     client.send(
       destination: destination,
+      headers: {'id': '1'},
       body: jsonEncode(message),
     );
 
@@ -89,26 +97,96 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
       DateFormat('yyyy년 MM월 dd일 EEEE', 'ko_KR').format(DateTime.now());
 
   void getChatRoom() async {
-    final response = await dio.get('$server/api/promise/room/${widget.id}');
-    chatRoomInfo = response.data['result'][0];
+    // 현재 저장된 서버 토큰을 가져옵니다.
+    final loginState = ref.read(loginStateProvider);
+    final token = loginState.serverToken;
+    final id = loginState.id;
+    final voteInfo = ref.read(voteInfoProvider);
+    userId = loginState.id;
 
-    print('==================================');
-    print('==================================');
-    print('==================================');
-    print('==================================');
-    print('==================================');
-    print('==================================');
-    print(response);
-    print(response.data['result'][0]['votes']);
-    // var votesDate = response.data['result'][0]['votes']['date'];
-    // var votesTime = response.data['result'][0]['votes']['Time'];
-    // var votesLocation = response.data['result'][0]['votes']['Location'];
+    var headers = {'Authorization': '$token', 'id': '$id'};
+
+    // 서버 토큰이 없으면
+    if (token == null) {
+      await kakaoLogin(ref);
+      await fetchToken(ref);
+
+      // 토큰을 다시 읽습니다.
+      final newToken = ref.read(loginStateProvider).serverToken;
+      final newId = ref.read(loginStateProvider).id;
+
+      headers['Authorization'] = '$newToken';
+      headers['id'] = '$newId';
+    }
+
+    final apiService = ApiService();
+
+    try {
+      Response response = await apiService.sendRequest(
+          method: 'GET',
+          path: '$server/api/promise/room/${widget.id}',
+          headers: headers);
+      chatRoomInfo = response.data['result'][0];
+      print('==================================');
+      print('==================================');
+      print('==================================');
+      print('==================================');
+      print('==================================');
+      print('==================================');
+      print(response);
+      print(response.data['result'][0]['votes']);
+
+      // 현재 채팅방 참여한 유저수
+      int user_count = response.data['result'][0]['userCount'];
+      // 투표 진행여부 true => 투표끝 / false => 투표 진행중
+      bool is_complete = response.data['result'][0]['complete'];
+
+      voteInfo.is_anonymous = await response.data['result'][0]['anonymous'];
+      voteInfo.is_multiple_choice =
+          await response.data['result'][0]['multipleChoice'];
+      voteInfo.dead_date = await response.data['result'][0]['deadDate'];
+      voteInfo.dead_time = await response.data['result'][0]['deadTime'];
+      isDate = await response.data['result'][0]['date'];
+      isTime = await response.data['result'][0]['time'];
+      isLocation = await response.data['result'][0]['location'];
+
+      for (var user in response.data['result'][0]['users']) {
+        if (user['userId'] == loginState.id) {
+          userName = user['nickname'];
+          userId = user['userId'].toString();
+          break;
+        }
+      }
+      print(voteInfo);
+      print(voteInfo);
+      print(voteInfo);
+      print(voteInfo);
+      print(voteInfo);
+      print(voteInfo);
+      print(voteInfo);
+      final voteinfo = ref.watch(voteInfoProvider);
+      print(voteinfo.is_anonymous);
+      print(voteinfo.is_multiple_choice);
+      print(voteinfo.dead_date);
+      print(voteinfo.dead_time);
+      setState(() {});
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  void getChat() async {
+    final Dio dio = Dio();
+    var response = await dio.get('$server/api/promise/chat/${widget.id}');
+
+    print(response.data['result']);
   }
 
   @override
   void initState() {
     super.initState();
     getChatRoom();
+    getChat();
 
     client = StompClient(
         config: StompConfig.sockJS(
@@ -177,9 +255,11 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
             },
           ),
           actions: [
-            IconButton(onPressed: () {
-              _scaffoldKey.currentState?.openEndDrawer();
-            }, icon: const Icon(Icons.menu, color: Colors.black))
+            IconButton(
+                onPressed: () {
+                  _scaffoldKey.currentState?.openEndDrawer();
+                },
+                icon: const Icon(Icons.menu, color: Colors.black))
           ],
         ),
         endDrawer: RightModal(id: widget.id),
@@ -213,11 +293,15 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                                 text: '일시 | ', color: AppColors.grey500),
                             if (chatRoomInfo['promiseDate'] == null ||
                                 chatRoomInfo['promiseDate'] == '미정')
-                              Vote(
-                                voteType: VoteType.Date,
-                                roomId: widget.id,
-                                // isVote: votesDate
-                              )
+                              if (isDate == null)
+                                const ChatHeadText(
+                                    text: '...', color: Colors.black)
+                              else
+                                Vote(
+                                  voteType: VoteType.Date,
+                                  roomId: widget.id,
+                                  isVote: isDate,
+                                )
                             else
                               ChatHeadText(
                                   text:
@@ -233,12 +317,17 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                           children: [
                             const ChatHeadText(
                                 text: '시간 | ', color: AppColors.grey500),
-                            if (chatRoomInfo['promiseTime'] == '미정')
-                              Vote(
-                                voteType: VoteType.Time,
-                                roomId: widget.id,
-                                // isVote: votesTime
-                              )
+                            if (chatRoomInfo['promiseTime'] == null ||
+                                chatRoomInfo['promiseTime'] == '미정')
+                              if (isTime == null)
+                                const ChatHeadText(
+                                    text: '...', color: Colors.black)
+                              else
+                                Vote(
+                                  voteType: VoteType.Time,
+                                  roomId: widget.id,
+                                  isVote: isTime,
+                                )
                             else
                               ChatHeadText(
                                   text: chatRoomInfo['promiseTime'] ?? '...',
@@ -252,12 +341,17 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                           children: [
                             const ChatHeadText(
                                 text: '장소 | ', color: AppColors.grey500),
-                            if (chatRoomInfo['promiseLocation'] == '미정')
-                              Vote(
-                                voteType: VoteType.Location,
-                                roomId: widget.id,
-                                // isVote : votesLocation
-                              )
+                            if (chatRoomInfo['promiseLocation'] == null ||
+                                chatRoomInfo['promiseLocation'] == '미정')
+                              if (isLocation == null)
+                                const ChatHeadText(
+                                    text: '...', color: Colors.black)
+                              else
+                                Vote(
+                                  voteType: VoteType.Location,
+                                  roomId: widget.id,
+                                  isVote: isLocation,
+                                )
                             else
                               ChatHeadText(
                                   text:

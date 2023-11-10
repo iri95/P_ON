@@ -5,15 +5,30 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final promiseProvider = StateNotifierProvider<PromiseNotifier, Promise>((ref) => PromiseNotifier());
 
 class Friends {
-  final String id;
-  final String userImage;
-  final String userName;
+  bool followBack;
+  int id;
+  String profileImage;
+  String nickName;
+  String privacy;
+
 
   Friends({
+    required this.followBack,
     required this.id,
-    required this.userImage,
-    required this.userName,
+    required this.profileImage,
+    required this.nickName,
+    required this.privacy,
 });
+
+  factory Friends.fromJson(Map<String, dynamic> json) {
+    return Friends(
+      followBack: json['followBack'],
+      id: json['follow']['id'],
+      profileImage: json['follow']['profileImage'],
+      nickName: json['follow']['nickName'],
+      privacy: json['follow']['privacy'],
+    );
+  }
 }
 
 class Promise {
@@ -49,20 +64,25 @@ class PromiseNotifier extends StateNotifier<Promise> {
   }
 
   void addFriends(Friends friends) {
-    state = Promise(
-        promise_title: state.promise_title,
-        selected_friends: List.from(state.selected_friends ?? [])..add(friends),
-        promise_date: state.promise_date,
-        promise_time: state.promise_time,
-        promise_location: state.promise_location,
-        promise_location_code: state.promise_location_code
-    );
+    if (state.selected_friends?.any((item) => item.id == friends.id) ?? false) {
+      return;
+    } else {
+      state = Promise(
+          promise_title: state.promise_title,
+          selected_friends: List.from(state.selected_friends ?? [])..add(friends),
+          promise_date: state.promise_date,
+          promise_time: state.promise_time,
+          promise_location: state.promise_location,
+          promise_location_code: state.promise_location_code
+      );
+    }
+
   }
 
-  void removeFriends(String friendId) {
+  void removeFriends(Friends friend) {
     state = Promise(
-      promise_title: state.promise_title,
-        selected_friends: state.selected_friends?.where((friend) => friend.id != friendId).toList(),
+        promise_title: state.promise_title,
+        selected_friends: state.selected_friends?.where((item) => item.id != friend.id).toList(),
         promise_date: state.promise_date,
         promise_time: state.promise_time,
         promise_location: state.promise_location,

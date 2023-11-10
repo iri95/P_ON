@@ -1,7 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
 import 'dart:async';
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:p_on/common/constant/app_colors.dart';
 import 'package:p_on/screen/main/tab/promise_room/vo_naver_headers.dart';
@@ -37,7 +36,7 @@ class _LastCreatePromiseState extends ConsumerState<LastCreatePromise> {
       builder: (context, child) {
         return Theme(
           data: Theme.of(context).copyWith(
-              colorScheme: ColorScheme.light(
+              colorScheme: const ColorScheme.light(
                 primary: AppColors.mainBlue2,
                 onPrimary: Colors.white,
                 onSurface: Colors.black,
@@ -77,16 +76,16 @@ class _LastCreatePromiseState extends ConsumerState<LastCreatePromise> {
         minuteInterval: TimePickerInterval.FIVE,
         iosStylePicker: true,
         okText: '확인',
-        okStyle: TextStyle(color: AppColors.mainBlue2),
+        okStyle: const TextStyle(color: AppColors.mainBlue2),
         cancelText: '취소',
-        cancelStyle: TextStyle(color: AppColors.mainBlue2),
+        cancelStyle: const TextStyle(color: AppColors.mainBlue2),
         hourLabel: '시',
         minuteLabel: '분',
         accentColor: AppColors.mainBlue2));
   }
 
   void _searchPlace() async {
-    final result = await Nav.push(SearchNaver());
+    final result = await Nav.push(const SearchNaver());
     if (result != null) {
       placeController.text = result
           .replaceAll(RegExp(r'<[^>]*>'), '')
@@ -120,13 +119,14 @@ class _LastCreatePromiseState extends ConsumerState<LastCreatePromise> {
 
   @override
   Widget build(BuildContext context) {
-    return
-        // MaterialApp(
-        // debugShowCheckedModeBanner: false,
-        // home: SafeArea(
-        //   child:
-        Scaffold(
+    return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Nav.pop(context);
+          },
+        ),
         title: '약속 생성'.text.bold.black.make(),
         backgroundColor: Colors.white,
         iconTheme: const IconThemeData(color: Colors.black),
@@ -173,7 +173,6 @@ class _LastCreatePromiseState extends ConsumerState<LastCreatePromise> {
 
   Widget _buildTextField(String label, TextEditingController controller,
       FocusNode node, FocusNode? nextNode) {
-    final dio = Dio();
     return Column(
       children: [
         Container(

@@ -4,7 +4,7 @@ import 'package:p_on/common/common.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class RightModal extends StatefulWidget {
-  String id;
+  int id;
 
   RightModal({super.key, required this.id});
 
@@ -22,7 +22,7 @@ class _RightModalState extends State<RightModal> {
         child: SafeArea(
             child: Column(
           children: [
-            Text(widget.id),
+            Text('${widget.id}'),
             Text('모두의 일정'),
             Container(
               margin: EdgeInsets.all(10),
