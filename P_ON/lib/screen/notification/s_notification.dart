@@ -2,7 +2,6 @@ import 'package:p_on/screen/notification/w_notification_item.dart';
 import 'package:flutter/material.dart';
 
 import 'd_notification.dart';
-import 'notifications_dummy.dart';
 
 import 'package:p_on/common/common.dart';
 
@@ -15,6 +14,8 @@ import 'package:p_on/screen/main/user/token_state.dart';
 
 import './vo/vo_notification.dart';
 
+import 'dart:convert';
+
 class NotificationScreen extends ConsumerStatefulWidget {
   const NotificationScreen({super.key});
 
@@ -23,10 +24,8 @@ class NotificationScreen extends ConsumerStatefulWidget {
 }
 
 class _NotificationScreenState extends ConsumerState<NotificationScreen> {
-  // TODO: 알림 | 읽은 알림 모두 삭제
+  // 읽은 알림 삭제
   Future<void> deleteIsRead() async {
-    print('읽은거 다삭제');
-
     final loginState = ref.read(loginStateProvider);
     final token = loginState.serverToken;
     final id = loginState.id;
@@ -45,79 +44,20 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
     }
 
     final apiService = ApiService();
-    try {
-      await apiService.sendRequest(method: '', path: '/api/', headers: headers);
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  // TODO: 알림 | 모두 읽음 처리
-  Future<void> allRead() async {
-    print('모두 읽음');
-    final loginState = ref.read(loginStateProvider);
-    final token = loginState.serverToken;
-    final id = loginState.id;
-
-    var headers = {'Authorization': '$token', 'id': '$id'};
-
-    if (token == null) {
-      await kakaoLogin(ref);
-      await fetchToken(ref);
-
-      final newToken = ref.read(loginStateProvider).serverToken;
-      final newId = ref.read(loginStateProvider).id;
-
-      headers['Authorization'] = '$newToken';
-      headers['id'] = '$newId';
-    }
-
-    final apiService = ApiService();
-    try {
-      await apiService.sendRequest(method: '', path: '/api/', headers: headers);
-    } catch (e) {
-      print(e);
-    }
-  }
-
-  // TODO: 알림 | 누른거 읽음 처리
-  Future<void> oneRead(pressId) async {
-    print('하나 읽음');
-    final loginState = ref.read(loginStateProvider);
-    final token = loginState.serverToken;
-    final id = loginState.id;
-
-    var headers = {'Authorization': '$token', 'id': '$id'};
-
-    if (token == null) {
-      await kakaoLogin(ref);
-      await fetchToken(ref);
-
-      final newToken = ref.read(loginStateProvider).serverToken;
-      final newId = ref.read(loginStateProvider).id;
-
-      headers['Authorization'] = '$newToken';
-      headers['id'] = '$newId';
-    }
-
-    final apiService = ApiService();
-    var data = {
-      // 누른 알림 아이디 전달 key 변동 할 수 있음
-      id: pressId
-    };
     try {
       await apiService.sendRequest(
-          method: '', path: '/api/', headers: headers, data: data);
+          method: 'DELETE', path: '/api/alarm/delete/read', headers: headers);
+
+      setState(() {
+        notifications.removeWhere((notification) => notification.isRead);
+      });
     } catch (e) {
       print(e);
     }
-    // 하나 보여주는건데 일단 지움
-    // NotificationDialog([notificationDummies[pressId]]).show();
   }
 
-// TODO: 알림 | 내 알림 가져오기
-  Future<List<MyNotification>> fetchNotifications(WidgetRef ref) async {
-    print('ㅇㅅㅇ');
+  // 모두 읽음
+  Future<void> allRead() async {
     final loginState = ref.read(loginStateProvider);
     final token = loginState.serverToken;
     final id = loginState.id;
@@ -137,21 +77,95 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
 
     final apiService = ApiService();
     try {
-      await apiService.sendRequest(method: '', path: '/api/', headers: headers);
+      await apiService.sendRequest(
+          method: 'PUT', path: '/api/alarm/read-all', headers: headers);
+      setState(() {
+        for (var notification in notifications) {
+          notification.isRead = true;
+        }
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  // 하나읽음
+  Future<void> oneRead(pressId) async {
+    final loginState = ref.read(loginStateProvider);
+    final token = loginState.serverToken;
+    final id = loginState.id;
+
+    var headers = {'Authorization': '$token', 'id': '$id'};
+
+    if (token == null) {
+      await kakaoLogin(ref);
+      await fetchToken(ref);
+
+      final newToken = ref.read(loginStateProvider).serverToken;
+      final newId = ref.read(loginStateProvider).id;
+
+      headers['Authorization'] = '$newToken';
+      headers['id'] = '$newId';
+    }
+
+    final apiService = ApiService();
+    var data = {'alarmId': pressId};
+    try {
+      await apiService.sendRequest(
+          method: 'PUT',
+          path: '/api/alarm/read-only',
+          headers: headers,
+          data: data);
+      setState(() {
+        for (var notification in notifications) {
+          if (notification.id == pressId) {
+            notification.isRead = true;
+            break;
+          }
+        }
+      });
     } catch (e) {
       print(e);
     }
 
-    // FIXME: 이런 형태로 받아야함 아니면 json 변환
-    var dummynotification = <MyNotification>[
-      MyNotification('타입1', '내용1', DateTime.now().subtract(27.minutes),
-          isRead: false),
-      MyNotification('타입2', '내용2', DateTime.now().subtract(27.minutes),
-          isRead: false),
-      MyNotification('타입3', '내용3', DateTime.now().subtract(27.minutes),
-          isRead: false)
-    ];
-    return dummynotification;
+    // TODO: 눌렀을 때 삭제하는 방법도 고민
+    // 하나 보여주는거
+    // NotificationDialog([notifications[pressId]]).show();
+  }
+
+  // JSON 데이터 파싱
+  List<MyNotification> parseNotifications(List<dynamic> jsonList) {
+    return jsonList.map((json) => MyNotification.fromJson(json)).toList();
+  }
+
+  Future<List<MyNotification>> fetchNotifications(WidgetRef ref) async {
+    final loginState = ref.read(loginStateProvider);
+    final token = loginState.serverToken;
+    final id = loginState.id;
+
+    var headers = {'Authorization': '$token', 'id': '$id'};
+
+    if (token == null) {
+      await kakaoLogin(ref);
+      await fetchToken(ref);
+
+      final newToken = ref.read(loginStateProvider).serverToken;
+      final newId = ref.read(loginStateProvider).id;
+
+      headers['Authorization'] = '$newToken';
+      headers['id'] = '$newId';
+    }
+
+    final apiService = ApiService();
+    try {
+      Response response = await apiService.sendRequest(
+          method: 'GET', path: '/api/alarm', headers: headers);
+      var MyNotifications = parseNotifications(response.data['result'][0]);
+      return MyNotifications;
+    } catch (e) {
+      print(e);
+      return [];
+    }
   }
 
   List<MyNotification> notifications = [];
@@ -159,8 +173,11 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
 
   @override
   void initState() {
-    super.initState();
+    // FIXME: 한번 넣고 에러보고 리로드
+    // ref.read(loginStateProvider.notifier).updateId("1");
+
     _fetchData();
+    super.initState();
   }
 
   void _fetchData() async {
@@ -169,7 +186,6 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
       this.notifications = notifications;
       isLoading = false;
     });
-    print(notifications[0].description);
   }
 
   @override
@@ -282,7 +298,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                           notification: notifications[index],
                           onTap: () {
                             // 하나 읽음
-                            oneRead(index);
+                            oneRead(notifications[index].id);
                           },
                         ),
                       ))
