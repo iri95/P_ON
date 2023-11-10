@@ -4,6 +4,9 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
+import com.wanyviny.user.domain.alarm.ALARM_TYPE;
+import com.wanyviny.user.domain.alarm.entity.Alarm;
+import com.wanyviny.user.domain.alarm.repository.AlarmRepository;
 import com.wanyviny.user.domain.follow.dto.FollowDto;
 import com.wanyviny.user.domain.follow.entity.Follow;
 import com.wanyviny.user.domain.follow.repository.FollowRepository;
@@ -21,6 +24,7 @@ public class FollowServiceImpl implements FollowService {
 
     private final FollowRepository followRepository;
     private final UserRepository userRepository;
+    private final AlarmRepository alarmRepository;
     private final FirebaseMessaging firebaseMessaging;
 
     @Override
@@ -70,6 +74,7 @@ public class FollowServiceImpl implements FollowService {
             String body = user.getNickname() + "님이 당신을 팔로우했습니다.";
             String token = following.getPhoneId();
 
+            postAlarm(user.getNickname(), following);
             firebasePushAlarm(title, body, token);
         }
     }
@@ -106,5 +111,13 @@ public class FollowServiceImpl implements FollowService {
             throw new IllegalArgumentException("token에 해당하는 유저를 찾을 수 없습니다.");
         }
 
+    }
+
+    public void postAlarm(String follower, User user) {
+        alarmRepository.save(Alarm.builder()
+                .user(user)
+                .alarmMessage(follower + "님이 당신을 팔로우했습니다.")
+                .alarmType(ALARM_TYPE.FRIEND)
+                .build());
     }
 }
