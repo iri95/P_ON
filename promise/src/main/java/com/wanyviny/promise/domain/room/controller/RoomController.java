@@ -77,7 +77,7 @@ public class RoomController {
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
 
-    @PutMapping("/{roomId}")
+    @PutMapping("/{roomId}/join")
     @Operation(summary = "약속방 들어가기", description = "약속방에 들어갑니다.")
     public ResponseEntity<BasicResponse> joinRoom(
             @RequestHeader("id") Long userId,
@@ -95,7 +95,7 @@ public class RoomController {
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
 
-    @PutMapping("/{roomId}")
+    @PutMapping("/{roomId}/exit")
     @Operation(summary = "약속방 나가기", description = "약속방에서 나갑니다.")
     public ResponseEntity<BasicResponse> exitRoom(
             @RequestHeader("id") Long userId,
