@@ -154,7 +154,7 @@ public class AlarmController {
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
                 .httpStatus(HttpStatus.OK)
-                .message("카카오에서 받은 유저 정보 조회 성공")
+                .message("읽은 알람 삭제 완료!")
                 .build();
 
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
@@ -172,7 +172,7 @@ public class AlarmController {
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
                 .httpStatus(HttpStatus.OK)
-                .message("카카오에서 받은 유저 정보 조회 성공")
+                .message("모든 알람 삭제 완료!")
                 .build();
 
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
