@@ -7,7 +7,6 @@ import com.google.firebase.messaging.Notification;
 import com.wanyviny.user.domain.follow.dto.FollowDto;
 import com.wanyviny.user.domain.follow.entity.Follow;
 import com.wanyviny.user.domain.follow.repository.FollowRepository;
-import com.wanyviny.user.domain.user.dto.UserDto;
 import com.wanyviny.user.domain.user.entity.User;
 import com.wanyviny.user.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -61,17 +60,18 @@ public class FollowServiceImpl implements FollowService {
         User following = userRepository.findById(followingId).orElseThrow(
                 () -> new IllegalArgumentException("followingId에 해당하는 유저가 없습니다.")
         );
+        if (!followRepository.existsFollowByUserId_IdAndFollowingId_Id(userId, followingId)) {
+            followRepository.save(Follow.builder()
+                    .userId(user)
+                    .followingId(following)
+                    .build());
 
-        followRepository.save(Follow.builder()
-                .userId(user)
-                .followingId(following)
-                .build());
+            String title = "FOLLOW!";
+            String body = user.getNickname() + "님이 당신을 팔로우했습니다.";
+            String token = following.getPhoneId();
 
-        String title = "FOLLOW!";
-        String body = user.getNickname() + "님이 당신을 팔로우했습니다.";
-        String token = following.getPhoneId();
-
-        firebasePushAlarm(title, body, token);
+            firebasePushAlarm(title, body, token);
+        }
     }
 
     @Override
@@ -83,8 +83,8 @@ public class FollowServiceImpl implements FollowService {
         User following = userRepository.findById(followingId).orElseThrow(
                 () -> new IllegalArgumentException("followingId에 해당하는 유저가 없습니다.")
         );
-
-        followRepository.deleteByUserIdAndFollowingId(user, following);
+        if (followRepository.existsFollowByUserId_IdAndFollowingId_Id(userId, followingId))
+            followRepository.deleteByUserIdAndFollowingId(user, following);
     }
 
     @Transactional
