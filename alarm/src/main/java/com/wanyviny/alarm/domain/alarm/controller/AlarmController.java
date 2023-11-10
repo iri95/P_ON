@@ -142,6 +142,24 @@ public class AlarmController {
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
 
+    // 읽은 알림 모두 삭제 -> 사용자의 Id로 알림을 모두 삭제
+    @DeleteMapping("/delete/read")
+    @Operation(summary = " 읽은 알람 삭제 처리", description = "유저의 모든 알람을 삭제 처리합니다.(헤더에 id 필요)")
+    public ResponseEntity<BasicResponse> deleteAlarmRead(HttpServletRequest request) {
+        Long userId = Long.parseLong(request.getHeader("id"));
+
+        alarmService.deleteAlarmRead(userId);
+
+
+        BasicResponse basicResponse = BasicResponse.builder()
+                .code(HttpStatus.OK.value())
+                .httpStatus(HttpStatus.OK)
+                .message("카카오에서 받은 유저 정보 조회 성공")
+                .build();
+
+        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+    }
+
     // 알림 모두 삭제 -> 사용자의 Id로 알림을 모두 삭제
     @DeleteMapping("/delete/all")
     @Operation(summary = " 모든 알람 삭제 처리", description = "유저의 모든 알람을 삭제 처리합니다.(헤더에 id 필요)")

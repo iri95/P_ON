@@ -16,7 +16,14 @@ public interface AlarmRepository extends JpaRepository<Alarm, Long> {
 
     List<Alarm> findByUserIdAndAlarmType(Long userId, ALARM_TYPE alarmType);
 
+    @Transactional
     void deleteByAlarmId(Long alarmId);
+
+    @Transactional
+    void deleteByUserId(Long userId);
+
+    @Transactional
+    void deleteByUserIdAndAlarmStateTrue(Long userId);
 
     @Transactional
     @Modifying
@@ -28,5 +35,5 @@ public interface AlarmRepository extends JpaRepository<Alarm, Long> {
     @Query("UPDATE Alarm a set a.alarmState = true where a.user.id = :userId")
     void updateStateAllByUserId(Long userId);
 
-    void deleteByUserId(Long userId);
+
 }

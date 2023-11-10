@@ -81,6 +81,11 @@ public class AlarmServiceImpl implements AlarmService{
     }
 
     @Override
+    public void deleteAlarmRead(Long userId) {
+        alarmRepository.deleteByUserIdAndAlarmStateTrue(userId);
+    }
+
+    @Override
     public void deleteAlarmAll(Long userId) {
         alarmRepository.deleteByUserId(userId);
     }
