@@ -5,6 +5,7 @@ import com.wanyviny.alarm.domain.alarm.dto.AlarmDto;
 import com.wanyviny.alarm.domain.alarm.service.AlarmService;
 import com.wanyviny.alarm.domain.common.BasicResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -97,7 +98,7 @@ public class AlarmController {
 
     @PutMapping("/read-only")
     @Operation(summary = "알람 단일 읽음 처리", description = "하나의 알람을 읽음 처리합니다.")
-    public ResponseEntity<BasicResponse> putAlarmState(HttpServletRequest request, @RequestBody Map<String, String> alarmId) {
+    public ResponseEntity<BasicResponse> putAlarmState(HttpServletRequest request,@Parameter @RequestBody Map<String, String> alarmId) {
 
         alarmService.putAlarmState(Long.parseLong(alarmId.get("alarmId")));
 
