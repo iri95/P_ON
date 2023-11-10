@@ -102,6 +102,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    @Transactional
     public RoomResponse.Join joinRoom(Long userId, Long roomId) {
 
         User user = userRepository.findById(userId).orElseThrow();
@@ -134,6 +135,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    @Transactional
     public List<RoomResponse.Exit> exitRoom(Long userId, Long roomId) {
 
         userRoomRepository.deleteByUserIdAndRoomId(userId, roomId);
@@ -150,5 +152,10 @@ public class RoomServiceImpl implements RoomService {
     public void deleteRoom(Long roomId) {
 
         roomRepository.deleteById(roomId);
+    }
+
+    private boolean isComplete() {
+
+        return true;
     }
 }

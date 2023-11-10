@@ -136,6 +136,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public Modify modifyItem(Long userId, Long roomId, ItemRequest.Modify request) {
 
         Room room = roomRepository.findById(roomId).orElseThrow();

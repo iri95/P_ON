@@ -4,6 +4,8 @@ import com.wanyviny.promise.domain.chat.dto.ChatRequest;
 import com.wanyviny.promise.domain.chat.dto.ChatResponse;
 import com.wanyviny.promise.domain.chat.service.ChatService;
 import com.wanyviny.promise.domain.common.BasicResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -19,12 +21,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@Tag(name = "채팅", description = "채팅 관련 API")
 public class ChatController {
 
     private final ChatService chatService;
 
     @MessageMapping("/api/promise/chat/{roomId}")
     @SendTo("/topic/chat/{roomId}")
+    @Operation(summary = "채팅 발신", description = "채팅을 전송 합니다.")
     public ResponseEntity<BasicResponse> sendChat(
             @RequestHeader("id") String senderId,
             @DestinationVariable String roomId,
@@ -43,6 +47,7 @@ public class ChatController {
     }
 
     @GetMapping("/api/promise/chat/{roomId}")
+    @Operation(summary = "전체 채팅 조회", description = "전체 채팅을 조회 합니다.")
     public ResponseEntity<BasicResponse> findAllChat(@PathVariable String roomId) {
 
         List<ChatResponse> response = chatService.findAllChat(roomId);

@@ -4,6 +4,7 @@ import com.wanyviny.promise.domain.common.BasicResponse;
 import com.wanyviny.promise.domain.item.dto.ItemRequest;
 import com.wanyviny.promise.domain.item.dto.ItemResponse;
 import com.wanyviny.promise.domain.item.service.ItemService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
@@ -26,15 +27,16 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping("/{roomId}")
+    @Operation(summary = "투표 항목 생성", description = "투표 항목을 생성 합니다.")
     public ResponseEntity<BasicResponse> createItem(
-            @RequestHeader("id") Long userId,
+            @RequestHeader("id") String userId,
             @PathVariable Long roomId,
             @RequestBody ItemRequest.Create request) {
 
-        ItemResponse.Create response = itemService.createItem(userId, roomId, request);
+        ItemResponse.Create response = itemService.createItem(Long.parseLong(userId), roomId, request);
 
         BasicResponse basicResponse = BasicResponse.builder()
-                .message("투표 생성 성공")
+                .message("투표 항목 생성 성공")
                 .count(1)
                 .result(Collections.singletonList(response))
                 .build();
@@ -43,12 +45,13 @@ public class ItemController {
     }
 
     @GetMapping("/{roomId}")
+    @Operation(summary = "투표 항목 조회", description = "투표 항목을 조회 합니다.")
     public ResponseEntity<BasicResponse> findItem(@PathVariable Long roomId) {
 
         ItemResponse.Find response = itemService.findItem(roomId);
 
         BasicResponse basicResponse = BasicResponse.builder()
-                .message("투표 조회 성공")
+                .message("투표 항목 조회 성공")
                 .count(1)
                 .result(Collections.singletonList(response))
                 .build();
@@ -57,6 +60,7 @@ public class ItemController {
     }
 
     @PutMapping("/{roomId}")
+    @Operation(summary = "투표 항목 수정", description = "투표 항목을 수정 합니다.")
     public ResponseEntity<BasicResponse> modifyItem(
             @RequestHeader("id") Long userId,
             @PathVariable Long roomId,
@@ -65,7 +69,7 @@ public class ItemController {
         ItemResponse.Modify response = itemService.modifyItem(userId, roomId, request);
 
         BasicResponse basicResponse = BasicResponse.builder()
-                .message("투표 수정 성공")
+                .message("투표 항목 수정 성공")
                 .count(1)
                 .result(Collections.singletonList(response))
                 .build();
