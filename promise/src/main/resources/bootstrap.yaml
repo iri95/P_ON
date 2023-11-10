@@ -5,4 +5,4 @@ spring:
   cloud:
     config:
       name: promise
-      profile: dev
+      profile: prob
