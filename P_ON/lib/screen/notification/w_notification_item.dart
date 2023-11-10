@@ -48,7 +48,7 @@ class _NotificationItemWidgetState extends State<NotificationItemWidget> {
                       // ),
                       // 분류
                       widget.notification.type.text
-                          .size(18)
+                          .size(16)
                           .color(AppColors.grey700)
                           .make(),
                       emptyExpanded,
@@ -67,7 +67,10 @@ class _NotificationItemWidgetState extends State<NotificationItemWidget> {
               ),
             ),
             // 메시지
-            widget.notification.description.text.make().pOnly(left: leftPadding)
+            widget.notification.description.text
+                .size(18)
+                .make()
+                .pOnly(left: leftPadding)
           ],
         ),
       ),

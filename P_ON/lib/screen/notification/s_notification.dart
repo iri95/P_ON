@@ -15,6 +15,8 @@ import 'package:p_on/screen/main/user/token_state.dart';
 
 import './vo/vo_notification.dart';
 
+import 'dart:convert';
+
 class NotificationScreen extends ConsumerStatefulWidget {
   const NotificationScreen({super.key});
 
@@ -52,14 +54,15 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
     }
   }
 
-  // TODO: 알림 | 모두 읽음 처리
   Future<void> allRead() async {
     print('모두 읽음');
     final loginState = ref.read(loginStateProvider);
     final token = loginState.serverToken;
     final id = loginState.id;
 
+    // FIXME: 테스트용
     var headers = {'Authorization': '$token', 'id': '$id'};
+    // var headers = {'Authorization': '$token', 'id': '1'};
 
     if (token == null) {
       await kakaoLogin(ref);
@@ -74,20 +77,23 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
 
     final apiService = ApiService();
     try {
-      await apiService.sendRequest(method: '', path: '/api/', headers: headers);
+      await apiService.sendRequest(
+          method: 'PUT', path: '/api/alarm/read-all', headers: headers);
+      // TODO: 여기도 비동기로 화면에서 읽음 처리 보여주기
     } catch (e) {
       print(e);
     }
   }
 
-  // TODO: 알림 | 누른거 읽음 처리
   Future<void> oneRead(pressId) async {
-    print('하나 읽음');
+    print('하나 읽음 ${pressId}');
     final loginState = ref.read(loginStateProvider);
     final token = loginState.serverToken;
     final id = loginState.id;
 
+    // FIXME: 테스트용
     var headers = {'Authorization': '$token', 'id': '$id'};
+    // var headers = {'Authorization': '$token', 'id': '1'};
 
     if (token == null) {
       await kakaoLogin(ref);
@@ -103,26 +109,36 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
     final apiService = ApiService();
     var data = {
       // 누른 알림 아이디 전달 key 변동 할 수 있음
-      id: pressId
+      'alarmId': pressId
     };
     try {
       await apiService.sendRequest(
-          method: '', path: '/api/', headers: headers, data: data);
+          method: 'PUT',
+          path: '/api/alarm/read-only',
+          headers: headers,
+          data: data);
+      // TODO: 뿌롱뜨에서 비동기 처리해서 바로 보이게 해야함
     } catch (e) {
       print(e);
     }
+    // TODO: 눌렀을 때 삭제하는 방법도 고민
     // 하나 보여주는건데 일단 지움
     // NotificationDialog([notificationDummies[pressId]]).show();
   }
 
-// TODO: 알림 | 내 알림 가져오기
+  // JSON 데이터 파싱
+  List<MyNotification> parseNotifications(List<dynamic> jsonList) {
+    return jsonList.map((json) => MyNotification.fromJson(json)).toList();
+  }
+
   Future<List<MyNotification>> fetchNotifications(WidgetRef ref) async {
-    print('ㅇㅅㅇ');
     final loginState = ref.read(loginStateProvider);
     final token = loginState.serverToken;
     final id = loginState.id;
 
+    // FIXME: 테스트용 아이디 1
     var headers = {'Authorization': '$token', 'id': '$id'};
+    // var headers = {'Authorization': '$token', 'id': '1'};
 
     if (token == null) {
       await kakaoLogin(ref);
@@ -137,21 +153,14 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
 
     final apiService = ApiService();
     try {
-      await apiService.sendRequest(method: '', path: '/api/', headers: headers);
+      Response response = await apiService.sendRequest(
+          method: 'GET', path: '/api/alarm', headers: headers);
+      var MyNotifications = parseNotifications(response.data['result'][0]);
+      return MyNotifications;
     } catch (e) {
       print(e);
+      return [];
     }
-
-    // FIXME: 이런 형태로 받아야함 아니면 json 변환
-    var dummynotification = <MyNotification>[
-      MyNotification('타입1', '내용1', DateTime.now().subtract(27.minutes),
-          isRead: false),
-      MyNotification('타입2', '내용2', DateTime.now().subtract(27.minutes),
-          isRead: false),
-      MyNotification('타입3', '내용3', DateTime.now().subtract(27.minutes),
-          isRead: false)
-    ];
-    return dummynotification;
   }
 
   List<MyNotification> notifications = [];
@@ -169,7 +178,6 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
       this.notifications = notifications;
       isLoading = false;
     });
-    print(notifications[0].description);
   }
 
   @override
