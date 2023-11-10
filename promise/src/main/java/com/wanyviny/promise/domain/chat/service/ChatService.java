@@ -6,6 +6,6 @@ import java.util.List;
 
 public interface ChatService {
 
-    ChatResponse sendChat(String senderId, String roomId, ChatRequest request);
+    ChatResponse sendChat(Long senderId, String roomId, ChatRequest request);
     List<ChatResponse> findAllChat(String roomId);
 }

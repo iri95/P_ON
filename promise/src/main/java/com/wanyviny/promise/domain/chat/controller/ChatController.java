@@ -30,7 +30,7 @@ public class ChatController {
     @SendTo("/topic/chat/{roomId}")
     @Operation(summary = "채팅 발신", description = "채팅을 전송 합니다.")
     public ResponseEntity<BasicResponse> sendChat(
-            @RequestHeader("id") String senderId,
+            @RequestHeader("id") Long senderId,
             @DestinationVariable String roomId,
             @RequestBody ChatRequest request
     ) {

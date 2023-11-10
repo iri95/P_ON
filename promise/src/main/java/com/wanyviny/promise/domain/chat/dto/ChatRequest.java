@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ChatRequest {
 
-    private String sender;
     private ChatType chatType;
     private String content;
 }

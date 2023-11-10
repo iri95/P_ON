@@ -4,6 +4,8 @@ import com.wanyviny.promise.domain.chat.dto.ChatRequest;
 import com.wanyviny.promise.domain.chat.dto.ChatResponse;
 import com.wanyviny.promise.domain.chat.entity.Chat;
 import com.wanyviny.promise.domain.chat.repository.ChatRepository;
+import com.wanyviny.promise.domain.user.entity.User;
+import com.wanyviny.promise.domain.user.repository.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -16,14 +18,17 @@ public class ChatServiceImpl implements ChatService {
 
     private final ModelMapper modelMapper;
     private final ChatRepository chatRepository;
+    private final UserRepository userRepository;
 
     @Override
-    public ChatResponse sendChat(String senderId, String roomId, ChatRequest request) {
+    public ChatResponse sendChat(Long senderId, String roomId, ChatRequest request) {
+
+        User user = userRepository.findById(senderId).orElseThrow();
 
         Chat chat = Chat.builder()
                 .roomId(roomId)
-                .senderId(senderId)
-                .sender(request.getSender())
+                .senderId(String.valueOf(senderId))
+                .sender(user.getNickname())
                 .chatType(request.getChatType())
                 .content(request.getContent())
                 .build();
