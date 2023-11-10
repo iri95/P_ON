@@ -11,6 +11,8 @@ import com.wanyviny.promise.domain.item.repository.ItemRepository;
 import com.wanyviny.promise.domain.room.entity.Room;
 import com.wanyviny.promise.domain.room.repository.RoomRepository;
 import com.wanyviny.promise.domain.room.repository.UserRoomRepository;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,9 +35,6 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public ItemResponse.Create createItem(Long userId, Long roomId, Create request) {
-
-        System.out.println(request.isAnonymous());
-        System.out.println(request.isMultipleChoice());
 
         Room room = roomRepository.findById(roomId).orElseThrow();
 
@@ -98,6 +97,7 @@ public class ItemServiceImpl implements ItemService {
             response.setLocation(true);
         }
 
+        response.setComplete(isComplete(room.getDeadDate(), room.getDeadTime()));
         return response;
     }
 
@@ -205,6 +205,24 @@ public class ItemServiceImpl implements ItemService {
             response.setLocation(true);
         }
 
+        response.setComplete(isComplete(room.getDeadDate(), room.getDeadTime()));
         return response;
+    }
+
+    private boolean isComplete(String deadDate, String deadTime) {
+
+        String date = deadDate.substring(0, 10);
+        String time = deadTime.substring(3);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH시 mm분");
+        LocalDateTime localDateTime = LocalDateTime.parse(date + " " + time, formatter);
+
+        if (deadTime.startsWith("오후")) {
+
+            localDateTime = localDateTime.plusHours(12);
+        }
+
+//        return localDateTime.compareTo(LocalDateTime.now()) > 0 ? false : true;
+        return !localDateTime.isAfter(LocalDateTime.now());
     }
 }

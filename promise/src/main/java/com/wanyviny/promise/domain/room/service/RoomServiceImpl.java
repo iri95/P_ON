@@ -10,6 +10,8 @@ import com.wanyviny.promise.domain.room.repository.RoomRepository;
 import com.wanyviny.promise.domain.room.repository.UserRoomRepository;
 import com.wanyviny.promise.domain.user.entity.User;
 import com.wanyviny.promise.domain.user.repository.UserRepository;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -62,6 +64,7 @@ public class RoomServiceImpl implements RoomService {
         response.setDate(itemRepository.existsByRoom_IdAndItemType(room.getId(), ItemType.DATE));
         response.setTime(itemRepository.existsByRoom_IdAndItemType(room.getId(), ItemType.TIME));
         response.setLocation(itemRepository.existsByRoom_IdAndItemType(room.getId(), ItemType.LOCATION));
+        response.setComplete(isComplete(room.getDeadDate(), room.getDeadTime()));
         response.setUsers(users);
 
         return response;
@@ -86,6 +89,7 @@ public class RoomServiceImpl implements RoomService {
         response.setDate(itemRepository.existsByRoom_IdAndItemType(roomId, ItemType.DATE));
         response.setTime(itemRepository.existsByRoom_IdAndItemType(roomId, ItemType.TIME));
         response.setLocation(itemRepository.existsByRoom_IdAndItemType(roomId, ItemType.LOCATION));
+        response.setComplete(isComplete(room.getDeadDate(), room.getDeadTime()));
         response.setUsers(users);
 
         return response;
@@ -129,6 +133,7 @@ public class RoomServiceImpl implements RoomService {
         response.setDate(itemRepository.existsByRoom_IdAndItemType(roomId, ItemType.DATE));
         response.setTime(itemRepository.existsByRoom_IdAndItemType(roomId, ItemType.TIME));
         response.setLocation(itemRepository.existsByRoom_IdAndItemType(roomId, ItemType.LOCATION));
+        response.setComplete(isComplete(room.getDeadDate(), room.getDeadTime()));
         response.setUsers(users);
 
         return response;
@@ -154,8 +159,20 @@ public class RoomServiceImpl implements RoomService {
         roomRepository.deleteById(roomId);
     }
 
-    private boolean isComplete() {
+    private boolean isComplete(String deadDate, String deadTime) {
 
-        return true;
+        String date = deadDate.substring(0, 10);
+        String time = deadTime.substring(3);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH시 mm분");
+        LocalDateTime localDateTime = LocalDateTime.parse(date + " " + time, formatter);
+
+        if (deadTime.startsWith("오후")) {
+
+            localDateTime = localDateTime.plusHours(12);
+        }
+
+//        return localDateTime.compareTo(LocalDateTime.now()) > 0 ? false : true;
+        return !localDateTime.isAfter(LocalDateTime.now());
     }
 }
