@@ -3,6 +3,7 @@ package com.wanyviny.promise.domain.item.service;
 import com.wanyviny.promise.domain.item.dto.ItemRequest;
 import com.wanyviny.promise.domain.item.dto.ItemRequest.Create;
 import com.wanyviny.promise.domain.item.dto.ItemResponse;
+import com.wanyviny.promise.domain.item.dto.ItemResponse.Find;
 import com.wanyviny.promise.domain.item.dto.ItemResponse.Modify;
 import com.wanyviny.promise.domain.item.entity.Item;
 import com.wanyviny.promise.domain.item.entity.ItemType;
@@ -10,6 +11,10 @@ import com.wanyviny.promise.domain.item.repository.ItemRepository;
 import com.wanyviny.promise.domain.room.entity.Room;
 import com.wanyviny.promise.domain.room.repository.RoomRepository;
 import com.wanyviny.promise.domain.room.repository.UserRoomRepository;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -89,6 +94,43 @@ public class ItemServiceImpl implements ItemService {
 
             response.setLocation(true);
         }
+
+        return response;
+    }
+
+    @Override
+    public Find findItem(Long roomId) {
+
+        List<Item> items = itemRepository.findAllByRoomId(roomId);
+        Room room = roomRepository.findById(roomId).orElseThrow();
+        ItemResponse.Find response = modelMapper.map(room, ItemResponse.Find.class);
+
+        List<String> date = new ArrayList<>();
+        List<String> time = new ArrayList<>();
+        List<Map<String, String>> locations = new ArrayList<>();
+
+        items.forEach(item -> {
+            if (item.getItemType().equals(ItemType.DATE)) {
+
+                date.add(item.getDate());
+
+            } else if (item.getItemType().equals(ItemType.TIME)) {
+
+                time.add(item.getTime());
+
+            } else {
+
+                Map<String, String> location = new HashMap<>();
+                location.put("location", item.getLocation());
+                location.put("lng", item.getLng());
+                location.put("lat", item.getLat());
+                locations.add(location);
+            }
+        });
+
+        response.setDate(date);
+        response.setTime(time);
+        response.setLocation(locations);
 
         return response;
     }

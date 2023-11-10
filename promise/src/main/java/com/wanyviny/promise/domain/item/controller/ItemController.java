@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -34,6 +35,20 @@ public class ItemController {
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .message("투표 생성 성공")
+                .count(1)
+                .result(Collections.singletonList(response))
+                .build();
+
+        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+    }
+
+    @GetMapping("/{roomId}")
+    public ResponseEntity<BasicResponse> findItem(@PathVariable Long roomId) {
+
+        ItemResponse.Find response = itemService.findItem(roomId);
+
+        BasicResponse basicResponse = BasicResponse.builder()
+                .message("투표 조회 성공")
                 .count(1)
                 .result(Collections.singletonList(response))
                 .build();
