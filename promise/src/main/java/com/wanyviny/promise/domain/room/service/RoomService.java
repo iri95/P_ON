@@ -9,5 +9,7 @@ public interface RoomService {
     RoomResponse.Create createRoom(Long userId, RoomRequest.Create request);
     RoomResponse.Find findRoom(Long roomId);
     List<RoomResponse.FindAll> findAllRoom(Long userId);
+    RoomResponse.Join joinRoom(Long userId, Long roomId);
+    List<RoomResponse.Exit> exitRoom(Long userId, Long roomId);
     void deleteRoom(Long roomId);
 }

@@ -82,4 +82,48 @@ public class RoomResponse {
         private String promiseLocation;
         private boolean read;
     }
+
+    @ToString
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @Schema(name = "RoomResponse.Join")
+    public static class Join {
+
+        private Long id;
+        private Long userId;
+        private int userCount;
+        private boolean complete;
+        private boolean anonymous;
+        private boolean multipleChoice;
+        private boolean date;
+        private boolean time;
+        private boolean location;
+        private String promiseTitle;
+        private String promiseDate;
+        private String promiseTime;
+        private String promiseLocation;
+        private String deadDate;
+        private String deadTime;
+        private List<Map<String, Object>> users;
+    }
+
+    @ToString
+    @Getter
+    @Setter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @Schema(name = "RoomResponse.Exit")
+    public static class Exit {
+
+        private Long id;
+        private String promiseTitle;
+        private String promiseDate;
+        private String promiseTime;
+        private String promiseLocation;
+        private boolean read;
+    }
 }

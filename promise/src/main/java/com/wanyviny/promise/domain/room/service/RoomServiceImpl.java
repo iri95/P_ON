@@ -102,6 +102,50 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    public RoomResponse.Join joinRoom(Long userId, Long roomId) {
+
+        User user = userRepository.findById(userId).orElseThrow();
+        Room room = roomRepository.findById(roomId).orElseThrow();
+        UserRoom userRoom = UserRoom.builder()
+                .user(user)
+                .room(room)
+                .build();
+
+        userRoomRepository.save(userRoom);
+
+        List<UserRoom> userRooms = userRoomRepository.findAllByRoomId(roomId);
+        RoomResponse.Join response = modelMapper.map(room, RoomResponse.Join.class);
+        List<Map<String, Object>> users = new ArrayList<>();
+
+        userRooms.forEach(ur -> {
+            Map<String, Object> userInfo = new HashMap<>();
+            User u = ur.getUser();
+            userInfo.put("userId", u.getId());
+            userInfo.put("nickname", u.getNickname());
+            users.add(userInfo);
+        });
+
+        response.setDate(itemRepository.existsByRoom_IdAndItemType(roomId, ItemType.DATE));
+        response.setTime(itemRepository.existsByRoom_IdAndItemType(roomId, ItemType.TIME));
+        response.setLocation(itemRepository.existsByRoom_IdAndItemType(roomId, ItemType.LOCATION));
+        response.setUsers(users);
+
+        return response;
+    }
+
+    @Override
+    public List<RoomResponse.Exit> exitRoom(Long userId, Long roomId) {
+
+        userRoomRepository.deleteByUserIdAndRoomId(userId, roomId);
+
+        List<UserRoom> userRooms = userRoomRepository.findAllByUserId(userId);
+        List<RoomResponse.Exit> response = new ArrayList<>();
+
+        userRooms.forEach(userRoom -> response.add(modelMapper.map(userRoom.getRoom(), RoomResponse.Exit.class)));
+        return response;
+    }
+
+    @Override
     @Transactional
     public void deleteRoom(Long roomId) {
 

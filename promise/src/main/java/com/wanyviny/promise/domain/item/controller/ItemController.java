@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +34,23 @@ public class ItemController {
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .message("투표 생성 성공")
+                .count(1)
+                .result(Collections.singletonList(response))
+                .build();
+
+        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+    }
+
+    @PutMapping("/{roomId}")
+    public ResponseEntity<BasicResponse> modifyItem(
+            @RequestHeader("id") Long userId,
+            @PathVariable Long roomId,
+            @RequestBody ItemRequest.Modify request) {
+
+        ItemResponse.Modify response = itemService.modifyItem(userId, roomId, request);
+
+        BasicResponse basicResponse = BasicResponse.builder()
+                .message("투표 수정 성공")
                 .count(1)
                 .result(Collections.singletonList(response))
                 .build();
