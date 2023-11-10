@@ -47,10 +47,6 @@ public class Item {
     private String lat;
     private String lng;
 
-//    @ManyToOne
-//    @JoinColumn(name = "POLL_ID")
-//    private Poll poll;
-
     @ManyToOne
     @JoinColumn(name = "ROOM_ID")
     private Room room;

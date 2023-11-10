@@ -34,6 +34,9 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public ItemResponse.Create createItem(Long userId, Long roomId, Create request) {
 
+        System.out.println(request.isAnonymous());
+        System.out.println(request.isMultipleChoice());
+
         Room room = roomRepository.findById(roomId).orElseThrow();
 
         room.setUserId(userId);

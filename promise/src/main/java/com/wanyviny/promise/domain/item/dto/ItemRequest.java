@@ -21,8 +21,8 @@ public class ItemRequest {
 
         private String deadDate;
         private String deadTime;
-        private boolean isAnonymous;
-        private boolean isMultipleChoice;
+        private boolean anonymous;
+        private boolean multipleChoice;
 
         private List<String> date;
         private List<String> time;
@@ -39,8 +39,8 @@ public class ItemRequest {
 
         private String deadDate;
         private String deadTime;
-        private boolean isAnonymous;
-        private boolean isMultipleChoice;
+        private boolean anonymous;
+        private boolean multipleChoice;
 
         private List<String> date;
         private List<String> time;

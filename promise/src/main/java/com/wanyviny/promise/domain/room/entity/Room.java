@@ -41,9 +41,9 @@ public class Room {
     private String promiseLocation;
 
     private Long userId;
-    private boolean isComplete;
-    private boolean isAnonymous;
-    private boolean isMultipleChoice;
+    private boolean complete;
+    private boolean anonymous;
+    private boolean multipleChoice;
     private String deadDate;
     private String deadTime;
 
