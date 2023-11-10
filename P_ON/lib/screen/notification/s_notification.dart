@@ -1,8 +1,6 @@
 import 'package:p_on/screen/notification/w_notification_item.dart';
 import 'package:flutter/material.dart';
 
-import 'd_notification.dart';
-
 import 'package:p_on/common/common.dart';
 
 import 'package:p_on/screen/main/user/fn_kakao.dart';
@@ -13,8 +11,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:p_on/screen/main/user/token_state.dart';
 
 import './vo/vo_notification.dart';
-
-import 'dart:convert';
 
 class NotificationScreen extends ConsumerStatefulWidget {
   const NotificationScreen({super.key});
@@ -204,7 +200,7 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
                 onPressed: () {
                   Nav.pop(context);
                 },
-                icon: Icon(Icons.arrow_back_ios, color: Colors.black),
+                icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
               ),
               title: '알림'.text.black.make(),
               centerTitle: true,
