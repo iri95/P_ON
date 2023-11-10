@@ -17,7 +17,6 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -32,17 +31,11 @@ public class ChatController {
     @SendTo("/topic/chat/{roomId}")
     @Operation(summary = "채팅 발신", description = "채팅을 전송 합니다.")
     public ResponseEntity<BasicResponse> sendChat(
-            @RequestHeader("id") String senderId,
             @DestinationVariable String roomId,
             @RequestBody ChatRequest request
     ) {
 
-        log.info("senderId : " + senderId + ", type : " + senderId.getClass());
-        log.info("roomId : " + roomId + ", type : " + senderId.getClass());
-        log.info("chatType : " + request.getChatType() + ", type : " + request.getChatType().getClass());
-        log.info("content : " + request.getContent() + ", type : " + request.getContent().getClass());
-
-        ChatResponse response = chatService.sendChat(senderId, roomId, request);
+        ChatResponse response = chatService.sendChat(roomId, request);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .message("채팅 발신 성공")
