@@ -28,4 +28,22 @@ public class ItemRequest {
         private List<String> time;
         private List<Map<String, String>> location;
     }
+
+    @ToString
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @Schema(name = "ItemRequest.Modify")
+    public static class Modify {
+
+        private String deadDate;
+        private String deadTime;
+        private boolean isAnonymous;
+        private boolean isMultipleChoice;
+
+        private List<String> date;
+        private List<String> time;
+        private List<Map<String, String>> location;
+    }
 }

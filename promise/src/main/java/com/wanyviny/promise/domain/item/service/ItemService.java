@@ -6,4 +6,6 @@ import com.wanyviny.promise.domain.item.dto.ItemResponse;
 public interface ItemService {
 
     ItemResponse.Create createItem(Long userId, Long roomId, ItemRequest.Create request);
+    ItemResponse.Find findItem(Long roomId);
+    ItemResponse.Modify modifyItem(Long userId, Long roomId, ItemRequest.Modify request);
 }

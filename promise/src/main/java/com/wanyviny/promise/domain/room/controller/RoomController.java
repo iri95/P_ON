@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,6 +48,7 @@ public class RoomController {
     }
 
     @GetMapping("/{roomId}")
+    @Operation(summary = "약속방 조회", description = "약속방을 조회 합니다.")
     public ResponseEntity<BasicResponse> findRoom(@PathVariable Long roomId) {
 
         RoomResponse.Find response = roomService.findRoom(roomId);
@@ -61,6 +63,7 @@ public class RoomController {
     }
 
     @GetMapping("")
+    @Operation(summary = "약속방 전체 조회", description = "약속방 전체를 조회 합니다.")
     public ResponseEntity<BasicResponse> findAllRoom(@RequestHeader("id") Long userId) {
 
         List<RoomResponse.FindAll> response = roomService.findAllRoom(userId);
@@ -74,8 +77,44 @@ public class RoomController {
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
 
+    @PutMapping("/{roomId}/join")
+    @Operation(summary = "약속방 들어가기", description = "약속방에 들어갑니다.")
+    public ResponseEntity<BasicResponse> joinRoom(
+            @RequestHeader("id") Long userId,
+            @PathVariable Long roomId
+    ) {
+
+        RoomResponse.Join response = roomService.joinRoom(userId, roomId);
+
+        BasicResponse basicResponse = BasicResponse.builder()
+                .message("약속방 들어가기 성공")
+                .count(1)
+                .result(Collections.singletonList(response))
+                .build();
+
+        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+    }
+
+    @PutMapping("/{roomId}/exit")
+    @Operation(summary = "약속방 나가기", description = "약속방에서 나갑니다.")
+    public ResponseEntity<BasicResponse> exitRoom(
+            @RequestHeader("id") Long userId,
+            @PathVariable Long roomId
+            ) {
+
+        List<RoomResponse.Exit> response = roomService.exitRoom(userId, roomId);
+
+        BasicResponse basicResponse = BasicResponse.builder()
+                .message("약속방 나가기 성공")
+                .count(response.size())
+                .result(Collections.singletonList(response))
+                .build();
+
+        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+    }
+
     @DeleteMapping("/{roomId}")
-    @Operation(summary = "약속방 삭제", description = "약속방 아이디 값으로 약속 방을 삭제 합니다.")
+    @Operation(summary = "약속방 삭제", description = "약속방을 삭제 합니다.")
     public ResponseEntity<BasicResponse> deleteRoom(
             @Parameter(description = "삭제할 약속방 아이디")
             @PathVariable Long roomId
