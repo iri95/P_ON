@@ -32,12 +32,12 @@ public class ChatController {
     @SendTo("/topic/chat/{roomId}")
     @Operation(summary = "채팅 발신", description = "채팅을 전송 합니다.")
     public ResponseEntity<BasicResponse> sendChat(
-            @RequestHeader("id") Long senderId,
+            @RequestHeader("id") String senderId,
             @DestinationVariable String roomId,
             @RequestBody ChatRequest request
     ) {
 
-        log.info("senderId : " + String.valueOf(senderId) + ", type : " + senderId.getClass());
+        log.info("senderId : " + senderId + ", type : " + senderId.getClass());
         log.info("roomId : " + roomId + ", type : " + senderId.getClass());
         log.info("chatType : " + request.getChatType() + ", type : " + request.getChatType().getClass());
         log.info("content : " + request.getContent() + ", type : " + request.getContent().getClass());

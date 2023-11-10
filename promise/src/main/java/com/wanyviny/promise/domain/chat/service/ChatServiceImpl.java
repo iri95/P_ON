@@ -21,13 +21,13 @@ public class ChatServiceImpl implements ChatService {
     private final UserRepository userRepository;
 
     @Override
-    public ChatResponse sendChat(Long senderId, String roomId, ChatRequest request) {
+    public ChatResponse sendChat(String senderId, String roomId, ChatRequest request) {
 
-        User user = userRepository.findById(senderId).orElseThrow();
+        User user = userRepository.findById(Long.parseLong(senderId)).orElseThrow();
 
         Chat chat = Chat.builder()
                 .roomId(roomId)
-                .senderId(String.valueOf(senderId))
+                .senderId(senderId)
                 .sender(user.getNickname())
                 .chatType(request.getChatType())
                 .content(request.getContent())
