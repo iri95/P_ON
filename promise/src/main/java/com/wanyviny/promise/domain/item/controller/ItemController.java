@@ -29,11 +29,11 @@ public class ItemController {
     @PostMapping("/{roomId}")
     @Operation(summary = "투표 항목 생성", description = "투표 항목을 생성 합니다.")
     public ResponseEntity<BasicResponse> createItem(
-            @RequestHeader("id") String userId,
+            @RequestHeader("id") Long userId,
             @PathVariable Long roomId,
             @RequestBody ItemRequest.Create request) {
 
-        ItemResponse.Create response = itemService.createItem(Long.parseLong(userId), roomId, request);
+        ItemResponse.Create response = itemService.createItem(userId, roomId, request);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .message("투표 항목 생성 성공")
