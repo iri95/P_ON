@@ -5,6 +5,7 @@ import 'package:p_on/common/widget/w_rounded_container.dart';
 import 'package:p_on/screen/dialog/d_message.dart';
 import 'package:p_on/screen/main/tab/home/w_my_plan_and_promise.dart';
 import 'package:p_on/screen/main/tab/home/w_p_on_app_bar.dart';
+import 'package:p_on/screen/main/tab/promise_room/dto_promise.dart';
 import 'package:p_on/screen/main/tab/promise_room/f_create_promise.dart';
 import 'package:flutter/material.dart';
 
@@ -31,10 +32,14 @@ class HomeFragment extends ConsumerStatefulWidget {
 }
 
 class _HomeFragmentState extends ConsumerState<HomeFragment> {
+
+
+
   final scrollController = ScrollController();
 
   @override
   void initState() {
+    // ref.read(promiseProvider.notifier).reset();
     scrollController.addListener(() {
       final floatingState = ref.read(floatingButtonStateProvider);
 
@@ -89,6 +94,7 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
       print('여긴 메인이고 프로필 에러 $e');
     }
   }
+
 
   @override
   Widget build(BuildContext context) {

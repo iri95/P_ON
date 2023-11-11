@@ -169,13 +169,13 @@ class _CheckedModalState extends ConsumerState<CheckedModal> {
           headers: headers,
           data: data);
 
-      // print(response);
+      print(response);
       int room_id = response.data['result'][0]['id'];
 
       final router = GoRouter.of(context);
       router.go('/chatroom/$room_id');
 
-      ref.read(promiseProvider.notifier).reset();
+      // ref.read(promiseProvider.notifier).reset();
     } catch (e) {
       print(e);
     }
