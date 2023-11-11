@@ -44,14 +44,13 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
   late StompClient client;
   List<Map<String, dynamic>> messages = [];
   Map<String, dynamic> chatRoomInfo = {};
+  String? userId;
 
   var isDate;
   var isTime;
   var isLocation;
-  var userId;
-  var userName;
 
-
+  // 채팅방 소켓통신 연결
   void onConnect(StompFrame? frame) {
     client.subscribe(
         destination: '/topic/chat/${widget.id}',
@@ -72,19 +71,25 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
         });
   }
 
-  void sendChat(int roomId, String userId, String nickname, String content) {
+  // 메시지 보내기
+  void sendChat(int roomId, String? userId, String content) {
+    // 현재 저장된 서버 토큰을 가져옵니다.
+    final loginState = ref.read(loginStateProvider);
+    final id = loginState.id;
+
     String destination = '/app/api/promise/chat/$roomId';
     Map<String, dynamic> message = {
-      'sender': nickname,
       'chatType': 'TEXT',
-      'content': content
+      'content': content,
+      'senderId' : userId
     };
 
     client.send(
       destination: destination,
-      headers: {'id': '1'},
+      headers: {'id': '$id'},
       body: jsonEncode(message),
     );
+    print('채팅보냄');
 
     scrollController.animateTo(
       scrollController.position.maxScrollExtent,
@@ -93,16 +98,13 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
     );
   }
 
-  late final String formatedDate =
-      DateFormat('yyyy년 MM월 dd일 EEEE', 'ko_KR').format(DateTime.now());
-
-  void getChatRoom() async {
+  // 채팅방 정보 받아오기
+  Future<void> getChatRoom() async {
     // 현재 저장된 서버 토큰을 가져옵니다.
     final loginState = ref.read(loginStateProvider);
     final token = loginState.serverToken;
     final id = loginState.id;
     final voteInfo = ref.read(voteInfoProvider);
-    userId = loginState.id;
 
     var headers = {'Authorization': '$token', 'id': '$id'};
 
@@ -141,22 +143,22 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
       // 투표 진행여부 true => 투표끝 / false => 투표 진행중
       bool is_complete = response.data['result'][0]['complete'];
 
+      isDate = await response.data['result'][0]['date'];
+      isTime = await response.data['result'][0]['time'];
+      isLocation = await response.data['result'][0]['location'];
       voteInfo.is_anonymous = await response.data['result'][0]['anonymous'];
       voteInfo.is_multiple_choice =
           await response.data['result'][0]['multipleChoice'];
       voteInfo.dead_date = await response.data['result'][0]['deadDate'];
       voteInfo.dead_time = await response.data['result'][0]['deadTime'];
-      isDate = await response.data['result'][0]['date'];
-      isTime = await response.data['result'][0]['time'];
-      isLocation = await response.data['result'][0]['location'];
 
-      for (var user in response.data['result'][0]['users']) {
-        if (user['userId'] == loginState.id) {
-          userName = user['nickname'];
-          userId = user['userId'].toString();
-          break;
-        }
-      }
+      // for (var user in response.data['result'][0]['users']) {
+      //   if (user['userId'] == loginState.id) {
+      //     userName = user['nickname'];
+      //     userId = user['userId'].toString();
+      //     break;
+      //   }
+      // }
       print(voteInfo);
       print(voteInfo);
       print(voteInfo);
@@ -171,15 +173,64 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
       print(voteinfo.dead_time);
       setState(() {});
     } catch (e) {
+      print('채팅방 정보를 못받아옴 왜왜왜');
       print(e);
     }
   }
 
-  void getChat() async {
+  // 현재유저 정보 받아오기
+  Future<void> getCurrentUser() async {
+  // 현재 저장된 서버 토큰을 가져옵니다.
+    final loginState = ref.read(loginStateProvider);
+    final token = loginState.serverToken;
+    final id = loginState.id;
+    final voteInfo = ref.read(voteInfoProvider);
+
+    var headers = {'Authorization': '$token', 'id': '$id'};
+
+    // 서버 토큰이 없으면
+    if (token == null) {
+      await kakaoLogin(ref);
+      await fetchToken(ref);
+
+      // 토큰을 다시 읽습니다.
+      final newToken = ref.read(loginStateProvider).serverToken;
+      final newId = ref.read(loginStateProvider).id;
+
+      headers['Authorization'] = '$newToken';
+      headers['id'] = '$newId';
+    }
+
+    final apiService = ApiService();
+    try {
+      Response response = await apiService.sendRequest(
+          method: 'GET', path: '$server/api/user/profile', headers: headers);
+      print(response);
+      // 받아온 유저 정보를 이 페이지에서 currentuser로 저장하기
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  // 채팅방 이전 채팅기록 불러오기
+  Future<void> getChat() async {
     final Dio dio = Dio();
     var response = await dio.get('$server/api/promise/chat/${widget.id}');
 
     print(response.data['result']);
+  }
+
+  late final String formatedDate =
+  DateFormat('yyyy년 MM월 dd일 EEEE', 'ko_KR').format(DateTime.now());
+
+  String changeDate(String date) {
+    if (date == null) {
+      return '...';
+    }
+    DateTime chatRoomDate = DateTime.parse(date);
+    DateFormat formatter = DateFormat('yyyy-MM-dd (E)', 'ko_kr');
+    String formatterDate = formatter.format(chatRoomDate);
+    return formatterDate;
   }
 
   @override
@@ -187,6 +238,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
     super.initState();
     getChatRoom();
     getChat();
+    userId = ref.read(loginStateProvider).id;
 
     client = StompClient(
         config: StompConfig.sockJS(
@@ -215,16 +267,6 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
         );
       }
     });
-  }
-
-  String changeDate(String date) {
-    if (date == null) {
-      return '...';
-    }
-    DateTime chatRoomDate = DateTime.parse(date);
-    DateFormat formatter = DateFormat('yyyy-MM-dd (E)', 'ko_kr');
-    String formatterDate = formatter.format(chatRoomDate);
-    return formatterDate;
   }
 
   @override
@@ -372,7 +414,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                     bool isSameSender = false;
                     bool isDiffMinute = false;
                     bool isLastMessageFromSameSender = false;
-                    bool isCurrentUser = messages[index]['senderId'] == userId;
+                    bool isCurrentUser = messages[index]['senderId'] == ref.read(loginStateProvider).id;
 
                     if (index != 0 &&
                         messages[index - 1]['senderId'] ==
@@ -558,7 +600,6 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                                   sendChat(
                                       widget.id,
                                       userId,
-                                      userName,
                                       textController
                                           .text); // 방번호, 유저번호, 유저이름, 메시지
                                   textController.clear();
