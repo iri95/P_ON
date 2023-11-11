@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:p_on/screen/main/w_menu_drawer.dart';
 import 'package:p_on/screen/search/s_search.dart';
 
 import '../../../../common/common.dart';
@@ -29,18 +30,27 @@ class _PONAppBar extends State<PONAppBar> {
       child: Row(
         children: [
           width10,
-          Image.asset(
-            "$basePath/main/핑키1.png",
-            width: 32,
-            fit: BoxFit.contain,
+          GestureDetector(
+            onTap: () {
+              Scaffold.of(context).openDrawer();
+            },
+            child: Row(
+              children: [
+                Image.asset(
+                  "$basePath/main/핑키1.png",
+                  width: 32,
+                  fit: BoxFit.contain,
+                ),
+                const Padding(
+                    padding: EdgeInsets.only(left: 8),
+                    child: Text('P:ON',
+                        style: TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xffff7f27)))),
+              ],
+            ),
           ),
-          const Padding(
-              padding: EdgeInsets.only(left: 8),
-              child: Text('P:ON',
-                  style: TextStyle(
-                      fontSize: 32,
-                      fontWeight: FontWeight.w700,
-                      color: Color(0xffff7f27)))),
           emptyExpanded,
           Tap(
             onTap: () {
