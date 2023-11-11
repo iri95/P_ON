@@ -4,6 +4,7 @@ import com.wanyviny.promise.domain.common.BasicResponse;
 import com.wanyviny.promise.domain.vote.dto.VoteDto;
 import com.wanyviny.promise.domain.vote.service.VoteService;
 import com.wanyviny.promise.domain.vote.service.VoteServiceImpl;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ public class VoteController {
 
     // 사용자 투표 하기
     @PostMapping("/")
+    @Operation(summary = "투표 하기", description = "사용자가 항목에 투표합니다. 헤더 필요!")
     public ResponseEntity<BasicResponse> postVote(@RequestHeader("id") Long userId, @RequestBody VoteDto.post post) {
         voteService.postVote(userId, post);
 
