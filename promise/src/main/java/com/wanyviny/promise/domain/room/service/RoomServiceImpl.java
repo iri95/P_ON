@@ -1,5 +1,12 @@
 package com.wanyviny.promise.domain.room.service;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.Notification;
+import com.wanyviny.promise.domain.alarm.ALARM_TYPE;
+import com.wanyviny.promise.domain.alarm.entity.Alarm;
+import com.wanyviny.promise.domain.alarm.repository.AlarmRepository;
 import com.wanyviny.promise.domain.item.entity.ItemType;
 import com.wanyviny.promise.domain.item.repository.ItemRepository;
 import com.wanyviny.promise.domain.room.dto.RoomRequest;
@@ -31,11 +38,16 @@ public class RoomServiceImpl implements RoomService {
     private final UserRepository userRepository;
     private final UserRoomRepository userRoomRepository;
     private final ItemRepository itemRepository;
+    private final AlarmRepository alarmRepository;
+    private final FirebaseMessaging firebaseMessaging;
+
 
     @Override
     @Transactional
     public RoomResponse.Create createRoom(Long userId, RoomRequest.Create request) {
-
+        User inviter = userRepository.findById(userId).orElseThrow(
+                () -> new IllegalArgumentException("해당하는 유저가 없습니다.")
+        );
         request.getUsers()
                 .add(userId);
 
@@ -56,6 +68,14 @@ public class RoomServiceImpl implements RoomService {
             userInfo.put("nickname", user.getNickname());
             userRoomRepository.save(userRoom);
             users.add(userInfo);
+
+            String title = "INVITE!";
+            String body = inviter.getNickname() + "님께서 약속방에 초대하셨습니다!";
+            String token = user.getPhoneId();
+
+            createAlarm(user, body, ALARM_TYPE.INVITE);
+            firebasePushAlarm(title, body, token);
+
         }
 
         RoomResponse.Create response = modelMapper.map(room, RoomResponse.Create.class);
@@ -178,5 +198,32 @@ public class RoomServiceImpl implements RoomService {
 
 //        return localDateTime.compareTo(LocalDateTime.now()) > 0 ? false : true;
         return !localDateTime.isAfter(LocalDateTime.now());
+    }
+
+    @Transactional
+    public void firebasePushAlarm(String title, String Body, String token) {
+        Notification notification = Notification.builder()
+                .setTitle(title)
+                .setBody(Body)
+                .build();
+
+        Message message = Message.builder()
+                .setToken(token)  // 친구의 FCM 토큰 설정
+                .setNotification(notification)
+                .build();
+        try {
+            firebaseMessaging.send(message);
+        } catch (FirebaseMessagingException e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException("token에 해당하는 유저를 찾을 수 없습니다.");
+        }
+    }
+
+    public void createAlarm(User user, String message, ALARM_TYPE type) {
+        alarmRepository.save(Alarm.builder()
+                .user(user)
+                .alarmMessage(message)
+                .alarmType(type)
+                .build());
     }
 }
