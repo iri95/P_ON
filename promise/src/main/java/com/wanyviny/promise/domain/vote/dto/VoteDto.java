@@ -33,9 +33,9 @@ public class VoteDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class put{
-        List<Long> itemList;
+        Long roomId;
         ItemType itemType;
-
+        List<Long> itemList;
     }
 
 }
