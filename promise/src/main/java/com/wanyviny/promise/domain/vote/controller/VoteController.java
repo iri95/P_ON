@@ -41,11 +41,12 @@ public class VoteController {
     @Operation(summary = "투표 현황 조회", description = "투표 현황을 조회합니다.")
     public ResponseEntity<BasicResponse> getItemVote(@PathVariable(name = "roomId") Long roomId) {
 
+        VoteDto.get get = voteService.getVote(roomId);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .message("투표 현황 조회 성공!")
-//                .count(1)
-//                .result(Collections.singletonList())
+                .count(1)
+                .result(Collections.singletonList(get))
                 .build();
 
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());

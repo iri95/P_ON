@@ -12,4 +12,6 @@ public interface VoteService {
     void updateVote(Long userId, VoteDto.put put);
 
     List<String> getUserList(Long itemId);
+
+    VoteDto.get getVote(Long roomId);
 }

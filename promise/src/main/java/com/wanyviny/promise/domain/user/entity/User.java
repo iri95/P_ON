@@ -1,6 +1,7 @@
 package com.wanyviny.promise.domain.user.entity;
 
 import com.wanyviny.promise.domain.room.entity.UserRoom;
+import com.wanyviny.promise.domain.vote.dto.VoteDto;
 import com.wanyviny.promise.domain.vote.entity.Vote;
 import jakarta.persistence.*;
 import java.util.List;
@@ -52,4 +53,12 @@ public class User {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "user")
     private List<Vote> votes;
+
+    public VoteDto.get.user entityToDto(){
+        return VoteDto.get.user.builder()
+                .id(this.id)
+                .nickName(this.nickname)
+                .profileImage(this.profileImage)
+                .build();
+    }
 }

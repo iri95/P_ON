@@ -1,6 +1,5 @@
 package com.wanyviny.promise.domain.vote.dto;
 
-import com.wanyviny.promise.domain.item.entity.Item;
 import com.wanyviny.promise.domain.item.entity.ItemType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,13 +19,57 @@ public class VoteDto {
     }
 
 
-//    @Builder
-//    @Getter
-//    @NoArgsConstructor
-//    @AllArgsConstructor
-//    public static class get{
-//
-//    }
+    @Builder
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class get{
+        private List<getDate> dates;
+        private List<getTime> times;
+        private List<getLocation> locations;
+
+        @Builder
+        @Getter
+        @NoArgsConstructor
+        @AllArgsConstructor
+        public static class getDate{
+            private String date;
+            List<user> users;
+
+        }
+
+        @Builder
+        @Getter
+        @NoArgsConstructor
+        @AllArgsConstructor
+        public static class getTime{
+            private String time;
+            List<user> users;
+
+        }
+
+        @Builder
+        @Getter
+        @NoArgsConstructor
+        @AllArgsConstructor
+        public static class getLocation{
+            private String location;
+            private String lat;
+            private String lng;
+            List<user> users;
+
+        }
+
+        @Builder
+        @Getter
+        @NoArgsConstructor
+        @AllArgsConstructor
+        public static class user{
+            private Long id;
+            private String nickName;
+            private String profileImage;
+        }
+    }
 
     @Builder
     @Getter

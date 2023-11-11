@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -40,10 +41,35 @@ public class VoteServiceImpl implements VoteService {
     }
 
     @Override
+    public VoteDto.get getVote(Long roomId) {
+        List<Item> itemList = itemRepository.findAllByRoomId(roomId);
+        List<VoteDto.get.getDate> getDates = new ArrayList<>();
+        List<VoteDto.get.getTime> getTimes = new ArrayList<>();
+        List<VoteDto.get.getLocation> getLocations = new ArrayList<>();
+
+        itemList.forEach(item -> {
+            if (item.getItemType() == ItemType.DATE) {
+                getDates.add(item.entityToDate());
+            } else if (item.getItemType() == ItemType.TIME) {
+                getTimes.add(item.entityToTime());
+            } else {
+                getLocations.add(item.entityToLocation());
+            }
+        });
+
+        return VoteDto.get.builder()
+                .dates(getDates)
+                .times(getTimes)
+                .locations(getLocations)
+                .build();
+    }
+
+    @Override
     public List<String> getUserList(Long itemId) {
 
         return voteRepository.findVote_User_NickNameByItemId(itemId);
     }
+
 
     @Override
     public void updateVote(Long userId, VoteDto.put put) {
@@ -61,7 +87,6 @@ public class VoteServiceImpl implements VoteService {
                         ))
                         .build()));
     }
-
 
 
 }

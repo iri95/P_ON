@@ -1,6 +1,8 @@
 package com.wanyviny.promise.domain.item.entity;
 
 import com.wanyviny.promise.domain.room.entity.Room;
+import com.wanyviny.promise.domain.user.entity.User;
+import com.wanyviny.promise.domain.vote.dto.VoteDto;
 import com.wanyviny.promise.domain.vote.entity.Vote;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -53,4 +55,33 @@ public class Item {
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, mappedBy = "item")
     private List<Vote> votes;
+
+    public VoteDto.get.getDate entityToDate(){
+        return VoteDto.get.getDate.builder()
+                .date(this.date)
+                .users(this.votes.stream().map(Vote::getUser)
+                        .map(User::entityToDto)
+                        .toList())
+                .build();
+    }
+
+    public VoteDto.get.getTime entityToTime(){
+        return VoteDto.get.getTime.builder()
+                .time(this.time)
+                .users(this.votes.stream().map(Vote::getUser)
+                        .map(User::entityToDto)
+                        .toList())
+                .build();
+    }
+
+    public VoteDto.get.getLocation entityToLocation(){
+        return VoteDto.get.getLocation.builder()
+                .location(this.location)
+                .lat(this.lat)
+                .lng(this.lng)
+                .users(this.votes.stream().map(Vote::getUser)
+                        .map(User::entityToDto)
+                        .toList())
+                .build();
+    }
 }
