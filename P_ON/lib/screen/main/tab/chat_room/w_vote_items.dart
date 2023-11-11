@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:p_on/common/common.dart';
 import 'package:p_on/common/constant/app_colors.dart';
+import 'package:p_on/screen/main/tab/chat_room/dto_vote.dart';
+import 'package:p_on/screen/main/tab/promise_room/dto_promise.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:go_router/go_router.dart';
 
-class VoteItems extends StatefulWidget {
+class VoteItems extends ConsumerStatefulWidget {
   // 받아온 유저 id 값으로 수정버튼 보이거나 안보이거나 처리
   final String roomId;
   final String text;
-  final Map<String, dynamic>? voteData;
   final String voteType;
+  final List<dynamic>? voteData;
 
   const VoteItems(
       {super.key,
@@ -20,10 +23,10 @@ class VoteItems extends StatefulWidget {
       required this.voteType});
 
   @override
-  State<VoteItems> createState() => _VoteItemsState();
+  ConsumerState<VoteItems> createState() => _VoteItemsState();
 }
 
-class _VoteItemsState extends State<VoteItems> {
+class _VoteItemsState extends ConsumerState<VoteItems> {
   Color _textColor = AppColors.grey400;
   String? dropdownValue;
   final List<bool> _checkboxValues =
@@ -40,21 +43,15 @@ class _VoteItemsState extends State<VoteItems> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.voteData != null) {
-      print('==================');
-      print('==================');
-      print('==================');
-      print(widget.voteData);
-      print(widget.voteData!['items']);
-      print(widget.voteData!['multiple']);
-      print(widget.voteData!['anonymous']);
-      print(widget.voteData!['deadline']['date']);
-      print(widget.voteData!['deadline']['time']);
-      print(widget.voteData!['items'].length);
-      print('==================');
-      print('==================');
-      print('==================');
-    }
+    print('여기는 투표 아이템 부분');
+    print(ref.read(voteInfoProvider).is_anonymous);
+    print(ref.read(voteInfoProvider).is_multiple_choice);
+    print(ref.read(voteInfoProvider).dead_date);
+    print(ref.read(voteInfoProvider).dead_time);
+    print('여기는 투표 아이템 부분');
+
+    final isAnonymous = ref.read(voteInfoProvider).is_anonymous;
+    final isMultipleChoice = ref.read(voteInfoProvider).is_multiple_choice;
 
     return Container(
       decoration: const BoxDecoration(
@@ -104,7 +101,7 @@ class _VoteItemsState extends State<VoteItems> {
         },
         children: [
           if (widget.voteData != null)
-            for (int i = 0; i < widget.voteData!['items'].length; i++)
+            for (int i = 0; i < widget.voteData!.length; i++)
               (Container(
                 margin: const EdgeInsets.symmetric(vertical: 2),
                 child: ListTile(
@@ -116,10 +113,12 @@ class _VoteItemsState extends State<VoteItems> {
                       onChanged: (bool? newValue) {
                         setState(() {
                           if (newValue == true) {
-                            // voteData.isMultipleChoice == false 조건 추가
-                            for (int j = 0; j < _checkboxValues.length; j++) {
-                              if (i != j) {
-                                _checkboxValues[j] = false;
+                            
+                            if (isMultipleChoice == true) {
+                              for (int j = 0; j < _checkboxValues.length; j++) {
+                                if (i != j) {
+                                  _checkboxValues[j] = false;
+                                }
                               }
                             }
                           }
@@ -140,13 +139,13 @@ class _VoteItemsState extends State<VoteItems> {
                           child: Row(
                             children: [
                               if (widget.voteType == 'date')
-                                Text(changeDate(widget.voteData!['items'][i])),
+                                Text(changeDate(widget.voteData![i])),
                               if (widget.voteType == 'time')
-                                Text('${widget.voteData!['items'][i]}'),
+                                Text('${widget.voteData![i]}'),
                               if (widget.voteType == 'location')
                                 InkWell(
                                   child: Text(
-                                      '${widget.voteData!['items'][i]['location']}'),
+                                      '${widget.voteData![i]['location']}'),
                                   onTap: () {
                                     _mapController.updateCamera(
                                         NCameraUpdate.withParams(
@@ -155,6 +154,8 @@ class _VoteItemsState extends State<VoteItems> {
                                   },
                                 ),
                               Expanded(child: Container()),
+
+                              if (isAnonymous == false)
                               DropdownButtonHideUnderline(
                                 child: DropdownButton<String>(
                                   onChanged: (String? newValue) {},
@@ -199,7 +200,7 @@ class _VoteItemsState extends State<VoteItems> {
                   ],
                 )),
               )),
-          if (widget.voteData != null && widget.voteData!['items'].length > 0)
+          if (widget.voteData != null && widget.voteData!.length > 0)
           Container(
             margin: const EdgeInsets.only(top: 6, bottom: 30),
             child: TextButton(
@@ -233,7 +234,7 @@ class _VoteItemsState extends State<VoteItems> {
               color: Colors.green,
               margin: EdgeInsets.fromLTRB(24, 0, 24, 24),
             ),
-          if (widget.voteType == 'location' && widget.voteData != null && widget.voteData!['items'].length > 0)
+          if (widget.voteType == 'location' && widget.voteData != null && widget.voteData!.length > 0)
             Container(
               width: double.infinity,
               height: 300,
@@ -243,8 +244,8 @@ class _VoteItemsState extends State<VoteItems> {
                 options: NaverMapViewOptions(
                     initialCameraPosition: NCameraPosition(
                         target: NLatLng(
-                            double.parse(widget.voteData!['items'][0]['lat']),
-                            double.parse(widget.voteData!['items'][0]['lng'])),
+                            double.parse(widget.voteData![0]['lat']),
+                            double.parse(widget.voteData![0]['lng'])),
                         zoom: 12)),
                 onMapReady: (controller) {
                   _mapController = controller;
@@ -260,11 +261,11 @@ class _VoteItemsState extends State<VoteItems> {
   List<NMarker> _markers = [];
 
   addMarker() {
-    for (int i = 0; i < widget.voteData!['items'].length; i++) {
+    for (int i = 0; i < widget.voteData!.length; i++) {
       var marker = NMarker(
-          id: widget.voteData!['items'][i]['location'],
-          position: NLatLng(double.parse(widget.voteData!['items'][i]['lat']),
-              double.parse(widget.voteData!['items'][i]['lng'])));
+          id: widget.voteData![i]['location'],
+          position: NLatLng(double.parse(widget.voteData![i]['lat']),
+              double.parse(widget.voteData![i]['lng'])));
       _markers.add(marker);
       _mapController.addOverlay(marker);
       marker.openInfoWindow(
