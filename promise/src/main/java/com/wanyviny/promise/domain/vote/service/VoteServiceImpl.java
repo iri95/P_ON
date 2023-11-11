@@ -40,6 +40,12 @@ public class VoteServiceImpl implements VoteService {
     }
 
     @Override
+    public List<String> getUserList(Long itemId) {
+
+        return voteRepository.findVote_User_NickNameByItemId(itemId);
+    }
+
+    @Override
     public void updateVote(Long userId, VoteDto.put put) {
         voteRepository.deleteByUser_IdAndItem_TypeAndRoom_Id(userId, put.getItemType(), put.getRoomId());
 
@@ -55,5 +61,7 @@ public class VoteServiceImpl implements VoteService {
                         ))
                         .build()));
     }
+
+
 
 }

@@ -1,6 +1,7 @@
 package com.wanyviny.promise.domain.vote.controller;
 
 import com.wanyviny.promise.domain.common.BasicResponse;
+import com.wanyviny.promise.domain.user.entity.User;
 import com.wanyviny.promise.domain.vote.dto.VoteDto;
 import com.wanyviny.promise.domain.vote.service.VoteService;
 import com.wanyviny.promise.domain.vote.service.VoteServiceImpl;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -50,15 +52,16 @@ public class VoteController {
     }
 
     // 해당 항목에 투표한 사람 조회 -> item id 필요
-    @GetMapping("/Item/{ItemId}")
+    @GetMapping("/item/{itemId}")
     @Operation(summary = "항목 투표자 조회", description = "해당 항목에 투표한 사람을 조회합니다.")
-    public ResponseEntity<BasicResponse> getItemVoteUser(@PathVariable(name = "ItemId") Long ItemId) {
+    public ResponseEntity<BasicResponse> getItemVoteUser(@PathVariable(name = "itemId") Long itemId) {
 
+        List<String> userList = voteService.getUserList(itemId);
 
         BasicResponse basicResponse = BasicResponse.builder()
-                .message("투표 완료")
-//                .count(1)
-//                .result(Collections.singletonList())
+                .message("항목 투표자 조회 성공!")
+                .count(userList.size())
+                .result(Collections.singletonList(userList))
                 .build();
 
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
