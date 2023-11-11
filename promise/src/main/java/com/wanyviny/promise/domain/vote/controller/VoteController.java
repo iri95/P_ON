@@ -22,7 +22,7 @@ public class VoteController {
     private final VoteService voteService;
 
     // 사용자 투표 하기
-    @PostMapping("/")
+    @PostMapping("")
     @Operation(summary = "투표 하기", description = "사용자가 항목에 투표합니다. 헤더 필요!")
     public ResponseEntity<BasicResponse> postVote(@RequestHeader("id") Long userId, @RequestBody VoteDto.post post) {
         voteService.postVote(userId, post);
@@ -36,11 +36,12 @@ public class VoteController {
 
     // 채팅방 투표의 항목별 투표수 조회 ( 전체 ) -> 누가 투표했는지  포함
     @GetMapping("/{roomId}")
+    @Operation(summary = "투표 현황 조회", description = "투표 현황을 조회합니다.")
     public ResponseEntity<BasicResponse> getItemVote(@PathVariable(name = "roomId") Long roomId) {
 
 
         BasicResponse basicResponse = BasicResponse.builder()
-                .message("투표 완료")
+                .message("투표 현황 조회 성공!")
 //                .count(1)
 //                .result(Collections.singletonList())
                 .build();
@@ -50,6 +51,7 @@ public class VoteController {
 
     // 해당 항목에 투표한 사람 조회 -> item id 필요
     @GetMapping("/Item/{ItemId}")
+    @Operation(summary = "항목 투표자 조회", description = "해당 항목에 투표한 사람을 조회합니다.")
     public ResponseEntity<BasicResponse> getItemVoteUser(@PathVariable(name = "ItemId") Long ItemId) {
 
 
@@ -63,14 +65,13 @@ public class VoteController {
     }
 
     // 사용자 투표 수정
-    @PutMapping("/{roomId}")
-    public ResponseEntity<BasicResponse> putVote(@RequestHeader("id") Long userId, @PathVariable(name = "roomId") Long roomId, @RequestBody VoteDto.put put) {
-
+    @PutMapping("")
+    @Operation(summary = "투표 수정", description = "사용자의 투표를 수정합니다.")
+    public ResponseEntity<BasicResponse> putVote(@RequestHeader("id") Long userId, @RequestBody VoteDto.put put) {
+        voteService.updateVote(userId, put);
 
         BasicResponse basicResponse = BasicResponse.builder()
-                .message("투표 완료")
-//                .count(1)
-//                .result(Collections.singletonList())
+                .message("투표 수정 완료")
                 .build();
 
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
