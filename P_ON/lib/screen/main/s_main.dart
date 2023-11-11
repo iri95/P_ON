@@ -82,8 +82,9 @@ class MainScreenState extends ConsumerState<MainScreen>
               body: Scaffold(
                   extendBody: extendBody,
                   //bottomNavigationBar 아래 영역 까지 그림
+                  /// TODO: 테마컬러, 다크모드에 대한 설정 변경
                   drawer: const MenuDrawer(),
-                  drawerEnableOpenDragGesture: !Platform.isIOS,
+                  drawerEnableOpenDragGesture: false,  //!Platform.isIOS,
                   body: Container(
                     padding: EdgeInsets.only(
                         bottom: extendBody
@@ -133,17 +134,6 @@ class MainScreenState extends ConsumerState<MainScreen>
                     child: BottomFloatingActionButton(),
                   ),
                 ),
-
-                /// TODO: 나중에 캘린더 일정 추가
-                // AnimatedOpacity(
-                //   opacity: _currentTab == TabItem.plan ? 1 : 0,
-                //   duration: Duration(milliseconds: 300),
-                //   child: IgnorePointer(
-                //     ignoring: _currentTab != TabItem.plan,
-                //     child: PlanFloatingActionButton(),
-                //   ),
-                // ),
-                // 다른 TabItem에 대한 AnimatedOpacity가 필요하다면, 여기에 추가합니다.
               ],
             )
           ],
