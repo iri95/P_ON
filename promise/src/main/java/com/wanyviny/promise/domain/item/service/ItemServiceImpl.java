@@ -1,5 +1,12 @@
 package com.wanyviny.promise.domain.item.service;
 
+import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.Message;
+import com.google.firebase.messaging.Notification;
+import com.wanyviny.promise.domain.alarm.ALARM_TYPE;
+import com.wanyviny.promise.domain.alarm.entity.Alarm;
+import com.wanyviny.promise.domain.alarm.repository.AlarmRepository;
 import com.wanyviny.promise.domain.item.dto.ItemRequest;
 import com.wanyviny.promise.domain.item.dto.ItemRequest.Create;
 import com.wanyviny.promise.domain.item.dto.ItemResponse;
@@ -9,14 +16,18 @@ import com.wanyviny.promise.domain.item.entity.Item;
 import com.wanyviny.promise.domain.item.entity.ItemType;
 import com.wanyviny.promise.domain.item.repository.ItemRepository;
 import com.wanyviny.promise.domain.room.entity.Room;
+import com.wanyviny.promise.domain.room.entity.UserRoom;
 import com.wanyviny.promise.domain.room.repository.RoomRepository;
 import com.wanyviny.promise.domain.room.repository.UserRoomRepository;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.wanyviny.promise.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -31,6 +42,8 @@ public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final RoomRepository roomRepository;
     private final UserRoomRepository userRoomRepository;
+    private final AlarmRepository alarmRepository;
+    private final FirebaseMessaging firebaseMessaging;
 
     @Override
     @Transactional
@@ -98,6 +111,19 @@ public class ItemServiceImpl implements ItemService {
         }
 
         response.setComplete(isComplete(room.getDeadDate(), room.getDeadTime()));
+
+        List<User> phondIdList = room.getUserRooms().stream()
+                .map(UserRoom::getUser)
+                .toList();
+
+        String title = "CREATE VOTE!";
+        String body = room.getPromiseTitle() + "에 투표가 추가되었습니다!";
+
+        phondIdList.forEach(user -> {
+            String token = user.getPhoneId();
+            createAlarm(user, body, ALARM_TYPE.CREATE_POLL);
+            firebasePushAlarm(title, body, token);
+        });
         return response;
     }
 
@@ -228,5 +254,32 @@ public class ItemServiceImpl implements ItemService {
 
 //        return localDateTime.compareTo(LocalDateTime.now()) > 0 ? false : true;
         return !localDateTime.isAfter(LocalDateTime.now());
+    }
+
+    @Transactional
+    public void firebasePushAlarm(String title, String Body, String token) {
+        Notification notification = Notification.builder()
+                .setTitle(title)
+                .setBody(Body)
+                .build();
+
+        Message message = Message.builder()
+                .setToken(token)  // 친구의 FCM 토큰 설정
+                .setNotification(notification)
+                .build();
+        try {
+            firebaseMessaging.send(message);
+        } catch (FirebaseMessagingException e) {
+            e.printStackTrace();
+            throw new IllegalArgumentException("token에 해당하는 유저를 찾을 수 없습니다.");
+        }
+    }
+
+    public void createAlarm(User user, String message, ALARM_TYPE type) {
+        alarmRepository.save(Alarm.builder()
+                .user(user)
+                .alarmMessage(message)
+                .alarmType(type)
+                .build());
     }
 }
