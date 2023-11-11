@@ -36,16 +36,30 @@ public class PushAlarmService {
         String title = "VOTE END!";
 
         roomList.forEach(room -> {
-            if (isComplete(room.getDeadDate(), room.getDeadTime())) {
+            if (isComplete(room.getDeadDate(), room.getDeadTime(), 0L)) {
                 String message = room.getPromiseTitle() + "의 투표가 종료되었습니다!";
                 roomRepository.completeRoom(room.getId());
-                alarm(room, title, message);
+                alarm(room, title, message, ALARM_TYPE.END_POLL);
             }
         });
     }
 
+    @Scheduled(cron = "1 0/10 * * * *")
+    @Transactional
+    public void promiseAhead() {
+        List<Room> roomList = roomRepository.findByCompleteIs(false);
+        String title = "PROMISE AHEAD!";
 
-    private boolean isComplete(String deadDate, String deadTime) {
+        roomList.forEach(room -> {
+            if (isComplete(room.getDeadDate(), room.getDeadTime(), 1L) ) {
+                String message = room.getPromiseTitle() + "가 1시간 남았습니다!";
+                roomRepository.completeRoom(room.getId());
+                alarm(room, title, message, ALARM_TYPE.AHEAD_PROMISE);
+            }
+        });
+    }
+
+    private boolean isComplete(String deadDate, String deadTime, Long minusHours) {
 
         if (deadDate == null) {
             return false;
@@ -61,18 +75,20 @@ public class PushAlarmService {
             localDateTime = localDateTime.plusHours(12);
         }
 
+        localDateTime = localDateTime.minusHours(minusHours);
+
         return !localDateTime.isAfter(LocalDateTime.now());
     }
 
 
     @Transactional
-    public void alarm(Room room, String title, String message) {
+    public void alarm(Room room, String title, String message, ALARM_TYPE type) {
         List<User> userList = room.getUserRooms().stream()
                 .map(UserRoom::getUser)
                 .toList();
 
         userList.forEach(user -> {
-            createAlarm(user, message, ALARM_TYPE.END_POLL);
+            createAlarm(user, message, type);
             firebasePushAlarm(title, message, user.getPhoneId());
         });
     }
