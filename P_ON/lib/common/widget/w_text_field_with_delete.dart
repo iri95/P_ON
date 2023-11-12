@@ -27,31 +27,35 @@ class TextFieldWithDelete extends StatefulWidget {
   final VoidCallback? onEditingComplete;
   final TextInputAction? textInputAction;
   final Function()? onTapDelete;
+  final Color? deleteIconColor;
+  final Color? focusedBorder;
 
-  const TextFieldWithDelete(
-      {Key? key,
-      this.focusNode,
-      required this.controller,
-      this.obscureText = false,
-      this.error = false,
-      this.errorMessage,
-      this.fontSize = 14,
-      this.fontWeight = FontWeight.normal,
-      this.textInputAction,
-      this.deleteRightPadding = 0,
-      this.errorMessageMarginTop = 0,
-      this.hideUnderline = false,
-      this.enabled = true,
-      this.inputFormatters,
-      this.texthint,
-      this.keyboardType,
-      this.onEditingComplete,
-      this.validatorCallback,
-      this.leftImage,
-      this.onTapDelete,
-      this.showMaxCount,
-      this.autofocus})
-      : super(key: key);
+  const TextFieldWithDelete({
+    Key? key,
+    this.focusNode,
+    required this.controller,
+    this.obscureText = false,
+    this.error = false,
+    this.errorMessage,
+    this.fontSize = 14,
+    this.fontWeight = FontWeight.normal,
+    this.textInputAction,
+    this.deleteRightPadding = 0,
+    this.errorMessageMarginTop = 0,
+    this.hideUnderline = false,
+    this.enabled = true,
+    this.inputFormatters,
+    this.texthint,
+    this.keyboardType,
+    this.onEditingComplete,
+    this.validatorCallback,
+    this.leftImage,
+    this.onTapDelete,
+    this.showMaxCount,
+    this.autofocus,
+    this.deleteIconColor,
+    this.focusedBorder,
+  }) : super(key: key);
 
   @override
   TextFieldWithDeleteState createState() => TextFieldWithDeleteState();
@@ -129,10 +133,13 @@ class TextFieldWithDeleteState extends State<TextFieldWithDelete> {
               textInputAction: widget.textInputAction,
               inputFormatters: widget.inputFormatters,
               onEditingComplete: widget.onEditingComplete,
-              style: TextStyle(fontSize: widget.fontSize, fontWeight: widget.fontWeight),
+              style: TextStyle(
+                  fontSize: widget.fontSize, fontWeight: widget.fontWeight),
               decoration: InputDecoration(
-                contentPadding:
-                    EdgeInsets.only(left: widget.leftImage == null ? 0 : 30, top: 10, bottom: 14),
+                contentPadding: EdgeInsets.only(
+                    left: widget.leftImage == null ? 0 : 30,
+                    top: 10,
+                    bottom: 14),
                 hintText: widget.texthint,
                 hintStyle: TextStyle(
                     fontSize: widget.fontSize,
@@ -142,7 +149,10 @@ class TextFieldWithDeleteState extends State<TextFieldWithDelete> {
                   borderSide: BorderSide(color: Colors.transparent),
                 ),
                 focusedBorder: UnderlineInputBorder(
-                  borderSide: BorderSide(color: context.appColors.focusedBorder, width: 2),
+                  borderSide: BorderSide(
+                      color: widget.focusedBorder ??
+                          context.appColors.focusedBorder,
+                      width: 2),
                 ),
               ),
             ),
@@ -159,11 +169,14 @@ class TextFieldWithDeleteState extends State<TextFieldWithDelete> {
                                 widget.onTapDelete?.invoke();
                               },
                               child: Padding(
-                                padding: EdgeInsets.only(right: widget.deleteRightPadding),
+                                padding: EdgeInsets.only(
+                                    right: widget.deleteRightPadding),
                                 child: SvgPicture.asset(
                                   '$basePath/icon/delete_x.svg',
                                   colorFilter: ui.ColorFilter.mode(
-                                      context.appColors.iconButton, ui.BlendMode.srcIn),
+                                      widget.deleteIconColor ??
+                                          context.appColors.iconButton,
+                                      ui.BlendMode.srcIn),
                                 ),
                               ),
                             ),
