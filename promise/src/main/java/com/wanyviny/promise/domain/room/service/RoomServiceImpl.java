@@ -102,6 +102,7 @@ public class RoomServiceImpl implements RoomService {
             User user = userRoom.getUser();
             userInfo.put("userId", user.getId());
             userInfo.put("nickname", user.getNickname());
+            userInfo.put("profileImage", user.getProfileImage());
             users.add(userInfo);
         });
 
