@@ -33,6 +33,7 @@ public class VoteDto {
         @NoArgsConstructor
         @AllArgsConstructor
         public static class getDate{
+            private Long itemId;
             private String date;
             List<user> users;
 
@@ -43,6 +44,7 @@ public class VoteDto {
         @NoArgsConstructor
         @AllArgsConstructor
         public static class getTime{
+            private Long itemId;
             private String time;
             List<user> users;
 
@@ -53,6 +55,7 @@ public class VoteDto {
         @NoArgsConstructor
         @AllArgsConstructor
         public static class getLocation{
+            private Long itemId;
             private String location;
             private String lat;
             private String lng;

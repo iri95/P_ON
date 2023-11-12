@@ -58,6 +58,7 @@ public class Item {
 
     public VoteDto.get.getDate entityToDate(){
         return VoteDto.get.getDate.builder()
+                .itemId(this.id)
                 .date(this.date)
                 .users(this.votes.stream().map(Vote::getUser)
                         .map(User::entityToDto)
@@ -67,6 +68,7 @@ public class Item {
 
     public VoteDto.get.getTime entityToTime(){
         return VoteDto.get.getTime.builder()
+                .itemId(this.id)
                 .time(this.time)
                 .users(this.votes.stream().map(Vote::getUser)
                         .map(User::entityToDto)
@@ -76,6 +78,7 @@ public class Item {
 
     public VoteDto.get.getLocation entityToLocation(){
         return VoteDto.get.getLocation.builder()
+                .itemId(this.id)
                 .location(this.location)
                 .lat(this.lat)
                 .lng(this.lng)
