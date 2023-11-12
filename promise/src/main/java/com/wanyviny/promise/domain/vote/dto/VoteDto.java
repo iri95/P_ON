@@ -24,6 +24,10 @@ public class VoteDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class get{
+        @Builder.Default
+        private boolean doDate = false;
+        private boolean doTime = false;
+        private boolean doLocation = false;
         private List<getDate> dates;
         private List<getTime> times;
         private List<getLocation> locations;

@@ -58,6 +58,9 @@ public class VoteServiceImpl implements VoteService {
         });
 
         return VoteDto.get.builder()
+                .doDate(getDates.size() > 0)
+                .doTime(getTimes.size() > 0)
+                .doLocation(getLocations.size() > 0)
                 .dates(getDates)
                 .times(getTimes)
                 .locations(getLocations)
