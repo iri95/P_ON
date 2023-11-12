@@ -1,6 +1,7 @@
 package com.wanyviny.user.domain.user.entity;
 
 
+import com.wanyviny.user.domain.user.RELATION;
 import com.wanyviny.user.domain.user.ROLE;
 import com.wanyviny.user.domain.user.PRIVACY;
 import com.wanyviny.user.domain.user.dto.UserDto;
@@ -70,6 +71,17 @@ public class User {
                 .profileImage(this.getProfileImage())
                 .privacy(this.getPrivacy())
                 .stateMessage(this.getStateMessage())
+                .build();
+    }
+
+    public UserDto.searchUser userSearchDtoToUser(RELATION relation) {
+        return UserDto.searchUser.builder()
+                .id(this.getId())
+                .nickName(this.getNickname())
+                .profileImage(this.getProfileImage())
+                .privacy(this.getPrivacy())
+                .stateMessage(this.getStateMessage())
+                .relation(relation)
                 .build();
     }
 

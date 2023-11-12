@@ -2,6 +2,7 @@ package com.wanyviny.user.domain.user.service;
 
 import com.wanyviny.user.domain.follow.repository.FollowRepository;
 import com.wanyviny.user.domain.user.PRIVACY;
+import com.wanyviny.user.domain.user.RELATION;
 import com.wanyviny.user.domain.user.ROLE;
 import com.wanyviny.user.domain.user.dto.KakaoDto;
 import com.wanyviny.user.domain.user.dto.UserDto;
@@ -97,18 +98,37 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> searchUser(Long userId, String keyword) {
+    public List<UserDto.searchUser> searchUser(Long userId, String keyword) {
         List<User> users = userRepository.findByNicknameContaining(keyword);
 
         List<Long> followingId = followRepository.findFollowingId_IdByUserId_Id(userId);
 
+        List<Long> followerId = followRepository.findFollowerId_IdByUserId_Id(userId);
+
         return users.stream()
-                .map(User::userDtoToUser)
+                .map(user -> {
+                    if(followingId.contains(user.getId())){
+                        return user.userSearchDtoToUser(RELATION.FOLLOWING);
+                    }else if(followerId.contains(user.getId())){
+                        return user.userSearchDtoToUser(RELATION.FOLLOWER);
+                    }else{
+                        return user.userSearchDtoToUser(RELATION.NON);
+                    }
+
+                })
                 .sorted((o1, o2) ->
                         followingId.contains(o1.getId())
                                 ? followingId.contains(o2.getId())
                                 ? 0 : -1 : 1)
                 .toList();
+
+//        return users.stream()
+//                .map(User::userDtoToUser)
+//                .sorted((o1, o2) ->
+//                        followingId.contains(o1.getId())
+//                                ? followingId.contains(o2.getId())
+//                                ? 0 : -1 : 1)
+//                .toList();
     }
 
     @Override

@@ -203,7 +203,7 @@ public class UserController {
     public ResponseEntity<BasicResponse> searchUser(HttpServletRequest request, @PathVariable(name = "keyword") String keyword) {
         Long id = Long.parseLong(request.getHeader("id"));
 
-        List<UserDto> userDtoList = userService.searchUser(id, keyword);
+        List<UserDto.searchUser> userDtoList = userService.searchUser(id, keyword);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
