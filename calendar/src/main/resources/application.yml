@@ -1,0 +1,3 @@
+spring:
+  kafka:
+    bootstrap-servers: http://k9e102a.p.ssafy.io:9092
