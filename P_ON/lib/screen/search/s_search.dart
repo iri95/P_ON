@@ -67,8 +67,9 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           .map((item) => SearchUser.fromJson(item))
           .toList();
       searchData.isSearchEmpty.value = false;
+      print(searchData.searchResult[0].nickName);
 
-      // TODO: 만약에 검색이 없다면, 검색된거 없음 띄워줘야함
+      // TODO: 만약에 검색이 없다면, 검색된거 없음 띄워줘
     } catch (e) {
       print(e);
     }
@@ -76,7 +77,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   @override
   void initState() {
-    searchData.isSearchEmpty.value = true;
     // 만약 GetX에 등록되어 있지 않다면
     if (!Get.isRegistered<SearchData>()) {
       // SearchData 타입의 새 인스턴스를 생성하고,
@@ -84,6 +84,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       Get.put(SearchData());
       // Get.find<SearchData>()를 통해 어디서든 이 인스턴스에 접근
     }
+    searchData.isSearchEmpty.value = true;
+
     // input이 생길때마다 검색
     _controller.addListener(() {
       _searchUser(_controller.text);
@@ -116,15 +118,57 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                 itemBuilder: (BuildContext context, int index) {
                   final element = searchData.searchResult[index];
                   return Tap(
-                    onTap: () {
-                      // TODO: 눌렀을 떄 그사람 프로필로 이동 또는 보이게?
-                      _controller.clear();
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(20),
-                      child: element.nickName.text.make(),
-                    ),
-                  );
+                      onTap: () {
+                        // TODO: 눌렀을 떄 그사람 프로필로 이동 또는 보이게?
+                        _controller.clear();
+                      },
+                      child: Container(
+                          padding: const EdgeInsets.all(20),
+                          // child: element.nickName.text.make(),
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 28,
+                                backgroundImage:
+                                    NetworkImage(element.profileImage),
+                              ),
+                              const SizedBox(width: 10),
+                              Container(
+                                  margin: const EdgeInsets.only(left: 8),
+                                  child: Text(
+                                    element.nickName,
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                        fontFamily: 'Pretendard'),
+                                  )),
+                              Expanded(child: Container()),
+                              // TODO: 관계 받아서 넣어야함
+                              // TODO: 팔로우 / 팔로우취소 버튼으로 바꾸기
+                              // FilledButton(
+                              //     style: FilledButton.styleFrom(
+                              //         minimumSize: const Size(75, 36),
+                              //         backgroundColor: isAdded
+                              //             ? AppColors.grey200
+                              //             : AppColors.mainBlue),
+                              //     onPressed: () {
+                              //       isAdded
+                              //           ? ref
+                              //               .read(promiseProvider.notifier)
+                              //               .removeFriends(followings)
+                              //           : ref
+                              //               .read(promiseProvider.notifier)
+                              //               .addFriends(followings);
+                              //     },
+                              //     child: Text(
+                              //       isAdded ? '해제' : '추가',
+                              //       style: const TextStyle(
+                              //           fontFamily: 'Pretendard',
+                              //           fontWeight: FontWeight.w500,
+                              //           color: Colors.white),
+                              //     ))
+                            ],
+                          )));
                 },
               )));
   }
