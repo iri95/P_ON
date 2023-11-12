@@ -22,15 +22,15 @@ class _ProfileImageState extends State<ProfileImage> {
 // 갤러리에서 선택
   void getImage() async {
     selectedImage = await _picker.pickImage(source: ImageSource.gallery);
-    print('전전 ${widget.profileImage}');
-    print('전 ${profileImageFile?.path}');
-    print('이건뭐지 ${selectedImage?.path}');
+    // print('전전 ${widget.profileImage}');
+    // print('전 ${profileImageFile?.path}');
+    // print('이건뭐지 ${selectedImage?.path}');
     if (selectedImage != null) {
       setState(() {
         // 선택된 이미지를 File 객체로 변환하여 profileImageFile에 저장
         profileImageFile = File(selectedImage!.path);
       });
-      print('후 ${profileImageFile?.path}');
+      // print('후 ${profileImageFile?.path}');
     }
   }
 
