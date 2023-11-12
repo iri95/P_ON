@@ -3,7 +3,6 @@ package com.wanyviny.promise.domain.vote.service;
 import com.wanyviny.promise.domain.item.entity.Item;
 import com.wanyviny.promise.domain.item.entity.ItemType;
 import com.wanyviny.promise.domain.item.repository.ItemRepository;
-import com.wanyviny.promise.domain.room.entity.Room;
 import com.wanyviny.promise.domain.room.repository.RoomRepository;
 import com.wanyviny.promise.domain.user.entity.User;
 import com.wanyviny.promise.domain.user.repository.UserRepository;
@@ -12,10 +11,10 @@ import com.wanyviny.promise.domain.vote.entity.Vote;
 import com.wanyviny.promise.domain.vote.repository.VoteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Service
 @RequiredArgsConstructor
@@ -41,26 +40,32 @@ public class VoteServiceImpl implements VoteService {
     }
 
     @Override
-    public VoteDto.get getVote(Long roomId) {
+    public VoteDto.get getVote(Long userId, Long roomId) {
         List<Item> itemList = itemRepository.findAllByRoomId(roomId);
         List<VoteDto.get.getDate> getDates = new ArrayList<>();
         List<VoteDto.get.getTime> getTimes = new ArrayList<>();
         List<VoteDto.get.getLocation> getLocations = new ArrayList<>();
+        AtomicBoolean doDate = new AtomicBoolean(false);
+        AtomicBoolean doTime = new AtomicBoolean(false);
+        AtomicBoolean doLocation = new AtomicBoolean(false);
 
         itemList.forEach(item -> {
             if (item.getItemType() == ItemType.DATE) {
+                doDate.set(item.getVotes().stream().map(Vote::getUser).map(User::getId).toList().contains(userId));
                 getDates.add(item.entityToDate());
             } else if (item.getItemType() == ItemType.TIME) {
+                doTime.set(item.getVotes().stream().map(Vote::getUser).map(User::getId).toList().contains(userId));
                 getTimes.add(item.entityToTime());
             } else {
+                doLocation.set(item.getVotes().stream().map(Vote::getUser).map(User::getId).toList().contains(userId));
                 getLocations.add(item.entityToLocation());
             }
         });
 
         return VoteDto.get.builder()
-                .doDate(getDates.size() > 0)
-                .doTime(getTimes.size() > 0)
-                .doLocation(getLocations.size() > 0)
+                .doDate(doDate.get())
+                .doTime(doTime.get())
+                .doLocation(doLocation.get())
                 .dates(getDates)
                 .times(getTimes)
                 .locations(getLocations)

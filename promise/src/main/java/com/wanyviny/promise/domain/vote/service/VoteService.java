@@ -13,5 +13,5 @@ public interface VoteService {
 
     List<String> getUserList(Long itemId);
 
-    VoteDto.get getVote(Long roomId);
+    VoteDto.get getVote(Long userId, Long roomId);
 }

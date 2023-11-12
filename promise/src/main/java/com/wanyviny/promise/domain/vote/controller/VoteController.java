@@ -41,9 +41,9 @@ public class VoteController {
     // 채팅방 투표의 항목별 투표수 조회 ( 전체 ) -> 누가 투표했는지  포함
     @GetMapping("/{roomId}")
     @Operation(summary = "투표 현황 조회", description = "투표 현황을 조회합니다.")
-    public ResponseEntity<BasicResponse> getItemVote(@PathVariable(name = "roomId") Long roomId) {
+    public ResponseEntity<BasicResponse> getItemVote(@RequestHeader("id") Long userId,@PathVariable(name = "roomId") Long roomId) {
 
-        VoteDto.get get = voteService.getVote(roomId);
+        VoteDto.get get = voteService.getVote(userId, roomId);
         int count = userRoomRepository.countAllByRoom_Id(roomId);
 
         BasicResponse basicResponse = BasicResponse.builder()
