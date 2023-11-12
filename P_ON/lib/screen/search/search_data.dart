@@ -33,13 +33,26 @@ class SearchData extends GetxController {
   List<SearchUser> searchUsers = [];
   RxList<String> searchHistoryList = <String>[].obs;
   RxList<SearchUser> searchResult = <SearchUser>[].obs;
+  RxBool isSearchEmpty = true.obs;
 
   @override
   void onInit() {
+    // searchHistoryList.addAll(['검색1', '검색1']);
     super.onInit();
   }
 
+  void removeSearchHistory(String text) {
+    searchHistoryList.remove(text);
+  }
+
   void addSearchHistory(String text) {
+    // text가 빈 문자열인지 확인
+    if (text.trim().isEmpty) {
+      return; // 빈 문자열이면 메서드를 종료
+    }
+    if (searchHistoryList.contains(text)) {
+      searchHistoryList.remove(text);
+    }
     searchHistoryList.insert(0, text);
   }
 }

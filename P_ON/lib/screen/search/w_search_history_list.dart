@@ -6,49 +6,62 @@ import 'package:p_on/screen/search/search_data.dart';
 import 'package:p_on/screen/search/w_history_item.dart';
 
 class SearchHistoryList extends StatefulWidget {
-  const SearchHistoryList({Key? key}) : super(key: key);
+  final Function(String) searchUser;
+
+  const SearchHistoryList({Key? key, required this.searchUser})
+      : super(key: key);
 
   @override
   State<SearchHistoryList> createState() => _SearchHistoryListState();
 }
 
 class _SearchHistoryListState extends State<SearchHistoryList> {
-  late final _searchHistoryData = Get.find<SearchData>();
+  final searchData = Get.find<SearchData>();
 
-  get historyList => _searchHistoryData.searchHistoryList;
+  // final _searchHistoryData = Get.find<SearchData>();
+
+  // get historyList => _searchHistoryData.searchHistoryList;
 
   @override
   Widget build(BuildContext context) {
-    return Column(children: [
-      Row(
-        children: ["최근 검색".text.bold.make()],
-      ).pSymmetric(h: 16, v: 20),
-      // SizedBox(height: 10),
-      height20,
-      ...historyList.map((item) => Text(item)).toList(),
-      // Expanded(
-      //     child: ListView(
-      //   children: [
-      //     Row(
-      //       children: [Text('ㅇㅇ')],
-      //     )
-      //   ],
-      //   // itemBuilder: (context, index) => Text(historyList[index]),
-      // ))
-      // Expanded(
-      //   child: ListView.builder(
-      //     itemCount: historyList.length,
-      //     itemBuilder: (context, index) => Text(historyList[index]),
-      //     // itemBuilder: (context, index) => SearchHistoryItem(
-      //     //       onTapDelete: () {
-      //     //         setState(() {
-      //     //           historyList.removeAt(index);
-      //     //         });
-      //     //       },
-      //     //       text: historyList[index],
-      //     //     )
-      //   ),
-      // )
-    ]);
+    return Column(
+      children: [
+        Row(
+          children: ["최근 검색".text.bold.make()],
+        ).pSymmetric(h: 16, v: 10),
+        // SizedBox(height: 10),
+        // TODO:  이거 CSS
+        Obx(() => Column(
+            children: searchData.searchHistoryList
+                .map((item) => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: Colors.grey, // 테두리 색상 설정
+                              width: 0.3, // 테두리 두께 설정
+                            ),
+                          ),
+                        ),
+                        child: ListTile(
+                          title: GestureDetector(
+                            onTap: () {
+                              widget.searchUser(item);
+                            },
+                            child: Text(item),
+                          ),
+                          trailing: IconButton(
+                            icon: Icon(Icons.close),
+                            onPressed: () {
+                              searchData.removeSearchHistory(item);
+                            },
+                          ),
+                        ),
+                      ),
+                    ))
+                .toList())),
+      ],
+    );
   }
 }

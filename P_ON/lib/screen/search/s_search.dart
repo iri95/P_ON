@@ -24,14 +24,15 @@ class SearchScreen extends ConsumerStatefulWidget {
 
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   final TextEditingController _controller = TextEditingController();
+  late final searchData = Get.find<SearchData>();
 
   int _searchCount = 0;
 
-  late final searchData = Get.find<SearchData>();
-
   // 유저 검색
-  Future<void> searchUser(keyword) async {
+  Future<void> _searchUser(keyword) async {
+    _controller.text = keyword;
     if (isBlank(keyword)) {
+      searchData.isSearchEmpty.value = true;
       searchData.searchResult.clear();
       return;
     }
@@ -65,6 +66,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       searchData.searchResult.value = (response.data['result'] as List<dynamic>)
           .map((item) => SearchUser.fromJson(item))
           .toList();
+      searchData.isSearchEmpty.value = false;
 
       // TODO: 만약에 검색이 없다면, 검색된거 없음 띄워줘야함
     } catch (e) {
@@ -74,17 +76,17 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   @override
   void initState() {
+    searchData.isSearchEmpty.value = true;
     // 만약 GetX에 등록되어 있지 않다면
     if (!Get.isRegistered<SearchData>()) {
       // SearchData 타입의 새 인스턴스를 생성하고,
-      //이를 GetX의 의존성 관리 컨테이너에 등록
+      // 이를 GetX의 의존성 관리 컨테이너에 등록
       Get.put(SearchData());
       // Get.find<SearchData>()를 통해 어디서든 이 인스턴스에 접근
     }
-
     // input이 생길때마다 검색
     _controller.addListener(() {
-      searchUser(_controller.text);
+      _searchUser(_controller.text);
     });
     super.initState();
   }
@@ -100,19 +102,22 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: SearchBarWidget(controller: _controller),
-        body: Obx(() => searchData.searchResult.isEmpty
+        body: Obx(() => searchData.isSearchEmpty.value
             ? ListView(
-                children: [SearchHistoryList()],
+                children: [
+                  SearchHistoryList(
+                    searchUser: _searchUser,
+                  )
+                ],
               )
             : ListView.builder(
                 itemCount: searchData.searchResult.length,
-                // TODO: 맨 위에 검색 결과 갯수 보여주기 ${_searchCount}
+                // TODO: 맨 위에 검색 결과 갯수 보여주기 ${searchCount}
                 itemBuilder: (BuildContext context, int index) {
                   final element = searchData.searchResult[index];
                   return Tap(
                     onTap: () {
                       // TODO: 눌렀을 떄 그사람 프로필로 이동 또는 보이게?
-
                       _controller.clear();
                     },
                     child: Container(
