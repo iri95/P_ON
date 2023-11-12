@@ -22,7 +22,7 @@ public interface UserService {
 
     User getUserByRefreshToken(String refreshToken);
 
-    List<UserDto> searchUser(Long userId, String keyword);
+    List<UserDto.searchUser> searchUser(Long userId, String keyword);
 
     Map<String, String> kakaoLogin(String accessToken, String phoneId) throws Exception;
 
