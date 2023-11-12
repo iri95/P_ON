@@ -5,6 +5,7 @@ import 'package:p_on/screen/main/s_main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:p_on/screen/main/tab/promise_room/f_create_promise.dart';
+import 'package:p_on/screen/main/tab/tab_item.dart';
 
 import '../../../common/widget/animated_width_collapse.dart';
 
@@ -22,6 +23,7 @@ class BottomFloatingActionButton extends ConsumerWidget {
 //     final isHided = floatingButtonState.isHided;
 
     final isSmall = ref.watch(floatingButtonStateProvider).isSmall; // 필요하다면 유지
+    final currentTab = ref.read(currentTabProvider);
 
     return Align(
       alignment: Alignment.bottomRight,
@@ -29,46 +31,95 @@ class BottomFloatingActionButton extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Tap(
-            onTap: () {
-              Nav.push(const CreatePromise());
-            },
-            child: AnimatedContainer(
-              duration: duration,
-              height: 60,
-              padding: const EdgeInsets.symmetric(horizontal: 18),
-              decoration: BoxDecoration(
-                  color: const Color(0xff3F48CC),
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow: [
-                    BoxShadow(
-                        color: Colors.black.withOpacity(0.3),
-                        spreadRadius: 0,
-                        blurRadius: 2,
-                        offset: Offset(0, 4))
-                  ]),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Icon(Icons.add, color: Colors.white),
-                  AnimatedWidthCollapse(
-                    visible: !isSmall,
-                    duration: duration,
-                    child: SizedBox(width: 10), // 텍스트가 보일 때 사이 간격
-                  ),
-                  AnimatedWidthCollapse(
-                    visible: !isSmall,
-                    duration: duration,
-                    child: '약속 생성'.text.white.make(),
-                  )
-                ],
+          // 스위치 문으로 사용할 필요가 있네
+          switch(currentTab){
+            // TODO: Handle this case.
+            TabItem.home => Tap(
+              onTap: () {
+                Nav.push(const CreatePromise());
+              },
+              child: AnimatedContainer(
+                duration: duration,
+                height: 60,
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                decoration: BoxDecoration(
+                    color: const Color(0xff3F48CC),
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          spreadRadius: 0,
+                          blurRadius: 2,
+                          offset: Offset(0, 4))
+                    ]),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.add, color: Colors.white),
+                    AnimatedWidthCollapse(
+                      visible: !isSmall,
+                      duration: duration,
+                      child: SizedBox(width: 10), // 텍스트가 보일 때 사이 간격
+                    ),
+                    AnimatedWidthCollapse(
+                      visible: !isSmall,
+                      duration: duration,
+                      child: '약속 생성'.text.white.make(),
+                    )
+                  ],
+                ),
               ),
-            ),
-          ).pOnly(
-              bottom: MainScreenState.bottomNavigatorHeight +
-                  context.viewPaddingBottom +
-                  10,
-              right: 20),
+            ).pOnly(
+                bottom: MainScreenState.bottomNavigatorHeight +
+                    context.viewPaddingBottom +
+                    10,
+                right: 20),
+            TabItem.history => SizedBox.shrink(),
+            TabItem.blankField => SizedBox.shrink(),
+          // TODO: 일정생성으로 바꾸기.
+            TabItem.plan => Tap(
+              onTap: () {
+                Nav.push(const CreatePromise());
+              },
+              child: AnimatedContainer(
+                duration: duration,
+                height: 60,
+                padding: const EdgeInsets.symmetric(horizontal: 18),
+                decoration: BoxDecoration(
+                    color: AppColors.calendarLightYellow,
+                    borderRadius: BorderRadius.circular(30),
+                    boxShadow: [
+                      BoxShadow(
+                          color: Colors.black.withOpacity(0.3),
+                          spreadRadius: 0,
+                          blurRadius: 2,
+                          offset: Offset(0, 4))
+                    ]),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.add, color: Colors.white),
+                    AnimatedWidthCollapse(
+                      visible: !isSmall,
+                      duration: duration,
+                      child: SizedBox(width: 10), // 텍스트가 보일 때 사이 간격
+                    ),
+                    AnimatedWidthCollapse(
+                      visible: !isSmall,
+                      duration: duration,
+                      child: '일정 생성'.text.white.make(),
+                    )
+                  ],
+                ),
+              ),
+            ).pOnly(
+                bottom: MainScreenState.bottomNavigatorHeight +
+                    context.viewPaddingBottom +
+                    10,
+                right: 20),
+            // TODO: Handle this case.
+            TabItem.my => SizedBox.shrink(),
+          },
         ],
       ),
     );
