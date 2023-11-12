@@ -45,6 +45,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
   List<Map<String, dynamic>> messages = [];
   Map<String, dynamic> chatRoomInfo = {};
   String? userId;
+  List<dynamic>? userData;
 
   var isDate;
   var isTime;
@@ -138,42 +139,22 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
       print(response);
       print(response.data['result'][0]['votes']);
 
-      // 현재 채팅방 참여한 유저수
-      int user_count = response.data['result'][0]['userCount'];
       // 투표 진행여부 true => 투표끝 / false => 투표 진행중
       bool is_complete = response.data['result'][0]['complete'];
 
       isDate = await response.data['result'][0]['date'];
       isTime = await response.data['result'][0]['time'];
       isLocation = await response.data['result'][0]['location'];
+      voteInfo.create_user = await response.data['result'][0]['userId'];
       voteInfo.is_anonymous = await response.data['result'][0]['anonymous'];
       voteInfo.is_multiple_choice =
           await response.data['result'][0]['multipleChoice'];
       voteInfo.dead_date = await response.data['result'][0]['deadDate'];
       voteInfo.dead_time = await response.data['result'][0]['deadTime'];
+      userData = await response.data['result'][0]['users'];
 
-      // for (var user in response.data['result'][0]['users']) {
-      //   if (user['userId'] == loginState.id) {
-      //     userName = user['nickname'];
-      //     userId = user['userId'].toString();
-      //     break;
-      //   }
-      // }
-      print(voteInfo);
-      print(voteInfo);
-      print(voteInfo);
-      print(voteInfo);
-      print(voteInfo);
-      print(voteInfo);
-      print(voteInfo);
-      final voteinfo = ref.watch(voteInfoProvider);
-      print(voteinfo.is_anonymous);
-      print(voteinfo.is_multiple_choice);
-      print(voteinfo.dead_date);
-      print(voteinfo.dead_time);
       setState(() {});
     } catch (e) {
-      print('채팅방 정보를 못받아옴 왜왜왜');
       print(e);
     }
   }
@@ -304,7 +285,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                 icon: const Icon(Icons.menu, color: Colors.black))
           ],
         ),
-        endDrawer: RightModal(id: widget.id),
+        endDrawer: RightModal(id: widget.id, users: userData),
         body: Container(
           padding: const EdgeInsets.only(bottom: 60),
           child: Column(

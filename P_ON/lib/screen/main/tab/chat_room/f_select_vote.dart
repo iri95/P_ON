@@ -1,10 +1,12 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:p_on/common/common.dart';
 import 'package:p_on/screen/main/tab/chat_room/w_vote_items.dart';
 import '../../../../common/cli_common.dart';
 import '../promise_room/vo_server_url.dart';
 import 'package:go_router/go_router.dart';
+import 'package:p_on/screen/main/user/fn_kakao.dart';
+import 'package:p_on/common/util/dio.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:p_on/screen/main/user/token_state.dart';
 import 'package:p_on/screen/main/user/fn_kakao.dart';
 import 'package:p_on/common/util/dio.dart';
 import 'package:dio/dio.dart';
@@ -13,9 +15,7 @@ import 'package:p_on/screen/main/user/token_state.dart';
 
 class SelectVote extends ConsumerStatefulWidget {
   final String id;
-
   const SelectVote({super.key, required this.id});
-
   @override
   ConsumerState<SelectVote> createState() => _SelectVoteState();
 }
@@ -24,12 +24,12 @@ class _SelectVoteState extends ConsumerState<SelectVote> {
   List<dynamic>? date;
   List<dynamic>? time;
   List<dynamic>? location;
-  // String? userId;
-  // bool? isComplete;
-  // bool? isAnonymous;
-  // bool? isMultipleChoice;
-  // int? userCount;
-  // Map<String, dynamic>? deadline;
+  int? count;
+  bool doDate = false;
+  bool doTime = false;
+  bool doLocation = false;
+
+  ValueNotifier<bool> voteCompletedNotifier = ValueNotifier<bool>(false);
 
   void getVote() async {
     // 현재 저장된 서버 토큰을 가져옵니다.
@@ -53,23 +53,24 @@ class _SelectVoteState extends ConsumerState<SelectVote> {
     }
 
     final apiService = ApiService();
+    voteCompletedNotifier.value = false;
 
     try {
       Response response = await apiService.sendRequest(
         method: 'GET',
-        path: '$server/api/promise/item/${widget.id}',
+        path: '$server/api/promise/vote/${widget.id}',
         headers: headers
       );
+      print(response);
+      count = await response.data['count'];
+      date = await response.data['result'][0]['dates'];
+      time = await response.data['result'][0]['times'];
+      location = await response.data['result'][0]['locations'];
+      doDate = await response.data['result'][0]['doDate'];
+      doTime = await response.data['result'][0]['doTime'];
+      doLocation = await response.data['result'][0]['doLocation'];
 
-      date = await response.data['result'][0]['date'];
-      time = await response.data['result'][0]['time'];
-      location = await response.data['result'][0]['location'];
-
-      setState(() {
-
-      });
-
-
+      setState(() {});
     } catch (e) {
       print(e);
     }
@@ -79,10 +80,14 @@ class _SelectVoteState extends ConsumerState<SelectVote> {
   void initState() {
     super.initState();
     getVote();
+    // getVoteInfo();
   }
 
   @override
   Widget build(BuildContext context) {
+    print(doDate);
+    print(doTime);
+    print(doLocation);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -107,13 +112,20 @@ class _SelectVoteState extends ConsumerState<SelectVote> {
             ),
           ),
         ),
-        body: ListView(
-          children: [
-            // 유저 정보 넘겨주기
-            VoteItems(text: '일정', roomId: widget.id, voteData: date, voteType: 'date',),
-            VoteItems(text: '시간', roomId: widget.id, voteData: time, voteType: 'time',),
-            VoteItems(text: '장소', roomId: widget.id, voteData: location, voteType: 'location',),
-          ],
+        body: ValueListenableBuilder(
+          valueListenable: voteCompletedNotifier,
+          builder: (context, bool value, child) {
+            if (value) {
+              getVote();
+            }
+            return ListView(
+              children: [
+                VoteItems(text: '일정', roomId: widget.id, voteData: date, voteType: 'DATE', count: count, isDone: doDate, voteCompletedNotifier: voteCompletedNotifier),
+                VoteItems(text: '시간', roomId: widget.id, voteData: time, voteType: 'TIME', count: count, isDone: doTime, voteCompletedNotifier: voteCompletedNotifier),
+                VoteItems(text: '장소', roomId: widget.id, voteData: location, voteType: 'LOCATION', count: count, isDone: doLocation, voteCompletedNotifier: voteCompletedNotifier),
+              ],
+            );
+          },
         ),
       ),
     );

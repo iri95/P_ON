@@ -14,15 +14,16 @@ import '../promise_room/vo_server_url.dart';
 
 class RightModal extends ConsumerStatefulWidget {
   int id;
+  List<dynamic>? users;
 
-  RightModal({super.key, required this.id});
+  RightModal({super.key, required this.id, this.users});
 
   @override
   ConsumerState<RightModal> createState() => _RightModalState();
 }
 
 class _RightModalState extends ConsumerState<RightModal> {
-  Future<void> getUserSchedule() async {
+  Future<Response> getUserSchedule() async {
     // 현재 저장된 서버 토큰을 가져옵니다.
     final loginState = ref.read(loginStateProvider);
     final token = loginState.serverToken;
@@ -42,17 +43,22 @@ class _RightModalState extends ConsumerState<RightModal> {
       headers['Authorization'] = '$newToken';
       headers['id'] = '$newId';
     }
+    List<int> userId = (widget.users ?? []).map((user) => int.parse(user['userId'].toString())).toList();
+    String userIdList = userId.join(',');
 
     final apiService = ApiService();
     try {
       Response response = await apiService.sendRequest(
         method: 'GET',
-        path: '$server/api/calendar/schedule/promise',
+        path: '$server/api/calendar/schedule/promise?userIdList=${userIdList}',
         headers: headers,
       );
       print('일정조회 성ㄱㅇ');
       print(response);
-    } catch (e) {}
+      return response;
+    } catch (e) {
+      throw e;
+    }
   }
 
   @override
@@ -62,8 +68,9 @@ class _RightModalState extends ConsumerState<RightModal> {
   }
   @override
   Widget build(BuildContext context) {
+    print(widget.users);
     return Container(
-        color: AppColors.mainBlue3,
+        color: AppColors.mainBlue50,
         width: MediaQuery.of(context).size.width - 60,
         height: double.infinity,
         child: SafeArea(
@@ -97,6 +104,19 @@ class _RightModalState extends ConsumerState<RightModal> {
                 // eventLoader: ,
               ),
             ),
+            FutureBuilder(
+              future: getUserSchedule(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Text("...");
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  final response = snapshot.data;
+                  return Text('Data Loadded: ${response.data}');
+                }
+              }
+            )
           ],
         )));
   }
