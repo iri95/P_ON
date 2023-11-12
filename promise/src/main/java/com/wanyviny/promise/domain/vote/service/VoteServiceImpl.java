@@ -49,15 +49,19 @@ public class VoteServiceImpl implements VoteService {
         AtomicBoolean doTime = new AtomicBoolean(false);
         AtomicBoolean doLocation = new AtomicBoolean(false);
 
+        System.out.println(userId);
         itemList.forEach(item -> {
             if (item.getItemType() == ItemType.DATE) {
-                doDate.set(item.getVotes().stream().map(Vote::getUser).map(User::getId).toList().contains(userId));
+                if(!doDate.get())
+                    doDate.set(item.getVotes().stream().map(Vote::getUser).map(User::getId).toList().contains(userId));
                 getDates.add(item.entityToDate());
             } else if (item.getItemType() == ItemType.TIME) {
-                doTime.set(item.getVotes().stream().map(Vote::getUser).map(User::getId).toList().contains(userId));
+                if(!doTime.get())
+                    doTime.set(item.getVotes().stream().map(Vote::getUser).map(User::getId).toList().contains(userId));
                 getTimes.add(item.entityToTime());
             } else {
-                doLocation.set(item.getVotes().stream().map(Vote::getUser).map(User::getId).toList().contains(userId));
+                if(!doLocation.get())
+                    doLocation.set(item.getVotes().stream().map(Vote::getUser).map(User::getId).toList().contains(userId));
                 getLocations.add(item.entityToLocation());
             }
         });
