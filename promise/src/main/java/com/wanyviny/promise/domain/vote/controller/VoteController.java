@@ -1,6 +1,7 @@
 package com.wanyviny.promise.domain.vote.controller;
 
 import com.wanyviny.promise.domain.common.BasicResponse;
+import com.wanyviny.promise.domain.room.repository.UserRoomRepository;
 import com.wanyviny.promise.domain.user.entity.User;
 import com.wanyviny.promise.domain.vote.dto.VoteDto;
 import com.wanyviny.promise.domain.vote.service.VoteService;
@@ -22,6 +23,7 @@ import java.util.List;
 public class VoteController {
 
     private final VoteService voteService;
+    private final UserRoomRepository userRoomRepository;
 
     // 사용자 투표 하기
     @PostMapping("")
@@ -42,10 +44,11 @@ public class VoteController {
     public ResponseEntity<BasicResponse> getItemVote(@PathVariable(name = "roomId") Long roomId) {
 
         VoteDto.get get = voteService.getVote(roomId);
+        int count = userRoomRepository.countAllByRoom_Id(roomId);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .message("투표 현황 조회 성공!")
-                .count(1)
+                .count(count)
                 .result(Collections.singletonList(get))
                 .build();
 
