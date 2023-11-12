@@ -19,10 +19,8 @@ import com.wanyviny.promise.domain.user.entity.User;
 import com.wanyviny.promise.domain.user.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -69,6 +67,7 @@ public class RoomServiceImpl implements RoomService {
             userRoomRepository.save(userRoom);
             users.add(userInfo);
 
+            if(Objects.equals(user.getId(), userId))continue;
             String title = "INVITE!";
             String body = inviter.getNickname() + "님께서 약속방에 초대하셨습니다!";
             String token = user.getPhoneId();

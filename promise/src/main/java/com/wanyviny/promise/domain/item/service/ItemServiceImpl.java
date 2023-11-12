@@ -22,10 +22,7 @@ import com.wanyviny.promise.domain.room.repository.UserRoomRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import com.wanyviny.promise.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
@@ -120,9 +117,11 @@ public class ItemServiceImpl implements ItemService {
         String body = room.getPromiseTitle() + "에 투표가 추가되었습니다!";
 
         phondIdList.forEach(user -> {
-            String token = user.getPhoneId();
-            createAlarm(user, body, ALARM_TYPE.CREATE_POLL);
-            firebasePushAlarm(title, body, token);
+            if(!Objects.equals(user.getId(), userId)) {
+                String token = user.getPhoneId();
+                createAlarm(user, body, ALARM_TYPE.CREATE_POLL);
+                firebasePushAlarm(title, body, token);
+            }
         });
         return response;
     }
