@@ -22,16 +22,15 @@ class VoteItems extends ConsumerStatefulWidget {
   final bool isDone;
   final ValueNotifier<bool> voteCompletedNotifier;
 
-  const VoteItems({
-    super.key,
-    required this.roomId,
-    required this.text,
-    required this.voteData,
-    required this.voteType,
-    required this.count,
-    required this.isDone,
-    required this.voteCompletedNotifier
-  });
+  const VoteItems(
+      {super.key,
+      required this.roomId,
+      required this.text,
+      required this.voteData,
+      required this.voteType,
+      required this.count,
+      required this.isDone,
+      required this.voteCompletedNotifier});
 
   @override
   ConsumerState<VoteItems> createState() => _VoteItemsState();
@@ -88,7 +87,6 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
       selectedItems.clear();
       print(selectedItems);
       widget.voteCompletedNotifier.value = true;
-
     } catch (e) {
       print(e);
     }
@@ -130,10 +128,7 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
       print(response);
       selectedItems.clear();
       widget.voteCompletedNotifier.value = true;
-gdgd
-      setState(() {
-
-      });
+      setState(() {});
     } catch (e) {
       print(e);
     }
@@ -263,7 +258,8 @@ gdgd
                                 DropdownButtonHideUnderline(
                                   child: DropdownButton<String>(
                                     onChanged: (String? newValue) {},
-                                    items: widget.voteData![i]['users'].map<DropdownMenuItem<String>>((item) {
+                                    items: widget.voteData![i]['users']
+                                        .map<DropdownMenuItem<String>>((item) {
                                       return DropdownMenuItem<String>(
                                         value: item['nickName'],
                                         child: Container(
@@ -272,22 +268,22 @@ gdgd
                                             children: [
                                               CircleAvatar(
                                                 radius: 20,
-                                                child: Image.network(item['profileImage'], ),
+                                                child: Image.network(
+                                                  item['profileImage'],
+                                                ),
                                               ),
                                               Container(
-                                                margin: EdgeInsets.only(left: 20),
-                                                  child: Text(item['nickName']),
+                                                margin:
+                                                    EdgeInsets.only(left: 20),
+                                                child: Text(item['nickName']),
                                               )
                                             ],
                                           ),
                                         ),
-
-
                                       );
                                     }).toList(),
                                   ),
                                 ),
-
                             ],
                           ),
                         ),
