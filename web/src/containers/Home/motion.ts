@@ -14,7 +14,7 @@ type MotionStyleWithCssVar = {
     | MotionStyle[K]
     | MotionValue<number>
     | MotionValue<string>
-    | MotionValue<any>;
+    | MotionValue<any>; // eslint-disable-line
 };
 
-export const stylesWithCssVar = (styles: MotionStyleWithCssVar) => styles as any;
+export const stylesWithCssVar = (styles: MotionStyleWithCssVar) => styles as any; // eslint-disable-line
