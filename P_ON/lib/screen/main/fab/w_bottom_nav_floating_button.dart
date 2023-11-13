@@ -5,6 +5,8 @@ import 'package:p_on/screen/main/s_main.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:p_on/screen/main/tab/promise_room/f_create_promise.dart';
+import 'package:p_on/screen/main/tab/schedule/f_create_schedule.dart';
+import 'package:p_on/screen/main/tab/schedule/f_last_create_schedule.dart';
 import 'package:p_on/screen/main/tab/tab_item.dart';
 
 import '../../../common/widget/animated_width_collapse.dart';
@@ -41,7 +43,7 @@ class BottomFloatingActionButton extends ConsumerWidget {
               child: AnimatedContainer(
                 duration: duration,
                 height: 60,
-                padding: const EdgeInsets.symmetric(horizontal: 18),
+                padding: const EdgeInsets.symmetric(horizontal: 15),
                 decoration: BoxDecoration(
                     color: const Color(0xff3F48CC),
                     borderRadius: BorderRadius.circular(30),
@@ -55,16 +57,16 @@ class BottomFloatingActionButton extends ConsumerWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.add, color: Colors.white),
+                    const Icon(Icons.add, color: Colors.white, size: 30,),
                     AnimatedWidthCollapse(
                       visible: !isSmall,
                       duration: duration,
-                      child: SizedBox(width: 10), // 텍스트가 보일 때 사이 간격
+                      child: SizedBox(width: 5), // 텍스트가 보일 때 사이 간격
                     ),
                     AnimatedWidthCollapse(
                       visible: !isSmall,
                       duration: duration,
-                      child: '약속 생성'.text.white.make(),
+                      child: '약속생성'.text.white.fontFamily('Pretendard').fontWeight(FontWeight.w500).make(),
                     )
                   ],
                 ),
@@ -79,14 +81,15 @@ class BottomFloatingActionButton extends ConsumerWidget {
           // TODO: 일정생성으로 바꾸기.
             TabItem.plan => Tap(
               onTap: () {
-                Nav.push(const CreatePromise());
+                // Nav.push(const LastCreateSchedule());
+                Nav.push(const CreateSchedule());
               },
               child: AnimatedContainer(
                 duration: duration,
                 height: 60,
-                padding: const EdgeInsets.symmetric(horizontal: 18),
+                padding: const EdgeInsets.symmetric(horizontal: 15),
                 decoration: BoxDecoration(
-                    color: AppColors.calendarLightYellow,
+                    color: AppColors.calendarYellow,
                     borderRadius: BorderRadius.circular(30),
                     boxShadow: [
                       BoxShadow(
@@ -98,16 +101,16 @@ class BottomFloatingActionButton extends ConsumerWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.add, color: Colors.white),
+                    const Icon(Icons.add, color: AppColors.mainBlue, size: 30,),
                     AnimatedWidthCollapse(
                       visible: !isSmall,
                       duration: duration,
-                      child: SizedBox(width: 10), // 텍스트가 보일 때 사이 간격
+                      child: SizedBox(width: 5), // 텍스트가 보일 때 사이 간격
                     ),
                     AnimatedWidthCollapse(
                       visible: !isSmall,
                       duration: duration,
-                      child: '일정 생성'.text.white.make(),
+                      child: '일정생성'.text.hexColor('#3F48CC').fontFamily('Pretendard').fontWeight(FontWeight.w500).make(),
                     )
                   ],
                 ),
