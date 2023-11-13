@@ -35,4 +35,5 @@ class AppColors {
   static const Color calendarOrange = Color(0xffff7f27);
   static const Color calendarBlue = Color(0xff778ce3);
   static const Color pointOrange = Color(0xffFF7F27);
+  static const Color pointOrange2 = Color(0xffFFB471);
 }
