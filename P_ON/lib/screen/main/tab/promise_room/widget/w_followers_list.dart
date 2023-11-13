@@ -51,7 +51,7 @@ class FollowersList extends ConsumerWidget {
               style: FilledButton.styleFrom(
                   minimumSize: const Size(75, 36),
                   backgroundColor:
-                      isAdded ? AppColors.grey200 : AppColors.mainBlue),
+                      isAdded ? AppColors.grey400 : AppColors.mainBlue),
               onPressed: () {
                 isAdded
                     ? ref

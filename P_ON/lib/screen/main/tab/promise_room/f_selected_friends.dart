@@ -50,43 +50,6 @@ class _SelectedFriendsState extends ConsumerState<SelectedFriends> {
             alignment: Alignment.topLeft,
             child: '약속을 함께 할 친구를 추가해주세요'.text.black.size(18).semiBold.make(),
           ),
-          // TODO: 이거 어쩔까
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Container(
-                  height: 62,
-                  margin: const EdgeInsets.only(left: 32, right: 16),
-                  decoration: BoxDecoration(
-                      color: AppColors.grey200,
-                      borderRadius: BorderRadius.circular(10)),
-                  child: TextButton(
-                      style: TextButton.styleFrom(primary: Colors.black),
-                      onPressed: () {},
-                      child: const Column(
-                        children: [Icon(Icons.search), Text('닉네임 검색')],
-                      )),
-                ),
-              ),
-              Expanded(
-                child: Container(
-                  height: 62,
-                  margin: const EdgeInsets.only(left: 16, right: 32),
-                  decoration: BoxDecoration(
-                      color: AppColors.grey200,
-                      borderRadius: BorderRadius.circular(10)),
-                  child: TextButton(
-                      style: TextButton.styleFrom(primary: Colors.black),
-                      onPressed: () {},
-                      child: const Column(
-                        children: [Icon(Icons.link), Text('링크 복사')],
-                      )),
-                ),
-              )
-            ],
-          ),
-
           Container(
             height: 120,
             margin: const EdgeInsets.symmetric(vertical: 12),
@@ -111,6 +74,43 @@ class _SelectedFriendsState extends ConsumerState<SelectedFriends> {
               ],
             ),
           ),
+
+          // TODO: 이거 어쩔까
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: [
+          // Expanded(
+          //   child: Container(
+          //     height: 62,
+          //     margin: const EdgeInsets.only(left: 32, right: 16),
+          //     decoration: BoxDecoration(
+          //         color: AppColors.grey200,
+          //         borderRadius: BorderRadius.circular(10)),
+          //     child: TextButton(
+          //         style: TextButton.styleFrom(primary: Colors.black),
+          //         onPressed: () {},
+          //         child: const Column(
+          //           children: [Icon(Icons.link), Text('링크 복사')],
+          //         )),
+          //   ),
+          // ),
+          //   Expanded(
+          //     child: Container(
+          //       height: 62,
+          //       margin: const EdgeInsets.only(left: 16, right: 32),
+          //       decoration: BoxDecoration(
+          //           color: AppColors.grey200,
+          //           borderRadius: BorderRadius.circular(10)),
+          //       child: TextButton(
+          //           style: TextButton.styleFrom(primary: Colors.black),
+          //           onPressed: () {},
+          //           child: const Column(
+          //             children: [Icon(Icons.search), Text('닉네임 검색')],
+          //           )),
+          //     ),
+          //   ),
+          // ],
+          // ),
           const Expanded(child: Follows()),
         ],
       ),
