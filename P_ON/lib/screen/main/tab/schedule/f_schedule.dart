@@ -134,6 +134,7 @@ class _CalendarFragmentState extends ConsumerState<ScheduleFragment> {
                 markerDecoration: BoxDecoration(
                   color: AppColors.calendarYellow,
                   shape: BoxShape.circle,
+                  // shape: BoxShape.rectangle,
                 ),
               ),
               headerStyle: HeaderStyle(
@@ -174,6 +175,8 @@ class _CalendarFragmentState extends ConsumerState<ScheduleFragment> {
                 builder: (context, value, _) {
                   return ListView.builder(
                     controller: scrollController,
+                    // 리스트가 적을때는 스크롤이 되지 않도록 기본 설정이 되어있는 문제해결.
+                    physics: const AlwaysScrollableScrollPhysics(),
                     itemCount: value.length,
                     itemBuilder: (context, index) {
                       return Container(

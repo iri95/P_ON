@@ -2,130 +2,100 @@ import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final promiseProvider = StateNotifierProvider<PromiseNotifier, Promise>((ref) => PromiseNotifier());
+final scheduleProvider = StateNotifierProvider<ScheduleNotifier, Schedule>((ref) => ScheduleNotifier());
 
-class Friends {
-  bool followBack;
-  int id;
-  String profileImage;
-  String nickName;
-  String privacy;
+class Schedule {
+  String? schedule_title;
+  String? schedule_content;
+  DateTime? schedule_start_date;
+  DateTime? schedule_end_date;
+  String? schedule_start_time;
+  String? schedule_end_time;
+  bool? schedule_all_time = false;
+  String? schedule_location;
+  NLatLng? schedule_location_code;
 
+  Schedule({
+    this.schedule_title,
+    this.schedule_content,
+    this.schedule_start_date,
+    this.schedule_end_date,
+    this.schedule_start_time,
+    this.schedule_end_time,
+    this.schedule_all_time,
+    this.schedule_location,
+    this.schedule_location_code,
+  });
 
-  Friends({
-    required this.followBack,
-    required this.id,
-    required this.profileImage,
-    required this.nickName,
-    required this.privacy,
-});
-
-  factory Friends.fromJson(Map<String, dynamic> json) {
-    return Friends(
-      followBack: json['followBack'],
-      id: json['follow']['id'],
-      profileImage: json['follow']['profileImage'],
-      nickName: json['follow']['nickName'],
-      privacy: json['follow']['privacy'],
+  Schedule copyWith({
+    String? schedule_title,
+    String? schedule_content,
+    DateTime? schedule_start_date,
+    DateTime? schedule_end_date,
+    String? schedule_start_time,
+    String? schedule_end_time,
+    String? schedule_location,
+    NLatLng? schedule_location_code,
+    bool? schedule_all_time,
+  }) {
+    return Schedule(
+      schedule_title: schedule_title ?? this.schedule_title,
+      schedule_content: schedule_content ?? this.schedule_content,
+      schedule_start_date: schedule_start_date ?? this.schedule_start_date,
+      schedule_end_date: schedule_end_date ?? this.schedule_end_date,
+      schedule_start_time: schedule_start_time ?? this.schedule_start_time,
+      schedule_end_time: schedule_end_time ?? this.schedule_end_time,
+      schedule_location: schedule_location ?? this.schedule_location,
+      schedule_location_code: schedule_location_code ?? this.schedule_location_code,
+      schedule_all_time: schedule_all_time ?? this.schedule_all_time,
     );
   }
 }
 
-class Promise {
-  String? promise_title;
-  List<Friends>? selected_friends;
-  DateTime? promise_date;
-  String? promise_time;
-  String? promise_location;
-  NLatLng? promise_location_code;
+class ScheduleNotifier extends StateNotifier<Schedule> {
+  ScheduleNotifier() : super(Schedule());
 
-  Promise(
-      {this.promise_title,
-      this.selected_friends = const [],
-      this.promise_date,
-      this.promise_time,
-      this.promise_location,
-      this.promise_location_code,
-      });
-}
+  void setScheduleTitle(String schedule_title) {
+    state = state.copyWith(schedule_title: schedule_title.isEmpty ? null : schedule_title);
+  }
 
-class PromiseNotifier extends StateNotifier<Promise> {
-  PromiseNotifier() : super(Promise());
+  void setScheduleContent(String schedule_content) {
+    state = state.copyWith(schedule_content: schedule_content.isEmpty ? null : schedule_content);
+  }
 
-  void setPromiseTitle(String promise_title) {
-    state = Promise(
-        promise_title: promise_title.isEmpty ? null : promise_title,
-        selected_friends: state.selected_friends,
-        promise_date: state.promise_date,
-        promise_time: state.promise_time,
-        promise_location: state.promise_location,
-        promise_location_code: state.promise_location_code
+  void setScheduleStartDate(DateTime schedule_start_date) {
+    state = state.copyWith(schedule_start_date: schedule_start_date);
+  }
+
+  void setScheduleEndDate(DateTime schedule_end_date) {
+    state = state.copyWith(schedule_end_date: schedule_end_date);
+  }
+
+  void setScheduleStartTime(String schedule_start_time) {
+    state = state.copyWith(schedule_start_time: schedule_start_time);
+  }
+
+  void setScheduleEndTime(String schedule_end_time) {
+    state = state.copyWith(schedule_end_time: schedule_end_time);
+  }
+
+  void setScheduleAllTime(bool schedule_all_time) {
+    print("토글 상태 변경 전: ${state.schedule_all_time}");
+    // state.schedule_all_time이 null인 경우 false로 간주합니다.
+    bool currentAllTime = state.schedule_all_time ?? false;
+    // 현재 상태의 반대값을 설정합니다.
+    state = state.copyWith(schedule_all_time: !currentAllTime);
+    print("토글 상태 변경 후: ${state.schedule_all_time}");
+  }
+
+  void setScheduleLocation(String schedule_location, NLatLng schedule_location_code) {
+    state = state.copyWith(
+        schedule_location: schedule_location,
+        schedule_location_code: schedule_location_code
     );
   }
 
-  void addFriends(Friends friends) {
-    if (state.selected_friends?.any((item) => item.id == friends.id) ?? false) {
-      return;
-    } else {
-      state = Promise(
-          promise_title: state.promise_title,
-          selected_friends: List.from(state.selected_friends ?? [])..add(friends),
-          promise_date: state.promise_date,
-          promise_time: state.promise_time,
-          promise_location: state.promise_location,
-          promise_location_code: state.promise_location_code
-      );
-    }
-
-  }
-
-  void removeFriends(Friends friend) {
-    state = Promise(
-        promise_title: state.promise_title,
-        selected_friends: state.selected_friends?.where((item) => item.id != friend.id).toList(),
-        promise_date: state.promise_date,
-        promise_time: state.promise_time,
-        promise_location: state.promise_location,
-        promise_location_code: state.promise_location_code
-    );
-  }
-
-  void setPromiseDate(DateTime promise_date) {
-    state = Promise(
-        promise_title: state.promise_title,
-        selected_friends: state.selected_friends,
-        promise_date: promise_date,
-        promise_time: state.promise_time,
-        promise_location: state.promise_location,
-        promise_location_code: state.promise_location_code
-    );
-  }
-
-  void setPromiseTime(String promise_time) {
-    state = Promise(
-        promise_title: state.promise_title,
-        selected_friends: state.selected_friends,
-        promise_date: state.promise_date,
-        promise_time: promise_time,
-        promise_location: state.promise_location,
-        promise_location_code: state.promise_location_code
-    );
-  }
-
-  void setPromiseLocation(String promise_location, NLatLng promise_location_code) {
-    state = Promise(
-        promise_title: state.promise_title,
-        selected_friends: state.selected_friends,
-        promise_date: state.promise_date,
-        promise_time: state.promise_time,
-        promise_location: promise_location,
-        promise_location_code: promise_location_code
-    );
-  }
-
-  // db에 데이터 저장하고 나중에 다시 약속 생성하기전 미리 초기화
   void reset() {
-    state = Promise();
+    state = Schedule();
   }
 }
-

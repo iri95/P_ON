@@ -30,7 +30,7 @@ class _LastCreateScheduleState extends ConsumerState<LastCreateSchedule> {
   final FocusNode timeNode = FocusNode();
   final FocusNode placeNode = FocusNode();
 
-  Future<void> _selectDate() async {
+  Future<void> _selectStartDate() async {
     FocusScope.of(context).requestFocus(FocusNode());
     DateTime? picked = await showDatePicker(
       builder: (context, child) {
@@ -56,7 +56,7 @@ class _LastCreateScheduleState extends ConsumerState<LastCreateSchedule> {
     if (picked != null) {
       dateController.text =
           DateFormat('yyyy-MM-dd (E)', 'ko_kr').format(picked);
-      ref.read(promiseProvider.notifier).setPromiseDate(picked);
+      ref.read(scheduleProvider.notifier).setScheduleStartDate(picked);
     }
   }
 
@@ -70,8 +70,8 @@ class _LastCreateScheduleState extends ConsumerState<LastCreateSchedule> {
           timeController.text =
               '$period ${time.hourOfPeriod.toString().padLeft(2, '0')}시 ${time.minute.toString().padLeft(2, '0')}분';
           ref
-              .read(promiseProvider.notifier)
-              .setPromiseTime(timeController.text);
+              .read(scheduleProvider.notifier)
+              .setScheduleStartTime(timeController.text);
         },
         minuteInterval: TimePickerInterval.FIVE,
         iosStylePicker: true,
@@ -205,7 +205,7 @@ class _LastCreateScheduleState extends ConsumerState<LastCreateSchedule> {
                 enabledBorder: InputBorder.none,
                 focusedBorder: InputBorder.none),
             onTap: () async {
-              if (label == '날짜') await _selectDate();
+              if (label == '날짜') await _selectStartDate();
               if (label == '시간') await _selectTime();
               if (label == '장소') _searchPlace();
             },
