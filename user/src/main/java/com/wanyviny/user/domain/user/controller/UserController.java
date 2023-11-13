@@ -9,7 +9,6 @@ import com.wanyviny.user.domain.user.service.UserService;
 import com.wanyviny.user.global.jwt.service.JwtService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -30,12 +29,11 @@ public class UserController {
     private final UserService userService;
     private final JwtService jwtService;
 
-
     @PostMapping("/kakao-login")
     @Operation(summary = "카카오 로그인", description = "카카오 토큰과 phoneId를 받아 가입 or 로그인합니다.")
-    public ResponseEntity<BasicResponse> kakaoLogin(HttpServletRequest request, @RequestBody Map<String,String> phoneId) throws Exception {
-        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
-        System.out.println("phoneId :" + phoneId.get("phoneId"));
+    public ResponseEntity<BasicResponse> kakaoLogin(@RequestHeader("Authorization") String authorization,
+                                                    @RequestBody Map<String, String> phoneId) throws Exception {
+        String accessToken = authorization.replace("Bearer ", "");
         Map<String, String> tokenMap = userService.kakaoLogin(accessToken, phoneId.get("phoneId"));
         HttpHeaders headers = new HttpHeaders();
         if (tokenMap.get("ROLE").equals("GUEST")) {
@@ -60,8 +58,7 @@ public class UserController {
 
     @GetMapping("/kakao-profile")
     @Operation(summary = "카카오 로그인 후 사용자 정보", description = "카카오 로그인한 GUEST의 정보를 가져옵니다.(회원가입시)")
-    public ResponseEntity<BasicResponse> getKakaoProfile(HttpServletRequest request) {
-        Long id = Long.parseLong(request.getHeader("id"));
+    public ResponseEntity<BasicResponse> getKakaoProfile(@RequestHeader("id") Long id) {
 
         User userProfile = userService.getUserProfile(id);
 
@@ -84,10 +81,10 @@ public class UserController {
 
     @PostMapping("/sign-up")
     @Operation(summary = "회원가입", description = "사용자를 회원가입시켜 USER로 만들어 줍니다.")
-    public ResponseEntity<BasicResponse> signup(HttpServletRequest request, @RequestBody UserSignUpDto userSignUpDto) {
-        String accessToken = request.getHeader("Authorization").replace("Bearer ", "");
-
-        Long id = Long.parseLong(request.getHeader("id"));
+    public ResponseEntity<BasicResponse> signup(@RequestHeader("Authorization") String authorization,
+                                                @RequestHeader("id") Long id,
+                                                @RequestBody UserSignUpDto userSignUpDto) {
+        String accessToken = authorization.replace("Bearer ", "");
 
         userService.signUp(userSignUpDto, id);
 
@@ -111,8 +108,7 @@ public class UserController {
 
     @GetMapping("/profile")
     @Operation(summary = "사용자 정보 조회", description = "사용자의 정보를 조회합니다.")
-    public ResponseEntity<BasicResponse> getProfile(HttpServletRequest request) {
-        Long id = Long.parseLong(request.getHeader("id"));
+    public ResponseEntity<BasicResponse> getProfile(@RequestHeader("id") Long id) {
 
         User userProfile = userService.getUserProfile(id);
 
@@ -137,8 +133,7 @@ public class UserController {
 
     @PutMapping("/update")
     @Operation(summary = "사용자 정보 수정", description = "사용자의 정보를 수정합니다.")
-    public ResponseEntity<BasicResponse> userUpdate(HttpServletRequest request, @RequestBody UserDto userDto) {
-        Long id = Long.parseLong(request.getHeader("id"));
+    public ResponseEntity<BasicResponse> userUpdate(@RequestHeader("id") Long id, @RequestBody UserDto userDto) {
 
         userService.update(userDto, id);
 
@@ -153,8 +148,7 @@ public class UserController {
 
     @GetMapping("/logout")
     @Operation(summary = "카카오 로그아웃", description = "사용자가 카카오 로그아웃합니다.")
-    public ResponseEntity<BasicResponse> logout(HttpServletRequest request) throws Exception {
-        Long id = Long.parseLong(request.getHeader("id"));
+    public ResponseEntity<BasicResponse> logout(@RequestHeader("id") Long id) throws Exception {
 
         userService.logout(id);
 
@@ -169,8 +163,7 @@ public class UserController {
 
     @DeleteMapping("/withdrawal")
     @Operation(summary = "회원 탈퇴", description = "카카오에서 연결을 끊고 회원을 탈퇴합니다.")
-    public ResponseEntity<BasicResponse> withdrawal(HttpServletRequest request) throws Exception {
-        Long id = Long.parseLong(request.getHeader("id"));
+    public ResponseEntity<BasicResponse> withdrawal(@RequestHeader("id") Long id) throws Exception {
 
         userService.withdrawal(id);
 
@@ -183,37 +176,9 @@ public class UserController {
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
 
-    @GetMapping("/auto-login")
-    @Operation(summary = "자동 로그인", description = "Refresh Token이 있을 경우 로그인합니다.")
-    public ResponseEntity<BasicResponse> autoLogin(HttpServletRequest request) {
-        String refreshToken = jwtService.extractRefreshToken(request)
-                .orElseThrow(() -> new IllegalArgumentException("refresh 토큰이 없습니다."));
-
-        User findUser = userService.getUserByRefreshToken(refreshToken);
-
-        String reissueAccessToken = jwtService.createAccessToken();
-        String reissueRefreshToken = jwtService.createRefreshToken();
-
-        // 헤더에 토큰 정보 추가
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + reissueAccessToken);
-        headers.add("Authorization_refresh", "Bearer " + reissueRefreshToken);
-
-        jwtService.updateRefreshToken(findUser.getId(), reissueRefreshToken);
-
-        BasicResponse basicResponse = BasicResponse.builder()
-                .code(HttpStatus.OK.value())
-                .httpStatus(HttpStatus.OK)
-                .message("자동로그인을 위한 api라 아무 의미없다~")
-                .build();
-
-        return new ResponseEntity<>(basicResponse, headers, basicResponse.getHttpStatus());
-    }
-
     @GetMapping("/search/{keyword}")
     @Operation(summary = "유저 검색", description = "사용자를 검색합니다.")
-    public ResponseEntity<BasicResponse> searchUser(HttpServletRequest request, @PathVariable(name = "keyword") String keyword) {
-        Long id = Long.parseLong(request.getHeader("id"));
+    public ResponseEntity<BasicResponse> searchUser(@RequestHeader("id") Long id, @PathVariable(name = "keyword") String keyword) {
 
         List<UserDto.searchUser> userDtoList = userService.searchUser(id, keyword);
 
