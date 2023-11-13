@@ -7,6 +7,9 @@ import com.google.firebase.messaging.Notification;
 import com.wanyviny.promise.domain.alarm.ALARM_TYPE;
 import com.wanyviny.promise.domain.alarm.entity.Alarm;
 import com.wanyviny.promise.domain.alarm.repository.AlarmRepository;
+import com.wanyviny.promise.domain.calendar.entity.CALENDAR_TYPE;
+import com.wanyviny.promise.domain.calendar.entity.Calendar;
+import com.wanyviny.promise.domain.calendar.repository.CalendarRepository;
 import com.wanyviny.promise.domain.item.dto.ItemRequest;
 import com.wanyviny.promise.domain.item.dto.ItemRequest.Create;
 import com.wanyviny.promise.domain.item.dto.ItemResponse;
@@ -20,6 +23,9 @@ import com.wanyviny.promise.domain.room.entity.UserRoom;
 import com.wanyviny.promise.domain.room.repository.RoomRepository;
 import com.wanyviny.promise.domain.room.repository.UserRoomRepository;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import com.wanyviny.promise.domain.user.entity.User;
@@ -38,6 +44,7 @@ public class ItemServiceImpl implements ItemService {
     private final RoomRepository roomRepository;
     private final UserRoomRepository userRoomRepository;
     private final AlarmRepository alarmRepository;
+    private final CalendarRepository calendarRepository;
     private final FirebaseMessaging firebaseMessaging;
 
     @Override
@@ -266,35 +273,89 @@ public class ItemServiceImpl implements ItemService {
     @Override
     @Transactional
     public void putItemType(Long roomId, ItemType itemType) {
-        if (itemType == ItemType.DATE) {
-            roomRepository.completeDate(roomId);
-            promiseVoteComplete(roomId, itemType);
-        } else if (itemType == ItemType.TIME) {
-            roomRepository.completeTime(roomId);
-            promiseVoteComplete(roomId, itemType);
-        } else {
-            roomRepository.completeLocation(roomId);
-            promiseVoteComplete(roomId, itemType);
-        }
-    }
-
-    public void promiseVoteComplete(Long roomId, ItemType itemType) {
         Room room = roomRepository.findById(roomId).orElseThrow(
                 () -> new IllegalArgumentException("해당 약속방이 존재하지 않습니다.")
         );
+
+        // Transactional로 인해? -> roomRepository.completeDate가 바로 반영되지 않아
+        // 마지막에 세개가 모두 complete라는 if문이 작동하지 않음.
+        if (promiseVoteComplete(room, itemType)) {
+            if (itemType == ItemType.DATE) {
+                roomRepository.completeDate(roomId);
+                if (room.isTimeComplete() && room.isLocationComplete()) {
+                    promiseToCalendar(room);
+                }
+            } else if (itemType == ItemType.TIME) {
+                roomRepository.completeTime(roomId);
+                if (room.isDateComplete() && room.isLocationComplete()) {
+                    promiseToCalendar(room);
+                }
+            } else {
+                roomRepository.completeLocation(roomId);
+                if (room.isDateComplete() && room.isTimeComplete()) {
+                    promiseToCalendar(room);
+                }
+            }
+        } else {
+            throw new IllegalArgumentException("해당 타입의 투표 항목이 존재하지 않습니다.");
+        }
+    }
+
+    public boolean promiseVoteComplete(Room room, ItemType itemType) {
         List<Item> itemList = room.getItems().stream()
                 .filter(item -> item.getItemType() == itemType)
-                .sorted((o1, o2) -> Integer.compare(o2.getVotes().size(), o1.getVotes().size())
-                ).toList();
+                .sorted((o1, o2) -> Integer.compare(o2.getVotes().size(), o1.getVotes().size()))
+                .toList();
 
-        if (itemList.size() == 0) return;
+        if (itemList.size() == 0) return false;
 
         if (itemType == ItemType.DATE) {
             room.setPromiseDate(itemList.get(0).getDate());
-        }else if (itemType == ItemType.TIME) {
+        } else if (itemType == ItemType.TIME) {
             room.setPromiseTime(itemList.get(0).getTime());
-        }else{
+        } else {
             room.setPromiseLocation(itemList.get(0).getLocation());
         }
+        return true;
+    }
+
+    public void promiseToCalendar(Room room) {
+        Item dateItem = room.getItems().stream()
+                .filter(item -> item.getItemType() == ItemType.DATE)
+                .sorted((o1, o2) -> Integer.compare(o2.getVotes().size(), o1.getVotes().size()))
+                .toList().get(0);
+        Item timeItem = room.getItems().stream()
+                .filter(item -> item.getItemType() == ItemType.TIME)
+                .sorted((o1, o2) -> Integer.compare(o2.getVotes().size(), o1.getVotes().size()))
+                .toList().get(0);
+        Item locationItem = room.getItems().stream()
+                .filter(item -> item.getItemType() == ItemType.LOCATION)
+                .sorted((o1, o2) -> Integer.compare(o2.getVotes().size(), o1.getVotes().size()))
+                .toList().get(0);
+
+        String date = dateItem.getDate().substring(0, 10);
+        String time = timeItem.getTime().substring(3);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH시 mm분");
+        LocalDateTime localDateStartTime = LocalDateTime.parse(date + " " + time, formatter);
+        LocalDateTime localDateEndTime = LocalDateTime.parse(date + " 23시 59분", formatter);
+
+        if (time.startsWith("오후")) {
+            localDateStartTime = localDateStartTime.plusHours(12);
+        }
+
+        Date startDate = Date.from(localDateStartTime.atZone(ZoneId.systemDefault()).toInstant());
+        Date endDate = Date.from(localDateEndTime.atZone(ZoneId.systemDefault()).toInstant());
+
+        room.getUserRooms().stream().map(UserRoom::getUser).forEach(user -> {
+            calendarRepository.save(Calendar.builder()
+                    .userId(user)
+                    .title(room.getPromiseTitle())
+                    .place(locationItem.getLocation())
+                    .startDate(startDate)
+                    .endDate(endDate)
+                    .type(CALENDAR_TYPE.PROMISE)
+                    .build());
+        });
     }
 }
