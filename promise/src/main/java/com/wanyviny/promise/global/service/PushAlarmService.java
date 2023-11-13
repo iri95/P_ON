@@ -51,9 +51,9 @@ public class PushAlarmService {
         String title = "PROMISE AHEAD!";
 
         roomList.forEach(room -> {
-            if (isComplete(room.getDeadDate(), room.getDeadTime(), 1L) ) {
+            if (room.isDateComplete() && room.isTimeComplete() &&
+                    isComplete(room.getPromiseDate(), room.getPromiseTime(), 1L)) {
                 String message = room.getPromiseTitle() + "가 1시간 남았습니다!";
-                roomRepository.completeRoom(room.getId());
                 alarm(room, title, message, ALARM_TYPE.AHEAD_PROMISE);
             }
         });

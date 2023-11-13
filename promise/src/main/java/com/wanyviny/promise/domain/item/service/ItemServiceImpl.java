@@ -54,6 +54,7 @@ public class ItemServiceImpl implements ItemService {
         room.setAnonymous(request.isAnonymous());
         room.setMultipleChoice(request.isMultipleChoice());
 
+
         ItemResponse.Create response = modelMapper.map(room, ItemResponse.Create.class);
         response.setUserCount(userRoomRepository.countAllByRoom_Id(room.getId()));
 
@@ -106,11 +107,6 @@ public class ItemServiceImpl implements ItemService {
 
             response.setLocation(true);
         }
-        boolean complete = isComplete(room.getDeadDate(), room.getDeadTime());
-
-        response.setDateComplete(complete);
-        response.setTimeComplete(complete);
-        response.setLocationComplete(complete);
 
         List<User> phondIdList = room.getUserRooms().stream()
                 .map(UserRoom::getUser)
@@ -232,33 +228,8 @@ public class ItemServiceImpl implements ItemService {
 
             response.setLocation(true);
         }
-        boolean complete = isComplete(room.getDeadDate(), room.getDeadTime());
-        response.setDateComplete(complete);
-        response.setTimeComplete(complete);
-        response.setLocationComplete(complete);
-        
+
         return response;
-    }
-
-    private boolean isComplete(String deadDate, String deadTime) {
-
-        if (deadDate == null) {
-            return false;
-        }
-
-        String date = deadDate.substring(0, 10);
-        String time = deadTime.substring(3);
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH시 mm분");
-        LocalDateTime localDateTime = LocalDateTime.parse(date + " " + time, formatter);
-
-        if (deadTime.startsWith("오후")) {
-
-            localDateTime = localDateTime.plusHours(12);
-        }
-
-//        return localDateTime.compareTo(LocalDateTime.now()) > 0 ? false : true;
-        return !localDateTime.isAfter(LocalDateTime.now());
     }
 
     @Transactional
