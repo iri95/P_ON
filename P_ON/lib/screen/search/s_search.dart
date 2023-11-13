@@ -8,6 +8,7 @@ import 'package:p_on/common/util/dio.dart';
 import 'package:dio/dio.dart';
 
 import 'package:p_on/common/common.dart';
+import 'package:p_on/screen/main/user/user_state.dart';
 
 import 'package:p_on/screen/search/w_search_bar.dart';
 import 'package:p_on/screen/search/w_search_history_list.dart';
@@ -25,8 +26,6 @@ class SearchScreen extends ConsumerStatefulWidget {
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   final TextEditingController _controller = TextEditingController();
   late final searchData = Get.find<SearchData>();
-
-  int _searchCount = 0;
 
   // 유저 검색
   Future<void> _searchUser(keyword) async {
@@ -59,17 +58,61 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     try {
       var response = await apiService.sendRequest(
           method: 'GET', path: '/api/user/search/$keyword', headers: headers);
-
-      _searchCount = response.data['count'];
+      // print(response.data['result']);
 
       // SearchUser 객체로 변환
       searchData.searchResult.value = (response.data['result'] as List<dynamic>)
           .map((item) => SearchUser.fromJson(item))
           .toList();
       searchData.isSearchEmpty.value = false;
-      print(searchData.searchResult[0].nickName);
+      print(searchData.searchResult[0].relation);
 
       // TODO: 만약에 검색이 없다면, 검색된거 없음 띄워줘
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> submitFollow(SearchUser element) async {
+    var _relation = element.relation;
+    var _id = element.id;
+
+    final loginState = ref.read(loginStateProvider);
+    final token = loginState.serverToken;
+    final id = loginState.id;
+
+    var headers = {'Authorization': '$token', 'id': '$id'};
+
+    // 서버 토큰이 없으면
+    if (token == null) {
+      await kakaoLogin(ref);
+      await fetchToken(ref);
+
+      final newToken = ref.read(loginStateProvider).serverToken;
+      final newId = ref.read(loginStateProvider).id;
+
+      headers['Authorization'] = '$newToken';
+      headers['id'] = '$newId';
+    }
+
+    final apiService = ApiService();
+    final _method = _relation == 'FOLLOWING' ? 'DELETE' : 'GET';
+    print('${_relation} ${_id} ${_method}');
+
+    try {
+      // await apiService.sendRequest(
+      //     method: _method,
+      //     path: '/api/follow/following/$_id',
+      //     headers: headers);
+
+      // searchData를 업데이트하여 변경된 relation 값을 반영
+
+      if (_relation == 'FOLLOWING') {
+        searchData.updateRelation(element.id, 'NON');
+      } else {
+        searchData.updateRelation(element.id, 'FOLLOWING');
+      }
+      // print(searchData.searchResult[0].relation);
     } catch (e) {
       print(e);
     }
@@ -114,23 +157,35 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
               )
             : ListView.builder(
                 itemCount: searchData.searchResult.length,
-                // TODO: 맨 위에 검색 결과 갯수 보여주기 ${searchCount}
                 itemBuilder: (BuildContext context, int index) {
                   final element = searchData.searchResult[index];
                   return Tap(
                       onTap: () {
                         // TODO: 눌렀을 떄 그사람 프로필로 이동 또는 보이게?
-                        _controller.clear();
+                        // _controller.clear();
                       },
                       child: Container(
                           padding: const EdgeInsets.all(20),
-                          // child: element.nickName.text.make(),
+                          decoration: const BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(
+                                      color: Colors.grey, width: 0.1))),
                           child: Row(
                             children: [
-                              CircleAvatar(
-                                radius: 28,
-                                backgroundImage:
-                                    NetworkImage(element.profileImage),
+                              ClipOval(
+                                child: Image.network(
+                                  element.profileImage,
+                                  width: 56, // 2*radius
+                                  height: 56, // 2*radius
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (BuildContext context,
+                                      Object exception,
+                                      StackTrace? stackTrace) {
+                                    // 에러 시 기본이미지
+                                    return const Icon(Icons.account_circle,
+                                        size: 56, color: Colors.grey);
+                                  },
+                                ),
                               ),
                               const SizedBox(width: 10),
                               Container(
@@ -143,30 +198,28 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                         fontFamily: 'Pretendard'),
                                   )),
                               Expanded(child: Container()),
-                              // TODO: 관계 받아서 넣어야함
-                              // TODO: 팔로우 / 팔로우취소 버튼으로 바꾸기
-                              // FilledButton(
-                              //     style: FilledButton.styleFrom(
-                              //         minimumSize: const Size(75, 36),
-                              //         backgroundColor: isAdded
-                              //             ? AppColors.grey200
-                              //             : AppColors.mainBlue),
-                              //     onPressed: () {
-                              //       isAdded
-                              //           ? ref
-                              //               .read(promiseProvider.notifier)
-                              //               .removeFriends(followings)
-                              //           : ref
-                              //               .read(promiseProvider.notifier)
-                              //               .addFriends(followings);
-                              //     },
-                              //     child: Text(
-                              //       isAdded ? '해제' : '추가',
-                              //       style: const TextStyle(
-                              //           fontFamily: 'Pretendard',
-                              //           fontWeight: FontWeight.w500,
-                              //           color: Colors.white),
-                              //     ))
+                              element.id.toString() !=
+                                      ref.read(loginStateProvider).id.toString()
+                                  ? FilledButton(
+                                      style: FilledButton.styleFrom(
+                                          minimumSize: const Size(75, 36),
+                                          backgroundColor:
+                                              element.relation == 'FOLLOWING'
+                                                  ? AppColors.grey500
+                                                  : AppColors.mainBlue),
+                                      onPressed: () {
+                                        submitFollow(element);
+                                      },
+                                      child: Text(
+                                        element.relation == 'FOLLOWING'
+                                            ? '팔로잉'
+                                            : '팔로우',
+                                        style: const TextStyle(
+                                            fontFamily: 'Pretendard',
+                                            fontWeight: FontWeight.w500,
+                                            color: Colors.white),
+                                      ))
+                                  : Container()
                             ],
                           )));
                 },

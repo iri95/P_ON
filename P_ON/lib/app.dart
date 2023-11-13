@@ -11,6 +11,7 @@ import 'package:p_on/screen/main/tab/chat_room/f_chat_room.dart';
 import 'package:p_on/screen/main/tab/chat_room/f_create_vote_room.dart';
 import 'package:p_on/screen/main/tab/chat_room/f_select_vote.dart';
 import 'package:p_on/screen/main/tab/chatbot/f_chatbot.dart';
+import 'package:p_on/screen/main/tab/chatbot/f_select_chatbot.dart';
 import 'package:p_on/screen/main/tab/promise_room/f_create_promise.dart';
 import 'package:p_on/screen/main/tab/register/f_register.dart';
 import 'package:p_on/screen/main/tab/tab_item.dart';
@@ -165,7 +166,7 @@ class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
                     'true';
             final voteType = VoteType.values.firstWhere(
                 (e) => e.toString() == 'VoteType.$voteTypeString',
-                orElse: () => VoteType.Date);
+                orElse: () => VoteType.DATE);
 
             return MaterialPage(
               child: CreateVoteRoom(
@@ -186,6 +187,13 @@ class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
         pageBuilder: (BuildContext context, GoRouterState state) {
           final userId = state.pathParameters['userId'] ?? 'unknown';
           return MaterialPage(child: ChatBot(Id: userId));
+        }
+      ),
+      GoRoute(
+        path: '/select/chatbot/:userId',
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          final userId = state.pathParameters['userId'] ?? 'unknown';
+          return MaterialPage(child: SelectChatBot(id: userId));
         }
       )
     ],

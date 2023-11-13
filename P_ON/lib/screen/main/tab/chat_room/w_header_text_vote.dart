@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:p_on/common/constant/app_colors.dart';
 
-enum VoteType { Date, Time, Location }
+enum VoteType { DATE, TIME, LOCATION }
 
 class Vote extends StatefulWidget {
   final VoteType voteType;
@@ -37,7 +37,7 @@ class _VoteState extends State<Vote> {
             }
 
             switch (widget.voteType) {
-              case VoteType.Date:
+              case VoteType.DATE:
                 print('date');
                 print(widget.voteType);
                 if (widget.isVote! == true) {
@@ -47,7 +47,7 @@ class _VoteState extends State<Vote> {
                       '/create/vote/${widget.roomId}/${voteTypeToString(widget.voteType)}/$isUpdate');
                 }
                 break;
-              case VoteType.Time:
+              case VoteType.TIME:
                 print('time');
                 print(widget.voteType);
                 if (widget.isVote! == true) {
@@ -57,7 +57,7 @@ class _VoteState extends State<Vote> {
                       '/create/vote/${widget.roomId}/${voteTypeToString(widget.voteType)}/$isUpdate');
                 }
                 break;
-              case VoteType.Location:
+              case VoteType.LOCATION:
                 print('location');
                 print(widget.voteType);
                 if (widget.isVote! == true) {
