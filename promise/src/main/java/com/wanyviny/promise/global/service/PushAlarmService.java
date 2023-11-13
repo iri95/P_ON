@@ -7,6 +7,9 @@ import com.google.firebase.messaging.Notification;
 import com.wanyviny.promise.domain.alarm.ALARM_TYPE;
 import com.wanyviny.promise.domain.alarm.entity.Alarm;
 import com.wanyviny.promise.domain.alarm.repository.AlarmRepository;
+import com.wanyviny.promise.domain.item.entity.ItemType;
+import com.wanyviny.promise.domain.item.service.ItemService;
+import com.wanyviny.promise.domain.item.service.ItemServiceImpl;
 import com.wanyviny.promise.domain.room.entity.Room;
 import com.wanyviny.promise.domain.room.entity.UserRoom;
 import com.wanyviny.promise.domain.room.repository.RoomRepository;
@@ -28,6 +31,7 @@ public class PushAlarmService {
     private final FirebaseMessaging firebaseMessaging;
     private final AlarmRepository alarmRepository;
     private final RoomRepository roomRepository;
+    private final ItemServiceImpl itemService;
 
     @Scheduled(cron = "1 0/10 * * * *")
     @Transactional
@@ -39,9 +43,15 @@ public class PushAlarmService {
             if (isComplete(room.getDeadDate(), room.getDeadTime(), 0L)) {
                 String message = room.getPromiseTitle() + "의 투표가 종료되었습니다!";
                 roomRepository.completeRoom(room.getId());
-                alarm(room, title, message, ALARM_TYPE.END_POLL);
+                if (itemService.promiseVoteComplete(room, ItemType.DATE)
+                        && itemService.promiseVoteComplete(room, ItemType.TIME)
+                        && itemService.promiseVoteComplete(room, ItemType.LOCATION)) {
+                    itemService.promiseToCalendar(room);
+                    alarm(room, title, message, ALARM_TYPE.END_POLL);
+                }
             }
         });
+
     }
 
     @Scheduled(cron = "1 0/10 * * * *")
