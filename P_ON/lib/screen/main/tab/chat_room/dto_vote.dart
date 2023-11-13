@@ -177,4 +177,15 @@ class VoteInfoNotifier extends StateNotifier<VoteInfo> {
       dead_time: deadtime
     );
   }
+
+  void resetDeadDateAndTime() {
+    state = VoteInfo(
+      create_user: state.create_user,
+      is_anonymous: state.is_anonymous,
+      is_multiple_choice: state.is_multiple_choice,
+      dead_date: null,
+      dead_time: null,
+    );
+  }
+
 }

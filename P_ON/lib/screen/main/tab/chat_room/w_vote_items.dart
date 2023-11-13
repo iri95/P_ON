@@ -72,19 +72,23 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
       headers['Authorization'] = '$newToken';
       headers['id'] = '$newId';
     }
-
     var data = {'itemList': selectedItems};
 
     final apiService = ApiService();
     try {
+      print(selectedItems);
       Response response = await apiService.sendRequest(
           method: 'POST',
           path: '$server/api/promise/vote',
           headers: {...headers, 'Content-Type': 'application/json'},
           data: data);
-      print('post요청');
-      print('$server/api/promise/vote');
-      print(response);
+      print('저장성공');
+      print(selectedItems);
+      print('초기화');
+      selectedItems.clear();
+      print(selectedItems);
+      widget.voteCompletedNotifier.value = true;
+
     } catch (e) {
       print(e);
     }
@@ -124,6 +128,9 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
           headers: {...headers, 'Content-Type': 'application/json'},
           data: data);
       print(response);
+      selectedItems.clear();
+      widget.voteCompletedNotifier.value = true;
+gdgd
       setState(() {
 
       });
@@ -147,11 +154,6 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
     final currentUser = ref.read(loginStateProvider).id;
     final createUser = ref.read(voteInfoProvider).create_user.toString();
     final voteUpdate = currentUser == createUser ? true : false;
-
-    print(widget.voteData);
-
-    print(selectedItems);
-
     return Container(
       decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(color: Colors.grey))),
@@ -325,8 +327,6 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
                             widget.isDone
                                 ? putVote(selectedItems)
                                 : postVote(selectedItems);
-                            selectedItems.clear();
-                            widget.voteCompletedNotifier.value = true;
                           });
                         },
                         child: Text(
