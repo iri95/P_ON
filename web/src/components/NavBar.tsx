@@ -27,43 +27,42 @@ export default function Nav() {
       <nav className={styles['nav-items']}>
         <ul>
           <li className={`${styles['nav-item']} ${active === '/' ? styles.active : ''}`}>
-            <Link href="/" scroll={false} className={styles['main-item']}>
+            <Link href="/" className={styles['main-item']}>
               서비스 소개
               {active === '/' && <div className={styles.line} />}
             </Link>
             <ul className={styles.dropdown}>
-              <li>
-                <Link href="#section1">Section1</Link>
-              </li>
-              <li>
-                <Link href="#section2">Section2</Link>
-              </li>
-              <li>
-                <Link href="#section3">Section3</Link>
-              </li>
-              <li>
-                <Link href="#section4">Section4</Link>
-              </li>
+              {['약속', '소통', '추억', '챗봇', '일정'].map((item, index) => (
+                <li key={item}>
+                  <Link style={{ display: 'inline-block', width: '100%' }} href={`/#section${index + 1}`}>
+                    {item}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </li>
           <li
             className={`${styles['nav-item']} ${active === '/how-to-use' || active === '/mobile' ? styles.active : ''}`}
           >
-            <Link href="/how-to-use" scroll={false} className={styles['main-item']}>
+            <Link href="/how-to-use" scroll className={styles['main-item']}>
               가이드
               {(active === '/how-to-use' || active === '/mobile') && <div className={styles.line} />}
             </Link>
             <ul className={styles.dropdown}>
               <li>
-                <Link href="/how-to-use">P:ON 사용법</Link>
+                <Link scroll href="/how-to-use">
+                  P:ON 사용법
+                </Link>
               </li>
               <li>
-                <Link href="/mobile">미리보기</Link>
+                <Link scroll href="/mobile">
+                  미리보기
+                </Link>
               </li>
             </ul>
           </li>
           <li className={`${styles['nav-item']} ${active === '/faq' ? styles.active : ''}`}>
-            <Link href="/faq" scroll={false} className={styles['main-item']}>
+            <Link href="/faq" scroll className={styles['main-item']}>
               FAQ
               {active === '/faq' && <div className={styles.line} />}
             </Link>
