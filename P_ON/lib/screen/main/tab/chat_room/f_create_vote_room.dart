@@ -96,14 +96,14 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
   }
 
   Map<VoteType, List<String>> voteItems = {
-    VoteType.Date: ['', ''],
-    VoteType.Time: ['', ''],
-    VoteType.Location: ['', '']
+    VoteType.DATE: ['', ''],
+    VoteType.TIME: ['', ''],
+    VoteType.LOCATION: ['', '']
   };
   Map<VoteType, List<TextEditingController>> textEditingControllers = {
-    VoteType.Date: [TextEditingController(), TextEditingController()],
-    VoteType.Time: [TextEditingController(), TextEditingController()],
-    VoteType.Location: [TextEditingController(), TextEditingController()]
+    VoteType.DATE: [TextEditingController(), TextEditingController()],
+    VoteType.TIME: [TextEditingController(), TextEditingController()],
+    VoteType.LOCATION: [TextEditingController(), TextEditingController()]
   };
 
   Future<void> postVote(vote, voteInfo) async {
@@ -146,6 +146,7 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
       print('투표생성성공이다');
       print('투표생성성공이다');
       print(response);
+      ref.read(voteProvider.notifier).setState(VoteDate());
 
       final router = GoRouter.of(context);
       router.go('/chatroom/${widget.id}');
@@ -180,7 +181,10 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
           method: 'GET',
           path: '$server/api/promise/item/${widget.id}',
           headers: headers);
-      // 유저 정보 받아와서 비교해서 지금 현재 유저랑 만든사람이 동일하면 수정버튼 보이게 처리
+      print('투표수정화면에서 보이는 부분임');
+      print('투표수정화면에서 보이는 부분임');
+      print('투표수정화면에서 보이는 부분임');
+      print(response);
       final date = await response.data['result'][0]['date'];
       final time = await response.data['result'][0]['time'];
       final location = await response.data['result'][0]['location'];
@@ -197,60 +201,58 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
         isAnonymous = anonymous;
         isMultipleChoice = multipleChoice;
 
+        print(date.length);
+        print(voteItems[VoteType.DATE]?.length);
+
         // 리스트 길이가 모자라면 길이 늘려주기
-        if (date.length > voteItems[VoteType.Date]?.length) {
-          for (int i = 0;
-              i < date.length - voteItems[VoteType.Date]?.length;
-              i++) {
-            voteItems[VoteType.Date]?.add('');
-            textEditingControllers[VoteType.Date]?.add(TextEditingController());
+        int dateDiff = date.length - (voteItems[VoteType.DATE]?.length ?? 0);
+        if (dateDiff > 0) {
+          for (int i = 0; i < dateDiff; i++) {
+            voteItems[VoteType.DATE]?.add('');
+            textEditingControllers[VoteType.DATE]?.add(TextEditingController());
           }
         }
-        if (time.length > voteItems[VoteType.Time]?.length) {
-          for (int i = 0;
-              i < time.length - voteItems[VoteType.Time]?.length;
-              i++) {
-            voteItems[VoteType.Time]?.add('');
-            textEditingControllers[VoteType.Time]?.add(TextEditingController());
+
+        int timeDiff = time.length - (voteItems[VoteType.TIME]?.length ?? 0);
+        if (timeDiff > 0) {
+          for (int i = 0; i < timeDiff; i++) {
+            voteItems[VoteType.TIME]?.add('');
+            textEditingControllers[VoteType.TIME]?.add(TextEditingController());
           }
         }
-        if (location.length > voteItems[VoteType.Location]?.length) {
-          for (int i = 0;
-              i < location.length - voteItems[VoteType.Location]?.length;
-              i++) {
-            voteItems[VoteType.Location]?.add('');
-            textEditingControllers[VoteType.Location]
+        int locationDiff = location.length - (voteItems[VoteType.LOCATION]?.length ?? 0);
+        if (locationDiff > 0) {
+          for (int i = 0; i < locationDiff; i ++) {
+            voteItems[VoteType.LOCATION]?.add('');
+            textEditingControllers[VoteType.LOCATION]
                 ?.add(TextEditingController());
           }
         }
         // 해당값들 기본값으로 설정하기
         for (int j = 0; j < date.length; j++) {
-          voteItems[VoteType.Date]![j] = date[j];
-          textEditingControllers[VoteType.Date]![j].text = changeDate(date[j]);
+          voteItems[VoteType.DATE]![j] = date[j];
+          textEditingControllers[VoteType.DATE]![j].text = changeDate(date[j]);
         }
         for (int j = 0; j < time.length; j++) {
-          voteItems[VoteType.Time]![j] = time[j];
-          textEditingControllers[VoteType.Time]![j].text = time[j];
+          voteItems[VoteType.TIME]![j] = time[j];
+          textEditingControllers[VoteType.TIME]![j].text = time[j];
         }
         for (int j = 0; j < location.length; j++) {
-          voteItems[VoteType.Location]![j] = location[j]['location'];
-          textEditingControllers[VoteType.Location]![j].text =
+          voteItems[VoteType.LOCATION]![j] = location[j]['location'];
+          textEditingControllers[VoteType.LOCATION]![j].text =
               location[j]['location'];
           addMarker(double.parse(location[j]['lat']),
               double.parse(location[j]['lng']), location[j]['location']);
         }
-        List<String> dateItems = date;
-        List<String> timeItems = time;
-        List<Map<String, String>> locationItems = location;
+        ref.read(voteProvider.notifier).setVoteData(date, time, location);
 
-        VoteDate newVoteDate = VoteDate(
-            vote_date: dateItems,
-            vote_time: timeItems,
-            vote_location: locationItems);
-        ref.read(voteProvider.notifier).setState(newVoteDate);
+        print('리버팟 상태 찍기');
+        print(ref.read(voteProvider).vote_date);
+        print(ref.read(voteProvider).vote_time);
+        print(ref.read(voteProvider).vote_location);
     } catch (e) {
       print('지금 못받아옴 왜 ');
-      print(e);
+      print('여기에러임 뭐가 문제지 $e');
     }
   }
 
@@ -303,7 +305,7 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
       print('투표수정성공');
       print('투표수정성공');
       print(response);
-
+      ref.read(voteProvider.notifier).setState(VoteDate());
       final router = GoRouter.of(context);
       router.go('/chatroom/${widget.id}');
     } catch (e) {
@@ -316,7 +318,18 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
     super.initState();
     selectedVoteType = widget.voteType;
     locationData = _getCurrentLocation();
-
+    final voteInfo = ref.read(voteInfoProvider);
+    if (voteInfo.dead_date != null && voteInfo.dead_time != null) {
+      isEndTimeSet = true;
+      _endDateController.text = voteInfo.dead_date!;
+      _endTimeController.text = voteInfo.dead_time!;
+    }
+    if (voteInfo.is_anonymous != null) {
+      isAnonymous = voteInfo.is_anonymous!;
+    }
+    if (voteInfo.is_multiple_choice != null) {
+      isMultipleChoice = voteInfo.is_multiple_choice!;
+    }
     if (widget.isUpdate) {
       futureGetVoteDate = getVoteDate();
     } else {
@@ -357,6 +370,7 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
                         color: Colors.black,
                       ),
                       onPressed: () {
+                        ref.read(voteProvider.notifier).setState(VoteDate());
                         context.go('/chatroom/${widget.id}');
                       }),
                   title: Text(widget.isUpdate ? '투표 수정' : '투표 만들기',
@@ -438,20 +452,20 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
                                             controller: textEditingControllers[
                                                 selectedVoteType!]![index],
                                             readOnly: selectedVoteType ==
-                                                    VoteType.Location
+                                                    VoteType.LOCATION
                                                 ? false
                                                 : true,
                                             onTap: () async {
                                               switch (selectedVoteType) {
-                                                case VoteType.Date:
+                                                case VoteType.DATE:
                                                   _selectedDate(context,
                                                       selectedVoteType!, index);
                                                   break;
-                                                case VoteType.Time:
+                                                case VoteType.TIME:
                                                   _selectTime(context,
                                                       selectedVoteType!, index);
                                                   break;
-                                                case VoteType.Location:
+                                                case VoteType.LOCATION:
                                                   break;
                                                 default:
                                                   break;
@@ -465,7 +479,7 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
                                             },
                                             onSubmitted: (value) {
                                               if (selectedVoteType ==
-                                                  VoteType.Location) {
+                                                  VoteType.LOCATION) {
                                                 SearchPlace(value, index);
                                               }
                                             },
@@ -491,21 +505,21 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
                                                           selectedVoteType!]
                                                       ?.removeAt(index);
                                                   switch (selectedVoteType) {
-                                                    case VoteType.Date:
+                                                    case VoteType.DATE:
                                                       ref
                                                           .read(voteProvider
                                                               .notifier)
                                                           .removeVoteDate(
                                                               index);
                                                       break;
-                                                    case VoteType.Time:
+                                                    case VoteType.TIME:
                                                       ref
                                                           .read(voteProvider
                                                               .notifier)
                                                           .removeVoteTime(
                                                               index);
                                                       break;
-                                                    case VoteType.Location:
+                                                    case VoteType.LOCATION:
                                                       ref
                                                           .read(voteProvider
                                                               .notifier)
@@ -523,7 +537,7 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
                                             ),
                                           ),
                                           if (selectedVoteType ==
-                                              VoteType.Location)
+                                              VoteType.LOCATION)
                                             Positioned(
                                                 right: 30,
                                                 child: TextButton(
@@ -590,7 +604,7 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
                                 ),
                               ),
                             ),
-                            if (selectedVoteType == VoteType.Location)
+                            if (selectedVoteType == VoteType.LOCATION)
                               FutureBuilder(
                                   future: locationData,
                                   builder: (context, snapshot) {
@@ -926,20 +940,20 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
                                       controller: textEditingControllers[
                                           selectedVoteType!]![index],
                                       readOnly:
-                                          selectedVoteType == VoteType.Location
+                                          selectedVoteType == VoteType.LOCATION
                                               ? false
                                               : true,
                                       onTap: () async {
                                         switch (selectedVoteType) {
-                                          case VoteType.Date:
+                                          case VoteType.DATE:
                                             _selectedDate(context,
                                                 selectedVoteType!, index);
                                             break;
-                                          case VoteType.Time:
+                                          case VoteType.TIME:
                                             _selectTime(context,
                                                 selectedVoteType!, index);
                                             break;
-                                          case VoteType.Location:
+                                          case VoteType.LOCATION:
                                             break;
                                           default:
                                             break;
@@ -953,7 +967,7 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
                                       },
                                       onSubmitted: (value) {
                                         if (selectedVoteType ==
-                                            VoteType.Location) {
+                                            VoteType.LOCATION) {
                                           SearchPlace(value, index);
                                         }
                                       },
@@ -978,17 +992,17 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
                                                     selectedVoteType!]
                                                 ?.removeAt(index);
                                             switch (selectedVoteType) {
-                                              case VoteType.Date:
+                                              case VoteType.DATE:
                                                 ref
                                                     .read(voteProvider.notifier)
                                                     .removeVoteDate(index);
                                                 break;
-                                              case VoteType.Time:
+                                              case VoteType.TIME:
                                                 ref
                                                     .read(voteProvider.notifier)
                                                     .removeVoteTime(index);
                                                 break;
-                                              case VoteType.Location:
+                                              case VoteType.LOCATION:
                                                 ref
                                                     .read(voteProvider.notifier)
                                                     .removeVoteLocation(index);
@@ -1002,7 +1016,7 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
                                         },
                                       ),
                                     ),
-                                    if (selectedVoteType == VoteType.Location)
+                                    if (selectedVoteType == VoteType.LOCATION)
                                       Positioned(
                                           right: 30,
                                           child: TextButton(
@@ -1062,7 +1076,7 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
                           ),
                         ),
                       ),
-                      if (selectedVoteType == VoteType.Location)
+                      if (selectedVoteType == VoteType.LOCATION)
                         FutureBuilder(
                             future: locationData,
                             builder: (context, snapshot) {
@@ -1331,11 +1345,11 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
 
   String voteTypeToString(VoteType voteType) {
     switch (voteType) {
-      case VoteType.Date:
+      case VoteType.DATE:
         return '일시';
-      case VoteType.Time:
+      case VoteType.TIME:
         return '시간';
-      case VoteType.Location:
+      case VoteType.LOCATION:
         return '장소';
       default:
         return '';

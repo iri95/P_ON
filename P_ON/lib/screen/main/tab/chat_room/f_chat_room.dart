@@ -159,39 +159,39 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
     }
   }
 
-  // 현재유저 정보 받아오기
-  Future<void> getCurrentUser() async {
-  // 현재 저장된 서버 토큰을 가져옵니다.
-    final loginState = ref.read(loginStateProvider);
-    final token = loginState.serverToken;
-    final id = loginState.id;
-    final voteInfo = ref.read(voteInfoProvider);
-
-    var headers = {'Authorization': '$token', 'id': '$id'};
-
-    // 서버 토큰이 없으면
-    if (token == null) {
-      await kakaoLogin(ref);
-      await fetchToken(ref);
-
-      // 토큰을 다시 읽습니다.
-      final newToken = ref.read(loginStateProvider).serverToken;
-      final newId = ref.read(loginStateProvider).id;
-
-      headers['Authorization'] = '$newToken';
-      headers['id'] = '$newId';
-    }
-
-    final apiService = ApiService();
-    try {
-      Response response = await apiService.sendRequest(
-          method: 'GET', path: '$server/api/user/profile', headers: headers);
-      print(response);
-      // 받아온 유저 정보를 이 페이지에서 currentuser로 저장하기
-    } catch (e) {
-      print(e);
-    }
-  }
+  // // 현재유저 정보 받아오기
+  // Future<void> getCurrentUser() async {
+  // // 현재 저장된 서버 토큰을 가져옵니다.
+  //   final loginState = ref.read(loginStateProvider);
+  //   final token = loginState.serverToken;
+  //   final id = loginState.id;
+  //   final voteInfo = ref.read(voteInfoProvider);
+  //
+  //   var headers = {'Authorization': '$token', 'id': '$id'};
+  //
+  //   // 서버 토큰이 없으면
+  //   if (token == null) {
+  //     await kakaoLogin(ref);
+  //     await fetchToken(ref);
+  //
+  //     // 토큰을 다시 읽습니다.
+  //     final newToken = ref.read(loginStateProvider).serverToken;
+  //     final newId = ref.read(loginStateProvider).id;
+  //
+  //     headers['Authorization'] = '$newToken';
+  //     headers['id'] = '$newId';
+  //   }
+  //
+  //   final apiService = ApiService();
+  //   try {
+  //     Response response = await apiService.sendRequest(
+  //         method: 'GET', path: '$server/api/user/profile', headers: headers);
+  //     print(response);
+  //     // 받아온 유저 정보를 이 페이지에서 currentuser로 저장하기
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
 
   // 채팅방 이전 채팅기록 불러오기
   Future<void> getChat() async {
@@ -321,7 +321,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                                     text: '...', color: Colors.black)
                               else
                                 Vote(
-                                  voteType: VoteType.Date,
+                                  voteType: VoteType.DATE,
                                   roomId: widget.id,
                                   isVote: isDate,
                                 )
@@ -347,7 +347,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                                     text: '...', color: Colors.black)
                               else
                                 Vote(
-                                  voteType: VoteType.Time,
+                                  voteType: VoteType.TIME,
                                   roomId: widget.id,
                                   isVote: isTime,
                                 )
@@ -371,7 +371,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                                     text: '...', color: Colors.black)
                               else
                                 Vote(
-                                  voteType: VoteType.Location,
+                                  voteType: VoteType.LOCATION,
                                   roomId: widget.id,
                                   isVote: isLocation,
                                 )
