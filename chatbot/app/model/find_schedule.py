@@ -1,23 +1,29 @@
-import dateparser
+from datetime import datetime, timedelta
+import calendar
 
-def parse_user_input(user_input):
-    # 현재 날짜를 가져옵니다.
-    today = dateparser.parse("today").date()
-
-    # 입력 문자열을 파싱하여 날짜를 계산합니다.
-    parsed_date = dateparser.parse(user_input, languages=['ko'])
-    if parsed_date:
-        calculated_date = parsed_date.date()
-        return calculated_date
+def convert_date(input_str):
+    today = datetime.today().date() 
+    if input_str == '오늘':
+        return today
+    elif input_str == '내일':
+        return today + timedelta(days=1)
+    elif input_str == '모레':
+        return today + timedelta(days=2)
+    elif '이번 주' in input_str or '이번주' in input_str:
+        try:
+            weekday = input_str.split(' ')[2]
+        except:
+            weekday = input_str.split(' ')[1]
+        weekday_dict = {'월요일': 0, '화요일': 1, '수요일': 2, '목요일': 3, '금요일': 4, '토요일': 5, '일요일': 6}
+        return today + timedelta(days=(weekday_dict[weekday] - today.weekday() + 7) % 7)
+    elif '다음 주' in input_str or '다음주' in input_str:
+        try:
+            weekday = input_str.split(' ')[2]
+        except:
+            weekday = input_str.split(' ')[1]
+        weekday_dict = {'월요일': 0, '화요일': 1, '수요일': 2, '목요일': 3, '금요일': 4, '토요일': 5, '일요일': 6}
+        return today + timedelta(days=(weekday_dict[weekday] - today.weekday() + 7) % 7 + 7)
+    elif input_str == '이번 주말':
+        return (today + timedelta(days=(5 - today.weekday() + 7) % 7), today + timedelta(days=(6 - today.weekday() + 7) % 7))
     else:
-        raise ValueError("날짜를 파싱할 수 없습니다.")
-
-# 사용자 입력을 받습니다.
-user_input = input("날짜를 입력하세요: ")
-
-try:
-    # 사용자 입력을 파싱하여 날짜를 계산합니다.
-    result_date = parse_user_input(user_input)
-    print("계산된 날짜:", result_date)
-except ValueError as e:
-    print(e)
+        return False
