@@ -87,7 +87,7 @@ public class ItemController {
     }
 
     @PutMapping("/{roomId}/{itemType}")
-    @Operation(summary = "투표 타입 항목 삭제", description = "투표 항목을 수정 합니다.")
+    @Operation(summary = "투표 타입 항목 확정", description = "투표 항목을 확정 합니다.")
     public ResponseEntity<BasicResponse> putItemType(
             @PathVariable(name = "roomId") Long roomId,
             @PathVariable(name = "itemType")ItemType itemType) {
