@@ -25,6 +25,9 @@ public class RoomResponse {
         private Long userId;
         private int userCount;
         private boolean complete;
+        private boolean dateComplete;
+        private boolean timeComplete;
+        private boolean locationComplete;
         private boolean anonymous;
         private boolean multipleChoice;
         private boolean date;
@@ -52,6 +55,9 @@ public class RoomResponse {
         private Long userId;
         private int userCount;
         private boolean complete;
+        private boolean dateComplete;
+        private boolean timeComplete;
+        private boolean locationComplete;
         private boolean anonymous;
         private boolean multipleChoice;
         private boolean date;
@@ -96,6 +102,9 @@ public class RoomResponse {
         private Long userId;
         private int userCount;
         private boolean complete;
+        private boolean dateComplete;
+        private boolean timeComplete;
+        private boolean locationComplete;
         private boolean anonymous;
         private boolean multipleChoice;
         private boolean date;

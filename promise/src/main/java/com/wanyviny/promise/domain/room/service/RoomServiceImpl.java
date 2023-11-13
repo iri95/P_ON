@@ -83,7 +83,10 @@ public class RoomServiceImpl implements RoomService {
         response.setDate(itemRepository.existsByRoom_IdAndItemType(room.getId(), ItemType.DATE));
         response.setTime(itemRepository.existsByRoom_IdAndItemType(room.getId(), ItemType.TIME));
         response.setLocation(itemRepository.existsByRoom_IdAndItemType(room.getId(), ItemType.LOCATION));
-        response.setComplete(isComplete(room.getDeadDate(), room.getDeadTime()));
+        boolean complete = isComplete(room.getDeadDate(), room.getDeadTime());
+        response.setDateComplete(complete);
+        response.setTimeComplete(complete);
+        response.setLocationComplete(complete);
         response.setUsers(users);
 
         return response;
@@ -109,7 +112,10 @@ public class RoomServiceImpl implements RoomService {
         response.setDate(itemRepository.existsByRoom_IdAndItemType(roomId, ItemType.DATE));
         response.setTime(itemRepository.existsByRoom_IdAndItemType(roomId, ItemType.TIME));
         response.setLocation(itemRepository.existsByRoom_IdAndItemType(roomId, ItemType.LOCATION));
-        response.setComplete(isComplete(room.getDeadDate(), room.getDeadTime()));
+        boolean complete = isComplete(room.getDeadDate(), room.getDeadTime());
+        response.setDateComplete(complete);
+        response.setTimeComplete(complete);
+        response.setLocationComplete(complete);
         response.setUsers(users);
 
         return response;
@@ -153,7 +159,10 @@ public class RoomServiceImpl implements RoomService {
         response.setDate(itemRepository.existsByRoom_IdAndItemType(roomId, ItemType.DATE));
         response.setTime(itemRepository.existsByRoom_IdAndItemType(roomId, ItemType.TIME));
         response.setLocation(itemRepository.existsByRoom_IdAndItemType(roomId, ItemType.LOCATION));
-        response.setComplete(isComplete(room.getDeadDate(), room.getDeadTime()));
+        boolean complete = isComplete(room.getDeadDate(), room.getDeadTime());
+        response.setDateComplete(complete);
+        response.setTimeComplete(complete);
+        response.setLocationComplete(complete);
         response.setUsers(users);
 
         return response;

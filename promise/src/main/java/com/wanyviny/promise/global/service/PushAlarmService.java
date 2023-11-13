@@ -32,7 +32,7 @@ public class PushAlarmService {
     @Scheduled(cron = "1 0/10 * * * *")
     @Transactional
     public void voteComplete() {
-        List<Room> roomList = roomRepository.findByCompleteIs(false);
+        List<Room> roomList = roomRepository.findByDateCompleteIsOrTimeCompleteIsOrLocationCompleteIs(false, false, false);
         String title = "VOTE END!";
 
         roomList.forEach(room -> {
@@ -47,7 +47,7 @@ public class PushAlarmService {
     @Scheduled(cron = "1 0/10 * * * *")
     @Transactional
     public void promiseAhead() {
-        List<Room> roomList = roomRepository.findByCompleteIs(false);
+        List<Room> roomList = roomRepository.findByDateCompleteIsOrTimeCompleteIsOrLocationCompleteIs(false, false, false);
         String title = "PROMISE AHEAD!";
 
         roomList.forEach(room -> {

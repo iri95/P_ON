@@ -106,8 +106,11 @@ public class ItemServiceImpl implements ItemService {
 
             response.setLocation(true);
         }
+        boolean complete = isComplete(room.getDeadDate(), room.getDeadTime());
 
-        response.setComplete(isComplete(room.getDeadDate(), room.getDeadTime()));
+        response.setDateComplete(complete);
+        response.setTimeComplete(complete);
+        response.setLocationComplete(complete);
 
         List<User> phondIdList = room.getUserRooms().stream()
                 .map(UserRoom::getUser)
@@ -229,8 +232,11 @@ public class ItemServiceImpl implements ItemService {
 
             response.setLocation(true);
         }
-
-        response.setComplete(isComplete(room.getDeadDate(), room.getDeadTime()));
+        boolean complete = isComplete(room.getDeadDate(), room.getDeadTime());
+        response.setDateComplete(complete);
+        response.setTimeComplete(complete);
+        response.setLocationComplete(complete);
+        
         return response;
     }
 

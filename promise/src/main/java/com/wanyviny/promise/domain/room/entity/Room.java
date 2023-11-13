@@ -42,6 +42,9 @@ public class Room {
 
     private Long userId;
     private boolean complete;
+    private boolean dateComplete;
+    private boolean timeComplete;
+    private boolean locationComplete;
     private boolean anonymous;
     private boolean multipleChoice;
     private String deadDate;

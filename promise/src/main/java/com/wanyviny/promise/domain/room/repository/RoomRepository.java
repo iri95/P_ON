@@ -10,10 +10,10 @@ import java.util.List;
 
 public interface RoomRepository extends JpaRepository<Room, Long> {
 
-    List<Room> findByCompleteIs(boolean complete);
+    List<Room> findByDateCompleteIsOrTimeCompleteIsOrLocationCompleteIs(boolean dateComplete,boolean timeComplete,boolean locationComplete);
 
     @Modifying
     @Transactional
-    @Query("update Room r set r.complete = true where r.id = :roomId")
+    @Query("update Room r set r.dateComplete = true, r.timeComplete = true, r.locationComplete = true where r.id = :roomId")
     void completeRoom(Long roomId);
 }
