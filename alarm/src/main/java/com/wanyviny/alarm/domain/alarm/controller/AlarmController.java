@@ -27,10 +27,9 @@ public class AlarmController {
     // 알림 조회 -> 유저의 Id로 역순
     @GetMapping
     @Operation(summary = "알람 조회", description = "개인 알람을 모두 조회합니다.(헤더에 id 필요)")
-    public ResponseEntity<BasicResponse> getAlarm(HttpServletRequest request) {
-        Long userId = Long.parseLong(request.getHeader("id"));
+    public ResponseEntity<BasicResponse> getAlarm(@RequestHeader("id") Long id) {
 
-        List<AlarmDto.getAlarmDto> alarmDto = alarmService.getAlarm(userId);
+        List<AlarmDto.getAlarmDto> alarmDto = alarmService.getAlarm(id);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
@@ -45,10 +44,9 @@ public class AlarmController {
 
     @GetMapping("/type/{alarmType}")
     @Operation(summary = "타입별 알람 조회", description = "타입별 개인 알람을 모두 조회합니다.(헤더에 id 필요), Type : FRIEND, INVITE, CREATE_POLL, END_POLL, END_PROMISE")
-    public ResponseEntity<BasicResponse> getAlarmByType(HttpServletRequest request, @PathVariable(name = "alarmType") ALARM_TYPE alarmType) {
-        Long userId = Long.parseLong(request.getHeader("id"));
+    public ResponseEntity<BasicResponse> getAlarmByType(@RequestHeader("id") Long id, @PathVariable(name = "alarmType") ALARM_TYPE alarmType) {
 
-        List<AlarmDto.getAlarmDto> alarmDto = alarmService.getAlarmByType(userId, alarmType);
+        List<AlarmDto.getAlarmDto> alarmDto = alarmService.getAlarmByType(id, alarmType);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
@@ -63,10 +61,9 @@ public class AlarmController {
 
     @GetMapping("/count")
     @Operation(summary = "알람 개수 조회", description = "개인의 알람 개수를 모두 조회합니다.(헤더에 id 필요)")
-    public ResponseEntity<BasicResponse> getAlarmCount(HttpServletRequest request) {
-        Long userId = Long.parseLong(request.getHeader("id"));
+    public ResponseEntity<BasicResponse> getAlarmCount(@RequestHeader("id") Long id) {
 
-        int alarmDto = alarmService.getAlarmCount(userId);
+        int alarmDto = alarmService.getAlarmCount(id);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
@@ -80,10 +77,9 @@ public class AlarmController {
 
     @GetMapping("/count/non-read")
     @Operation(summary = "안 읽은 알람 개수 조회", description = "개인의 안 읽은 알람 개수를 모두 조회합니다.(헤더에 id 필요)")
-    public ResponseEntity<BasicResponse> getAlarmCountNonRead(HttpServletRequest request) {
-        Long userId = Long.parseLong(request.getHeader("id"));
+    public ResponseEntity<BasicResponse> getAlarmCountNonRead(@RequestHeader("id") Long id) {
 
-        Long alarmDto = alarmService.getAlarmCountNonRead(userId);
+        Long alarmDto = alarmService.getAlarmCountNonRead(id);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
@@ -112,10 +108,9 @@ public class AlarmController {
 
     @PutMapping("/read-all")
     @Operation(summary = " 모든 알람 읽음 처리", description = "유저의 모든 알람을 읽음 처리합니다.(헤더에 id 필요)")
-    public ResponseEntity<BasicResponse> putAlarmState(HttpServletRequest request) {
-        Long userId = Long.parseLong(request.getHeader("id"));
+    public ResponseEntity<BasicResponse> putAlarmState(@RequestHeader("id") Long id) {
 
-        alarmService.putAlarmStateAll(userId);
+        alarmService.putAlarmStateAll(id);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())
@@ -145,10 +140,9 @@ public class AlarmController {
     // 읽은 알림 모두 삭제 -> 사용자의 Id로 알림을 모두 삭제
     @DeleteMapping("/delete/read")
     @Operation(summary = " 읽은 알람 삭제 처리", description = "유저의 모든 알람을 삭제 처리합니다.(헤더에 id 필요)")
-    public ResponseEntity<BasicResponse> deleteAlarmRead(HttpServletRequest request) {
-        Long userId = Long.parseLong(request.getHeader("id"));
+    public ResponseEntity<BasicResponse> deleteAlarmRead(@RequestHeader("id") Long id) {
 
-        alarmService.deleteAlarmRead(userId);
+        alarmService.deleteAlarmRead(id);
 
 
         BasicResponse basicResponse = BasicResponse.builder()
@@ -163,10 +157,9 @@ public class AlarmController {
     // 알림 모두 삭제 -> 사용자의 Id로 알림을 모두 삭제
     @DeleteMapping("/delete/all")
     @Operation(summary = " 모든 알람 삭제 처리", description = "유저의 모든 알람을 삭제 처리합니다.(헤더에 id 필요)")
-    public ResponseEntity<BasicResponse> deleteAlarmAll(HttpServletRequest request) {
-        Long userId = Long.parseLong(request.getHeader("id"));
+    public ResponseEntity<BasicResponse> deleteAlarmAll(@RequestHeader("id") Long id) {
 
-        alarmService.deleteAlarmAll(userId);
+        alarmService.deleteAlarmAll(id);
 
 
         BasicResponse basicResponse = BasicResponse.builder()
