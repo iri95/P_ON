@@ -284,13 +284,8 @@ public class ItemServiceImpl implements ItemService {
         );
         List<Item> itemList = room.getItems().stream()
                 .filter(item -> item.getItemType() == itemType)
-                .sorted((o1, o2) -> {
-                    if(o1.getVotes().size() > o2.getVotes().size()){
-                        return -1;
-                    } else if (o1.getVotes().size() == o2.getVotes().size()) {
-                        return 0;
-                    }else return 1;
-                }).toList();
+                .sorted((o1, o2) -> Integer.compare(o2.getVotes().size(), o1.getVotes().size())
+                ).toList();
 
         if (itemList.size() == 0) return;
 

@@ -29,8 +29,8 @@ public class VoteDto {
         private boolean doTime = false;
         private boolean doLocation = false;
         private boolean dateComplete = false;
-        private boolean timeComplete = false;;
-        private boolean locationComplete = false;;
+        private boolean timeComplete = false;
+        private boolean locationComplete = false;
         private List<getDate> dates;
         private List<getTime> times;
         private List<getLocation> locations;
