@@ -268,10 +268,38 @@ public class ItemServiceImpl implements ItemService {
     public void putItemType(Long roomId, ItemType itemType) {
         if (itemType == ItemType.DATE) {
             roomRepository.completeDate(roomId);
+            promiseVoteComplete(roomId, itemType);
         } else if (itemType == ItemType.TIME) {
             roomRepository.completeTime(roomId);
+            promiseVoteComplete(roomId, itemType);
         } else {
             roomRepository.completeLocation(roomId);
+            promiseVoteComplete(roomId, itemType);
+        }
+    }
+
+    public void promiseVoteComplete(Long roomId, ItemType itemType) {
+        Room room = roomRepository.findById(roomId).orElseThrow(
+                () -> new IllegalArgumentException("해당 약속방이 존재하지 않습니다.")
+        );
+        List<Item> itemList = room.getItems().stream()
+                .filter(item -> item.getItemType() == itemType)
+                .sorted((o1, o2) -> {
+                    if(o1.getVotes().size() > o2.getVotes().size()){
+                        return -1;
+                    } else if (o1.getVotes().size() == o2.getVotes().size()) {
+                        return 0;
+                    }else return 1;
+                }).toList();
+
+        if (itemList.size() == 0) return;
+
+        if (itemType == ItemType.DATE) {
+            room.setPromiseDate(itemList.get(0).getDate());
+        }else if (itemType == ItemType.TIME) {
+            room.setPromiseTime(itemList.get(0).getTime());
+        }else{
+            room.setPromiseLocation(itemList.get(0).getLocation());
         }
     }
 }
