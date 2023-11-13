@@ -7,8 +7,10 @@ import 'package:p_on/screen/search/w_history_item.dart';
 
 class SearchHistoryList extends StatefulWidget {
   final Function(String) searchUser;
+  final Function(String) searchHistory;
 
-  const SearchHistoryList({Key? key, required this.searchUser})
+  const SearchHistoryList(
+      {Key? key, required this.searchUser, required this.searchHistory})
       : super(key: key);
 
   @override
@@ -48,6 +50,7 @@ class _SearchHistoryListState extends State<SearchHistoryList> {
                           title: GestureDetector(
                             onTap: () {
                               widget.searchUser(item);
+                              widget.searchHistory(item);
                             },
                             child: Text(item),
                           ),

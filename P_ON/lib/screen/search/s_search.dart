@@ -29,7 +29,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   // 유저 검색
   Future<void> _searchUser(keyword) async {
-    _controller.text = keyword;
     if (isBlank(keyword)) {
       searchData.isSearchEmpty.value = true;
       searchData.searchResult.clear();
@@ -73,6 +72,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     }
   }
 
+  Future<void> searchHistory(keyword) async {
+    _controller.text = keyword;
+  }
+
   Future<void> submitFollow(SearchUser element) async {
     var _relation = element.relation;
     var _id = element.id;
@@ -96,23 +99,19 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     }
 
     final apiService = ApiService();
-    final _method = _relation == 'FOLLOWING' ? 'DELETE' : 'GET';
-    print('${_relation} ${_id} ${_method}');
+    final _method = _relation == 'FOLLOWING' ? 'DELETE' : 'POST';
+
+    if (_relation == 'FOLLOWING') {
+      searchData.updateRelation(element.id, 'NON');
+    } else {
+      searchData.updateRelation(element.id, 'FOLLOWING');
+    }
 
     try {
-      // await apiService.sendRequest(
-      //     method: _method,
-      //     path: '/api/follow/following/$_id',
-      //     headers: headers);
-
-      // searchData를 업데이트하여 변경된 relation 값을 반영
-
-      if (_relation == 'FOLLOWING') {
-        searchData.updateRelation(element.id, 'NON');
-      } else {
-        searchData.updateRelation(element.id, 'FOLLOWING');
-      }
-      // print(searchData.searchResult[0].relation);
+      await apiService.sendRequest(
+          method: _method,
+          path: '/api/follow/following/$_id',
+          headers: headers);
     } catch (e) {
       print(e);
     }
@@ -151,8 +150,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             ? ListView(
                 children: [
                   SearchHistoryList(
-                    searchUser: _searchUser,
-                  )
+                      searchUser: _searchUser, searchHistory: searchHistory)
                 ],
               )
             : ListView.builder(

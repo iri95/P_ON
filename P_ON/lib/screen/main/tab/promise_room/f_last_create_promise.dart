@@ -139,9 +139,9 @@ class _LastCreatePromiseState extends ConsumerState<LastCreatePromise> {
           LinearPercentIndicator(
             padding: EdgeInsets.zero,
             percent: 100 / 100,
-            lineHeight: 3,
+            lineHeight: 5,
             backgroundColor: const Color(0xffCACFD8),
-            progressColor: AppColors.mainBlue2,
+            progressColor: AppColors.mainBlue3,
             width: MediaQuery.of(context).size.width,
           ),
           _buildTextField('날짜', dateController, dateNode, timeNode),

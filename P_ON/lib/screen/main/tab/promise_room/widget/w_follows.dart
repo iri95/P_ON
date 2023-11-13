@@ -23,14 +23,12 @@ class _FollowsState extends ConsumerState<Follows> {
   List followerList = [];
 
   Future<void> getFollowingList() async {
-    // 현재 저장된 서버 토큰을 가져옵니다.
     final loginState = ref.read(loginStateProvider);
     final token = loginState.serverToken;
     final id = loginState.id;
 
     var headers = {'Authorization': '$token', 'id': '$id'};
 
-    // 서버 토큰이 없으면
     if (token == null) {
       await kakaoLogin(ref);
       await fetchToken(ref);
@@ -120,14 +118,23 @@ class _FollowsState extends ConsumerState<Follows> {
               decoration: BoxDecoration(
                   border: Border(
                       bottom: BorderSide(
-                          color: isSelected ? Colors.blue : Colors.grey))),
+                          color: isSelected ? Colors.blue : Colors.grey,
+                          width: 3))),
               child: TextButton(
                 onPressed: () {
                   setState(() {
-                    isSelected = !isSelected;
+                    isSelected = true;
                   });
                 },
                 style: ButtonStyle(
+                  overlayColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.pressed)) {
+                        return AppColors.grey100;
+                      }
+                      return Colors.transparent;
+                    },
+                  ),
                   foregroundColor: MaterialStateProperty.resolveWith((states) {
                     if (states.contains(MaterialState.pressed)) {
                       return Colors.black;
@@ -147,14 +154,23 @@ class _FollowsState extends ConsumerState<Follows> {
               decoration: BoxDecoration(
                   border: Border(
                       bottom: BorderSide(
-                          color: !isSelected ? Colors.blue : Colors.grey))),
+                          color: !isSelected ? Colors.blue : Colors.grey,
+                          width: 3))),
               child: TextButton(
                 onPressed: () {
                   setState(() {
-                    isSelected = !isSelected;
+                    isSelected = false;
                   });
                 },
                 style: ButtonStyle(
+                  overlayColor: MaterialStateProperty.resolveWith<Color>(
+                    (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.pressed)) {
+                        return AppColors.grey100;
+                      }
+                      return Colors.transparent;
+                    },
+                  ),
                   foregroundColor: MaterialStateProperty.resolveWith((states) {
                     if (states.contains(MaterialState.pressed)) {
                       return Colors.black;

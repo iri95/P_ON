@@ -60,15 +60,15 @@ class _CreatePromiseState extends ConsumerState<CreatePromise>
           LinearPercentIndicator(
             padding: EdgeInsets.zero,
             percent: 33 / 100,
-            lineHeight: 3,
+            lineHeight: 5,
             backgroundColor: const Color(0xffCACFD8),
-            progressColor: AppColors.mainBlue2,
+            progressColor: AppColors.mainBlue3,
             width: MediaQuery.of(context).size.width,
           ),
           Container(
               margin: const EdgeInsets.all(24),
               alignment: Alignment.topLeft,
-              child: '약속명을 입력해 주세요'.text.black.size(16).semiBold.make()),
+              child: '약속명을 입력해 주세요'.text.black.size(18).semiBold.make()),
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 24),
             padding: const EdgeInsets.symmetric(horizontal: 10),
