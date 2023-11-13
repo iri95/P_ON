@@ -15,6 +15,8 @@ class SelectedFriends extends ConsumerStatefulWidget {
 }
 
 class _SelectedFriendsState extends ConsumerState<SelectedFriends> {
+  bool _showError = false;
+
   @override
   Widget build(BuildContext context) {
     final promise = ref.watch(promiseProvider);
@@ -37,16 +39,17 @@ class _SelectedFriendsState extends ConsumerState<SelectedFriends> {
           LinearPercentIndicator(
             padding: EdgeInsets.zero,
             percent: 66 / 100,
-            lineHeight: 3,
+            lineHeight: 5,
             backgroundColor: const Color(0xffCACFD8),
-            progressColor: AppColors.mainBlue2,
+            progressColor: AppColors.mainBlue3,
             width: MediaQuery.of(context).size.width,
           ),
           Container(
-            margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+            margin: const EdgeInsets.fromLTRB(18, 16, 18, 8),
             alignment: Alignment.topLeft,
-            child: '약속을 함께 할 친구를 추가해주세요'.text.black.size(16).semiBold.make(),
+            child: '약속을 함께 할 친구를 추가해주세요'.text.black.size(18).semiBold.make(),
           ),
+          // TODO: 이거 어쩔까
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -82,6 +85,7 @@ class _SelectedFriendsState extends ConsumerState<SelectedFriends> {
               )
             ],
           ),
+
           Container(
             height: 120,
             margin: const EdgeInsets.symmetric(vertical: 12),
@@ -96,12 +100,16 @@ class _SelectedFriendsState extends ConsumerState<SelectedFriends> {
                     .size(16)
                     .make(),
                 Expanded(
-                  child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: promise.selected_friends
-                              ?.map((friend) => FriendsList(friend))
-                              .toList() ??
-                          []),
+                  child: (_showError && promise.selected_friends!.length == 0)
+                      ? ListView(
+                          children: [Text('친구골라')],
+                        )
+                      : ListView(
+                          scrollDirection: Axis.horizontal,
+                          children: promise.selected_friends
+                                  ?.map((friend) => FriendsList(friend))
+                                  .toList() ??
+                              []),
                 ),
               ],
             ),
@@ -111,21 +119,29 @@ class _SelectedFriendsState extends ConsumerState<SelectedFriends> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Container(
-        width: double.infinity,
-        height: 48,
-        margin: const EdgeInsets.all(14),
-        child: FilledButton(
-            style: FilledButton.styleFrom(
-                backgroundColor: promise.selected_friends?.length != 0
-                    ? AppColors.mainBlue
-                    : Colors.grey),
-            onPressed: () {
-              if (promise.selected_friends?.length != 0) {
-                Nav.push(const LastCreatePromise());
-              }
-            },
-            child: const Text('다음')),
-      ),
+          width: double.infinity,
+          height: 48,
+          margin: const EdgeInsets.all(14),
+          child: FilledButton(
+              style: FilledButton.styleFrom(
+                  backgroundColor: promise.selected_friends?.length != 0
+                      ? AppColors.mainBlue
+                      : Colors.grey),
+              onPressed: () {
+                if (promise.selected_friends == null ||
+                    promise.selected_friends!.length == 0) {
+                  setState(() {
+                    _showError = true;
+                  });
+                } else {
+                  Nav.push(const LastCreatePromise());
+                }
+              },
+              // child: Text(promise.selected_friends == null ||
+              //         promise.selected_friends!.length == 0
+              //     ? '건너뛰기'
+              //     : '다음'),
+              child: Text('다음'))),
     );
     // ,
     //   ),

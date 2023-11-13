@@ -21,7 +21,6 @@ class BasicAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-
         Container(
           decoration: const BoxDecoration(
             border: Border(bottom: BorderSide(color: Colors.grey, width: 1)),
@@ -48,7 +47,7 @@ class BasicAppBar extends StatelessWidget {
           LinearPercentIndicator(
             padding: EdgeInsets.zero,
             percent: (percentage ?? 0) / 100,
-            lineHeight: 3,
+            lineHeight: 5,
             backgroundColor: const Color(0xffCACFD8),
             progressColor: AppColors.mainBlue3,
             width: MediaQuery.of(context).size.width,
