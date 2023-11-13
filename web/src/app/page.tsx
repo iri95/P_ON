@@ -1,3 +1,4 @@
+import GoToTop from '@/components/GoToTop';
 import HomeIndex from '@/containers/Home';
 
 export default function Home() {
@@ -22,6 +23,7 @@ export default function Home() {
         편리하고 풍요롭게 만들어줄 거예요!
       </p>
       <HomeIndex />
+      <GoToTop />
     </>
   );
 }

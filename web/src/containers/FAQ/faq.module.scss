@@ -3,13 +3,14 @@ h1.title {
   font-size: 45px;
 
   padding: 0;
-  margin: 0;
+  margin: 30px 10vw;
   color: var(--color-main1);
 }
 
 .container {
   box-sizing: border-box;
   margin-top: 15px;
+  margin: 0 10vw;
 
   .item {
     border: 0.5px solid var(--color-grey4);

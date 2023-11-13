@@ -1,4 +1,6 @@
 html {
+  overflow-y: scroll;
+  scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
 }
 
@@ -9,17 +11,20 @@ body {
   font-family: 'Pretendard', sans-serif;
   line-height: 1.6;
   font-size: 18px;
-  background: white;
+  background: var(--color-grey1);
 }
 * {
   box-sizing: border-box;
+  -webkit-user-drag: none;
 }
 
 main {
-  padding: 80px 0 0 0;
-  margin: 0 20vw 40px 20vw;
-  width: 60vw;
+  padding: 0;
   min-height: 100vh;
+
+  .container {
+    padding: 70px 0 0 0;
+  }
 }
 /* 타블렛 이하 */
 @media screen and (max-width: 1023px) {

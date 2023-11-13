@@ -1,3 +1,3 @@
 export default function page() {
-  return <>HowToUse Page</>;
+  return <div className="container">HowToUse Page</div>;
 }
