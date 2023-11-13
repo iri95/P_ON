@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:p_on/common/common.dart';
 import 'package:p_on/screen/main/tab/promise_room/dto_promise.dart';
 import 'package:p_on/screen/main/tab/promise_room/f_last_create_promise.dart';
@@ -45,7 +46,7 @@ class _SelectedFriendsState extends ConsumerState<SelectedFriends> {
             width: MediaQuery.of(context).size.width,
           ),
           Container(
-            margin: const EdgeInsets.fromLTRB(18, 16, 18, 8),
+            margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
             alignment: Alignment.topLeft,
             child: '약속을 함께 할 친구를 추가해주세요'.text.black.size(18).semiBold.make(),
           ),
@@ -100,16 +101,12 @@ class _SelectedFriendsState extends ConsumerState<SelectedFriends> {
                     .size(16)
                     .make(),
                 Expanded(
-                  child: (_showError && promise.selected_friends!.length == 0)
-                      ? ListView(
-                          children: [Text('친구골라')],
-                        )
-                      : ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: promise.selected_friends
-                                  ?.map((friend) => FriendsList(friend))
-                                  .toList() ??
-                              []),
+                  child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: promise.selected_friends
+                              ?.map((friend) => FriendsList(friend))
+                              .toList() ??
+                          []),
                 ),
               ],
             ),
@@ -137,11 +134,7 @@ class _SelectedFriendsState extends ConsumerState<SelectedFriends> {
                   Nav.push(const LastCreatePromise());
                 }
               },
-              // child: Text(promise.selected_friends == null ||
-              //         promise.selected_friends!.length == 0
-              //     ? '건너뛰기'
-              //     : '다음'),
-              child: Text('다음'))),
+              child: const Text('다음'))),
     );
     // ,
     //   ),

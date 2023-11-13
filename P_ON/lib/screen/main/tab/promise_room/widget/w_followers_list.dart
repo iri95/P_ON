@@ -23,10 +23,19 @@ class FollowersList extends ConsumerWidget {
           border: Border(bottom: BorderSide(color: Colors.grey))),
       child: Row(
         children: [
-          Image.asset(
-            'assets/image/main/핑키2.png',
-            // followers.profileImage,
-            width: 50,
+          ClipOval(
+            child: Image.network(
+              followers.profileImage,
+              width: 56, // 2*radius
+              height: 56, // 2*radius
+              fit: BoxFit.cover,
+              errorBuilder: (BuildContext context, Object exception,
+                  StackTrace? stackTrace) {
+                // 에러 시 기본이미지
+                return const Icon(Icons.account_circle,
+                    size: 56, color: Colors.grey);
+              },
+            ),
           ),
           Container(
               margin: const EdgeInsets.only(left: 8),
@@ -50,7 +59,13 @@ class FollowersList extends ConsumerWidget {
                         .removeFriends(followers)
                     : ref.read(promiseProvider.notifier).addFriends(followers);
               },
-              child: Text(isAdded ? '해제' : '추가', style: const TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w500, color: Colors.white),))
+              child: Text(
+                isAdded ? '해제' : '추가',
+                style: const TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white),
+              ))
         ],
       ),
     );

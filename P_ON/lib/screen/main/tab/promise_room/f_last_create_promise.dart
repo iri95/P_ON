@@ -98,8 +98,8 @@ class _LastCreatePromiseState extends ConsumerState<LastCreatePromise> {
   }
 
   bool get isFilled =>
-      dateController.text.isNotEmpty &&
-      timeController.text.isNotEmpty &&
+      dateController.text.isNotEmpty ||
+      timeController.text.isNotEmpty ||
       placeController.text.isNotEmpty;
 
   @override
@@ -144,6 +144,11 @@ class _LastCreatePromiseState extends ConsumerState<LastCreatePromise> {
             progressColor: AppColors.mainBlue3,
             width: MediaQuery.of(context).size.width,
           ),
+          Container(
+              margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+              alignment: Alignment.topLeft,
+              child: '세부 정보를 입력해 주세요'.text.black.size(18).semiBold.make()),
+
           _buildTextField('날짜', dateController, dateNode, timeNode),
           _buildTextField('시간', timeController, timeNode, placeNode),
           _buildTextField('장소', placeController, placeNode, null),
@@ -176,7 +181,7 @@ class _LastCreatePromiseState extends ConsumerState<LastCreatePromise> {
     return Column(
       children: [
         Container(
-          margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+          margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 24),
           alignment: Alignment.topLeft,
           child: Text(label,
               style: const TextStyle(
@@ -185,7 +190,7 @@ class _LastCreatePromiseState extends ConsumerState<LastCreatePromise> {
                   fontWeight: FontWeight.w600)),
         ),
         Container(
-          margin: const EdgeInsets.symmetric(horizontal: 24),
+          margin: const EdgeInsets.only(left: 24, right: 24, bottom: 16),
           padding: const EdgeInsets.symmetric(horizontal: 10),
           width: double.infinity,
           height: 50,
@@ -198,6 +203,7 @@ class _LastCreatePromiseState extends ConsumerState<LastCreatePromise> {
             ),
           ),
           child: TextField(
+            readOnly: true,
             showCursor: label == '장소',
             focusNode: node,
             controller: controller,

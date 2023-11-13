@@ -66,7 +66,7 @@ class _CreatePromiseState extends ConsumerState<CreatePromise>
             width: MediaQuery.of(context).size.width,
           ),
           Container(
-              margin: const EdgeInsets.all(24),
+              margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
               alignment: Alignment.topLeft,
               child: '약속명을 입력해 주세요'.text.black.size(18).semiBold.make()),
           Container(
