@@ -26,8 +26,7 @@ public class FollowController {
     // 팔로잉 조회
     @GetMapping("/following")
     @Operation(summary = "팔로잉 목록 조회", description = "내가 팔로우한 사람을 조회합니다.")
-    public ResponseEntity<BasicResponse> getFollowing(HttpServletRequest request) {
-        Long id = Long.parseLong(request.getHeader("id"));
+    public ResponseEntity<BasicResponse> getFollowing(@RequestHeader("id") Long id) {
 
         List<FollowDto> followDtoList = followService.getFollowing(id);
 
@@ -45,8 +44,7 @@ public class FollowController {
     // 팔로워 조회 -> 서로 팔로우한 경우도 함꼐
     @GetMapping("/follower")
     @Operation(summary = "팔로워 목록 조회", description = "나를 팔로우한 사람을 조회합니다.")
-    public ResponseEntity<BasicResponse> getFollower(HttpServletRequest request) {
-        Long id = Long.parseLong(request.getHeader("id"));
+    public ResponseEntity<BasicResponse> getFollower(@RequestHeader("id") Long id) {
 
         List<FollowDto> followDtoList = followService.getFollower(id);
 
@@ -64,8 +62,7 @@ public class FollowController {
     // 팔로잉 추가
     @PostMapping("/following/{followingId}")
     @Operation(summary = "팔로잉 추가", description = "팔로잉합니다.")
-    public ResponseEntity<BasicResponse> setFollowing(HttpServletRequest request, @PathVariable(name = "followingId") Long followingId) {
-        Long id = Long.parseLong(request.getHeader("id"));
+    public ResponseEntity<BasicResponse> setFollowing(@RequestHeader("id") Long id, @PathVariable(name = "followingId") Long followingId) {
 
         followService.setFollowing(id, followingId);
 
@@ -81,8 +78,7 @@ public class FollowController {
     // 팔로잉 삭제
     @DeleteMapping("/following/{followingId}")
     @Operation(summary = "팔로잉 삭제", description = "내가 한 팔로우를 취소합니다. -> 팔로잉 취소")
-    public ResponseEntity<BasicResponse> deleteFollowing(HttpServletRequest request, @PathVariable(name = "followingId") Long followingId) {
-        Long id = Long.parseLong(request.getHeader("id"));
+    public ResponseEntity<BasicResponse> deleteFollowing(@RequestHeader("id") Long id, @PathVariable(name = "followingId") Long followingId) {
 
         followService.deleteFollowing(id, followingId);
 
@@ -98,8 +94,7 @@ public class FollowController {
     // 팔로워 삭제
     @DeleteMapping("/follower/{followerId}")
     @Operation(summary = "팔로워 삭제", description = "나를 팔로우한 팔로워를 삭제합니다.")
-    public ResponseEntity<BasicResponse> deleteFollower(HttpServletRequest request, @PathVariable(name = "followerId") Long followerId) {
-        Long id = Long.parseLong(request.getHeader("id"));
+    public ResponseEntity<BasicResponse> deleteFollower(@RequestHeader("id") Long id, @PathVariable(name = "followerId") Long followerId) {
 
         followService.deleteFollowing(followerId, id);
 
