@@ -18,7 +18,7 @@ class _FriendsListState extends ConsumerState<FriendsList> {
   Widget build(BuildContext context) {
     final selected = ref.watch(promiseProvider);
     return Container(
-      margin: EdgeInsets.all(8),
+      margin: const EdgeInsets.only(top: 12, left: 12, right: 12, bottom: 0),
       child: Column(
         children: [
           InkWell(
@@ -27,12 +27,20 @@ class _FriendsListState extends ConsumerState<FriendsList> {
             },
             child: Stack(
               children: [
-                CircleAvatar(
-                    backgroundColor: AppColors.mainBlue2,
-                    child: Image.asset(
-                        // widget.friends.profileImage,
-                      'assets/image/main/핑키1.png',
-                        width: 36)),
+                ClipOval(
+                  child: Image.network(
+                    widget.friends.profileImage,
+                    width: 44,
+                    height: 44,
+                    fit: BoxFit.cover,
+                    errorBuilder: (BuildContext context, Object exception,
+                        StackTrace? stackTrace) {
+                      // 에러 시 기본이미지
+                      return const Icon(Icons.account_circle,
+                          size: 44, color: Colors.grey);
+                    },
+                  ),
+                ),
                 const Positioned(
                     right: 0,
                     child: CircleAvatar(
