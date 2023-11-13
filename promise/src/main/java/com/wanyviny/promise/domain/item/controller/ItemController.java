@@ -3,20 +3,14 @@ package com.wanyviny.promise.domain.item.controller;
 import com.wanyviny.promise.domain.common.BasicResponse;
 import com.wanyviny.promise.domain.item.dto.ItemRequest;
 import com.wanyviny.promise.domain.item.dto.ItemResponse;
+import com.wanyviny.promise.domain.item.entity.ItemType;
 import com.wanyviny.promise.domain.item.service.ItemService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -72,6 +66,21 @@ public class ItemController {
                 .message("투표 항목 수정 성공")
                 .count(1)
                 .result(Collections.singletonList(response))
+                .build();
+
+        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+    }
+
+    @DeleteMapping("/{roomId}/{itemType}")
+    @Operation(summary = "투표 타입 항목 삭제", description = "투표 항목을 수정 합니다.")
+    public ResponseEntity<BasicResponse> deleteItemType(
+            @PathVariable(name = "roomId") Long roomId,
+            @PathVariable(name = "itemType")ItemType itemType) {
+
+        itemService.deleteItemType(roomId, itemType);
+
+        BasicResponse basicResponse = BasicResponse.builder()
+                .message("투표 항목 삭제 성공")
                 .build();
 
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());

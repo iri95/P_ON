@@ -10,4 +10,5 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
     boolean existsByRoom_IdAndItemType(Long roomId, ItemType itemType);
     List<Item> findAllByRoomId(Long roomId);
     void deleteAllByRoomId(Long roomId);
+    void deleteAllByRoomIdAndItemType(Long roomId, ItemType itemType);
 }

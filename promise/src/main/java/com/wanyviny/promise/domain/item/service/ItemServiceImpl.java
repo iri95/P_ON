@@ -281,4 +281,10 @@ public class ItemServiceImpl implements ItemService {
                 .alarmType(type)
                 .build());
     }
+
+    @Override
+    @Transactional
+    public void deleteItemType(Long roomId, ItemType itemType){
+        itemRepository.deleteAllByRoomIdAndItemType(roomId, itemType);
+    }
 }
