@@ -30,7 +30,7 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
   VoteType? selectedVoteType;
   bool isEndTimeSet = false;
   bool isMultipleChoice = false;
-  bool isAnoymous = false;
+  bool isAnonymous = false;
   final TextEditingController _endDateController = TextEditingController();
   final TextEditingController _endTimeController = TextEditingController();
   double? _lat;
@@ -101,134 +101,160 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
     VoteType.Location: [TextEditingController(), TextEditingController()]
   };
 
-  Future<void> postVote(vote, deadline) async {
+  Future<void> postVote(vote, voteInfo) async {
     // 현재 저장된 서버 토큰을 가져옵니다.
-    // final loginState = ref.read(loginStateProvider);
-    // final token = loginState.serverToken;
-    // final id = loginState.id;
+    final loginState = ref.read(loginStateProvider);
+    final token = loginState.serverToken;
+    final id = loginState.id;
 
-    // var headers = {'Authorization': '$token', 'id': '$id'};
+    var headers = {'Authorization': '$token', 'id': '$id'};
     // 서버 토큰이 없으면
-    // if (token == null) {
-    //   await kakaoLogin(ref);
-    //   await fetchToken(ref);
+    if (token == null) {
+      await kakaoLogin(ref);
+      await fetchToken(ref);
     //
     //   // 토큰을 다시 읽습니다.
-    //   final newToken = ref.read(loginStateProvider).serverToken;
-    //   final newId = ref.read(loginStateProvider).id;
+      final newToken = ref.read(loginStateProvider).serverToken;
+      final newId = ref.read(loginStateProvider).id;
     //
-    //   headers['Authorization'] = '$newToken';
-    //   headers['id'] = '$newId';
-    // }
-    //
-    // final apiService = ApiService();
-
-    final Dio dio = Dio();
-    dio.options.headers['content-Type'] = 'application/json';
-    dio.options.headers['id'] = '1';
-    String url = '$server/api/vote/${widget.id}';
-
-    // 여기에 유저아이디 담아 보내기 => 만든사람
-    var data = {
-      'date': {
-        'multiple': isMultipleChoice.toString(),
-        'anonymous': isAnoymous.toString(),
-        'deadline': {
-          'date': deadline.dead_date.toString(),
-          'time': deadline.dead_time.toString()
-        },
-        'items': vote.vote_date
-      },
-      'time': {
-        'multiple': isMultipleChoice.toString(),
-        'anonymous': isAnoymous.toString(),
-        'deadline': {
-          'date': deadline.dead_date.toString(),
-          'time': deadline.dead_time.toString()
-        },
-        'items': vote.vote_time
-      },
-      'location': {
-        'multiple': isMultipleChoice.toString(),
-        'anonymous': isAnoymous.toString(),
-        'deadline': {
-          'date': deadline.dead_date.toString(),
-          'time': deadline.dead_time.toString()
-        },
-        'items': vote.vote_location,
-      }
-    };
-    if (widget.isUpdate) {
-      var response = await dio.put(url, data: data);
-    } else {
-
-      var response = await dio.post(url, data: data);
+      headers['Authorization'] = '$newToken';
+      headers['id'] = '$newId';
     }
-    final router = GoRouter.of(context);
-    router.go('/chatroom/${widget.id}');
+
+    var data = {
+      'deadDate' : voteInfo.dead_date,
+      'deadTime' : voteInfo.dead_time,
+      'anonymous' : voteInfo.is_anonymous,
+      'multipleChoice' : voteInfo.is_multiple_choice,
+      'date' : vote.vote_date,
+      'time' : vote.vote_time,
+      'location' : vote.vote_location
+    };
+
+    final apiService = ApiService();
+    try {
+      Response response = await apiService.sendRequest(
+        method: 'POST',
+        path: '$server/api/promise/item/${widget.id}',
+        headers: headers,
+        data: data
+      );
+      print('투표생성성공이다');
+      print('투표생성성공이다');
+      print(response);
+
+      final router = GoRouter.of(context);
+      router.go('/chatroom/${widget.id}');
+
+    } catch (e) {
+      print(e);
+    }
   }
 
-  void getVoteDate() async {
-    Dio dio = Dio();
-    String url = '$server/api/vote/${widget.id}';
+  Future<void> getVoteDate() async {
+    // 현재 저장된 서버 토큰을 가져옵니다.
+    final loginState = ref.read(loginStateProvider);
+    final token = loginState.serverToken;
+    final id = loginState.id;
 
-    var response = await dio.get(url);
-    // 유저 정보 받아와서 비교해서 지금 현재 유저랑 만든사람이 동일하면 수정버튼 보이게 처리
-    print(response);
-    final date = await response.data['result'][0]['date'];
-    final time = await response.data['result'][0]['time'];
-    final location = await response.data['result'][0]['location'];
-    // 리스트 길이가 모자라면 길이 늘려주기
-    if (date['items'].length > voteItems[VoteType.Date]?.length) {
-      for (int i=0; i < date['items'].length - voteItems[VoteType.Date]?.length; i++)
+    var headers = {'Authorization': '$token', 'id': '$id'};
+    // 서버 토큰이 없으면
+    if (token == null) {
+      await kakaoLogin(ref);
+      await fetchToken(ref);
+      //
+      //   // 토큰을 다시 읽습니다.
+      final newToken = ref.read(loginStateProvider).serverToken;
+      final newId = ref.read(loginStateProvider).id;
+      //
+      headers['Authorization'] = '$newToken';
+      headers['id'] = '$newId';
+    }
+
+    final apiService = ApiService();
+    try {
+      Response response = await apiService.sendRequest(
+        method: 'GET',
+        path: '$server/api/promise/item/${widget.id}',
+        headers: headers
+      );
+      print('수정으로 들어와서 현재 response 받아옴');
+      print(response);
+      print(response.data['result'][0]['date']);
+      print(response.data['result'][0]['time']);
+      print(response.data['result'][0]['location']);
+      print('수정으로 들어와서 현재 response 받아옴');
+
+      // 유저 정보 받아와서 비교해서 지금 현재 유저랑 만든사람이 동일하면 수정버튼 보이게 처리
+      final date = await response.data['result'][0]['date'];
+      final time = await response.data['result'][0]['time'];
+      final location = await response.data['result'][0]['location'];
+
+      // 리스트 길이가 모자라면 길이 늘려주기
+      if (date.length > voteItems[VoteType.Date]?.length) {
+        for (int i=0; i < date.length - voteItems[VoteType.Date]?.length; i++)
         {
           voteItems[VoteType.Date]?.add('');
           textEditingControllers[VoteType.Date]
               ?.add(TextEditingController());
         }
-    }
-    if (time['items'].length > voteItems[VoteType.Time]?.length) {
-      for (int i=0; i < time['items'].length - voteItems[VoteType.Time]?.length; i++)
+      }
+      if (time.length > voteItems[VoteType.Time]?.length) {
+        for (int i=0; i < time.length - voteItems[VoteType.Time]?.length; i++)
         {
           voteItems[VoteType.Time]?.add('');
           textEditingControllers[VoteType.Time]
               ?.add(TextEditingController());
         }
-    }
-    if (location['items'].length > voteItems[VoteType.Location]?.length) {
-      for (int i=0; i < location['items'].length - voteItems[VoteType.Location]?.length; i++)
+      }
+      if (location.length > voteItems[VoteType.Location]?.length) {
+        for (int i=0; i < location.length - voteItems[VoteType.Location]?.length; i++)
         {
           voteItems[VoteType.Location]?.add('');
           textEditingControllers[VoteType.Location]
               ?.add(TextEditingController());
         }
-    }
-    for (int j=0; j < date['items'].length; j++) {
-      print('date 부분 실행');
-      voteItems[VoteType.Date]![j] = date['items'][j];
-      textEditingControllers[VoteType.Date]![j].text = changeDate(date['items'][j]);
-    }
-    for (int j=0; j < time['items'].length; j++) {
-      print('time 부분 실행');
-      voteItems[VoteType.Time]![j] = time['items'][j];
-      textEditingControllers[VoteType.Time]![j].text = time['items'][j];
-    }
-    for (int j=0; j < location['items'].length; j++) {
-      print('location 부분 실행');
-      voteItems[VoteType.Location]![j] = location['items'][j]['location'];
-      textEditingControllers[VoteType.Location]![j].text = location['items'][j]['location'];
-    }
-    List<String> dateItems = await response.data['result'][0]['date']['items'];
-    List<String> timeItems = await response.data['result'][0]['time']['items'];
-    List<Map<String, String>> locationItems = await response.data['result'][0]['location']['items'];
+      }
+      // 해당값들 기본값으로 설정하기
+      for (int j=0; j < date.length; j++) {
+        print('date 부분 실행');
+        voteItems[VoteType.Date]![j] = date[j];
+        textEditingControllers[VoteType.Date]![j].text = changeDate(date[j]);
+      }
+      for (int j=0; j < time.length; j++) {
+        print('time 부분 실행');
+        voteItems[VoteType.Time]![j] = time[j];
+        textEditingControllers[VoteType.Time]![j].text = time[j];
+      }
+      for (int j=0; j < location.length; j++) {
+        print('location 부분 실행');
+        voteItems[VoteType.Location]![j] = location[j]['location'];
+        textEditingControllers[VoteType.Location]![j].text = location[j]['location'];
+        addMarker(double.parse(location[j]['lat']),double.parse(location[j]['lng']),location[j]['location']);
+      }
+      List<String> dateItems = await date;
+      List<String> timeItems = await time;
+      List<Map<String, String>> locationItems = await location;
 
-    VoteDate newVoteDate = VoteDate(
-        vote_date: dateItems,
-        vote_time: timeItems,
-        vote_location: locationItems
-    );
-    ref.read(voteProvider.notifier).setState(newVoteDate);
-    setState(() {});
+      VoteDate newVoteDate = VoteDate(
+          vote_date: dateItems,
+          vote_time: timeItems,
+          vote_location: locationItems
+      );
+      ref.read(voteProvider.notifier).setState(newVoteDate);
+      setState(() {
+        print(ref.read(voteProvider).vote_date);
+        print(ref.read(voteProvider).vote_time);
+        print(ref.read(voteProvider).vote_location);
+      });
+    } catch (e) {
+      print('지금 못받아옴 왜 ');
+      print(e);
+    }
+
+
+
+
   }
 
   String changeDate(String date) {
@@ -266,10 +292,16 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
     return formatter.format(date);
   }
 
+  String _changeDate(DateTime date) {
+    final change = DateFormat('yyyy-MM-dd');
+    return change.format(date);
+  }
+
   @override
   Widget build(BuildContext context) {
+    print(widget.isUpdate);
     final vote = ref.watch(voteProvider);
-    final deadline = ref.watch(deadLineProvider);
+    final voteInfo = ref.watch(voteInfoProvider);
 
     return MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -307,7 +339,7 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
                         actions: [
                           TextButton(
                               onPressed: () {
-                                postVote(vote, deadline);
+                                postVote(vote, voteInfo);
                               },
                               child: const Text(
                                 '저장',
@@ -611,8 +643,8 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
                                       _endDateController.text =
                                           _formatDate(date);
                                       ref
-                                          .read(deadLineProvider.notifier)
-                                          .setDeadDate(date.toString());
+                                          .read(voteInfoProvider.notifier)
+                                          .setDeadDate(_changeDate(date).toString());
                                     }
                                   }),
                             ),
@@ -644,10 +676,10 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
                                                 ? '오전'
                                                 : '오후';
                                         final selectedTime =
-                                            '$period ${time.hourOfPeriod}시 ${time.minute.toString().padLeft(2, '0')}분';
+                                            '$period ${time.hourOfPeriod.toString().padLeft(2, '0')}시 ${time.minute.toString().padLeft(2, '0')}분';
                                         _endTimeController.text = selectedTime;
                                         ref
-                                            .read(deadLineProvider.notifier)
+                                            .read(voteInfoProvider.notifier)
                                             .setDeadTime(selectedTime);
                                       },
                                       minuteInterval: TimePickerInterval.FIVE,
@@ -685,6 +717,7 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
                                   setState(() {
                                     isMultipleChoice = value!;
                                   });
+                                  ref.read(voteInfoProvider.notifier).setMultiple(isMultipleChoice);
                                 }),
                             Text('복수선택',
                                 style: TextStyle(
@@ -703,21 +736,22 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(15)),
                                 activeColor: AppColors.mainBlue,
-                                side: isAnoymous
+                                side: isAnonymous
                                     ? const BorderSide(
                                         color: AppColors.mainBlue3)
                                     : const BorderSide(
                                         color: AppColors.grey300),
-                                value: isAnoymous,
+                                value: isAnonymous,
                                 onChanged: (bool? value) {
                                   setState(() {
-                                    isAnoymous = value!;
+                                    isAnonymous = value!;
                                   });
+                                  ref.read(voteInfoProvider.notifier).setAnonymous(isAnonymous);
                                 }),
                             Text('익명투표',
                                 style: TextStyle(
                                     fontFamily: 'Pretendard',
-                                    color: isAnoymous
+                                    color: isAnonymous
                                         ? Colors.black
                                         : AppColors.grey300))
                           ],
@@ -774,7 +808,7 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
             .read(voteProvider.notifier)
             .updateVoteDate(index, picked.toString());
       } else {
-        ref.read(voteProvider.notifier).addVoteDate(picked.toString());
+        ref.read(voteProvider.notifier).addVoteDate(_changeDate(picked).toString());
       }
     }
   }

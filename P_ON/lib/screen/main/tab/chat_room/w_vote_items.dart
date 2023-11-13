@@ -1,35 +1,49 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:p_on/common/common.dart';
 import 'package:p_on/common/constant/app_colors.dart';
+import 'package:p_on/common/util/dio.dart';
+import 'package:p_on/screen/main/tab/chat_room/dto_vote.dart';
+import 'package:p_on/screen/main/user/token_state.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:go_router/go_router.dart';
+import '../../user/fn_kakao.dart';
+import '../promise_room/vo_server_url.dart';
 
-class VoteItems extends StatefulWidget {
+class VoteItems extends ConsumerStatefulWidget {
   // 받아온 유저 id 값으로 수정버튼 보이거나 안보이거나 처리
   final String roomId;
   final String text;
-  final Map<String, dynamic>? voteData;
   final String voteType;
+  final List<dynamic>? voteData;
+  final int? count;
+  final bool isDone;
+  final ValueNotifier<bool> voteCompletedNotifier;
 
-  const VoteItems(
-      {super.key,
-      required this.roomId,
-      required this.text,
-      required this.voteData,
-      required this.voteType});
+  const VoteItems({
+    super.key,
+    required this.roomId,
+    required this.text,
+    required this.voteData,
+    required this.voteType,
+    required this.count,
+    required this.isDone,
+    required this.voteCompletedNotifier
+  });
 
   @override
-  State<VoteItems> createState() => _VoteItemsState();
+  ConsumerState<VoteItems> createState() => _VoteItemsState();
 }
 
-class _VoteItemsState extends State<VoteItems> {
+class _VoteItemsState extends ConsumerState<VoteItems> {
   Color _textColor = AppColors.grey400;
   String? dropdownValue;
-  final List<bool> _checkboxValues =
-      List.generate(5, (index) => false); // 체크박스 상태를 추적하는 리스트
+  final List<bool> _checkboxValues = List.generate(100, (index) => false);
   late NaverMapController _mapController;
   final isUpdate = true;
+  List<dynamic> selectedItems = [];
 
   String changeDate(String date) {
     DateTime chatRoomDate = DateTime.parse(date);
@@ -38,23 +52,105 @@ class _VoteItemsState extends State<VoteItems> {
     return formatterDate;
   }
 
+  Future<void> postVote(selectedItems) async {
+    // 현재 저장된 서버 토큰을 가져옵니다.
+    final loginState = ref.read(loginStateProvider);
+    final token = loginState.serverToken;
+    final id = loginState.id;
+
+    var headers = {'Authorization': '$token', 'id': '$id'};
+
+    // 서버 토큰이 없으면
+    if (token == null) {
+      await kakaoLogin(ref);
+      await fetchToken(ref);
+
+      // 토큰을 다시 읽습니다.
+      final newToken = ref.read(loginStateProvider).serverToken;
+      final newId = ref.read(loginStateProvider).id;
+
+      headers['Authorization'] = '$newToken';
+      headers['id'] = '$newId';
+    }
+
+    var data = {'itemList': selectedItems};
+
+    final apiService = ApiService();
+    try {
+      Response response = await apiService.sendRequest(
+          method: 'POST',
+          path: '$server/api/promise/vote',
+          headers: {...headers, 'Content-Type': 'application/json'},
+          data: data);
+      print('post요청');
+      print('$server/api/promise/vote');
+      print(response);
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  Future<void> putVote(selectedItems) async {
+    // 현재 저장된 서버 토큰을 가져옵니다.
+    final loginState = ref.read(loginStateProvider);
+    final token = loginState.serverToken;
+    final id = loginState.id;
+
+    var headers = {'Authorization': '$token', 'id': '$id'};
+
+    // 서버 토큰이 없으면
+    if (token == null) {
+      await kakaoLogin(ref);
+      await fetchToken(ref);
+
+      // 토큰을 다시 읽습니다.
+      final newToken = ref.read(loginStateProvider).serverToken;
+      final newId = ref.read(loginStateProvider).id;
+
+      headers['Authorization'] = '$newToken';
+      headers['id'] = '$newId';
+    }
+
+    var data = {
+      'roomId': int.parse(widget.roomId),
+      'itemType': widget.voteType,
+      'itemList': selectedItems
+    };
+    final apiService = ApiService();
+    try {
+      Response response = await apiService.sendRequest(
+          method: 'PUT',
+          path: '$server/api/promise/vote',
+          headers: {...headers, 'Content-Type': 'application/json'},
+          data: data);
+      print(response);
+      setState(() {
+
+      });
+    } catch (e) {
+      print(e);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      print(context.size);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (widget.voteData != null) {
-      print('==================');
-      print('==================');
-      print('==================');
-      print(widget.voteData);
-      print(widget.voteData!['items']);
-      print(widget.voteData!['multiple']);
-      print(widget.voteData!['anonymous']);
-      print(widget.voteData!['deadline']['date']);
-      print(widget.voteData!['deadline']['time']);
-      print(widget.voteData!['items'].length);
-      print('==================');
-      print('==================');
-      print('==================');
-    }
+    final isAnonymous = ref.read(voteInfoProvider).is_anonymous;
+    final isMultipleChoice = ref.read(voteInfoProvider).is_multiple_choice;
+    final currentUser = ref.read(loginStateProvider).id;
+    final createUser = ref.read(voteInfoProvider).create_user.toString();
+    final voteUpdate = currentUser == createUser ? true : false;
+
+    print(widget.voteData);
+
+    print(selectedItems);
 
     return Container(
       decoration: const BoxDecoration(
@@ -68,25 +164,26 @@ class _VoteItemsState extends State<VoteItems> {
                     fontSize: 20,
                     fontFamily: 'Pretendard',
                     fontWeight: FontWeight.bold)),
-            TextButton(
-                onPressed: () {
-                  final router = GoRouter.of(context);
-                  router.go('/create/vote/${widget.roomId}/date/$isUpdate');
-                },
-                child: Container(
-                  width: 55,
-                  height: 25,
-                  decoration: BoxDecoration(
-                      color: AppColors.mainBlue,
-                      borderRadius: BorderRadius.circular(20)),
-                  child: const Center(
-                      child: Text('수정',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontFamily: 'Pretendard',
-                              fontWeight: FontWeight.bold))),
-                ))
+            if (voteUpdate)
+              TextButton(
+                  onPressed: () {
+                    final router = GoRouter.of(context);
+                    router.go('/create/vote/${widget.roomId}/date/$isUpdate');
+                  },
+                  child: Container(
+                    width: 55,
+                    height: 25,
+                    decoration: BoxDecoration(
+                        color: AppColors.mainBlue,
+                        borderRadius: BorderRadius.circular(20)),
+                    child: const Center(
+                        child: Text('수정',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontFamily: 'Pretendard',
+                                fontWeight: FontWeight.bold))),
+                  ))
           ],
         ),
         backgroundColor: AppColors.grey100,
@@ -104,7 +201,7 @@ class _VoteItemsState extends State<VoteItems> {
         },
         children: [
           if (widget.voteData != null)
-            for (int i = 0; i < widget.voteData!['items'].length; i++)
+            for (int i = 0; i < widget.voteData!.length; i++)
               (Container(
                 margin: const EdgeInsets.symmetric(vertical: 2),
                 child: ListTile(
@@ -116,12 +213,17 @@ class _VoteItemsState extends State<VoteItems> {
                       onChanged: (bool? newValue) {
                         setState(() {
                           if (newValue == true) {
-                            // voteData.isMultipleChoice == false 조건 추가
-                            for (int j = 0; j < _checkboxValues.length; j++) {
-                              if (i != j) {
-                                _checkboxValues[j] = false;
+                            if (isMultipleChoice == false) {
+                              for (int j = 0; j < _checkboxValues.length; j++) {
+                                if (i != j) {
+                                  _checkboxValues[j] = false;
+                                }
                               }
+                              selectedItems.clear();
                             }
+                            selectedItems.add(widget.voteData![i]['itemId']);
+                          } else {
+                            selectedItems.remove(widget.voteData![i]);
                           }
                           _checkboxValues[i] = newValue!;
                         });
@@ -139,14 +241,14 @@ class _VoteItemsState extends State<VoteItems> {
                           width: MediaQuery.of(context).size.width - 80,
                           child: Row(
                             children: [
-                              if (widget.voteType == 'date')
-                                Text(changeDate(widget.voteData!['items'][i])),
-                              if (widget.voteType == 'time')
-                                Text('${widget.voteData!['items'][i]}'),
-                              if (widget.voteType == 'location')
+                              if (widget.voteType == 'DATE')
+                                Text(changeDate(widget.voteData![i]['date'])),
+                              if (widget.voteType == 'TIME')
+                                Text('${widget.voteData![i]['time']}'),
+                              if (widget.voteType == 'LOCATION')
                                 InkWell(
                                   child: Text(
-                                      '${widget.voteData!['items'][i]['location']}'),
+                                      '${widget.voteData![i]['location']}'),
                                   onTap: () {
                                     _mapController.updateCamera(
                                         NCameraUpdate.withParams(
@@ -155,40 +257,43 @@ class _VoteItemsState extends State<VoteItems> {
                                   },
                                 ),
                               Expanded(child: Container()),
-                              DropdownButtonHideUnderline(
-                                child: DropdownButton<String>(
-                                  onChanged: (String? newValue) {},
-                                  // Map<String, dynamic>widget.voteData!['items'][i]['user'].map<DropdownMenuItem<String>>((String value) {
-                                  //  return DropdownMenuItem<String> (
-                                  //      value: value
-                                  //    )
-                                  // })
-                                  items: <String>['User 1', 'User 2', 'User 3']
-                                      .map<DropdownMenuItem<String>>(
-                                          (String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Row(
-                                        children: <Widget>[
-                                          const CircleAvatar(
-                                            backgroundImage: NetworkImage(
-                                                'https://example.com/user-profile.png'), // 이미지 URL
+                              if (isAnonymous == false)
+                                DropdownButtonHideUnderline(
+                                  child: DropdownButton<String>(
+                                    onChanged: (String? newValue) {},
+                                    items: widget.voteData![i]['users'].map<DropdownMenuItem<String>>((item) {
+                                      return DropdownMenuItem<String>(
+                                        value: item['nickName'],
+                                        child: Container(
+                                          padding: EdgeInsets.zero,
+                                          child: Row(
+                                            children: [
+                                              CircleAvatar(
+                                                radius: 20,
+                                                child: Image.network(item['profileImage'], ),
+                                              ),
+                                              Container(
+                                                margin: EdgeInsets.only(left: 20),
+                                                  child: Text(item['nickName']),
+                                              )
+                                            ],
                                           ),
-                                          const SizedBox(width: 10),
-                                          Text(value),
-                                        ],
-                                      ),
-                                    );
-                                  }).toList(),
+                                        ),
+
+
+                                      );
+                                    }).toList(),
+                                  ),
                                 ),
-                              )
+
                             ],
                           ),
                         ),
                         LinearPercentIndicator(
                           padding: EdgeInsets.zero,
                           // percent: widget.voteData!['items'][i]['count'] / widget.userCount
-                          percent: i / 10,
+                          percent: widget.voteData![i]['users'].length /
+                              widget.count!,
                           lineHeight: 3,
                           backgroundColor: const Color(0xffCACFD8),
                           progressColor: AppColors.mainBlue2,
@@ -199,41 +304,77 @@ class _VoteItemsState extends State<VoteItems> {
                   ],
                 )),
               )),
-          if (widget.voteData != null && widget.voteData!['items'].length > 0)
-          Container(
-            margin: const EdgeInsets.only(top: 6, bottom: 30),
-            child: TextButton(
-                onPressed: () {
-                  // 투표 post 요청 보내고 다시 get으로 이방 정보를 받아와야함 즉 새로고침 일어나야함 => setState에 넣으면 될듯
-                },
-                child: Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 24),
-                  width: double.infinity,
-                  height: 55,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5),
-                    color: AppColors.mainBlue,
-                  ),
-                  child: const Center(
-                    child: Text(
-                      '투표하기',
-                      style: TextStyle(
-                          fontFamily: 'Pretendard',
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
+          if (widget.voteData != null && widget.voteData!.length > 0)
+            Container(
+              margin: const EdgeInsets.only(top: 6, bottom: 30),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 24),
+                      height: 55,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                        color: widget.isDone
+                            ? AppColors.mainBlue3
+                            : AppColors.mainBlue,
+                      ),
+                      child: TextButton(
+                        onPressed: () {
+                          setState(() {
+                            widget.isDone
+                                ? putVote(selectedItems)
+                                : postVote(selectedItems);
+                            selectedItems.clear();
+                            widget.voteCompletedNotifier.value = true;
+                          });
+                        },
+                        child: Text(
+                          widget.isDone ? '다시투표하기' : '투표하기',
+                          style: const TextStyle(
+                              fontFamily: 'Pretendard',
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ),
                     ),
                   ),
-                )),
-          ),
-          if (widget.voteType == 'date')
+                  if (voteUpdate == true && widget.isDone == true)
+                    Expanded(
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 24),
+                        height: 55,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: AppColors.mainBlue,
+                        ),
+                        child: TextButton(
+                          onPressed: () {},
+                          child: const Text(
+                            '투표종료',
+                            style: TextStyle(
+                                fontFamily: 'Pretendard',
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    )
+                ],
+              ),
+            ),
+          if (widget.voteType == 'DATE')
             Container(
               width: double.infinity,
               height: 300,
               color: Colors.green,
               margin: EdgeInsets.fromLTRB(24, 0, 24, 24),
             ),
-          if (widget.voteType == 'location' && widget.voteData != null && widget.voteData!['items'].length > 0)
+          if (widget.voteType == 'LOCATION' &&
+              widget.voteData != null &&
+              widget.voteData!.length > 0)
             Container(
               width: double.infinity,
               height: 300,
@@ -243,8 +384,8 @@ class _VoteItemsState extends State<VoteItems> {
                 options: NaverMapViewOptions(
                     initialCameraPosition: NCameraPosition(
                         target: NLatLng(
-                            double.parse(widget.voteData!['items'][0]['lat']),
-                            double.parse(widget.voteData!['items'][0]['lng'])),
+                            double.parse(widget.voteData![0]['lat']),
+                            double.parse(widget.voteData![0]['lng'])),
                         zoom: 12)),
                 onMapReady: (controller) {
                   _mapController = controller;
@@ -260,11 +401,11 @@ class _VoteItemsState extends State<VoteItems> {
   List<NMarker> _markers = [];
 
   addMarker() {
-    for (int i = 0; i < widget.voteData!['items'].length; i++) {
+    for (int i = 0; i < widget.voteData!.length; i++) {
       var marker = NMarker(
-          id: widget.voteData!['items'][i]['location'],
-          position: NLatLng(double.parse(widget.voteData!['items'][i]['lat']),
-              double.parse(widget.voteData!['items'][i]['lng'])));
+          id: widget.voteData![i]['location'],
+          position: NLatLng(double.parse(widget.voteData![i]['lat']),
+              double.parse(widget.voteData![i]['lng'])));
       _markers.add(marker);
       _mapController.addOverlay(marker);
       marker.openInfoWindow(

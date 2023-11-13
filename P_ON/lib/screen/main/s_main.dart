@@ -2,10 +2,13 @@ import 'dart:io';
 
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
+import 'package:p_on/screen/main/fab/w_scroll_bottom_home.dart';
 import 'package:p_on/screen/main/tab/tab_item.dart';
 import 'package:p_on/screen/main/tab/tab_navigator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:p_on/screen/main/user/token_state.dart';
 
 import '../../common/common.dart';
 import '../../common/util/center_docked_style.dart';
@@ -109,7 +112,11 @@ class MainScreenState extends ConsumerState<MainScreen>
                       child: FittedBox(
                         child: FloatingActionButton(
                           elevation: 4,
-                          onPressed: () {},
+                          onPressed: () {
+                            final userId = ref.read(loginStateProvider).id;
+                            final router = GoRouter.of(context);
+                            router.go('/chatbot/$userId');
+                          },
                           child: Image.asset(currentImage),
                         ),
                       ),
@@ -118,11 +125,17 @@ class MainScreenState extends ConsumerState<MainScreen>
             ),
             Stack(
               children: [
+                Opacity(opacity: 0,
+                child: IgnorePointer(
+                  ignoring: _currentTab != TabItem.home,
+                  // 스크롤 위로
+                  child: ScrollToUpHome(),
+                ),),
                 AnimatedOpacity(
-                  opacity: _currentTab == TabItem.home ? 1 : 0,
+                  opacity: (_currentTab == TabItem.home || _currentTab == TabItem.plan) ? 1 : 0,
                   duration: Duration(milliseconds: 300),
                   child: IgnorePointer(
-                    ignoring: _currentTab != TabItem.home,
+                    ignoring: !(_currentTab == TabItem.home || _currentTab == TabItem.plan),
                     child: BottomFloatingActionButton(),
                   ),
                 ),

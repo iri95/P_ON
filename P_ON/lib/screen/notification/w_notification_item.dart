@@ -17,10 +17,10 @@ class NotificationItemWidget extends StatefulWidget {
 
 class _NotificationItemWidgetState extends State<NotificationItemWidget> {
   static const leftPadding = 15.0;
-  // static const iconWidth = 25.0;
 
   @override
   void initState() {
+    // _isRead = widget.notification.isRead;
     super.initState();
   }
 
@@ -31,8 +31,8 @@ class _NotificationItemWidgetState extends State<NotificationItemWidget> {
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10),
         color: widget.notification.isRead
-            ? context.backgroundColor
-            : context.appColors.unreadColor,
+            ? AppColors.grey200 // 읽은거
+            : Colors.white, // 안읽은거
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -42,14 +42,12 @@ class _NotificationItemWidgetState extends State<NotificationItemWidget> {
                   Row(
                     children: [
                       const Width(leftPadding),
-                      // Image.asset(
-                      //   widget.notification.iconPath,
-                      //   width: iconWidth,
-                      // ),
                       // 분류
                       widget.notification.type.text
-                          .size(18)
-                          .color(AppColors.grey700)
+                          .size(16)
+                          .color(widget.notification.isRead
+                              ? AppColors.grey500
+                              : AppColors.grey700)
                           .make(),
                       emptyExpanded,
                       // 남은 시간
@@ -67,7 +65,10 @@ class _NotificationItemWidgetState extends State<NotificationItemWidget> {
               ),
             ),
             // 메시지
-            widget.notification.description.text.make().pOnly(left: leftPadding)
+            widget.notification.description.text
+                .size(18)
+                .make()
+                .pOnly(left: leftPadding)
           ],
         ),
       ),

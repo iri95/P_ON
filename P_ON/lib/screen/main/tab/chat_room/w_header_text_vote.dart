@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:p_on/common/constant/app_colors.dart';
 
-enum VoteType {
-  Date,
-  Time,
-  Location
-}
+enum VoteType { Date, Time, Location }
 
 class Vote extends StatefulWidget {
   final VoteType voteType;
-  final String roomId;
-  // final bool isVote;
-  const Vote({super.key, required this.roomId, required this.voteType});
+  final int roomId;
+  final bool isVote;
+
+  const Vote(
+      {super.key,
+      required this.roomId,
+      required this.voteType,
+      required this.isVote});
 
   @override
   State<Vote> createState() => _VoteState();
@@ -20,10 +21,11 @@ class Vote extends StatefulWidget {
 
 class _VoteState extends State<Vote> {
   final isUpdate = false;
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 90,
+      width: 140,
       height: 26,
       child: FilledButton(
           style: ButtonStyle(
@@ -33,31 +35,51 @@ class _VoteState extends State<Vote> {
             String voteTypeToString(VoteType voteType) {
               return voteType.toString().split('.').last;
             }
+
             switch (widget.voteType) {
               case VoteType.Date:
                 print('date');
                 print(widget.voteType);
-                router.go('/create/vote/${widget.roomId}/${voteTypeToString(widget.voteType)}/$isUpdate');
+                if (widget.isVote! == true) {
+                  router.go('/selecte/vote/${widget.roomId}');
+                } else {
+                  router.go(
+                      '/create/vote/${widget.roomId}/${voteTypeToString(widget.voteType)}/$isUpdate');
+                }
                 break;
               case VoteType.Time:
                 print('time');
                 print(widget.voteType);
-                router.go('/create/vote/${widget.roomId}/${voteTypeToString(widget.voteType)}/$isUpdate');
+                if (widget.isVote! == true) {
+                  router.go('/selecte/vote/${widget.roomId}');
+                } else {
+                  router.go(
+                      '/create/vote/${widget.roomId}/${voteTypeToString(widget.voteType)}/$isUpdate');
+                }
                 break;
               case VoteType.Location:
                 print('location');
                 print(widget.voteType);
-                // router.go('/create/vote/${widget.roomId}/${voteTypeToString(widget.voteType)}/$isUpdate');
-                router.go('/selecte/vote/${widget.roomId}');
+                if (widget.isVote! == true) {
+                  router.go('/selecte/vote/${widget.roomId}');
+                } else {
+                  router.go(
+                      '/create/vote/${widget.roomId}/${voteTypeToString(widget.voteType)}/$isUpdate');
+                }
                 break;
             }
           },
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Text('투표',
-                  style: TextStyle(fontSize: 18, color: AppColors.background)),
-              Icon(
+              widget.isVote!
+                  ? const Text('투표하기',
+                      style:
+                          TextStyle(fontSize: 18, color: AppColors.background))
+                  : const Text('투표만들기',
+                      style:
+                          TextStyle(fontSize: 18, color: AppColors.background)),
+              const Icon(
                 Icons.arrow_forward_ios,
                 size: 18,
                 color: AppColors.background,

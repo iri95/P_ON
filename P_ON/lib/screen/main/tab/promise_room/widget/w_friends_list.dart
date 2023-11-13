@@ -23,13 +23,16 @@ class _FriendsListState extends ConsumerState<FriendsList> {
         children: [
           InkWell(
             onTap: () {
-              // 해당유저 제거하는 코드 추가하기
+              ref.read(promiseProvider.notifier).removeFriends(widget.friends);
             },
             child: Stack(
               children: [
                 CircleAvatar(
                     backgroundColor: AppColors.mainBlue2,
-                    child: Image.asset(widget.friends.userImage, width: 36)),
+                    child: Image.asset(
+                        // widget.friends.profileImage,
+                      'assets/image/main/핑키1.png',
+                        width: 36)),
                 const Positioned(
                     right: 0,
                     child: CircleAvatar(
@@ -37,12 +40,10 @@ class _FriendsListState extends ConsumerState<FriendsList> {
                       radius: 8,
                       child: Icon(Icons.close, size: 10),
                     ))
-
-                // Text(widget.friends.userName),
               ],
             ),
           ),
-          Text(widget.friends.userName)
+          Text(widget.friends.nickName)
         ],
       ),
     );
