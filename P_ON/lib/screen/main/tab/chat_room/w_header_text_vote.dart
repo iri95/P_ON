@@ -25,11 +25,11 @@ class _VoteState extends State<Vote> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: 140,
+      width: widget.isVote ? 120 : 140,
       height: 26,
       child: FilledButton(
           style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(AppColors.mainBlue3)),
+              backgroundColor: MaterialStateProperty.all(widget.isVote ? AppColors.mainBlue : AppColors.mainBlue3)),
           onPressed: () {
             final router = GoRouter.of(context);
             String voteTypeToString(VoteType voteType) {
@@ -70,7 +70,7 @@ class _VoteState extends State<Vote> {
             }
           },
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               widget.isVote!
                   ? const Text('투표하기',
