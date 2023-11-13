@@ -96,23 +96,19 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     }
 
     final apiService = ApiService();
-    final _method = _relation == 'FOLLOWING' ? 'DELETE' : 'GET';
-    print('${_relation} ${_id} ${_method}');
+    final _method = _relation == 'FOLLOWING' ? 'DELETE' : 'POST';
+
+    if (_relation == 'FOLLOWING') {
+      searchData.updateRelation(element.id, 'NON');
+    } else {
+      searchData.updateRelation(element.id, 'FOLLOWING');
+    }
 
     try {
-      // await apiService.sendRequest(
-      //     method: _method,
-      //     path: '/api/follow/following/$_id',
-      //     headers: headers);
-
-      // searchData를 업데이트하여 변경된 relation 값을 반영
-
-      if (_relation == 'FOLLOWING') {
-        searchData.updateRelation(element.id, 'NON');
-      } else {
-        searchData.updateRelation(element.id, 'FOLLOWING');
-      }
-      // print(searchData.searchResult[0].relation);
+      await apiService.sendRequest(
+          method: _method,
+          path: '/api/follow/following/$_id',
+          headers: headers);
     } catch (e) {
       print(e);
     }
