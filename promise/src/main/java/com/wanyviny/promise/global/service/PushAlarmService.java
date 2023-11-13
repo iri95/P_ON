@@ -42,10 +42,10 @@ public class PushAlarmService {
         roomList.forEach(room -> {
             if (isComplete(room.getDeadDate(), room.getDeadTime(), 0L)) {
                 String message = room.getPromiseTitle() + "의 투표가 종료되었습니다!";
-                roomRepository.completeRoom(room.getId());
                 if (itemService.promiseVoteComplete(room, ItemType.DATE)
                         && itemService.promiseVoteComplete(room, ItemType.TIME)
                         && itemService.promiseVoteComplete(room, ItemType.LOCATION)) {
+                    roomRepository.completeRoom(room.getId());
                     itemService.promiseToCalendar(room);
                     alarm(room, title, message, ALARM_TYPE.END_POLL);
                 }
