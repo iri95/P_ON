@@ -1,6 +1,5 @@
 package com.wanyviny.promise.domain.room.repository;
 
-import com.wanyviny.promise.domain.item.entity.ItemType;
 import com.wanyviny.promise.domain.room.entity.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
