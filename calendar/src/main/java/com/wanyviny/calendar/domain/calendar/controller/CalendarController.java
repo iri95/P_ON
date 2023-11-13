@@ -32,7 +32,7 @@ public class CalendarController {
     public ResponseEntity<BasicResponse> postSchedule(HttpServletRequest request, @RequestBody CalendarDto.setSchedule schedule) {
         Long id = Long.parseLong(request.getHeader("id"));
 
-        calendarService.postSchdule(id, schedule);
+        calendarService.postSchedule(id, schedule);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .code(HttpStatus.OK.value())

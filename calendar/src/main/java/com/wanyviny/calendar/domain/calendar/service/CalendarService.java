@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface CalendarService {
-    void postSchdule(Long id, CalendarDto.setSchedule schedule);
+    void postSchedule(Long id, CalendarDto.setSchedule schedule);
 
     List<CalendarDto.getSchedule> getMySchedule(Long id);
 

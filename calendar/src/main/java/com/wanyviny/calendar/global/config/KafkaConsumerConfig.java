@@ -1,6 +1,6 @@
 package com.wanyviny.calendar.global.config;
 
-import com.wanyviny.calendar.global.kafka.dto.CalendarConsumerDto;
+import com.wanyviny.calendar.global.kafka.dto.KafkaCalendarDto;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,17 +23,17 @@ public class KafkaConsumerConfig {
     private String servers;
 
     @Bean
-    public ConsumerFactory<String, CalendarConsumerDto> consumerFactory() {
+    public ConsumerFactory<String, KafkaCalendarDto> consumerFactory() {
         Map<String, Object> config = new HashMap<>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, servers);
-        config.put(ConsumerConfig.GROUP_ID_CONFIG, "calendar");
+        config.put(ConsumerConfig.GROUP_ID_CONFIG, "postCalendar");
 
-        return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), new JsonDeserializer<>(CalendarConsumerDto.class));
+        return new DefaultKafkaConsumerFactory<>(config, new StringDeserializer(), new JsonDeserializer<>(KafkaCalendarDto.class));
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, CalendarConsumerDto> kafkaListener() {
-        ConcurrentKafkaListenerContainerFactory<String, CalendarConsumerDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
+    public ConcurrentKafkaListenerContainerFactory<String, KafkaCalendarDto> kafkaListener() {
+        ConcurrentKafkaListenerContainerFactory<String, KafkaCalendarDto> factory = new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
         return factory;
     }

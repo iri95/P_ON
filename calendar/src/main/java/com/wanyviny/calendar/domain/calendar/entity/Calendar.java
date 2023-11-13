@@ -5,12 +5,14 @@ import com.wanyviny.calendar.domain.CALENDAR_TYPE;
 import com.wanyviny.calendar.domain.calendar.dto.CalendarDto;
 import com.wanyviny.calendar.domain.calendar.dto.RedisCalendarDto;
 import com.wanyviny.calendar.domain.user.entity.User;
+import com.wanyviny.calendar.global.kafka.dto.KafkaCalendarDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Entity
@@ -74,6 +76,22 @@ public class Calendar {
                 .nickName(this.userId.getNickname())
                 .startDate(this.startDate)
                 .endDate(this.endDate)
+                .build();
+    }
+
+    public KafkaCalendarDto entityToKafka(){
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String startDate = format.format(getStartDate());
+        String endDate = format.format(getEndDate());
+
+        return KafkaCalendarDto.builder()
+                .userId(userId.getId())
+                .cal(KafkaCalendarDto.Cal.builder()
+                        .calendar_title(title)
+                        .calendar_place(place)
+                        .calendar_start_date(startDate)
+                        .calendar_end_date(endDate)
+                        .build())
                 .build();
     }
 }

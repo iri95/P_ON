@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.wanyviny.calendar.domain.CALENDAR_TYPE;
 import com.wanyviny.calendar.domain.calendar.entity.Calendar;
 import com.wanyviny.calendar.domain.user.entity.User;
+import com.wanyviny.calendar.global.kafka.dto.KafkaCalendarDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

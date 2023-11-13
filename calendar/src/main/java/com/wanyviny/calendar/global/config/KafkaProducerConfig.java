@@ -1,6 +1,6 @@
 package com.wanyviny.calendar.global.config;
 
-import com.wanyviny.calendar.global.kafka.dto.CalendarConsumerDto;
+import com.wanyviny.calendar.global.kafka.dto.KafkaCalendarDto;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +23,7 @@ public class KafkaProducerConfig {
     private String servers;
 
     @Bean
-    public ProducerFactory<String, CalendarConsumerDto> producerFactory() {
+    public ProducerFactory<String, KafkaCalendarDto> producerFactory() {
         Map<String, Object> config = new HashMap<>();
         config.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, servers);
         config.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
@@ -32,7 +32,7 @@ public class KafkaProducerConfig {
     }
 
     @Bean
-    public KafkaTemplate<String, CalendarConsumerDto> kafkaTemplate() {
+    public KafkaTemplate<String, KafkaCalendarDto> kafkaTemplate() {
         return new KafkaTemplate<>(producerFactory());
     }
 }

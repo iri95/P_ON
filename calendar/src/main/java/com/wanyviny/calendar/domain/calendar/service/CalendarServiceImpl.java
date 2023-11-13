@@ -7,6 +7,7 @@ import com.wanyviny.calendar.domain.calendar.repository.CalendarRepository;
 import com.wanyviny.calendar.domain.follow.repository.FollowRepository;
 import com.wanyviny.calendar.domain.user.entity.User;
 import com.wanyviny.calendar.domain.user.repository.UserRepository;
+import com.wanyviny.calendar.global.kafka.service.KafkaProducerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,15 +21,17 @@ public class CalendarServiceImpl implements CalendarService {
     private final CalendarRepository calendarRepository;
     private final UserRepository userRepository;
     private final FollowRepository followRepository;
+    private final KafkaProducerService producerService;
 
 
     @Override
     @Transactional
-    public void postSchdule(Long id, CalendarDto.setSchedule schedule) {
+    public void postSchedule(Long id, CalendarDto.setSchedule schedule) {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("ID에 해당하는 유저가 없습니다.")
         );
-        calendarRepository.save(schedule.dtoToEntity(user));
+        Calendar calendar = calendarRepository.save(schedule.dtoToEntity(user));
+        producerService.sendCalendar(calendar.entityToKafka());
     }
 
 
@@ -88,6 +91,7 @@ public class CalendarServiceImpl implements CalendarService {
         );
         calendar.update(schedule);
         calendarRepository.save(calendar);
+        producerService.sendCalendar(calendar.entityToKafka());
     }
 
     @Override
