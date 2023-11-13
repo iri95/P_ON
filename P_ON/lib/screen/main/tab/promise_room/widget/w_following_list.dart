@@ -23,10 +23,19 @@ class FollowingsList extends ConsumerWidget {
           border: Border(bottom: BorderSide(color: Colors.grey))),
       child: Row(
         children: [
-          Image.asset(
-            // followings['follow']['profileImage'],
-            'assets/image/main/핑키1.png',
-            width: 50,
+          ClipOval(
+            child: Image.network(
+              followings.profileImage,
+              width: 56, // 2*radius
+              height: 56, // 2*radius
+              fit: BoxFit.cover,
+              errorBuilder: (BuildContext context, Object exception,
+                  StackTrace? stackTrace) {
+                // 에러 시 기본이미지
+                return const Icon(Icons.account_circle,
+                    size: 56, color: Colors.grey);
+              },
+            ),
           ),
           Container(
               margin: const EdgeInsets.only(left: 8),
@@ -42,7 +51,7 @@ class FollowingsList extends ConsumerWidget {
               style: FilledButton.styleFrom(
                   minimumSize: const Size(75, 36),
                   backgroundColor:
-                      isAdded ? AppColors.grey200 : AppColors.mainBlue),
+                      isAdded ? AppColors.grey400 : AppColors.mainBlue),
               onPressed: () {
                 isAdded
                     ? ref
@@ -50,7 +59,13 @@ class FollowingsList extends ConsumerWidget {
                         .removeFriends(followings)
                     : ref.read(promiseProvider.notifier).addFriends(followings);
               },
-              child: Text(isAdded ? '해제' : '추가', style: const TextStyle(fontFamily: 'Pretendard', fontWeight: FontWeight.w500, color: Colors.white),))
+              child: Text(
+                isAdded ? '해제' : '추가',
+                style: const TextStyle(
+                    fontFamily: 'Pretendard',
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white),
+              ))
         ],
       ),
     );

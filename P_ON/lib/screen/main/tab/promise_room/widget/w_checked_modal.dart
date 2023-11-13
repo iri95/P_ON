@@ -43,12 +43,13 @@ class _CheckedModalState extends ConsumerState<CheckedModal> {
                 child: Row(
                   children: [
                     Container(
-                      margin: const EdgeInsets.only(left: 12),
-                      child: Text(
-                        promise.promise_title != null
-                            ? '${promise.promise_title} 약속'
-                            : '약속 정하기',
-                        style: const TextStyle(
+                      margin: const EdgeInsets.only(left: 24),
+                      child: const Text(
+                        '약속 생성',
+                        // promise.promise_title != null
+                        //     ? '${promise.promise_title}'
+                        //     : '약속 정하기',
+                        style: TextStyle(
                             fontSize: 20,
                             fontFamily: 'Pretendard',
                             color: Colors.white,
@@ -67,20 +68,114 @@ class _CheckedModalState extends ConsumerState<CheckedModal> {
                 ),
               ),
               SizedBox(
-                height: 200,
+                height: 300,
+                width: 300,
                 child: Column(
                   children: [
-                    const Expanded(child: Text('')),
-                    MText(text: '제목 : ${promise.promise_title ?? '미정'}', 18),
-                    MText(
-                        text:
-                            '날짜 : ${promise.promise_date != null ? DateFormat('yyyy-MM-dd (E)', 'ko_kr').format(promise.promise_date!) : '미정'}',
-                        18),
-                    MText(text: '시간 : ${promise.promise_time ?? '미정'}', 18),
-                    MText(text: '장소 : ${promise.promise_location ?? '미정'}', 18),
-                    MText(text: '${promise.selected_friends?[0].nickName} 외 ${promise.selected_friends?.length} 명', 18),
-                    
-
+                    Container(
+                        margin: const EdgeInsets.only(left: 20.0, top: 16),
+                        child: Table(
+                          columnWidths: const {
+                            0: FlexColumnWidth(0.5), // 첫 번째 열은 가변적인 너비를 가지도록 설정
+                          },
+                          children: [
+                            TableRow(
+                              children: [
+                                const TableCell(
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 8.0, horizontal: 16.0),
+                                    child: Text('제목'),
+                                  ),
+                                ),
+                                TableCell(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0, horizontal: 16.0),
+                                    child: Text(
+                                        '${promise.promise_title ?? '미정'}'),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            TableRow(
+                              children: [
+                                const TableCell(
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 8.0, horizontal: 16.0),
+                                    child: Text('날짜'),
+                                  ),
+                                ),
+                                TableCell(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0, horizontal: 16.0),
+                                    child: Text(
+                                        '${promise.promise_date != null ? DateFormat('yyyy-MM-dd (E)', 'ko_kr').format(promise.promise_date!) : '미정'}'),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            TableRow(
+                              children: [
+                                const TableCell(
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 8.0, horizontal: 16.0),
+                                    child: Text('시간'),
+                                  ),
+                                ),
+                                TableCell(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0, horizontal: 16.0),
+                                    child:
+                                        Text('${promise.promise_time ?? '미정'}'),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            TableRow(
+                              children: [
+                                const TableCell(
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 8.0, horizontal: 16.0),
+                                    child: Text('장소'),
+                                  ),
+                                ),
+                                TableCell(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0, horizontal: 16.0),
+                                    child: Text(
+                                        '${promise.promise_location ?? '미정'}'),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            TableRow(
+                              children: [
+                                const TableCell(
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: 8.0, horizontal: 16.0),
+                                    child: Text('친구'),
+                                  ),
+                                ),
+                                TableCell(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0, horizontal: 16.0),
+                                    child: Text(
+                                        '${promise.selected_friends?[0].nickName} 외 ${promise.selected_friends?.length} 명'),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        )),
                     const Expanded(child: Text('')),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
