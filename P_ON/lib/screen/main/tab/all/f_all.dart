@@ -60,7 +60,7 @@ class _AllFragmentState extends State<AllFragment> {
                   onPressed: () {
                     final router = GoRouter.of(context);
                     // Nav.push(const RegisterFragment());
-                    router.go('/chatroom/40');
+                    router.go('/chatroom/55');
                     getLogIn();
                   },
                   child: const Text('카카오로 시작하기',
