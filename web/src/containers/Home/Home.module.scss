@@ -16,8 +16,8 @@
 }
 
 div.section1 {
+  width: 100%;
   box-sizing: border-box;
-  // background-color: var(--color-main4);
   background: linear-gradient(to bottom, var(--color-main4) 80%, var(--color-grey1) 100%);
   padding: 70px 5vw 0 5vw;
   height: 100vh;
@@ -36,14 +36,14 @@ div.section1 {
       height: 70%;
       width: auto;
       aspect-ratio: 9 / 16;
-      border: solid black;
-      margin: 0 60px;
+      margin: 0 10px;
 
       &:first-child {
         position: absolute;
-        border: solid red;
         z-index: 10;
         margin: 0;
+        scale: 1.1;
+        padding: 20px;
       }
     }
   }
@@ -122,6 +122,7 @@ div.section1 {
     & p {
       padding: 0;
       margin: 0;
+      word-break: keep-all;
     }
 
     .tag {
@@ -157,57 +158,32 @@ div.section1 {
     align-items: center;
     width: 50%;
     height: 90%;
-
-    border: solid red;
+    margin-left: 8%;
 
     .screen {
-      border: solid red;
       height: 75%;
-      aspect-ratio: 9 / 16;
+      aspect-ratio: 397 / 753;
+      position: relative;
+
+      border-radius: 30px;
+      background: var(--grey-700, #1f2123);
+
+      box-shadow: 4px 8px 8px 0px rgba(0, 0, 0, 0.25);
+
+      &:first-child {
+        scale: 1.15;
+        left: 10px;
+        z-index: 5;
+        img {
+          scale: 1.1;
+        }
+      }
+
+      img {
+        padding: 10px;
+      }
     }
   }
-
-  // .image-container {
-  //   width: auto;
-  //   height: 80%;
-  //   aspect-ratio: 9 / 16;
-  //   position: relative;
-  //   max-height: 90vh;
-  //   overflow: hidden;
-
-  //   position: relative;
-  //   z-index: 3;
-  //   background: white;
-  //   overflow: hidden;
-  //   display: block;
-  //   border-radius: 1px;
-  //   -webkit-box-shadow: 0 0 0 3px #111;
-  //   box-shadow: 0 0 0 3px #111;
-
-  //   width: auto;
-  //   height: 700px;
-  //   aspect-ratio: 9 / 17;
-  //   background: black;
-  //   border-radius: 34px;
-  //   padding: 45px 10px;
-
-  //   .screen {
-  //     width: 100%;
-  //     position: relative;
-  //     height: 100%;
-  //     z-index: 3;
-  //     background: white;
-  //     overflow: hidden;
-  //     display: block;
-  //     border-radius: 1px;
-  //     -webkit-box-shadow: 0 0 0 3px #111;
-  //     box-shadow: 0 0 0 3px #111;
-
-  //     border-radius: 14px;
-  //     -webkit-box-shadow: none;
-  //     box-shadow: none;
-  //   }
-  // }
 }
 
 .end-container {

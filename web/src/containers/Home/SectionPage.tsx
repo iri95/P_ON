@@ -1,5 +1,6 @@
 import { useScroll, useTransform, motion } from 'framer-motion';
 import { useRef } from 'react';
+import Image from 'next/image';
 import { stylesWithCssVar } from './motion';
 
 import styles from './Home.module.scss';
@@ -161,8 +162,12 @@ export default function SectionPage({ data }: PageProps) {
           </div>
 
           <div className={styles['image-container']}>
-            <div className={styles.screen}>{/* <Image /> */}</div>
-            <div className={styles.screen}>{/* <Image /> */}</div>
+            <div className={styles.screen}>
+              <Image src="/main1_black.png" alt={item.image_alt[0]} objectFit="contain" fill quality={100} />
+            </div>
+            <div className={styles.screen}>
+              <Image src="/main1_black.png" alt={item.image_alt[1]} objectFit="cover" fill quality={100} />
+            </div>
           </div>
         </section>
       ))}
