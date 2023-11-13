@@ -35,7 +35,7 @@ export default function Nav() {
               {['약속', '소통', '추억', '챗봇', '일정'].map((item, index) => (
                 <li key={item}>
                   <Link style={{ display: 'inline-block', width: '100%' }} href={`/#section${index + 1}`}>
-                    {item} {index}
+                    {item}
                   </Link>
                 </li>
               ))}

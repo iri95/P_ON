@@ -11,7 +11,7 @@ body {
   font-family: 'Pretendard', sans-serif;
   line-height: 1.6;
   font-size: 18px;
-  background: white;
+  background: var(--color-grey1);
 }
 * {
   box-sizing: border-box;
