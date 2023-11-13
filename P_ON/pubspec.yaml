@@ -18,7 +18,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # of the product and file versions while build-number is used as the build suffix.
 
 # TODO: 버전 올리고 build
-version: 1.0.0+9
+version: 1.0.0+10
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
