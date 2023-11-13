@@ -29,7 +29,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   // 유저 검색
   Future<void> _searchUser(keyword) async {
-    _controller.text = keyword;
     if (isBlank(keyword)) {
       searchData.isSearchEmpty.value = true;
       searchData.searchResult.clear();
@@ -71,6 +70,10 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     } catch (e) {
       print(e);
     }
+  }
+
+  Future<void> searchHistory(keyword) async {
+    _controller.text = keyword;
   }
 
   Future<void> submitFollow(SearchUser element) async {
@@ -147,8 +150,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
             ? ListView(
                 children: [
                   SearchHistoryList(
-                    searchUser: _searchUser,
-                  )
+                      searchUser: _searchUser, searchHistory: searchHistory)
                 ],
               )
             : ListView.builder(
