@@ -14,7 +14,7 @@ public class VoteDto {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class post{
+    public static class post {
         List<Long> itemList;
     }
 
@@ -23,14 +23,14 @@ public class VoteDto {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class get{
+    public static class get {
         @Builder.Default
         private boolean doDate = false;
         private boolean doTime = false;
         private boolean doLocation = false;
-        private boolean dateComplete;
-        private boolean timeComplete;
-        private boolean locationComplete;
+        private boolean dateComplete = false;
+        private boolean timeComplete = false;;
+        private boolean locationComplete = false;;
         private List<getDate> dates;
         private List<getTime> times;
         private List<getLocation> locations;
@@ -39,7 +39,7 @@ public class VoteDto {
         @Getter
         @NoArgsConstructor
         @AllArgsConstructor
-        public static class getDate{
+        public static class getDate {
             private Long itemId;
             private String date;
             List<user> users;
@@ -50,7 +50,7 @@ public class VoteDto {
         @Getter
         @NoArgsConstructor
         @AllArgsConstructor
-        public static class getTime{
+        public static class getTime {
             private Long itemId;
             private String time;
             List<user> users;
@@ -61,7 +61,7 @@ public class VoteDto {
         @Getter
         @NoArgsConstructor
         @AllArgsConstructor
-        public static class getLocation{
+        public static class getLocation {
             private Long itemId;
             private String location;
             private String lat;
@@ -74,7 +74,7 @@ public class VoteDto {
         @Getter
         @NoArgsConstructor
         @AllArgsConstructor
-        public static class user{
+        public static class user {
             private Long id;
             private String nickName;
             private String profileImage;
@@ -85,7 +85,7 @@ public class VoteDto {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class put{
+    public static class put {
         Long roomId;
         ItemType itemType;
         List<Long> itemList;

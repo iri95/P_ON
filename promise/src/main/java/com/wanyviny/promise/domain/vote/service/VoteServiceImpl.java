@@ -3,6 +3,7 @@ package com.wanyviny.promise.domain.vote.service;
 import com.wanyviny.promise.domain.item.entity.Item;
 import com.wanyviny.promise.domain.item.entity.ItemType;
 import com.wanyviny.promise.domain.item.repository.ItemRepository;
+import com.wanyviny.promise.domain.room.entity.Room;
 import com.wanyviny.promise.domain.room.repository.RoomRepository;
 import com.wanyviny.promise.domain.user.entity.User;
 import com.wanyviny.promise.domain.user.repository.UserRepository;
@@ -41,6 +42,9 @@ public class VoteServiceImpl implements VoteService {
 
     @Override
     public VoteDto.get getVote(Long userId, Long roomId) {
+        Room room = roomRepository.findById(roomId).orElseThrow(
+                () -> new IllegalArgumentException("해당 약속방이 존재하지 않습니다.")
+        );
         List<Item> itemList = itemRepository.findAllByRoomId(roomId);
         List<VoteDto.get.getDate> getDates = new ArrayList<>();
         List<VoteDto.get.getTime> getTimes = new ArrayList<>();
@@ -48,6 +52,7 @@ public class VoteServiceImpl implements VoteService {
         AtomicBoolean doDate = new AtomicBoolean(false);
         AtomicBoolean doTime = new AtomicBoolean(false);
         AtomicBoolean doLocation = new AtomicBoolean(false);
+
 
         System.out.println(userId);
         itemList.forEach(item -> {
@@ -70,6 +75,9 @@ public class VoteServiceImpl implements VoteService {
                 .doDate(doDate.get())
                 .doTime(doTime.get())
                 .doLocation(doLocation.get())
+                .dateComplete(room.isDateComplete())
+                .timeComplete(room.isTimeComplete())
+                .locationComplete(room.isLocationComplete())
                 .dates(getDates)
                 .times(getTimes)
                 .locations(getLocations)
