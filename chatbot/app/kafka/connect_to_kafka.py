@@ -7,7 +7,7 @@ def kafka_producer(message):
         value_serializer=lambda v: json.dumps(v).encode('utf-8')  # JSON 직렬화 설정
     )
 
-    response = producer.send(topic='test-topic', value=message).get()
+    response = producer.send(topic='to-mysql-json', value=message).get()
     producer.flush()
     return response
 

@@ -15,7 +15,7 @@ from typing import Union
 app = FastAPI()
 
 # 일정 생성
-@app.post("/chatbot/")
+@app.post("/chatbot")
 async def create_calendar(
     userId: Union[int, None] = Header(default=None, convert_underscores=False, alias="id"),
     text: str = Body(...)
