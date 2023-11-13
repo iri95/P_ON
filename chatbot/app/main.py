@@ -9,13 +9,19 @@ app = FastAPI()
 
 
 # 일정 생성
-@app.post("/chatbot/")
-async def create_calendar(userId: Union[int, None] = Header(default=None, convert_underscores=False, alias="id")):
+from fastapi import FastAPI, Header, Body
+from typing import Union
 
-    text = "이번 주 월요일에 부산대에서 회식이야."
+app = FastAPI()
+
+# 일정 생성
+@app.post("/chatbot/")
+async def create_calendar(
+    userId: Union[int, None] = Header(default=None, convert_underscores=False, alias="id"),
+    text: str = Body(...)
+):
 
     res = UserMessage_to_cal(text)
-
     topic_message = {
         'userId' : userId,
         'cal' : res
@@ -24,6 +30,7 @@ async def create_calendar(userId: Union[int, None] = Header(default=None, conver
     kafka_producer(topic_message)
 
     return {"res" : topic_message}
+
 
 # 일정 조회
 @app.get("/chatbot")
