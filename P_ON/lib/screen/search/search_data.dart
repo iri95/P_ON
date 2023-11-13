@@ -10,22 +10,25 @@ class SearchUser {
   final String nickName;
   final String privacy;
   final String? stateMessage;
+  String relation;
 
-  SearchUser(
-      {required this.id,
-      required this.profileImage,
-      required this.nickName,
-      required this.privacy,
-      this.stateMessage});
+  SearchUser({
+    required this.id,
+    required this.profileImage,
+    required this.nickName,
+    required this.privacy,
+    this.stateMessage,
+    required this.relation,
+  });
 
   factory SearchUser.fromJson(Map<String, dynamic> json) {
     return SearchUser(
-      id: json['id'],
-      profileImage: json['profileImage'],
-      nickName: json['nickName'],
-      privacy: json['privacy'],
-      stateMessage: json['stateMessage'],
-    );
+        id: json['id'],
+        profileImage: json['profileImage'],
+        nickName: json['nickName'],
+        privacy: json['privacy'],
+        stateMessage: json['stateMessage'],
+        relation: json['relation']);
   }
 }
 
@@ -54,5 +57,14 @@ class SearchData extends GetxController {
       searchHistoryList.remove(text);
     }
     searchHistoryList.insert(0, text);
+  }
+
+  void updateRelation(int userId, String newRelation) {
+    int index = searchResult.indexWhere((user) => user.id == userId);
+    if (index != -1) {
+      searchResult[index].relation = newRelation;
+      searchResult.refresh();
+      print(searchResult[index].relation);
+    }
   }
 }
