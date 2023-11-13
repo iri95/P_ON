@@ -20,6 +20,7 @@ class AppColors {
   static const Color mainBlue = Color(0xff3F48CC);
   static const Color mainBlue2 = Color(0xff778CE3);
   static const Color mainBlue3 = Color(0xffA3B4ED);
+  static const Color mainBlue50 = Color(0xffE0E5F9);
   static const Color grey50 = Color(0xffF9F9FA);
   static const Color grey100 = Color(0xffEFF3F9);
   static const Color grey200 = Color(0xffE4E8EF);
@@ -33,4 +34,5 @@ class AppColors {
   static const Color calendarLightYellow = Color(0xffffe338);
   static const Color calendarOrange = Color(0xffff7f27);
   static const Color calendarBlue = Color(0xff778ce3);
+  static const Color pointOrange = Color(0xffFF7F27);
 }

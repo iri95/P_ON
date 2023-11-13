@@ -105,13 +105,16 @@ class VoteNotifier extends StateNotifier<VoteDate> {
 }
 
 class VoteInfo {
+  int? create_user;
   bool? is_anonymous;
   bool? is_multiple_choice;
   String? dead_date;
   String? dead_time;
 
   VoteInfo(
-      {this.is_anonymous,
+      {
+        this.create_user,
+        this.is_anonymous,
         this.is_multiple_choice,
         this.dead_date,
         this.dead_time,
@@ -125,8 +128,19 @@ class VoteInfoNotifier extends StateNotifier<VoteInfo> {
     state = newVoteInfo;
   }
 
+  void setCreateUser(int userId) {
+    state = VoteInfo(
+      create_user: userId,
+      is_anonymous: state.is_anonymous,
+      is_multiple_choice: state.is_multiple_choice,
+      dead_date: state.dead_date,
+      dead_time: state.dead_time
+    );
+  }
+
   void setAnonymous(bool anonymous) {
     state = VoteInfo(
+      create_user: state.create_user,
       is_anonymous: anonymous,
       is_multiple_choice: state.is_multiple_choice,
       dead_date: state.dead_date,
@@ -136,6 +150,7 @@ class VoteInfoNotifier extends StateNotifier<VoteInfo> {
 
   void setMultiple(bool multiple) {
     state = VoteInfo(
+      create_user: state.create_user,
       is_anonymous: state.is_anonymous,
       is_multiple_choice: multiple,
       dead_date: state.dead_date,
@@ -145,6 +160,7 @@ class VoteInfoNotifier extends StateNotifier<VoteInfo> {
 
   void setDeadDate(String deaddate) {
     state = VoteInfo(
+      create_user: state.create_user,
       is_anonymous: state.is_anonymous,
       is_multiple_choice: state.is_multiple_choice,
       dead_date: deaddate,
@@ -154,10 +170,22 @@ class VoteInfoNotifier extends StateNotifier<VoteInfo> {
 
   void setDeadTime(String deadtime) {
     state = VoteInfo(
+      create_user: state.create_user,
       is_anonymous: state.is_anonymous,
       is_multiple_choice: state.is_multiple_choice,
       dead_date: state.dead_date,
       dead_time: deadtime
     );
   }
+
+  void resetDeadDateAndTime() {
+    state = VoteInfo(
+      create_user: state.create_user,
+      is_anonymous: state.is_anonymous,
+      is_multiple_choice: state.is_multiple_choice,
+      dead_date: null,
+      dead_time: null,
+    );
+  }
+
 }

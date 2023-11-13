@@ -10,6 +10,7 @@ import 'package:flutter/services.dart';
 import 'package:p_on/screen/main/tab/chat_room/f_chat_room.dart';
 import 'package:p_on/screen/main/tab/chat_room/f_create_vote_room.dart';
 import 'package:p_on/screen/main/tab/chat_room/f_select_vote.dart';
+import 'package:p_on/screen/main/tab/chatbot/f_chatbot.dart';
 import 'package:p_on/screen/main/tab/promise_room/f_create_promise.dart';
 import 'package:p_on/screen/main/tab/register/f_register.dart';
 import 'package:p_on/screen/main/tab/tab_item.dart';
@@ -179,7 +180,14 @@ class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
           pageBuilder: (BuildContext context, GoRouterState state) {
             final id = state.pathParameters['id'] ?? 'unknown';
             return MaterialPage(child: SelectVote(id: id));
-          })
+          }),
+      GoRoute(
+        path: '/chatbot/:userId',
+        pageBuilder: (BuildContext context, GoRouterState state) {
+          final userId = state.pathParameters['userId'] ?? 'unknown';
+          return MaterialPage(child: ChatBot(Id: userId));
+        }
+      )
     ],
     redirect: auth.guard,
     refreshListenable: auth,
