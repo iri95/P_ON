@@ -10,4 +10,6 @@ public interface ItemService {
     ItemResponse.Find findItem(Long roomId);
     ItemResponse.Modify modifyItem(Long userId, Long roomId, ItemRequest.Modify request);
     void deleteItemType(Long roomId, ItemType itemType);
+
+    void putItemType(Long roomId, ItemType itemType);
 }

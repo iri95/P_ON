@@ -116,7 +116,7 @@ public class ItemServiceImpl implements ItemService {
         String body = room.getPromiseTitle() + "에 투표가 추가되었습니다!";
 
         phondIdList.forEach(user -> {
-            if(!Objects.equals(user.getId(), userId)) {
+            if (!Objects.equals(user.getId(), userId)) {
                 String token = user.getPhoneId();
                 createAlarm(user, body, ALARM_TYPE.CREATE_POLL);
                 firebasePushAlarm(title, body, token);
@@ -261,7 +261,19 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public void deleteItemType(Long roomId, ItemType itemType){
+    public void deleteItemType(Long roomId, ItemType itemType) {
         itemRepository.deleteAllByRoomIdAndItemType(roomId, itemType);
+    }
+
+    @Override
+    @Transactional
+    public void putItemType(Long roomId, ItemType itemType) {
+        if (itemType == ItemType.DATE) {
+            roomRepository.completeDate(roomId);
+        } else if (itemType == ItemType.TIME) {
+            roomRepository.completeTime(roomId);
+        } else {
+            roomRepository.completeLocation(roomId);
+        }
     }
 }
