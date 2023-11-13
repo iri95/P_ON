@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-import calendar
 
 def convert_date(input_str):
     today = datetime.today().date() 
