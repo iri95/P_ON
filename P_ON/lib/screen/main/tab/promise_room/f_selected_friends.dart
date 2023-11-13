@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:p_on/common/common.dart';
 import 'package:p_on/screen/main/tab/promise_room/dto_promise.dart';
 import 'package:p_on/screen/main/tab/promise_room/f_last_create_promise.dart';
@@ -45,47 +46,10 @@ class _SelectedFriendsState extends ConsumerState<SelectedFriends> {
             width: MediaQuery.of(context).size.width,
           ),
           Container(
-            margin: const EdgeInsets.fromLTRB(18, 16, 18, 8),
+            margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
             alignment: Alignment.topLeft,
             child: '약속을 함께 할 친구를 추가해주세요'.text.black.size(18).semiBold.make(),
           ),
-          // TODO: 이거 어쩔까
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Container(
-                  height: 62,
-                  margin: const EdgeInsets.only(left: 32, right: 16),
-                  decoration: BoxDecoration(
-                      color: AppColors.grey200,
-                      borderRadius: BorderRadius.circular(10)),
-                  child: TextButton(
-                      style: TextButton.styleFrom(primary: Colors.black),
-                      onPressed: () {},
-                      child: const Column(
-                        children: [Icon(Icons.search), Text('닉네임 검색')],
-                      )),
-                ),
-              ),
-              Expanded(
-                child: Container(
-                  height: 62,
-                  margin: const EdgeInsets.only(left: 16, right: 32),
-                  decoration: BoxDecoration(
-                      color: AppColors.grey200,
-                      borderRadius: BorderRadius.circular(10)),
-                  child: TextButton(
-                      style: TextButton.styleFrom(primary: Colors.black),
-                      onPressed: () {},
-                      child: const Column(
-                        children: [Icon(Icons.link), Text('링크 복사')],
-                      )),
-                ),
-              )
-            ],
-          ),
-
           Container(
             height: 120,
             margin: const EdgeInsets.symmetric(vertical: 12),
@@ -100,20 +64,53 @@ class _SelectedFriendsState extends ConsumerState<SelectedFriends> {
                     .size(16)
                     .make(),
                 Expanded(
-                  child: (_showError && promise.selected_friends!.length == 0)
-                      ? ListView(
-                          children: [Text('친구골라')],
-                        )
-                      : ListView(
-                          scrollDirection: Axis.horizontal,
-                          children: promise.selected_friends
-                                  ?.map((friend) => FriendsList(friend))
-                                  .toList() ??
-                              []),
+                  child: ListView(
+                      scrollDirection: Axis.horizontal,
+                      children: promise.selected_friends
+                              ?.map((friend) => FriendsList(friend))
+                              .toList() ??
+                          []),
                 ),
               ],
             ),
           ),
+
+          // TODO: 이거 어쩔까
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: [
+          // Expanded(
+          //   child: Container(
+          //     height: 62,
+          //     margin: const EdgeInsets.only(left: 32, right: 16),
+          //     decoration: BoxDecoration(
+          //         color: AppColors.grey200,
+          //         borderRadius: BorderRadius.circular(10)),
+          //     child: TextButton(
+          //         style: TextButton.styleFrom(primary: Colors.black),
+          //         onPressed: () {},
+          //         child: const Column(
+          //           children: [Icon(Icons.link), Text('링크 복사')],
+          //         )),
+          //   ),
+          // ),
+          //   Expanded(
+          //     child: Container(
+          //       height: 62,
+          //       margin: const EdgeInsets.only(left: 16, right: 32),
+          //       decoration: BoxDecoration(
+          //           color: AppColors.grey200,
+          //           borderRadius: BorderRadius.circular(10)),
+          //       child: TextButton(
+          //           style: TextButton.styleFrom(primary: Colors.black),
+          //           onPressed: () {},
+          //           child: const Column(
+          //             children: [Icon(Icons.search), Text('닉네임 검색')],
+          //           )),
+          //     ),
+          //   ),
+          // ],
+          // ),
           const Expanded(child: Follows()),
         ],
       ),
@@ -137,11 +134,7 @@ class _SelectedFriendsState extends ConsumerState<SelectedFriends> {
                   Nav.push(const LastCreatePromise());
                 }
               },
-              // child: Text(promise.selected_friends == null ||
-              //         promise.selected_friends!.length == 0
-              //     ? '건너뛰기'
-              //     : '다음'),
-              child: Text('다음'))),
+              child: const Text('다음'))),
     );
     // ,
     //   ),
