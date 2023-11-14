@@ -49,6 +49,7 @@ def UserMessage_to_cal(userMessage):
             res['calendar_end_date'] = res.get('calendar_start_date')
         else:
             res['calendar_end_date'] = to_datetime(res['calendar_end_date'])
-
+    else:
+        res = {}
         
     return res
