@@ -17,7 +17,11 @@ import 'package:p_on/common/util/app_keyboard_util.dart';
 
 import 'package:get/get.dart';
 
+import 'package:p_on/screen/main/tab/all/f_all.dart';
+
 class SearchScreen extends ConsumerStatefulWidget {
+  // await fetchFollow();
+
   const SearchScreen({super.key});
 
   @override
@@ -154,6 +158,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // final fetchFollowFuture = ref.watch(fetchFollowProvider.future);
+
     return GestureDetector(
         onTap: () {
           // 화면의 빈 공간을 누르면 키보드를 내립니다
@@ -232,6 +238,8 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                                                       : AppColors.mainBlue),
                                           onPressed: () async {
                                             await submitFollow(element);
+                                            // FIXME: 이게맞나
+                                            ref.refresh(fetchFollowProvider);
 
                                             searchData.addSearchHistory(
                                                 _controller.text);
