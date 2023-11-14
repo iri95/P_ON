@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:location/location.dart';
 import 'package:p_on/common/common.dart';
+import 'package:p_on/screen/main/tab/schedule/dto_schedule.dart';
 import 'dto_promise.dart';
 import 'vo_naver_headers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -281,7 +282,14 @@ class _SearchNaverState extends ConsumerState<SearchNaver> {
                                                       .setPromiseLocation(
                                                           item['title'],
                                                           NLatLng(y,
-                                                              x)); // 약속 장소와 좌표 저장
+                                                              x));// 약속 장소와 좌표 저장
+                                                  ref
+                                                      .read(scheduleProvider
+                                                      .notifier)
+                                                      .setScheduleLocation(
+                                                      item['title'],
+                                                      NLatLng(y,
+                                                          x));
                                                   Navigator.pop(
                                                       context); // 모달 창 닫기
                                                   Navigator.pop(
