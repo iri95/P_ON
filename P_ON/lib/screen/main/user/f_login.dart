@@ -104,9 +104,6 @@ class _LoginPageState extends ConsumerState<LoginPage>
         // });
       } else {
         // 회원이면 메인 페이지로
-        // TODO: 메인 페이지 라우팅 안됨
-        // await fetchProfile();
-        // GoRouter.of(context).go('/');
         print('난 유저고 메인으로 ${auth.signedIn}');
       }
     }
@@ -131,9 +128,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
             child: TextButton(
               onPressed: () async {
                 // FIXME: 이게 키해시임
-                print("=====");
-                print("=====");
-                print(await KakaoSdk.origin);
+                // print(await KakaoSdk.origin);
 
                 await goLogin();
               },

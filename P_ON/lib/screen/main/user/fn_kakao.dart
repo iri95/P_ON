@@ -53,7 +53,7 @@ Future<void> kakaoLogin(WidgetRef ref) async {
   if (await isKakaoTalkInstalled()) {
     try {
       OAuthToken token = await UserApi.instance.loginWithKakaoTalk();
-      // print('카카오톡으로 로그인 ${token.accessToken}');
+      print('카카오톡으로 로그인 ${token.accessToken}');
       ref.read(kakaoTokenProvider.notifier).state = token.accessToken;
 
       // 여기서 카카오 토큰으로 서버 트콘 발급받고 저장하기

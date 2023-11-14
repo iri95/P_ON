@@ -18,7 +18,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # of the product and file versions while build-number is used as the build suffix.
 
 # TODO: 버전 올리고 build
-version: 1.0.0+11
+version: 1.0.0+12
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -69,14 +69,13 @@ dependencies:
   intl: ^0.18.1
 
   #ui - util
-  keyboard_utils_fork: ^0.0.4
+  keyboard_utils_fork:
+    ^0.0.4
     # am, pm = 오전, 오후로 바꿈
   day_night_time_picker:
     git:
       url: https://github.com/HyeonBhinKim/day_night_time_picker.git
-      ref: '990d08d'
-
-
+      ref: "990d08d"
 
   #network
   dio: ^5.0.0
