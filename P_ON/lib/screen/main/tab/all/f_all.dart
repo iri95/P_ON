@@ -1,76 +1,116 @@
-import 'package:dio/dio.dart';
+import 'package:p_on/screen/main/tab/home/w_p_on_app_bar.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:p_on/common/common.dart';
-import 'package:p_on/screen/main/tab/register/f_register.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:p_on/screen/main/tab/register/f_register.dart';
 
-import '../promise_room/vo_server_url.dart';
+import 'dart:collection';
+import 'package:dio/dio.dart';
 
-class AllFragment extends StatefulWidget {
+import 'package:p_on/screen/main/tab/all/w_profile.dart';
+import 'package:p_on/screen/main/tab/all/w_setting.dart';
+
+import 'package:get/get.dart';
+import 'package:p_on/screen/main/user/user_state.dart';
+
+import 'package:p_on/screen/main/tab/promise_room/dto_promise.dart';
+import './friend_provider.dart';
+import 'package:p_on/screen/main/user/token_state.dart';
+import 'package:p_on/common/util/dio.dart';
+import 'package:p_on/screen/main/user/fn_kakao.dart';
+import 'package:p_on/screen/main/s_main.dart';
+import 'package:p_on/screen/main/tab/tab_item.dart';
+
+// Future<void> fetchFollow() async {
+final fetchFollowProvider = FutureProvider.autoDispose<void>((ref) async {
+  final loginState = ref.read(loginStateProvider);
+  final token = loginState.serverToken;
+  final id = loginState.id;
+
+  var headers = {'Authorization': '$token', 'id': '$id'};
+
+  // if (token == null) {
+  //   await kakaoLogin(ref);
+  //   await fetchToken(ref);
+
+  //   // 토큰을 다시 읽습니다.
+  //   final newToken = ref.read(loginStateProvider).serverToken;
+  //   final newId = ref.read(loginStateProvider).id;
+
+  //   headers['Authorization'] = '$newToken';
+  //   headers['id'] = '$newId';
+  // }
+
+  final apiService = ApiService();
+
+  // 팔로잉
+  try {
+    var response = await apiService.sendRequest(
+        method: 'GET', path: '/api/follow/following', headers: headers);
+
+    ref.read(followingCountProvider.notifier).state = response.data['count'];
+    var data = response.data['result'] as List;
+    List<Friends> followingList =
+        await data.map((item) => Friends.fromJson(item)).toList();
+    ref.read(followingListProvider.notifier).setFollowingList(followingList);
+  } catch (e) {
+    print(e);
+  }
+
+  // 팔로워
+  try {
+    var response = await apiService.sendRequest(
+        method: 'GET', path: '/api/follow/follower', headers: headers);
+
+    ref.read(followerCountProvider.notifier).state = response.data['count'];
+    var data = response.data['result'] as List;
+    List<Friends> followerList =
+        await data.map((item) => Friends.fromJson(item)).toList();
+    ref.read(followerListProvider.notifier).setFollowerList(followerList);
+  } catch (e) {
+    print(e);
+  }
+});
+
+class AllFragment extends ConsumerStatefulWidget {
   const AllFragment({Key? key}) : super(key: key);
 
   @override
-  State<AllFragment> createState() => _AllFragmentState();
+  ConsumerState<AllFragment> createState() => _AllFragmentState();
 }
 
-class _AllFragmentState extends State<AllFragment> {
-  final Dio dio = Dio();
-
-  void getLogIn() async {
-    print('$server/oauth2/authorization/kakao');
-    final response = await dio.get('$server/oauth2/authorization/kakao');
-    print('==================================');
-    print('==================================');
-    print('==================================');
-    print('==================================');
-    print('==================================');
-    print('==================================');
-    print(response);
-    print('==================================');
-    print('==================================');
-    print('==================================');
-  }
+class _AllFragmentState extends ConsumerState<AllFragment> {
+// TODO: 팔로우, 팔로워 리스트 저장하기
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Flexible(
-          flex: 3,
-          child: Container(
-            color: Colors.white,
+    ref.listen(currentTabProvider, (_, TabItem? newTabItem) async {
+      print('===========================================================');
+      print(newTabItem);
+      // currentTabProvider의 상태가 변경될 때마다 이 부분이 호출됩니다.
+      // 마이페이지 일때
+      if (newTabItem == TabItem.my) {
+        ref.read(fetchFollowProvider.future);
+      }
+    });
+
+    return Material(
+        child: Column(children: [
+      const PONAppBar(),
+      Expanded(
+        child: Container(
+          color: Color(0xffe4e8ef),
+          child: ListView(
+            children: const [
+              Profile(),
+              height10,
+              Setting(),
+            ],
           ),
         ),
-        Flexible(
-          child: Container(
-            width: double.infinity,
-            margin: EdgeInsets.symmetric(vertical: 25, horizontal: 50),
-            decoration: BoxDecoration(
-                color: Color(0xffF9E000),
-                borderRadius: BorderRadius.circular(10)),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  child: Image.asset('assets/image/icon/kakao.png'),
-                ),
-                TextButton(
-                  onPressed: () {
-                    final router = GoRouter.of(context);
-                    // Nav.push(const RegisterFragment());
-                    router.go('/chatroom/55');
-                    getLogIn();
-                  },
-                  child: const Text('카카오로 시작하기',
-                      style: TextStyle(color: Color(0xff371C1D))),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
+      )
+    ]));
   }
 }

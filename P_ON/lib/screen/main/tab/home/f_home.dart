@@ -37,7 +37,6 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
   // final scrollController = ScrollController();
   late final ScrollController scrollController;
 
-
   @override
   void initState() {
     scrollController = ref.read(homeScrollControllerProvider);
@@ -95,7 +94,6 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
       print('여긴 메인이고 프로필 에러 $e');
     }
   }
-
 
   @override
   Widget build(BuildContext context) {

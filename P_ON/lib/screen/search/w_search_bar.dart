@@ -7,8 +7,10 @@ import 'package:get/get.dart';
 
 class SearchBarWidget extends StatelessWidget implements PreferredSizeWidget {
   final TextEditingController controller;
+  final FocusNode focusNode;
 
-  SearchBarWidget({required this.controller, Key? key}) : super(key: key);
+  SearchBarWidget({required this.controller, required this.focusNode, Key? key})
+      : super(key: key);
 
   final searchData = Get.find<SearchData>();
 
@@ -43,6 +45,7 @@ class SearchBarWidget extends StatelessWidget implements PreferredSizeWidget {
                 deleteRightPadding: 8,
                 textInputAction: TextInputAction.search,
                 controller: controller,
+                focusNode: focusNode,
                 texthint: "닉네임 검색",
                 focusedBorder: Colors.transparent,
                 fontSize: 18,

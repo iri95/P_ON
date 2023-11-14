@@ -92,14 +92,14 @@ class _LoginPageState extends ConsumerState<LoginPage>
         await Nav.push(RegisterFragment(
           nickName: userState?.nickName ?? "",
           profileImage: userState?.profileImage ?? "",
-          privacy: userState?.privacy ?? "PRIVATE",
+          privacy: userState?.privacy ?? "ALL",
           stateMessage: userState?.stateMessage ?? "",
         ));
 
         // GoRouter.of(context).go('/register', extra: {
         //   'nickName': userState?.nickName ?? "",
         //   'profileImage': userState?.profileImage ?? "",
-        //   'privacy': userState?.privacy ?? "PRIVATE",
+        //   'privacy': userState?.privacy ?? "PRIVATE / ALL",
         //   'stateMessage': userState?.stateMessage ?? "",
         // });
       } else {
