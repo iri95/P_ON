@@ -67,7 +67,6 @@ class _CreateScheduleState extends ConsumerState<CreateSchedule>
       lastDate: DateTime(2100),
     );
 
-    /// TODO : 시작일이 종료일보다 늦으면 종료일도 시작일로, 똑같이 종료일이 시작일보다 빠르면 바꿈 로직
     if (picked != null) {
       if (label == '시작') {
         // 종료일이 시작일보다 이전인 경우, 종료일도 시작일로 설정합니다.
@@ -91,7 +90,6 @@ class _CreateScheduleState extends ConsumerState<CreateSchedule>
     }
   }
 
-  /// TODO: 시간도 날짜랑 똑같은 로직 적용해야함
   Future<void> _selectTime(label) async {
     TimeOfDay t = TimeOfDay.now();
     Navigator.of(context).push(showPicker(
