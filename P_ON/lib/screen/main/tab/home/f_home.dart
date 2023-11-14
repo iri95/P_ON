@@ -3,6 +3,7 @@ import 'package:p_on/common/common.dart';
 import 'package:p_on/common/widget/w_list_container.dart';
 import 'package:p_on/common/widget/w_rounded_container.dart';
 import 'package:p_on/screen/dialog/d_message.dart';
+import 'package:p_on/screen/main/tab/home/bank_accounts_dummy.dart';
 import 'package:p_on/screen/main/tab/home/w_my_plan_and_promise.dart';
 import 'package:p_on/screen/main/tab/home/w_p_on_app_bar.dart';
 import 'package:p_on/screen/main/tab/promise_room/dto_promise.dart';
@@ -38,7 +39,6 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
   // final scrollController = ScrollController();
   late final ScrollController scrollController;
   List<dynamic>? promise;
-
 
   @override
   void initState() {
@@ -91,15 +91,14 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
         stateMessage: response.data['result'][0]['stateMessage'] as String?,
       );
 
+      if (!mounted) return;
+
       ref.read(userStateProvider.notifier).setUserState(user);
       print('여긴 메인이고 프로필 조회 끝 ${ref.read(userStateProvider)?.nickName}');
     } catch (e) {
       print('여긴 메인이고 프로필 에러 $e');
     }
   }
-
-
-
 
   @override
   Widget build(BuildContext context) {

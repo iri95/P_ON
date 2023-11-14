@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:p_on/screen/main/tab/promise_room/f_create_promise.dart';
 import 'package:p_on/screen/main/tab/schedule/f_create_schedule.dart';
-import 'package:p_on/screen/main/tab/schedule/f_last_create_schedule.dart';
 import 'package:p_on/screen/main/tab/tab_item.dart';
 
 import '../../../common/widget/animated_width_collapse.dart';
@@ -35,7 +34,6 @@ class BottomFloatingActionButton extends ConsumerWidget {
         children: [
           // 스위치 문으로 사용할 필요가 있네
           switch(currentTab){
-            // TODO: Handle this case.
             TabItem.home => Tap(
               onTap: () {
                 Nav.push(const CreatePromise());
@@ -78,7 +76,6 @@ class BottomFloatingActionButton extends ConsumerWidget {
                 right: 20),
             TabItem.history => SizedBox.shrink(),
             TabItem.blankField => SizedBox.shrink(),
-          // TODO: 일정생성으로 바꾸기.
             TabItem.plan => Tap(
               onTap: () {
                 // Nav.push(const LastCreateSchedule());
@@ -120,7 +117,6 @@ class BottomFloatingActionButton extends ConsumerWidget {
                     context.viewPaddingBottom +
                     10,
                 right: 20),
-            // TODO: Handle this case.
             TabItem.my => SizedBox.shrink(),
           },
         ],

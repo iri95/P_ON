@@ -106,6 +106,43 @@ class _RightModalState extends ConsumerState<RightModal> {
                     return Column(
                       children: [
                         Container(
+                          height: 100,
+                          child: ListView(
+                            scrollDirection: Axis.horizontal,
+                            children: widget.users
+                                ?.map((item) => Container(
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 4),
+                              child: Column(
+                                children: [
+                                  SizedBox(
+                                    width: 80,
+                                    height: 80,
+                                    child: TextButton(
+                                        onPressed: () {
+                                          addCalendarMarker(item['userId']);
+                                        },
+                                        child: ClipOval(
+                                          child: Image.network(
+                                              item['profileImage'],
+                                              fit: BoxFit.cover),
+                                        )),
+                                  ),
+                                  Text(
+                                    item['nickname'],
+                                    style: const TextStyle(
+                                        fontFamily: 'Pretendard',
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 16),
+                                  ),
+                                ],
+                              ),
+                            ))
+                                .toList() ??
+                                [],
+                          ),
+                        ),
+                        Container(
                           margin: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
@@ -135,43 +172,6 @@ class _RightModalState extends ConsumerState<RightModal> {
                             ),
                           ),
                         ),
-                        Container(
-                          height: 100,
-                          child: ListView(
-                            scrollDirection: Axis.horizontal,
-                            children: widget.users
-                                    ?.map((item) => Container(
-                                          margin: const EdgeInsets.symmetric(
-                                              horizontal: 4),
-                                          child: Column(
-                                            children: [
-                                              SizedBox(
-                                                width: 80,
-                                                height: 80,
-                                                child: TextButton(
-                                                    onPressed: () {
-                                                      addCalendarMarker(item['userId']);
-                                                    },
-                                                    child: ClipOval(
-                                                      child: Image.network(
-                                                          item['profileImage'],
-                                                          fit: BoxFit.cover),
-                                                    )),
-                                              ),
-                                              Text(
-                                                item['nickname'],
-                                                style: const TextStyle(
-                                                    fontFamily: 'Pretendard',
-                                                    fontWeight: FontWeight.w500,
-                                                    fontSize: 16),
-                                              ),
-                                            ],
-                                          ),
-                                        ))
-                                    .toList() ??
-                                [],
-                          ),
-                        )
                       ],
                     );
                   }
