@@ -4,15 +4,12 @@ import com.wanyviny.promise.domain.chat.dto.ChatRequest;
 import com.wanyviny.promise.domain.chat.dto.ChatResponse;
 import com.wanyviny.promise.domain.chat.service.ChatService;
 import com.wanyviny.promise.domain.common.BasicResponse;
-import com.wanyviny.promise.domain.room.entity.UserRoom;
-import com.wanyviny.promise.domain.room.repository.UserRoomRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 import java.util.Collections;
 import java.util.List;
 
-import jakarta.persistence.Basic;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
