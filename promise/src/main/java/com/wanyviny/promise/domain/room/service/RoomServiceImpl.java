@@ -56,6 +56,20 @@ public class RoomServiceImpl implements RoomService {
         List<Map<String, Object>> users = new ArrayList<>();
         Room room = modelMapper.map(request, Room.class);
         roomRepository.save(room);
+        if(room.getPromiseDate() != null){
+            roomRepository.completeDate(room.getId());
+        }
+        if(room.getPromiseTime() != null){
+            roomRepository.completeTime(room.getId());
+        }
+
+        if(room.getPromiseLocation() != null){
+            roomRepository.completeLocation(room.getId());
+        }
+
+        if (room.getPromiseLocation() != null && room.getPromiseDate() != null && room.getPromiseTime() != null) {
+            roomRepository.completeRoom(room.getId());
+        }
 
         for (Long id : request.getUsers()) {
 
