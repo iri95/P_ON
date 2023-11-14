@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:location/location.dart';
 import 'package:p_on/common/common.dart';
+import 'package:p_on/screen/main/tab/schedule/dto_schedule.dart';
 import 'dto_promise.dart';
 import 'vo_naver_headers.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -239,12 +240,111 @@ class _SearchNaverState extends ConsumerState<SearchNaver> {
                               final marker2 =
                                   NMarker(id: '마커ID', position: endposition);
 
+<<<<<<< HEAD
                               showModalBottomSheet(
                                   showDragHandle: true,
                                   barrierColor: Colors.transparent,
                                   shape: const RoundedRectangleBorder(
                                     borderRadius: BorderRadius.vertical(
                                         top: Radius.circular(20)),
+=======
+                          showModalBottomSheet(
+                              showDragHandle: true,
+                              barrierColor: Colors.transparent,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                    top: Radius.circular(20)),
+                              ),
+                              context: context,
+                              builder: (context) {
+                                return Container(
+                                  height: 150,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                          child: const Text(
+                                        '약속 장소로 설정할까요?',
+                                        style: TextStyle(
+                                            fontFamily: 'Pretendard',
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold),
+                                      )),
+                                      Expanded(child: Container()),
+                                      Container(
+                                        margin: EdgeInsets.only(bottom: 36),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                              height: 40,
+                                              margin: const EdgeInsets.only(
+                                                  right: 6),
+                                              decoration: BoxDecoration(
+                                                  color: AppColors.mainBlue3,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20)),
+                                              child: TextButton(
+                                                onPressed: () {
+                                                  ref
+                                                      .read(promiseProvider
+                                                          .notifier)
+                                                      .setPromiseLocation(
+                                                          item['title'],
+                                                          NLatLng(y,
+                                                              x));// 약속 장소와 좌표 저장
+                                                  ref
+                                                      .read(scheduleProvider
+                                                      .notifier)
+                                                      .setScheduleLocation(
+                                                      item['title'],
+                                                      NLatLng(y,
+                                                          x));
+                                                  Navigator.pop(
+                                                      context); // 모달 창 닫기
+                                                  Navigator.pop(
+                                                      context,
+                                                      item[
+                                                          'title']); // 이전페이지로 돌아가기
+                                                },
+                                                child: const Text('확인',
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                            'Pretendard',
+                                                        color: Colors.white)),
+                                              ),
+                                            ),
+                                            Container(
+                                              height: 40,
+                                              margin: const EdgeInsets.only(
+                                                  left: 6),
+                                              decoration: BoxDecoration(
+                                                  color: AppColors.grey300,
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          20)),
+                                              child: TextButton(
+                                                onPressed: () async {
+                                                  await _mapController
+                                                      .deleteOverlay(marker2
+                                                          .info); // 마커 삭제
+                                                  Navigator.pop(
+                                                      context); // 모달 창 닫기
+                                                },
+                                                child: const Text('취소',
+                                                    style: TextStyle(
+                                                        fontFamily:
+                                                            'Pretendard',
+                                                        color: Colors.white)),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
+>>>>>>> mobile/feature/schedule
                                   ),
                                   context: context,
                                   builder: (context) {

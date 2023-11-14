@@ -118,6 +118,25 @@ class _LastCreatePromiseState extends ConsumerState<LastCreatePromise> {
   }
 
   @override
+  void dispose() {
+    dateController.removeListener(updateState);
+    timeController.removeListener(updateState);
+    placeController.removeListener(updateState);
+    dateNode.removeListener(updateState);
+    timeNode.removeListener(updateState);
+    placeNode.removeListener(updateState);
+
+    dateController.dispose();
+    timeController.dispose();
+    placeController.dispose();
+    dateNode.dispose();
+    timeNode.dispose();
+    placeNode.dispose();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
