@@ -23,7 +23,7 @@ public class KafkaConsumerService {
     private final FirebaseMessaging firebaseMessaging;
 
     @Transactional
-    @KafkaListener(topics = "from-chatbot-json", groupId = "calendar", containerFactory = "kafkaListener")
+    @KafkaListener(topics = "from-chatbot-json", groupId = "postCalendar", containerFactory = "kafkaListener")
     public void consume(KafkaCalendarDto dto) throws ParseException {
         if (dto.getCal() == null) {
             return;
