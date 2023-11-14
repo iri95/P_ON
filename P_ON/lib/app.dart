@@ -11,7 +11,6 @@ import 'package:p_on/screen/main/tab/chat_room/f_chat_room.dart';
 import 'package:p_on/screen/main/tab/chat_room/f_create_vote_room.dart';
 import 'package:p_on/screen/main/tab/chat_room/f_select_vote.dart';
 import 'package:p_on/screen/main/tab/chatbot/f_chatbot.dart';
-import 'package:p_on/screen/main/tab/chatbot/f_select_chatbot.dart';
 import 'package:p_on/screen/main/tab/promise_room/f_create_promise.dart';
 import 'package:p_on/screen/main/tab/register/f_register.dart';
 import 'package:p_on/screen/main/tab/tab_item.dart';
@@ -156,7 +155,7 @@ class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
             );
           }),
       GoRoute(
-          path: '/create/vote/:id/:voteType/:isUpdate',
+          path: '/create/vote/:id/:voteType/:isUpdate/:voteInfo',
           pageBuilder: (BuildContext context, GoRouterState state) {
             final id = state.pathParameters['id'] ?? 'unknown';
             final voteTypeString = state.pathParameters['voteType'] ?? 'Date';
@@ -167,20 +166,24 @@ class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
             final voteType = VoteType.values.firstWhere(
                 (e) => e.toString() == 'VoteType.$voteTypeString',
                 orElse: () => VoteType.DATE);
+            final voteInfo = state.pathParameters['voteInfo'] ?? "미정";
 
             return MaterialPage(
               child: CreateVoteRoom(
                 id: id,
                 voteType: voteType,
                 isUpdate: isUpdate,
+                voteInfo: voteInfo,
+
               ),
             );
           }),
       GoRoute(
-          path: '/selecte/vote/:id',
+          path: '/selecte/vote/:id/:voteInfo',
           pageBuilder: (BuildContext context, GoRouterState state) {
             final id = state.pathParameters['id'] ?? 'unknown';
-            return MaterialPage(child: SelectVote(id: id));
+            final voteInfo = state.pathParameters['voteInfo'] ?? '미정';
+            return MaterialPage(child: SelectVote(id: id, voteInfo: voteInfo));
           }),
       GoRoute(
         path: '/chatbot/:userId',
@@ -189,13 +192,6 @@ class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
           return MaterialPage(child: ChatBot(Id: userId));
         }
       ),
-      GoRoute(
-        path: '/select/chatbot/:userId',
-        pageBuilder: (BuildContext context, GoRouterState state) {
-          final userId = state.pathParameters['userId'] ?? 'unknown';
-          return MaterialPage(child: SelectChatBot(id: userId));
-        }
-      )
     ],
     redirect: auth.guard,
     refreshListenable: auth,
