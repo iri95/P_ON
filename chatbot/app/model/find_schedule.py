@@ -1,28 +1,15 @@
+from langchain.llms import OpenAI
+from langchain.chat_models import ChatOpenAI
+from langchain.agents.agent_types import AgentType
 
-# import os
-# import yaml
+from langchain_experimental.agents.agent_toolkits import create_csv_agent
 
-# from langchain.agents import (
-#     create_json_agent,
-#     AgentExecutor
-# )
-# from langchain.agents.agent_toolkits import JsonToolkit
-# from langchain.chains import LLMChain
-# from langchain.llms.openai import OpenAI
-# from langchain.requests import TextRequestsWrapper
-# from langchain.tools.json.tool import JsonSpec
+agent = create_csv_agent(
+    ChatOpenAI(temperature=0, model="gpt-3.5-turbo-0613"),
+    "../data/cal_1.csv",
+    verbose=True,
+    agent_type=AgentType.OPENAI_FUNCTIONS,
+)
 
-
-# with open("../data/cal_1.yml") as f:
-#     data = yaml.load(f, Loader=yaml.FullLoader)
-# json_spec = JsonSpec(dict_=data, max_value_length=4000)
-# json_toolkit = JsonToolkit(spec=json_spec)
-
-# json_agent_executor = create_json_agent(
-#     llm=OpenAI(temperature=0),
-#     toolkit=json_toolkit,
-#     verbose=True
-# )
-
-# usr = json_agent_executor.run("이번 주 토요일 일정이 뭐야?")
-# print(f'답변 :{usr}')
+res = agent.run("이번 주 토요일 일정 알려줘")
+print(res)
