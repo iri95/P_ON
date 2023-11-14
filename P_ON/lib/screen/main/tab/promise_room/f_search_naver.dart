@@ -240,14 +240,6 @@ class _SearchNaverState extends ConsumerState<SearchNaver> {
                               final marker2 =
                                   NMarker(id: '마커ID', position: endposition);
 
-<<<<<<< HEAD
-                              showModalBottomSheet(
-                                  showDragHandle: true,
-                                  barrierColor: Colors.transparent,
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.vertical(
-                                        top: Radius.circular(20)),
-=======
                           showModalBottomSheet(
                               showDragHandle: true,
                               barrierColor: Colors.transparent,
@@ -344,7 +336,6 @@ class _SearchNaverState extends ConsumerState<SearchNaver> {
                                         ),
                                       )
                                     ],
->>>>>>> mobile/feature/schedule
                                   ),
                                   context: context,
                                   builder: (context) {
