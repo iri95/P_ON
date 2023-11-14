@@ -18,7 +18,11 @@ import 'firebase_options.dart';
 import 'package:flutter/foundation.dart';
 import 'package:p_on/screen/main/user/token_state.dart';
 
+late void Function() runAppAgain;
+
 void main() async {
+  runAppAgain = main;
+
   WidgetsFlutterBinding.ensureInitialized();
 
   // 안드로이드 플랫폼인 경우에만 NaverMapSdk 초기화

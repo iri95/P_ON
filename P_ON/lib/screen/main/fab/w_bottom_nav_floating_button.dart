@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:p_on/screen/main/tab/promise_room/f_create_promise.dart';
 import 'package:p_on/screen/main/tab/schedule/f_create_schedule.dart';
-import 'package:p_on/screen/main/tab/schedule/f_last_create_schedule.dart';
 import 'package:p_on/screen/main/tab/tab_item.dart';
 
 import '../../../common/widget/animated_width_collapse.dart';

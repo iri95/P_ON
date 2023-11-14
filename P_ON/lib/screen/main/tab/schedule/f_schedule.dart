@@ -8,6 +8,7 @@ import 'package:p_on/screen/main/fab/w_bottom_nav_floating_button.dart';
 import 'package:p_on/screen/main/fab/w_bottom_nav_floating_button.riverpod.dart';
 import 'package:p_on/screen/main/tab/home/w_p_on_app_bar.dart';
 import 'package:p_on/screen/main/tab/promise_room/vo_server_url.dart';
+import 'package:p_on/screen/main/tab/schedule/dto_schedule.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class ScheduleFragment extends ConsumerStatefulWidget {
@@ -28,6 +29,7 @@ class _CalendarFragmentState extends ConsumerState<ScheduleFragment> {
   DateTime? _rangeStart;
   DateTime? _rangeEnd;
 
+
   @override
   void initState() {
     scrollController.addListener(() {
@@ -43,6 +45,12 @@ class _CalendarFragmentState extends ConsumerState<ScheduleFragment> {
 
     _selectedDay = _focusedDay;
     _selectedEvents = ValueNotifier(_getEventsForDay(_selectedDay!));
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // ref를 사용하여 데이터를 설정
+      ref.read(scheduleProvider.notifier).setScheduleStartDate(_focusedDay);
+      ref.read(scheduleProvider.notifier).setScheduleEndDate(_focusedDay);
+    });
   }
 
   @override
@@ -75,6 +83,9 @@ class _CalendarFragmentState extends ConsumerState<ScheduleFragment> {
         _rangeSelectionMode = RangeSelectionMode.toggledOff;
       });
 
+      ref.read(scheduleProvider.notifier).setScheduleStartDate(selectedDay);
+      ref.read(scheduleProvider.notifier).setScheduleEndDate(selectedDay);
+
       _selectedEvents.value = _getEventsForDay(selectedDay);
     }
   }
@@ -91,10 +102,16 @@ class _CalendarFragmentState extends ConsumerState<ScheduleFragment> {
     // `start` or `end` could be null
     if (start != null && end != null) {
       _selectedEvents.value = _getEventsForRange(start, end);
+      ref.read(scheduleProvider.notifier).setScheduleStartDate(start);
+      ref.read(scheduleProvider.notifier).setScheduleEndDate(end);
     } else if (start != null) {
       _selectedEvents.value = _getEventsForDay(start);
+      ref.read(scheduleProvider.notifier).setScheduleStartDate(start);
+      ref.read(scheduleProvider.notifier).setScheduleEndDate(start);
     } else if (end != null) {
       _selectedEvents.value = _getEventsForDay(end);
+      ref.read(scheduleProvider.notifier).setScheduleStartDate(end);
+      ref.read(scheduleProvider.notifier).setScheduleEndDate(end);
     }
   }
 

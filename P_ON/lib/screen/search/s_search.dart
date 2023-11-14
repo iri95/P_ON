@@ -13,10 +13,15 @@ import 'package:p_on/screen/main/user/user_state.dart';
 import 'package:p_on/screen/search/w_search_bar.dart';
 import 'package:p_on/screen/search/w_search_history_list.dart';
 import 'package:p_on/screen/search/search_data.dart';
+import 'package:p_on/common/util/app_keyboard_util.dart';
 
 import 'package:get/get.dart';
 
+import 'package:p_on/screen/main/tab/all/f_all.dart';
+
 class SearchScreen extends ConsumerStatefulWidget {
+  // await fetchFollow();
+
   const SearchScreen({super.key});
 
   @override
@@ -25,6 +30,8 @@ class SearchScreen extends ConsumerStatefulWidget {
 
 class _SearchScreenState extends ConsumerState<SearchScreen> {
   final TextEditingController _controller = TextEditingController();
+  final FocusNode focusNode = FocusNode();
+
   late final searchData = Get.find<SearchData>();
 
   // 유저 검색
@@ -133,94 +140,124 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       _searchUser(_controller.text);
     });
     super.initState();
+
+    // 화면이 그려지고 난 후에 포커스를 줍니다.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FocusScope.of(context).requestFocus(focusNode);
+    });
   }
 
   @override
   void dispose() {
     searchData.searchResult.clear();
+    focusNode.dispose();
+
     // Get.dispose<SearchData>();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: SearchBarWidget(controller: _controller),
-        body: Obx(() => searchData.isSearchEmpty.value
-            ? ListView(
-                children: [
-                  SearchHistoryList(
-                      searchUser: _searchUser, searchHistory: searchHistory)
-                ],
-              )
-            : ListView.builder(
-                itemCount: searchData.searchResult.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final element = searchData.searchResult[index];
-                  return Tap(
-                      onTap: () {
-                        // TODO: 눌렀을 떄 그사람 프로필로 이동 또는 보이게?
-                        // _controller.clear();
-                      },
-                      child: Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: const BoxDecoration(
-                              border: Border(
-                                  bottom: BorderSide(
-                                      color: Colors.grey, width: 0.1))),
-                          child: Row(
-                            children: [
-                              ClipOval(
-                                child: Image.network(
-                                  element.profileImage,
-                                  width: 56, // 2*radius
-                                  height: 56, // 2*radius
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (BuildContext context,
-                                      Object exception,
-                                      StackTrace? stackTrace) {
-                                    // 에러 시 기본이미지
-                                    return const Icon(Icons.account_circle,
-                                        size: 56, color: Colors.grey);
-                                  },
-                                ),
-                              ),
-                              const SizedBox(width: 10),
-                              Container(
-                                  margin: const EdgeInsets.only(left: 8),
-                                  child: Text(
-                                    element.nickName,
-                                    style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500,
-                                        fontFamily: 'Pretendard'),
-                                  )),
-                              Expanded(child: Container()),
-                              element.id.toString() !=
-                                      ref.read(loginStateProvider).id.toString()
-                                  ? FilledButton(
-                                      style: FilledButton.styleFrom(
-                                          minimumSize: const Size(75, 36),
-                                          backgroundColor:
-                                              element.relation == 'FOLLOWING'
-                                                  ? AppColors.grey500
-                                                  : AppColors.mainBlue),
-                                      onPressed: () {
-                                        submitFollow(element);
+    // final fetchFollowFuture = ref.watch(fetchFollowProvider.future);
+
+    return GestureDetector(
+        onTap: () {
+          // 화면의 빈 공간을 누르면 키보드를 내립니다
+          if (focusNode.hasFocus) {
+            searchData.addSearchHistory(_controller.text);
+            focusNode.unfocus();
+          }
+        },
+        child: Scaffold(
+            appBar:
+                SearchBarWidget(controller: _controller, focusNode: focusNode),
+            body: Obx(() => searchData.isSearchEmpty.value
+                ? ListView(
+                    children: [
+                      SearchHistoryList(
+                          searchUser: _searchUser, searchHistory: searchHistory)
+                    ],
+                  )
+                : ListView.builder(
+                    itemCount: searchData.searchResult.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final element = searchData.searchResult[index];
+                      return Tap(
+                          onTap: () {
+                            // TODO: 눌렀을 떄 그사람 프로필로 이동 또는 보이게?
+                            // _controller.clear();
+                            searchData.addSearchHistory(_controller.text);
+                            focusNode.unfocus();
+                          },
+                          child: Container(
+                              padding: const EdgeInsets.all(20),
+                              decoration: const BoxDecoration(
+                                  border: Border(
+                                      bottom: BorderSide(
+                                          color: Colors.grey, width: 0.1))),
+                              child: Row(
+                                children: [
+                                  ClipOval(
+                                    child: Image.network(
+                                      element.profileImage,
+                                      width: 56, // 2*radius
+                                      height: 56, // 2*radius
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (BuildContext context,
+                                          Object exception,
+                                          StackTrace? stackTrace) {
+                                        // 에러 시 기본이미지
+                                        return const Icon(Icons.account_circle,
+                                            size: 56, color: Colors.grey);
                                       },
+                                    ),
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Container(
+                                      margin: const EdgeInsets.only(left: 8),
                                       child: Text(
-                                        element.relation == 'FOLLOWING'
-                                            ? '팔로잉'
-                                            : '팔로우',
+                                        element.nickName,
                                         style: const TextStyle(
-                                            fontFamily: 'Pretendard',
+                                            fontSize: 18,
                                             fontWeight: FontWeight.w500,
-                                            color: Colors.white),
-                                      ))
-                                  : Container()
-                            ],
-                          )));
-                },
-              )));
+                                            fontFamily: 'Pretendard'),
+                                      )),
+                                  Expanded(child: Container()),
+                                  element.id.toString() !=
+                                          ref
+                                              .read(loginStateProvider)
+                                              .id
+                                              .toString()
+                                      ? FilledButton(
+                                          style: FilledButton.styleFrom(
+                                              minimumSize: const Size(75, 36),
+                                              backgroundColor:
+                                                  element.relation ==
+                                                          'FOLLOWING'
+                                                      ? AppColors.grey500
+                                                      : AppColors.mainBlue),
+                                          onPressed: () async {
+                                            await submitFollow(element);
+                                            // FIXME: 이게맞나
+                                            ref.refresh(fetchFollowProvider);
+
+                                            searchData.addSearchHistory(
+                                                _controller.text);
+                                            focusNode.unfocus();
+                                          },
+                                          child: Text(
+                                            element.relation == 'FOLLOWING'
+                                                ? '팔로잉'
+                                                : '팔로우',
+                                            style: const TextStyle(
+                                                fontFamily: 'Pretendard',
+                                                fontWeight: FontWeight.w500,
+                                                color: Colors.white),
+                                          ))
+                                      : Container()
+                                ],
+                              )));
+                    },
+                  ))));
   }
 }

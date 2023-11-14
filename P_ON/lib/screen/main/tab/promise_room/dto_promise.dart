@@ -110,6 +110,15 @@ class PromiseNotifier extends StateNotifier<Promise> {
         promise_location: state.promise_location,
         promise_location_code: state.promise_location_code
     );
+    print("=======================");
+    print("=======================");
+    print("=======================");
+    print("=======================");
+    print("시간 보자: $promise_time");
+    print("=======================");
+    print("=======================");
+    print("=======================");
+    print("=======================");
   }
 
   void setPromiseLocation(String promise_location, NLatLng promise_location_code) {

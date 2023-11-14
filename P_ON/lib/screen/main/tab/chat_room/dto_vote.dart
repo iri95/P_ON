@@ -4,9 +4,9 @@ final voteProvider = StateNotifierProvider<VoteNotifier, VoteDate>((ref) => Vote
 final voteInfoProvider = StateNotifierProvider<VoteInfoNotifier, VoteInfo>((ref) => VoteInfoNotifier());
 
 class VoteDate {
-  List<String>? vote_date;
-  List<String>? vote_time;
-  List<Map<String, String>>? vote_location;
+  List<dynamic>? vote_date;
+  List<dynamic>? vote_time;
+  List<dynamic>? vote_location;
 
   VoteDate({
   this.vote_date = const [],
@@ -20,6 +20,14 @@ class VoteNotifier extends StateNotifier<VoteDate> {
 
   void setState(VoteDate newVoteDate) {
     state = newVoteDate;
+  }
+
+  void setVoteData(List<dynamic> date, List<dynamic> time, List<dynamic> location) {
+    state = VoteDate(
+      vote_date: date,
+      vote_time: time,
+      vote_location: location
+    );
   }
 
   void addVoteDate(String date) {

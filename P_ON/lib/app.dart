@@ -11,6 +11,7 @@ import 'package:p_on/screen/main/tab/chat_room/f_chat_room.dart';
 import 'package:p_on/screen/main/tab/chat_room/f_create_vote_room.dart';
 import 'package:p_on/screen/main/tab/chat_room/f_select_vote.dart';
 import 'package:p_on/screen/main/tab/chatbot/f_chatbot.dart';
+import 'package:p_on/screen/main/tab/chatbot/f_select_chatbot.dart';
 import 'package:p_on/screen/main/tab/promise_room/f_create_promise.dart';
 import 'package:p_on/screen/main/tab/register/f_register.dart';
 import 'package:p_on/screen/main/tab/tab_item.dart';
@@ -36,7 +37,6 @@ class App extends ConsumerStatefulWidget {
 class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
   final ValueKey<String> _scaffoldKey = const ValueKey<String>('App scaffold');
 
-
   @override
   void initState() {
     super.initState();
@@ -54,7 +54,6 @@ class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
   final auth = PonAuth();
   @override
   Widget build(BuildContext context) {
-
     return ProviderScope(
       child: PonAuthScope(
         notifier: auth,
@@ -90,7 +89,7 @@ class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
           // URL 쿼리 파라미터에서 값을 가져옵니다.
           final nickName = state.uri.queryParameters['nickName'] ?? "";
           final profileImage = state.uri.queryParameters['profileImage'] ?? "";
-          final privacy = state.uri.queryParameters['privacy'] ?? "PRIVATE";
+          final privacy = state.uri.queryParameters['privacy'] ?? "ALL";
           final stateMessage = state.uri.queryParameters['stateMessage'];
 
           // RegisterFragment를 생성하여 반환합니다.
@@ -165,7 +164,7 @@ class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
                     'true';
             final voteType = VoteType.values.firstWhere(
                 (e) => e.toString() == 'VoteType.$voteTypeString',
-                orElse: () => VoteType.Date);
+                orElse: () => VoteType.DATE);
 
             return MaterialPage(
               child: CreateVoteRoom(
@@ -182,12 +181,17 @@ class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
             return MaterialPage(child: SelectVote(id: id));
           }),
       GoRoute(
-        path: '/chatbot/:userId',
-        pageBuilder: (BuildContext context, GoRouterState state) {
-          final userId = state.pathParameters['userId'] ?? 'unknown';
-          return MaterialPage(child: ChatBot(Id: userId));
-        }
-      )
+          path: '/chatbot/:userId',
+          pageBuilder: (BuildContext context, GoRouterState state) {
+            final userId = state.pathParameters['userId'] ?? 'unknown';
+            return MaterialPage(child: ChatBot(Id: userId));
+          }),
+      GoRoute(
+          path: '/select/chatbot/:userId',
+          pageBuilder: (BuildContext context, GoRouterState state) {
+            final userId = state.pathParameters['userId'] ?? 'unknown';
+            return MaterialPage(child: SelectChatBot(id: userId));
+          })
     ],
     redirect: auth.guard,
     refreshListenable: auth,

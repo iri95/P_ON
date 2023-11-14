@@ -16,7 +16,12 @@ class UserState {
 
 // UserState를 관리하는 StateNotifier를 정의합니다.
 class UserStateNotifier extends StateNotifier<UserState?> {
-  UserStateNotifier() : super(null);
+  UserStateNotifier()
+      : super(UserState(
+          profileImage: '',
+          nickName: '',
+          privacy: '',
+        ));
 
   void setUserState(UserState userState) {
     state = userState;
