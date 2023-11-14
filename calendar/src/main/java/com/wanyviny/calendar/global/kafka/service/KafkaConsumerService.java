@@ -28,6 +28,7 @@ public class KafkaConsumerService {
         if (dto.getCal() == null) {
             return;
         }
+        System.out.println("dto : " + dto.toString());
         calendarService.postSchedule(dto.getUserId(), dto.kafkaToSet());
 
         String title = "CREATE CALENDAR";
