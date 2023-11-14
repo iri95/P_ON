@@ -7,6 +7,7 @@ import com.google.firebase.messaging.Notification;
 import com.wanyviny.promise.domain.alarm.ALARM_TYPE;
 import com.wanyviny.promise.domain.alarm.entity.Alarm;
 import com.wanyviny.promise.domain.alarm.repository.AlarmRepository;
+import com.wanyviny.promise.domain.chat.repository.ChatRepository;
 import com.wanyviny.promise.domain.item.entity.ItemType;
 import com.wanyviny.promise.domain.item.repository.ItemRepository;
 import com.wanyviny.promise.domain.room.dto.RoomRequest;
@@ -17,6 +18,7 @@ import com.wanyviny.promise.domain.room.repository.RoomRepository;
 import com.wanyviny.promise.domain.room.repository.UserRoomRepository;
 import com.wanyviny.promise.domain.user.entity.User;
 import com.wanyviny.promise.domain.user.repository.UserRepository;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -37,6 +39,7 @@ public class RoomServiceImpl implements RoomService {
     private final UserRoomRepository userRoomRepository;
     private final ItemRepository itemRepository;
     private final AlarmRepository alarmRepository;
+    private final ChatRepository chatRepository;
     private final FirebaseMessaging firebaseMessaging;
 
 
@@ -67,7 +70,7 @@ public class RoomServiceImpl implements RoomService {
             userRoomRepository.save(userRoom);
             users.add(userInfo);
 
-            if(Objects.equals(user.getId(), userId))continue;
+            if (Objects.equals(user.getId(), userId)) continue;
             String title = "INVITE!";
             String body = inviter.getNickname() + "님께서 약속방에 초대하셨습니다!";
             String token = user.getPhoneId();
@@ -127,7 +130,24 @@ public class RoomServiceImpl implements RoomService {
         List<UserRoom> userRooms = userRoomRepository.findAllByUserId(userId);
         List<RoomResponse.FindAll> response = new ArrayList<>();
 
-        userRooms.forEach(userRoom -> response.add(modelMapper.map(userRoom.getRoom(), RoomResponse.FindAll.class)));
+        userRooms.forEach(userRoom -> {
+            String userChatId = userRoom.getChatId();
+            String lastChatId = chatRepository.findAllByRoomId(String.valueOf(userRoom.getRoom().getId())).stream()
+                    .sorted(((o1, o2) -> {
+                        if (o1.getCreateAt().isAfter(o2.getCreateAt())) return -1;
+                        else if (o1.getCreateAt().isEqual(o2.getCreateAt())) return 0;
+                        else return 1;
+                    })).toList().get(0).getId();
+            Room room = userRoom.getRoom();
+            response.add(RoomResponse.FindAll.builder()
+                    .id(room.getId())
+                    .promiseTitle(room.getPromiseTitle())
+                    .promiseDate(room.getPromiseDate())
+                    .promiseTime(room.getPromiseTime())
+                    .promiseLocation(room.getPromiseLocation())
+                    .read(userChatId.equals(lastChatId))
+                    .build());
+        });
         return response;
     }
 
