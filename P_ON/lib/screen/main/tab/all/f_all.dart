@@ -34,11 +34,9 @@ final fetchFollowProvider = FutureProvider.autoDispose<void>((ref) async {
   // if (token == null) {
   //   await kakaoLogin(ref);
   //   await fetchToken(ref);
-
   //   // 토큰을 다시 읽습니다.
   //   final newToken = ref.read(loginStateProvider).serverToken;
   //   final newId = ref.read(loginStateProvider).id;
-
   //   headers['Authorization'] = '$newToken';
   //   headers['id'] = '$newId';
   // }
