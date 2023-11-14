@@ -185,7 +185,6 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
       selectedItems.clear();
       widget.voteCompletedNotifier.value = true;
       setState(() {});
-<<<<<<< HEAD
     } catch (e) {
       print(e);
     }
@@ -254,8 +253,6 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
       print(response);
       final router = GoRouter.of(context);
       router.go('/chatroom/${widget.roomId}');
-=======
->>>>>>> 9ea09da1e9221277b27c14d7e4ce003181060190
     } catch (e) {
       print(e);
     }
@@ -314,7 +311,8 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
                   onSelected: (value) {
                     if (value == 1) {
                       final router = GoRouter.of(context);
-                      router.go('/create/vote/${widget.roomId}/${widget.voteType}/$isUpdate');
+                      router.go(
+                          '/create/vote/${widget.roomId}/${widget.voteType}/$isUpdate');
                     } else if (value == 2) {
                       showDialog(
                         context: context,
@@ -517,18 +515,12 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
                                           padding: EdgeInsets.zero,
                                           child: Row(
                                             children: [
-<<<<<<< HEAD
                                               ClipOval(
-=======
-                                              CircleAvatar(
-                                                radius: 20,
->>>>>>> 9ea09da1e9221277b27c14d7e4ce003181060190
                                                 child: Image.network(
                                                   item['profileImage'],
                                                 ),
                                               ),
                                               Container(
-<<<<<<< HEAD
                                                 margin: const EdgeInsets.only(
                                                     left: 20),
                                                 child: Text(
@@ -538,11 +530,6 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
                                                       fontWeight:
                                                           FontWeight.w500),
                                                 ),
-=======
-                                                margin:
-                                                    EdgeInsets.only(left: 20),
-                                                child: Text(item['nickName']),
->>>>>>> 9ea09da1e9221277b27c14d7e4ce003181060190
                                               )
                                             ],
                                           ),
