@@ -1,18 +1,28 @@
-from langchain.chat_models import ChatOpenAI
-from langchain.chains import create_extraction_chain
-from langchain.schema import HumanMessage
-from model.make_schedule import to_datetime
-from pprint import pprint
 
-from langchain.document_loaders import JSONLoader
+# import os
+# import yaml
 
-# def find_cal(userId):
-#     loader = JSONLoader(
-#         file_path=f'../data/cal_{userId}.json',
-#         jq_schema='.messages[].content',
-#         text_content=False)
+# from langchain.agents import (
+#     create_json_agent,
+#     AgentExecutor
+# )
+# from langchain.agents.agent_toolkits import JsonToolkit
+# from langchain.chains import LLMChain
+# from langchain.llms.openai import OpenAI
+# from langchain.requests import TextRequestsWrapper
+# from langchain.tools.json.tool import JsonSpec
 
-#     data = loader.load()
-#     pprint(data)
 
-# find_cal(1)
+# with open("../data/cal_1.yml") as f:
+#     data = yaml.load(f, Loader=yaml.FullLoader)
+# json_spec = JsonSpec(dict_=data, max_value_length=4000)
+# json_toolkit = JsonToolkit(spec=json_spec)
+
+# json_agent_executor = create_json_agent(
+#     llm=OpenAI(temperature=0),
+#     toolkit=json_toolkit,
+#     verbose=True
+# )
+
+# usr = json_agent_executor.run("이번 주 토요일 일정이 뭐야?")
+# print(f'답변 :{usr}')
