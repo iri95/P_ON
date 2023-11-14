@@ -23,12 +23,15 @@ public class KafkaConsumerService {
     private final FirebaseMessaging firebaseMessaging;
 
     @Transactional
-    @KafkaListener(topics = "to-mysql-json", groupId = "postCalendar", containerFactory = "kafkaListener")
+    @KafkaListener(topics = "from-chatbot-json", groupId = "postCalendar", containerFactory = "kafkaListener")
     public void consume(KafkaCalendarDto dto) throws ParseException {
+        if (dto.getCal() == null) {
+            return;
+        }
         calendarService.postSchedule(dto.getUserId(), dto.kafkaToSet());
 
         String title = "CREATE CALENDAR";
-        String body = dto.getCal().getCalendar_title() + "이 생성되었습니다!!";
+        String body = dto.getCal().getCalendar_title() + " 일정이 생성되었습니다!!";
         String token = userRepository.findById(dto.getUserId()).orElseThrow(
                 () -> new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
         ).getPhoneId();
