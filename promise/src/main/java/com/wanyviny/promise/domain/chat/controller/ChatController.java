@@ -4,20 +4,22 @@ import com.wanyviny.promise.domain.chat.dto.ChatRequest;
 import com.wanyviny.promise.domain.chat.dto.ChatResponse;
 import com.wanyviny.promise.domain.chat.service.ChatService;
 import com.wanyviny.promise.domain.common.BasicResponse;
+import com.wanyviny.promise.domain.room.entity.UserRoom;
+import com.wanyviny.promise.domain.room.repository.UserRoomRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+
 import java.util.Collections;
 import java.util.List;
+
+import jakarta.persistence.Basic;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -56,6 +58,21 @@ public class ChatController {
                 .message("채팅 전체 조회 성공")
                 .count(response.size())
                 .result(Collections.singletonList(response))
+                .build();
+
+        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+    }
+
+    @PutMapping("/api/promise/chat/{roomId}/{chatId}")
+    @Operation(summary = "마지막으로 읽은 채팅 저장", description = "마지막으로 읽은 채팅 Id를 저장합니다.")
+    public ResponseEntity<BasicResponse> postChatId(@RequestHeader("id") Long id,
+                                                    @PathVariable("roomId") Long roomId,
+                                                    @PathVariable("chatId") String chatId) {
+
+        chatService.setLastChatId(id, roomId, chatId);
+        
+        BasicResponse basicResponse = BasicResponse.builder()
+                .message("마지막으로 일은 채팅 저장 완료")
                 .build();
 
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());

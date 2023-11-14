@@ -8,4 +8,5 @@ public interface ChatService {
 
     ChatResponse sendChat(String roomId, ChatRequest request);
     List<ChatResponse> findAllChat(String roomId);
+    void setLastChatId(Long userId, Long roomId, String chatId);
 }

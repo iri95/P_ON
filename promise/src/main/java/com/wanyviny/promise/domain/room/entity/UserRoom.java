@@ -33,4 +33,11 @@ public class UserRoom {
     @ManyToOne
     @JoinColumn(name = "ROOM_ID")
     private Room room;
+
+    @Column(name = "CHAT_ID")
+    private String chatId;
+
+    public void setLastChatId(String chatId){
+        this.chatId = chatId;
+    }
 }
