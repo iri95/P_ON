@@ -5,4 +5,4 @@ spring:
   cloud:
     config:
       name: calendar
-      profile: dev
+      profile: prob
