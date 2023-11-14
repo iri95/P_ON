@@ -88,6 +88,8 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
         stateMessage: response.data['result'][0]['stateMessage'] as String?,
       );
 
+      if (!mounted) return;
+
       ref.read(userStateProvider.notifier).setUserState(user);
       print('여긴 메인이고 프로필 조회 끝 ${ref.read(userStateProvider)?.nickName}');
     } catch (e) {
