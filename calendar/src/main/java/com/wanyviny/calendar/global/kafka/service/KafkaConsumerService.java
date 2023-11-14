@@ -23,7 +23,7 @@ public class KafkaConsumerService {
     private final FirebaseMessaging firebaseMessaging;
 
     @Transactional
-    @KafkaListener(topics = "to-mysql-json", groupId = "postCalendar", containerFactory = "kafkaListener")
+    @KafkaListener(topics = "from-chatbot-json", groupId = "postCalendar", containerFactory = "kafkaListener")
     public void consume(KafkaCalendarDto dto) throws ParseException {
         calendarService.postSchedule(dto.getUserId(), dto.kafkaToSet());
 
