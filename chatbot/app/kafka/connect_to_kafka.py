@@ -1,8 +1,7 @@
 import json
 import os
-import csv
 import pandas as pd
-from kafka3 import KafkaProducer, KafkaConsumer, TopicPartition
+from kafka3 import KafkaProducer, KafkaConsumer
 
 def kafka_producer(message):
     producer = KafkaProducer(
@@ -18,8 +17,8 @@ def kafka_producer(message):
 
 def kafka_consumer():
     consumer = KafkaConsumer(
-        'test-topic',
-        group_id='chatbot-test',
+        'from-mysql-json',
+        group_id='chatbot-consumer',
         bootstrap_servers=['server2:9092'],
         value_deserializer=lambda x: json.loads(x.decode('utf-8')) 
     )
@@ -27,21 +26,21 @@ def kafka_consumer():
     for message in consumer:
         data = message.value
         userId = data['userId']
-        print(userId)
+        cal = data['cal']
+    
+        file_path = f'../data/cal_{userId}.csv'
+        user_df = pd.DataFrame({'userId': [userId]})
+        cal_df = pd.DataFrame([cal])
+        df = pd.concat([user_df, cal_df], axis=1)
 
-        file_path = f'../data/cal_{userId}.json'
+        if file_path in os.listdir():
+            existing_df = pd.read_csv(file_path) 
+        else:
+            existing_df = pd.DataFrame()
+        
+        combined_df = pd.concat([existing_df, df], ignore_index=True)
+        combined_df.to_csv(file_path, index=False)
+        
+        return f'Save to {file_path}'
 
-        try:
-            with open(file_path, 'a') as jsonfile:
-                jsonfile.write(json.dumps(data) + '\n')
-            print(f"Received message: {message.value}")
-
-        except FileNotFoundError:
-            with open(file_path, 'w') as jsonfile:
-                jsonfile.write(json.dumps(data) + '\n')
-            print(f"Received message: {message.value}")
-
-
-
-kafka_consumer()
 
