@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:p_on/common/common.dart';
 import 'package:p_on/common/widget/w_list_container.dart';
 import 'package:flutter/material.dart';
+import 'package:p_on/screen/main/tab/chat_room/dto_vote.dart';
+import 'package:p_on/screen/main/tab/promise_room/dto_promise.dart';
 import 'package:p_on/screen/main/tab/promise_room/vo_server_url.dart';
 
 import 'f_home.dart';
@@ -76,6 +78,8 @@ class _MyPlanAndPromiseState extends ConsumerState<MyPlanAndPromise> {
 
   @override
   Widget build(BuildContext context) {
+    Future.microtask(() => ref.read(promiseProvider.notifier).reset());
+
     // 화면 비율
     final Size size = MediaQuery.of(context).size;
     if (promise.length == 0) {

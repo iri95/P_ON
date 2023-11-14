@@ -263,7 +263,7 @@ class _CheckedModalState extends ConsumerState<CheckedModal> {
           path: '$server/api/promise/room',
           headers: headers,
           data: data);
-      ref.read(promiseProvider.notifier).reset();
+      // ref.read(promiseProvider.notifier).reset();
 
 
       print(response);
