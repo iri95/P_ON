@@ -103,7 +103,7 @@ class _AllFragmentState extends ConsumerState<AllFragment> {
         child: Container(
           color: Color(0xffe4e8ef),
           child: ListView(
-            children: [
+            children: const [
               Profile(),
               height10,
               Setting(),

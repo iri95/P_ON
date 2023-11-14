@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:p_on/screen/main/tab/promise_room/dto_promise.dart';
 import './friend_provider.dart';
 
+import './update/f_update.dart';
+
 class Profile extends ConsumerStatefulWidget {
   const Profile({
     Key? key,
@@ -20,9 +22,9 @@ class _ProfileState extends ConsumerState<Profile> {
   @override
   Widget build(BuildContext context) {
     final followingCount = ref.watch(followingCountProvider);
-    final followingList = ref.watch(followingListProvider);
+    // final followingList = ref.watch(followingListProvider);
     final followerCount = ref.watch(followerCountProvider);
-    final followerList = ref.watch(followerListProvider);
+    // final followerList = ref.watch(followerListProvider);
 
     final userState = ref.watch(userStateProvider);
 
@@ -57,7 +59,7 @@ class _ProfileState extends ConsumerState<Profile> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("팔로워",
+                            const Text("팔로워",
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w400,
@@ -65,7 +67,7 @@ class _ProfileState extends ConsumerState<Profile> {
                                   color: AppColors.mainBlue,
                                 )),
                             Text("${followerCount}",
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.w500,
                                   fontFamily: 'Pretendard',
@@ -83,7 +85,7 @@ class _ProfileState extends ConsumerState<Profile> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text("팔로잉",
+                            const Text("팔로잉",
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w400,
@@ -91,7 +93,7 @@ class _ProfileState extends ConsumerState<Profile> {
                                   color: AppColors.mainBlue,
                                 )),
                             Text("${followingCount}",
-                                style: TextStyle(
+                                style: const TextStyle(
                                   fontSize: 20,
                                   fontWeight: FontWeight.w500,
                                   fontFamily: 'Pretendard',
@@ -108,6 +110,7 @@ class _ProfileState extends ConsumerState<Profile> {
                 GestureDetector(
                     onTap: () {
                       // TODO:
+                      Nav.push(UpdateFragment());
                       print("프로필수정으로이동");
                     },
                     child: Stack(
