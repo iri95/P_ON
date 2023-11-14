@@ -32,7 +32,8 @@ class _PONAppBar extends State<PONAppBar> {
           width10,
           GestureDetector(
             onTap: () {
-              Scaffold.of(context).openDrawer();
+              // FIXME: drawer 안씀
+              // Scaffold.of(context).openDrawer();
             },
             child: Row(
               children: [

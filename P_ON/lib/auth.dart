@@ -11,6 +11,10 @@ import 'package:p_on/screen/main/user/fn_kakao.dart';
 import 'package:p_on/screen/main/user/token_state.dart';
 import 'package:p_on/screen/main/user/user_state.dart';
 
+import 'package:p_on/main.dart';
+import 'package:p_on/screen/main/s_main.dart';
+import 'package:p_on/screen/main/tab/tab_item.dart';
+
 /// A mock authentication service.
 class PonAuth extends ChangeNotifier {
   // 로그인 상태
@@ -63,15 +67,25 @@ class PonAuth extends ChangeNotifier {
     return _signedIn;
   }
 
+  // final container = ProviderContainer();
+
   Future<void> signOut() async {
     // 로그아웃 처리
     _signedIn = false;
+    // container.read(currentTabProvider).state = TabItem.home;
+
     notifyListeners();
+
+    // 앱 종료
+    // SystemNavigator.pop();
+
+    // TODO: 이거 하면 탭 초기화 안댐;;
+    runAppAgain();
   }
 
   String? guard(BuildContext context, GoRouterState state) {
-    print('~~~~~~~~~~~~~~~~~~~~~~');
-    print(state.matchedLocation);
+    // print('~~~~~~~~~~~~~~~~~~~~~~');
+    // print(state.matchedLocation);
 
     // user이면, true, true
     // guest이면, true, false

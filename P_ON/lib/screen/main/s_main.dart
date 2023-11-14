@@ -86,7 +86,7 @@ class MainScreenState extends ConsumerState<MainScreen>
                   //bottomNavigationBar 아래 영역 까지 그림
                   /// TODO: 테마컬러, 다크모드에 대한 설정 변경
                   drawer: const MenuDrawer(),
-                  drawerEnableOpenDragGesture: false,  //!Platform.isIOS,
+                  drawerEnableOpenDragGesture: false, //!Platform.isIOS,
                   body: Container(
                     padding: EdgeInsets.only(
                         bottom: extendBody
@@ -126,17 +126,23 @@ class MainScreenState extends ConsumerState<MainScreen>
             ),
             Stack(
               children: [
-                Opacity(opacity: 0,
-                child: IgnorePointer(
-                  ignoring: _currentTab != TabItem.home,
-                  // 스크롤 위로
-                  child: ScrollToUpHome(),
-                ),),
+                Opacity(
+                  opacity: 0,
+                  child: IgnorePointer(
+                    ignoring: _currentTab != TabItem.home,
+                    // 스크롤 위로
+                    child: ScrollToUpHome(),
+                  ),
+                ),
                 AnimatedOpacity(
-                  opacity: (_currentTab == TabItem.home || _currentTab == TabItem.plan) ? 1 : 0,
+                  opacity: (_currentTab == TabItem.home ||
+                          _currentTab == TabItem.plan)
+                      ? 1
+                      : 0,
                   duration: Duration(milliseconds: 300),
                   child: IgnorePointer(
-                    ignoring: !(_currentTab == TabItem.home || _currentTab == TabItem.plan),
+                    ignoring: !(_currentTab == TabItem.home ||
+                        _currentTab == TabItem.plan),
                     child: BottomFloatingActionButton(),
                   ),
                 ),

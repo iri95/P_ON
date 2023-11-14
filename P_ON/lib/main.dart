@@ -17,7 +17,11 @@ import 'firebase_options.dart';
 
 import 'package:p_on/screen/main/user/token_state.dart';
 
+late void Function() runAppAgain;
+
 void main() async {
+  runAppAgain = main;
+
   WidgetsFlutterBinding.ensureInitialized();
 
   // runApp() 호출 전 Flutter SDK 초기화
