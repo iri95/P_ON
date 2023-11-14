@@ -18,12 +18,15 @@ class CreateVoteRoom extends ConsumerStatefulWidget {
   final String id;
   final VoteType voteType;
   final bool isUpdate;
+  final String voteInfo;
 
   const CreateVoteRoom(
       {super.key,
       required this.id,
       required this.voteType,
-      required this.isUpdate});
+      required this.isUpdate,
+      required this.voteInfo,
+      });
 
   @override
   ConsumerState<CreateVoteRoom> createState() => _CreateVoteRoomState();
@@ -353,6 +356,13 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
   Widget build(BuildContext context) {
     final vote = ref.watch(voteProvider);
     final voteInfo = ref.watch(voteInfoProvider);
+    print('--------');
+    print('--------');
+    print('--------');
+    print(widget.voteInfo);
+    print('--------');
+    print('--------');
+    print('--------');
 
     return MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -907,7 +917,7 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
                                     activeColor: AppColors.mainBlue,
                                     value: voteType,
                                     groupValue: selectedVoteType,
-                                    onChanged: (VoteType? value) {
+                                    onChanged: widget.voteInfo != '미정' ? null : (VoteType? value) {
                                       setState(() {
                                         selectedVoteType = value;
                                       });

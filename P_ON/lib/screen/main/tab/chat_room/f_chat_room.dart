@@ -62,10 +62,16 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
             setState(() {
               messages.add(newMessage);
             });
-            scrollController.animateTo(
+
+            WidgetsBinding.instance!.addPostFrameCallback((_) {
+              scrollController.animateTo(
                 scrollController.position.maxScrollExtent,
                 duration: Duration(milliseconds: 300),
-                curve: Curves.ease);
+                curve: Curves.ease,
+              );
+            });
+
+
           } else {
             print('바디가 비었다 이말이야');
           }
@@ -82,7 +88,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
     Map<String, dynamic> message = {
       'chatType': 'TEXT',
       'content': content,
-      'senderId' : userId
+      'senderId': userId
     };
 
     client.send(
@@ -91,12 +97,6 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
       body: jsonEncode(message),
     );
     print('채팅보냄');
-
-    scrollController.animateTo(
-      scrollController.position.maxScrollExtent,
-      duration: Duration(milliseconds: 300),
-      curve: Curves.ease,
-    );
   }
 
   // 채팅방 정보 받아오기
@@ -159,40 +159,6 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
     }
   }
 
-  // // 현재유저 정보 받아오기
-  // Future<void> getCurrentUser() async {
-  // // 현재 저장된 서버 토큰을 가져옵니다.
-  //   final loginState = ref.read(loginStateProvider);
-  //   final token = loginState.serverToken;
-  //   final id = loginState.id;
-  //   final voteInfo = ref.read(voteInfoProvider);
-  //
-  //   var headers = {'Authorization': '$token', 'id': '$id'};
-  //
-  //   // 서버 토큰이 없으면
-  //   if (token == null) {
-  //     await kakaoLogin(ref);
-  //     await fetchToken(ref);
-  //
-  //     // 토큰을 다시 읽습니다.
-  //     final newToken = ref.read(loginStateProvider).serverToken;
-  //     final newId = ref.read(loginStateProvider).id;
-  //
-  //     headers['Authorization'] = '$newToken';
-  //     headers['id'] = '$newId';
-  //   }
-  //
-  //   final apiService = ApiService();
-  //   try {
-  //     Response response = await apiService.sendRequest(
-  //         method: 'GET', path: '$server/api/user/profile', headers: headers);
-  //     print(response);
-  //     // 받아온 유저 정보를 이 페이지에서 currentuser로 저장하기
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
-
   // 채팅방 이전 채팅기록 불러오기
   Future<void> getChat() async {
     final Dio dio = Dio();
@@ -202,7 +168,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
   }
 
   late final String formatedDate =
-  DateFormat('yyyy년 MM월 dd일 EEEE', 'ko_KR').format(DateTime.now());
+      DateFormat('yyyy년 MM월 dd일 EEEE', 'ko_KR').format(DateTime.now());
 
   String changeDate(String date) {
     if (date == null) {
@@ -220,6 +186,8 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
     getChatRoom();
     getChat();
     userId = ref.read(loginStateProvider).id;
+    Map<String, dynamic> formatedDateMap = {'content': formatedDate};
+    messages.add(formatedDateMap);
 
     client = StompClient(
         config: StompConfig.sockJS(
@@ -252,6 +220,8 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
 
   @override
   Widget build(BuildContext context) {
+    print(messages);
+    print(messages.length);
     print(widget.id);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -324,6 +294,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                                   voteType: VoteType.DATE,
                                   roomId: widget.id,
                                   isVote: isDate,
+                                  voteInfo: chatRoomInfo['promiseDate'],
                                 )
                             else
                               ChatHeadText(
@@ -350,6 +321,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                                   voteType: VoteType.TIME,
                                   roomId: widget.id,
                                   isVote: isTime,
+                                  voteInfo: chatRoomInfo['promiseTime'],
                                 )
                             else
                               ChatHeadText(
@@ -374,6 +346,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                                   voteType: VoteType.LOCATION,
                                   roomId: widget.id,
                                   isVote: isLocation,
+                                  voteInfo: chatRoomInfo['promiseLocation'],
                                 )
                             else
                               ChatHeadText(
@@ -392,131 +365,138 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                   controller: scrollController,
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
-                    bool isSameSender = false;
-                    bool isDiffMinute = false;
-                    bool isLastMessageFromSameSender = false;
-                    bool isCurrentUser = messages[index]['senderId'] == ref.read(loginStateProvider).id;
-
-                    if (index != 0 &&
-                        messages[index - 1]['senderId'] ==
-                            messages[index]['senderId']) {
-                      isSameSender = true;
-                    }
-
-                    if (index != messages.length - 1) {
-                      if (messages[index]['senderId'] !=
-                          messages[index + 1]['senderId']) {
+                    if (index == 0) {
+                      return Column(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(top: 12),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: const Color(0x80959CB1),
+                            ),
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 4, horizontal: 24
+                            ),
+                            child: Text(
+                              messages[index]['content'],
+                              style: const TextStyle(color: Colors.white),
+                            )
+                          ),
+                        ],
+                      );
+                    } else {
+                      bool isSameSender = false;
+                      bool isLastMessageFromSameSender = false;
+                      bool isCurrentUser = index != 0 &&
+                          messages[index]['senderId'] ==
+                              ref.read(loginStateProvider).id;
+                      if (index != 0 &&
+                          messages[index - 1]['senderId'] ==
+                              messages[index]['senderId']) {
+                        isSameSender = true;
+                      }
+                      if (index != 0 && index != messages.length - 1) {
+                        if (messages[index]['senderId'] !=
+                            messages[index + 1]['senderId']) {
+                          isLastMessageFromSameSender = true;
+                        }
+                      } else {
                         isLastMessageFromSameSender = true;
                       }
-                    } else {
-                      isLastMessageFromSameSender = true;
-                    }
-
-                    if (index != 0 &&
-                        DateTime.parse(messages[index - 1]['createAt'])
-                                .minute !=
-                            DateTime.parse(messages[index]['createAt'])
-                                .minute) {
-                      isDiffMinute = true;
-                    }
-                    return Column(
-                      children: [
-                        Text(formatedDate),
-                        Container(
-                          margin: EdgeInsets.symmetric(horizontal: 4),
-                          child: Row(
-                            mainAxisAlignment: isCurrentUser
-                                ? MainAxisAlignment.end
-                                : MainAxisAlignment.start,
-                            children: [
-                              // 유저이미지 넣기
-                              !isSameSender && !isCurrentUser
-                                  ? Image.asset('assets/image/main/핑키1.png',
-                                      width: 38)
-                                  : const SizedBox(
-                                      width: 38,
-                                    ),
-                              Column(
-                                children: [
-                                  if (!isSameSender && !isCurrentUser)
-                                    Text(messages[index]['sender']),
-                                  ConstrainedBox(
-                                    constraints: BoxConstraints(
-                                      maxWidth:
-                                          MediaQuery.of(context).size.width *
-                                              0.8, // 화면 너비의 80%를 최대 가로 길이로 설정
-                                    ),
-                                    child: Container(
-                                      margin: const EdgeInsets.only(
-                                          left: 8, top: 8),
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 16, vertical: 8),
-                                      decoration: !isCurrentUser
-                                          ? BoxDecoration(
-                                              color: AppColors.grey200,
-                                              borderRadius: !isSameSender
-                                                  ? const BorderRadius.only(
-                                                      topRight:
-                                                          Radius.circular(20),
-                                                      bottomRight:
-                                                          Radius.circular(20),
-                                                      bottomLeft:
-                                                          Radius.circular(20))
-                                                  : BorderRadius.circular(20))
-                                          : BoxDecoration(
-                                              color: AppColors.mainBlue2,
-                                              borderRadius:
-                                                  isLastMessageFromSameSender
-                                                      ? const BorderRadius.only(
-                                                          topLeft:
-                                                              Radius
-                                                                  .circular(20),
-                                                          topRight: Radius
-                                                              .circular(20),
-                                                          bottomLeft:
-                                                              Radius.circular(
-                                                                  20))
-                                                      : BorderRadius.circular(
-                                                          20)),
-                                      child: Text(
-                                        messages[index]['content'],
-                                        style: TextStyle(
-                                            fontFamily: 'Pretendard',
-                                            fontSize: 16,
-                                            color: !isCurrentUser
-                                                ? AppColors.black1
-                                                : AppColors.grey50),
+                      return Column(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.symmetric(horizontal: 4),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: isCurrentUser
+                                  ? MainAxisAlignment.end
+                                  : MainAxisAlignment.start,
+                              children: [
+                                // 유저이미지 넣기
+                                !isSameSender && !isCurrentUser
+                                    ? Image.asset('assets/image/main/핑키1.png',
+                                        width: 38)
+                                    : const SizedBox(
+                                        width: 38,
                                       ),
+
+                                // 채팅시간표시 부분 지금 보내는 사람이 나라면 채팅의 왼쪽에 표시
+                                if (isCurrentUser)
+                                  Container(
+                                    child: Text(
+                                      DateFormat('a hh:mm', 'ko_KR').format(
+                                          DateTime.parse(
+                                              messages[index]['createAt'])),
+                                      style: const TextStyle(
+                                          color: AppColors.grey500,
+                                          fontSize: 12),
                                     ),
                                   ),
 
-                                  ////////////////////////////////
-                                  // 시간표시 로직 태환이형한테 물어보자
-                                  if (isLastMessageFromSameSender ||
-                                      !isLastMessageFromSameSender &&
-                                          isDiffMinute ||
-                                      isLastMessageFromSameSender &&
-                                          isDiffMinute)
-                                    Container(
-                                      margin: EdgeInsets.only(left: 4),
-                                      child: Text(
-                                        DateFormat('a hh:mm', 'ko_KR').format(
-                                            DateTime.parse(
-                                                messages[index]['createAt'])),
-                                        style: const TextStyle(
-                                            color: AppColors.grey500,
-                                            fontSize: 12),
-                                      ),
-                                    )
-                                ],
-                              ),
-                            ],
+
+                                if (!isSameSender && !isCurrentUser)
+                                  Text(messages[index]['sender']),
+                                ConstrainedBox(
+                                  constraints: BoxConstraints(
+                                    maxWidth: MediaQuery.of(context).size.width * 0.8, // 화면 너비의 80%를 최대 가로 길이로 설정
+                                  ),
+                                  child: Container(
+                                    margin: const EdgeInsets.only(left: 8, top: 8),
+                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                    decoration: !isCurrentUser
+                                        ? BoxDecoration(
+                                            color: AppColors.grey200,
+                                            borderRadius: !isSameSender
+                                                ? const BorderRadius.only(
+                                                topRight: Radius.circular(20),
+                                                bottomRight: Radius.circular(20),
+                                                bottomLeft: Radius.circular(20),
+                                                )
+                                                : BorderRadius.circular(20),
+                                        )
+                                        : BoxDecoration(
+                                            color: AppColors.mainBlue2,
+                                            borderRadius:
+                                                isLastMessageFromSameSender
+                                                    ? const BorderRadius.only(
+                                                        topLeft: Radius.circular(20),
+                                                        topRight: Radius.circular(20),
+                                                        bottomLeft: Radius.circular(20))
+                                                    : BorderRadius.circular(20)),
+                                    child: Text(
+                                      messages[index]['content'],
+                                      style: TextStyle(
+                                          fontFamily: 'Pretendard',
+                                          fontSize: 16,
+                                          color: !isCurrentUser
+                                              ? AppColors.black1
+                                              : AppColors.grey50),
+                                    ),
+                                  ),
+                                ),
+                                if (!isCurrentUser)
+                                  Container(
+                                    child: Text(
+                                      DateFormat('a hh:mm', 'ko_KR').format(
+                                          DateTime.parse(
+                                              messages[index]['createAt'])),
+                                      style: const TextStyle(
+                                          color: AppColors.grey500,
+                                          fontSize: 12),
+                                    ),
+                                  ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
-                    );
+                        ],
+                      );
+                    }
                   },
                 ),
+              ),
+              Container(
+                height: 10,
               )
             ],
           ),
@@ -577,24 +557,19 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                           )),
                           IconButton(
                               onPressed: () {
-                                if (node.hasFocus) {
+                                if (textController.text.isNotEmpty) {
                                   sendChat(
                                       widget.id,
                                       userId,
                                       textController
                                           .text); // 방번호, 유저번호, 유저이름, 메시지
                                   textController.clear();
-                                } else {}
+                                } else { null; }
                               },
-                              icon: node.hasFocus
-                                  ? const Icon(
-                                      Icons.send,
-                                      color: AppColors.mainBlue,
-                                    )
-                                  : const Icon(
-                                      Icons.mic,
-                                      color: AppColors.mainBlue,
-                                    ))
+                              icon: const Icon(
+                                Icons.send,
+                                color: AppColors.mainBlue,
+                              ))
                         ],
                       ),
                     ),
