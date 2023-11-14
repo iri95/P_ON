@@ -50,6 +50,6 @@ def UserMessage_to_cal(userMessage):
         else:
             res['calendar_end_date'] = to_datetime(res['calendar_end_date'])
     else:
-        res = {}
+        res = None
         
     return res
