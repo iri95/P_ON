@@ -16,8 +16,6 @@ import '../../../dialog/d_confirm.dart';
 import '../../fab/w_bottom_nav_floating_button.dart';
 import '../../fab/w_bottom_nav_floating_button.riverpod.dart';
 import '../../s_main.dart';
-import '../promise_room/vo_server_url.dart';
-import 'bank_accounts_dummy.dart';
 
 import 'package:dio/dio.dart';
 import 'package:p_on/common/util/dio.dart';
@@ -38,36 +36,22 @@ class HomeFragment extends ConsumerStatefulWidget {
 class _HomeFragmentState extends ConsumerState<HomeFragment> {
   // final scrollController = ScrollController();
   late final ScrollController scrollController;
-  List<dynamic>? promise;
 
   @override
   void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      scrollController = ref.read(homeScrollControllerProvider);
-      scrollController.addListener(_scrollListener);
-      _fetchProfile();
-    });
-  }
-
-  void _scrollListener() {
-    if (!mounted) return;
     scrollController = ref.read(homeScrollControllerProvider);
     scrollController.addListener(() {
       final floatingState = ref.read(floatingButtonStateProvider);
+
       if (scrollController.position.pixels > 100 && !floatingState.isSmall) {
         ref.read(floatingButtonStateProvider.notifier).changeButtonSize(true);
       } else if (scrollController.position.pixels < 100 &&
           floatingState.isSmall) {
         ref.read(floatingButtonStateProvider.notifier).changeButtonSize(false);
       }
-    });
-  }
-
-  @override
-  void dispose() {
-    scrollController.removeListener(_scrollListener); // 리스너 해제
-    super.dispose();
+    });z
+    _fetchProfile();
+    super.initState();
   }
 
   void _fetchProfile() async {
@@ -115,7 +99,6 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
 
   @override
   Widget build(BuildContext context) {
-    scrollController = ref.watch(homeScrollControllerProvider);
     return Container(
       // color: Colors.white,
       child: Stack(
@@ -170,7 +153,13 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
                     ], // 로그인한 유저 이름으로 변경하기
                   )),
                   // 약속방들
-                  MyPlanAndPromise(),
+                  Container(
+                      child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ...planList.map((e) => MyPlanAndPromise(e)).toList()
+                    ],
+                  )),
                   height100
                 ],
               ),
