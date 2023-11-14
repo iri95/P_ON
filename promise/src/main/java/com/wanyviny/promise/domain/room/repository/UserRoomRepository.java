@@ -2,6 +2,8 @@ package com.wanyviny.promise.domain.room.repository;
 
 import com.wanyviny.promise.domain.room.entity.UserRoom;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserRoomRepository extends JpaRepository<UserRoom, Long> {
@@ -10,4 +12,5 @@ public interface UserRoomRepository extends JpaRepository<UserRoom, Long> {
     List<UserRoom> findAllByUserId(Long userId);
     List<UserRoom> findAllByRoomId(Long roomId);
     void deleteByUserIdAndRoomId(Long userId, Long roomId);
+    Optional<UserRoom> findByRoomIdAndUserId(Long roomId, Long id);
 }
