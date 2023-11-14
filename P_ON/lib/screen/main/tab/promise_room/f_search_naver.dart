@@ -129,9 +129,8 @@ class _SearchNaverState extends ConsumerState<SearchNaver> {
                               SearchPlace(inputText.text);
                             }
                           },
-                          // 검색 버튼
                           child: Container(
-                            width: 60,
+                            width: 50,
                             height: 50,
                             margin: const EdgeInsets.only(right: 12),
                             decoration: BoxDecoration(
@@ -194,51 +193,48 @@ class _SearchNaverState extends ConsumerState<SearchNaver> {
       context: context,
       barrierColor: Colors.transparent,
       showDragHandle: true,
-      backgroundColor: AppColors.grey200,
+      backgroundColor: AppColors.mainBlue2,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
-        return Padding(
-            padding: const EdgeInsets.all(10),
-            child: SingleChildScrollView(
-              // controller: scrollController,
-              child: Column(
-                children: items.map((item) {
-                  return Card(
-                    child: Column(
-                      children: [
-                        ListTile(
-                            title: Text((item['title'])
-                                .replaceAll(RegExp(r'<[^>]*>'), '')
-                                .replaceAll('&amp;', '&')
-                                .replaceAll('&lt;', '<')
-                                .replaceAll('&gt;', '>')
-                                .replaceAll('&quot;', '"')
-                                .replaceAll('&#39;', "'")),
-                            subtitle: Text(item['description']),
-                            onTap: () async {
-                              Navigator.of(context)
-                                  .pop(); // 현재 모달 닫고 새로운 모달창 띄우기
-                              final xString = (item['mapx']);
-                              buffer
-                                ..write(xString.substring(0, 3))
-                                ..write('.')
-                                ..write(xString.substring(3));
-                              final x = double.parse(buffer.toString());
+        return SingleChildScrollView(
+          // controller: scrollController,
+          child: Column(
+            children: items.map((item) {
+              return Card(
+                child: Column(
+                  children: [
+                    ListTile(
+                        title: Text((item['title'])
+                            .replaceAll(RegExp(r'<[^>]*>'), '')
+                            .replaceAll('&amp;', '&')
+                            .replaceAll('&lt;', '<')
+                            .replaceAll('&gt;', '>')
+                            .replaceAll('&quot;', '"')
+                            .replaceAll('&#39;', "'")),
+                        subtitle: Text(item['description']),
+                        onTap: () async {
+                          Navigator.of(context).pop(); // 현재 모달 닫고 새로운 모달창 띄우기
+                          final xString = (item['mapx']);
+                          buffer
+                            ..write(xString.substring(0, 3))
+                            ..write('.')
+                            ..write(xString.substring(3));
+                          final x = double.parse(buffer.toString());
 
-                              buffer.clear();
+                          buffer.clear();
 
-                              final yString = (item['mapy']);
-                              buffer
-                                ..write(yString.substring(0, 2))
-                                ..write('.')
-                                ..write(yString.substring(2));
-                              final y = double.parse(buffer.toString());
+                          final yString = (item['mapy']);
+                          buffer
+                            ..write(yString.substring(0, 2))
+                            ..write('.')
+                            ..write(yString.substring(2));
+                          final y = double.parse(buffer.toString());
 
-                              final endposition = NLatLng(y, x);
-                              final marker2 =
-                                  NMarker(id: '마커ID', position: endposition);
+                          final endposition = NLatLng(y, x);
+                          final marker2 =
+                              NMarker(id: '마커ID', position: endposition);
 
                           showModalBottomSheet(
                               showDragHandle: true,
@@ -289,7 +285,7 @@ class _SearchNaverState extends ConsumerState<SearchNaver> {
                                                               x));// 약속 장소와 좌표 저장
                                                   ref
                                                       .read(scheduleProvider
-                                                      .notifier)
+                                                      .notifier) // schedule Provider 넣는것
                                                       .setScheduleLocation(
                                                       item['title'],
                                                       NLatLng(y,
@@ -337,147 +333,24 @@ class _SearchNaverState extends ConsumerState<SearchNaver> {
                                       )
                                     ],
                                   ),
-                                  context: context,
-                                  builder: (context) {
-                                    return Container(
-                                      height: 150,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                              child: Text(
-                                            '"${item['title'].replaceAll(RegExp(r'<[^>]*>'), '').replaceAll('&amp;', '&').replaceAll('&lt;', '<').replaceAll('&gt;', '>').replaceAll('&quot;', '"').replaceAll('&#39;', "'")}"\n약속 장소로 설정할까요?',
-                                            style: const TextStyle(
-                                                fontFamily: 'Pretendard',
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold),
-                                          )),
-                                          Expanded(child: Container()),
-                                          Container(
-                                            margin: EdgeInsets.only(bottom: 36),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Container(
-                                                  height: 40,
-                                                  margin: const EdgeInsets.only(
-                                                      right: 6),
-                                                  decoration: BoxDecoration(
-                                                      color:
-                                                          AppColors.mainBlue3,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20)),
-                                                  child: TextButton(
-                                                    style: ButtonStyle(
-                                                      overlayColor:
-                                                          MaterialStateProperty
-                                                              .resolveWith<
-                                                                  Color>(
-                                                        (Set<MaterialState>
-                                                            states) {
-                                                          if (states.contains(
-                                                              MaterialState
-                                                                  .pressed)) {
-                                                            return Colors
-                                                                .transparent;
-                                                          }
-                                                          return Colors
-                                                              .transparent;
-                                                        },
-                                                      ),
-                                                    ),
-                                                    onPressed: () {
-                                                      ref
-                                                          .read(promiseProvider
-                                                              .notifier)
-                                                          .setPromiseLocation(
-                                                              item['title'],
-                                                              NLatLng(y,
-                                                                  x)); // 약속 장소와 좌표 저장
-                                                      Navigator.pop(
-                                                          context); // 모달 창 닫기
-                                                      Navigator.pop(
-                                                          context,
-                                                          item[
-                                                              'title']); // 이전페이지로 돌아가기
-                                                    },
-                                                    child: const Text('확인',
-                                                        style: TextStyle(
-                                                            fontFamily:
-                                                                'Pretendard',
-                                                            color:
-                                                                Colors.white)),
-                                                  ),
-                                                ),
-                                                Container(
-                                                  height: 40,
-                                                  margin: const EdgeInsets.only(
-                                                      left: 6),
-                                                  decoration: BoxDecoration(
-                                                      color: AppColors.grey300,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20)),
-                                                  child: TextButton(
-                                                    style: ButtonStyle(
-                                                      overlayColor:
-                                                          MaterialStateProperty
-                                                              .resolveWith<
-                                                                  Color>(
-                                                        (Set<MaterialState>
-                                                            states) {
-                                                          if (states.contains(
-                                                              MaterialState
-                                                                  .pressed)) {
-                                                            return Colors
-                                                                .transparent;
-                                                          }
-                                                          return Colors
-                                                              .transparent;
-                                                        },
-                                                      ),
-                                                    ),
-                                                    onPressed: () async {
-                                                      await _mapController
-                                                          .deleteOverlay(marker2
-                                                              .info); // 마커 삭제
-                                                      Navigator.pop(
-                                                          context); // 모달 창 닫기
-                                                    },
-                                                    child: const Text('취소',
-                                                        style: TextStyle(
-                                                            fontFamily:
-                                                                'Pretendard',
-                                                            color:
-                                                                Colors.white)),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    );
-                                  });
+                                );
+                              });
 
-                              await _mapController.addOverlay(marker2);
-                              await _mapController.updateCamera(
-                                  NCameraUpdate.withParams(
-                                      target: endposition, zoom: 15));
-                            }),
-                        ListTile(
-                          title: Text('도로명 주소'),
-                          subtitle: Text(item['roadAddress']),
-                        ),
-                      ],
+                          await _mapController.addOverlay(marker2);
+                          await _mapController.updateCamera(
+                              NCameraUpdate.withParams(
+                                  target: endposition, zoom: 15));
+                        }),
+                    ListTile(
+                      title: Text('도로명 주소'),
+                      subtitle: Text(item['roadAddress']),
                     ),
-                  );
-                }).toList(),
-              ),
-            ));
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
+        );
       },
     );
   }

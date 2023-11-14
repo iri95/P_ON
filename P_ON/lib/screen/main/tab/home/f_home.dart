@@ -3,6 +3,7 @@ import 'package:p_on/common/common.dart';
 import 'package:p_on/common/widget/w_list_container.dart';
 import 'package:p_on/common/widget/w_rounded_container.dart';
 import 'package:p_on/screen/dialog/d_message.dart';
+import 'package:p_on/screen/main/tab/home/bank_accounts_dummy.dart';
 import 'package:p_on/screen/main/tab/home/w_my_plan_and_promise.dart';
 import 'package:p_on/screen/main/tab/home/w_p_on_app_bar.dart';
 import 'package:p_on/screen/main/tab/promise_room/dto_promise.dart';
@@ -15,7 +16,6 @@ import '../../../dialog/d_confirm.dart';
 import '../../fab/w_bottom_nav_floating_button.dart';
 import '../../fab/w_bottom_nav_floating_button.riverpod.dart';
 import '../../s_main.dart';
-import 'bank_accounts_dummy.dart';
 
 import 'package:dio/dio.dart';
 import 'package:p_on/common/util/dio.dart';
