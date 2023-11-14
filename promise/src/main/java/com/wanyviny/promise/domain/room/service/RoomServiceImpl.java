@@ -7,8 +7,12 @@ import com.google.firebase.messaging.Notification;
 import com.wanyviny.promise.domain.alarm.ALARM_TYPE;
 import com.wanyviny.promise.domain.alarm.entity.Alarm;
 import com.wanyviny.promise.domain.alarm.repository.AlarmRepository;
+import com.wanyviny.promise.domain.calendar.entity.CALENDAR_TYPE;
+import com.wanyviny.promise.domain.calendar.entity.Calendar;
+import com.wanyviny.promise.domain.calendar.repository.CalendarRepository;
 import com.wanyviny.promise.domain.chat.entity.Chat;
 import com.wanyviny.promise.domain.chat.repository.ChatRepository;
+import com.wanyviny.promise.domain.item.entity.Item;
 import com.wanyviny.promise.domain.item.entity.ItemType;
 import com.wanyviny.promise.domain.item.repository.ItemRepository;
 import com.wanyviny.promise.domain.room.dto.RoomRequest;
@@ -21,6 +25,7 @@ import com.wanyviny.promise.domain.user.entity.User;
 import com.wanyviny.promise.domain.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -41,6 +46,7 @@ public class RoomServiceImpl implements RoomService {
     private final ItemRepository itemRepository;
     private final AlarmRepository alarmRepository;
     private final ChatRepository chatRepository;
+    private final CalendarRepository calendarRepository;
     private final FirebaseMessaging firebaseMessaging;
 
 
@@ -56,19 +62,20 @@ public class RoomServiceImpl implements RoomService {
         List<Map<String, Object>> users = new ArrayList<>();
         Room room = modelMapper.map(request, Room.class);
         roomRepository.save(room);
-        if(room.getPromiseDate() != null){
+        if(!room.getPromiseDate().equals("미정")){
             roomRepository.completeDate(room.getId());
         }
-        if(room.getPromiseTime() != null){
+        if(!room.getPromiseTime().equals("미정")){
             roomRepository.completeTime(room.getId());
         }
 
-        if(room.getPromiseLocation() != null){
+        if(!room.getPromiseLocation().equals("미정")){
             roomRepository.completeLocation(room.getId());
         }
 
-        if (room.getPromiseLocation() != null && room.getPromiseDate() != null && room.getPromiseTime() != null) {
+        if (!room.getPromiseLocation().equals("미정") && !room.getPromiseDate().equals("미정") && !room.getPromiseTime().equals("미정")) {
             roomRepository.completeRoom(room.getId());
+            createPromiseToCalendar(room, request.getUsers());
         }
 
         for (Long id : request.getUsers()) {
@@ -293,5 +300,37 @@ public class RoomServiceImpl implements RoomService {
                 .alarmMessage(message)
                 .alarmType(type)
                 .build());
+    }
+
+    public void createPromiseToCalendar(Room room, List<Long> users) {
+        String date = room.getPromiseDate().substring(0, 10);
+        String time = room.getPromiseTime().substring(3);
+        String location = room.getPromiseLocation();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH시 mm분");
+        LocalDateTime localDateStartTime = LocalDateTime.parse(date + " " + time, formatter);
+        LocalDateTime localDateEndTime = LocalDateTime.parse(date + " 23시 59분", formatter);
+
+        if (time.startsWith("오후")) {
+            localDateStartTime = localDateStartTime.plusHours(12);
+        }
+
+        Date startDate = Date.from(localDateStartTime.atZone(ZoneId.systemDefault()).toInstant());
+        Date endDate = Date.from(localDateEndTime.atZone(ZoneId.systemDefault()).toInstant());
+
+        users.stream().map(userId -> {
+            return userRepository.findById(userId).orElseThrow(
+                    () -> new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
+            );
+        }).toList().forEach(user -> {
+            calendarRepository.save(Calendar.builder()
+                    .userId(user)
+                    .title(room.getPromiseTitle())
+                    .place(location)
+                    .startDate(startDate)
+                    .endDate(endDate)
+                    .type(CALENDAR_TYPE.PROMISE)
+                    .build());
+        });
     }
 }
