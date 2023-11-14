@@ -285,17 +285,24 @@ class _NotificationScreenState extends ConsumerState<NotificationScreen> {
               ),
             ),
             Expanded(
-                // TODO: 떙겨서 새로고침 넣어줘
                 child: isLoading
                     ? Container()
-                    : ListView.builder(
-                        itemCount: notifications.length,
-                        itemBuilder: (context, index) => NotificationItemWidget(
-                          notification: notifications[index],
-                          onTap: () {
-                            // 하나 읽음
-                            oneRead(notifications[index].id);
-                          },
+                    : RefreshIndicator(
+                        color: const Color(0xff3F48CC),
+                        backgroundColor: const Color(0xffFFBA20),
+                        onRefresh: () async {
+                          await sleepAsync(500.ms);
+                        },
+                        child: ListView.builder(
+                          itemCount: notifications.length,
+                          itemBuilder: (context, index) =>
+                              NotificationItemWidget(
+                            notification: notifications[index],
+                            onTap: () {
+                              // 하나 읽음
+                              oneRead(notifications[index].id);
+                            },
+                          ),
                         ),
                       ))
           ],
