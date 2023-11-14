@@ -4,10 +4,10 @@ import 'package:p_on/common/common.dart';
 import 'package:p_on/screen/main/user/user_state.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:p_on/screen/main/tab/promise_room/dto_promise.dart';
 import './friend_provider.dart';
 
 import './update/f_update.dart';
+import './friends/f_friend.dart';
 
 class Profile extends ConsumerStatefulWidget {
   const Profile({
@@ -53,34 +53,9 @@ class _ProfileState extends ConsumerState<Profile> {
                     children: [
                       InkWell(
                         onTap: () {
-                          // TODO:
-                          print('팔로워로 보기로 이동');
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text("팔로워",
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w400,
-                                  fontFamily: 'Pretendard',
-                                  color: AppColors.mainBlue,
-                                )),
-                            Text("${followerCount}",
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w500,
-                                  fontFamily: 'Pretendard',
-                                  color: AppColors.mainBlue,
-                                ))
-                          ],
-                        ),
-                      ),
-                      const SizedBox(width: 25),
-                      InkWell(
-                        onTap: () {
-                          // TODO:
-                          print('팔로잉 보기로 이동');
+                          Nav.push(FriendsList(
+                            selected: 'following',
+                          ));
                         },
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,6 +77,33 @@ class _ProfileState extends ConsumerState<Profile> {
                           ],
                         ),
                       ),
+                      const SizedBox(width: 25),
+                      InkWell(
+                        onTap: () {
+                          Nav.push(FriendsList(
+                            selected: 'follower',
+                          ));
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text("팔로워",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w400,
+                                  fontFamily: 'Pretendard',
+                                  color: AppColors.mainBlue,
+                                )),
+                            Text("${followerCount}",
+                                style: const TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: 'Pretendard',
+                                  color: AppColors.mainBlue,
+                                ))
+                          ],
+                        ),
+                      ),
                     ],
                   )
                 ],
@@ -109,9 +111,7 @@ class _ProfileState extends ConsumerState<Profile> {
               Column(crossAxisAlignment: CrossAxisAlignment.center, children: [
                 GestureDetector(
                     onTap: () {
-                      // TODO:
                       Nav.push(UpdateFragment());
-                      print("프로필수정으로이동");
                     },
                     child: Stack(
                       children: [
