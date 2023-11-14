@@ -76,6 +76,7 @@ public class Calendar {
                 .nickName(this.userId.getNickname())
                 .startDate(this.startDate)
                 .endDate(this.endDate)
+                .type(this.type)
                 .build();
     }
 
