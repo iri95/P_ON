@@ -28,7 +28,7 @@ def kafka_consumer():
         userId = data['userId']
         cal = data['cal']
     
-        file_path = f'/S09P31E102/chatbot/app/data/cal_{userId}.csv'
+        file_path = f'./data/cal_{userId}.csv'
         user_df = pd.DataFrame({'userId': [userId]})
         cal_df = pd.DataFrame([cal])
         df = pd.concat([user_df, cal_df], axis=1)
