@@ -132,25 +132,36 @@ public class RoomServiceImpl implements RoomService {
         List<RoomResponse.FindAll> response = new ArrayList<>();
 
         userRooms.forEach(userRoom -> {
-            String userChatId = userRoom.getChatId();
             List<String> lastChatIdList = chatRepository.findAllByRoomId(String.valueOf(userRoom.getRoom().getId())).stream()
                     .sorted(((o1, o2) -> {
                         if (o1.getCreateAt().isAfter(o2.getCreateAt())) return -1;
                         else if (o1.getCreateAt().isEqual(o2.getCreateAt())) return 0;
                         else return 1;
                     })).map(Chat::getId).toList();
-            if(lastChatIdList.size() != 0) {
+            if (lastChatIdList.size() != 0) {
                 String lastChatId = lastChatIdList.get(0);
                 Room room = userRoom.getRoom();
-                response.add(RoomResponse.FindAll.builder()
-                        .id(room.getId())
-                        .promiseTitle(room.getPromiseTitle())
-                        .promiseDate(room.getPromiseDate())
-                        .promiseTime(room.getPromiseTime())
-                        .promiseLocation(room.getPromiseLocation())
-                        .read(userChatId.equals(lastChatId))
-                        .build());
-            }else{
+                String userChatId = userRoom.getChatId();
+                if (userChatId != null) {
+                    response.add(RoomResponse.FindAll.builder()
+                            .id(room.getId())
+                            .promiseTitle(room.getPromiseTitle())
+                            .promiseDate(room.getPromiseDate())
+                            .promiseTime(room.getPromiseTime())
+                            .promiseLocation(room.getPromiseLocation())
+                            .read(userChatId.equals(lastChatId))
+                            .build());
+                } else {
+                    response.add(RoomResponse.FindAll.builder()
+                            .id(room.getId())
+                            .promiseTitle(room.getPromiseTitle())
+                            .promiseDate(room.getPromiseDate())
+                            .promiseTime(room.getPromiseTime())
+                            .promiseLocation(room.getPromiseLocation())
+                            .read(false)
+                            .build());
+                }
+            } else {
                 Room room = userRoom.getRoom();
                 response.add(RoomResponse.FindAll.builder()
                         .id(room.getId())
@@ -158,6 +169,7 @@ public class RoomServiceImpl implements RoomService {
                         .promiseDate(room.getPromiseDate())
                         .promiseTime(room.getPromiseTime())
                         .promiseLocation(room.getPromiseLocation())
+                        .read(true)
                         .build());
             }
         });
