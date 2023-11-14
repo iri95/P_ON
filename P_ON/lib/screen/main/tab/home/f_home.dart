@@ -15,6 +15,7 @@ import '../../../dialog/d_confirm.dart';
 import '../../fab/w_bottom_nav_floating_button.dart';
 import '../../fab/w_bottom_nav_floating_button.riverpod.dart';
 import '../../s_main.dart';
+import '../promise_room/vo_server_url.dart';
 import 'bank_accounts_dummy.dart';
 
 import 'package:dio/dio.dart';
@@ -36,6 +37,7 @@ class HomeFragment extends ConsumerStatefulWidget {
 class _HomeFragmentState extends ConsumerState<HomeFragment> {
   // final scrollController = ScrollController();
   late final ScrollController scrollController;
+  List<dynamic>? promise;
 
 
   @override
@@ -97,6 +99,8 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
   }
 
 
+
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -153,13 +157,7 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
                     ], // 로그인한 유저 이름으로 변경하기
                   )),
                   // 약속방들
-                  Container(
-                      child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ...planList.map((e) => MyPlanAndPromise(e)).toList()
-                    ],
-                  )),
+                  MyPlanAndPromise(),
                   height100
                 ],
               ),
