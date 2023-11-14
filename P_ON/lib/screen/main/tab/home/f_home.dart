@@ -42,10 +42,19 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
 
   @override
   void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      scrollController = ref.read(homeScrollControllerProvider);
+      scrollController.addListener(_scrollListener);
+      _fetchProfile();
+    });
+  }
+
+  void _scrollListener() {
+    if (!mounted) return;
     scrollController = ref.read(homeScrollControllerProvider);
     scrollController.addListener(() {
       final floatingState = ref.read(floatingButtonStateProvider);
-
       if (scrollController.position.pixels > 100 && !floatingState.isSmall) {
         ref.read(floatingButtonStateProvider.notifier).changeButtonSize(true);
       } else if (scrollController.position.pixels < 100 &&
@@ -53,8 +62,12 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
         ref.read(floatingButtonStateProvider.notifier).changeButtonSize(false);
       }
     });
-    _fetchProfile();
-    super.initState();
+  }
+
+  @override
+  void dispose() {
+    scrollController.removeListener(_scrollListener); // 리스너 해제
+    super.dispose();
   }
 
   void _fetchProfile() async {
@@ -102,6 +115,7 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
 
   @override
   Widget build(BuildContext context) {
+    scrollController = ref.watch(homeScrollControllerProvider);
     return Container(
       // color: Colors.white,
       child: Stack(
