@@ -667,10 +667,12 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
 
   List<NMarker> _markers = [];
 
+
+
   addMarker() {
     for (int i = 0; i < widget.voteData!.length; i++) {
       var marker = NMarker(
-          id: widget.voteData![i]['location'],
+          id: 'marker_$i',
           position: NLatLng(double.parse(widget.voteData![i]['lat']),
               double.parse(widget.voteData![i]['lng'])));
       _markers.add(marker);

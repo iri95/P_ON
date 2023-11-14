@@ -4,6 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:p_on/common/common.dart';
 import 'package:p_on/common/widget/w_list_container.dart';
 import 'package:flutter/material.dart';
+import 'package:p_on/screen/main/tab/chat_room/dto_vote.dart';
+import 'package:p_on/screen/main/tab/promise_room/dto_promise.dart';
 import 'package:p_on/screen/main/tab/promise_room/vo_server_url.dart';
 
 import 'f_home.dart';
@@ -76,6 +78,8 @@ class _MyPlanAndPromiseState extends ConsumerState<MyPlanAndPromise> {
 
   @override
   Widget build(BuildContext context) {
+    Future.microtask(() => ref.read(promiseProvider.notifier).reset());
+
     // 화면 비율
     final Size size = MediaQuery.of(context).size;
     if (promise.length == 0) {
@@ -110,7 +114,8 @@ class _MyPlanAndPromiseState extends ConsumerState<MyPlanAndPromise> {
                     fontFamily: 'Pretendard',
                   ),
                 ),
-                Text('와 약속을 만들어 봐요',
+                Text(
+                  '와 약속을 만들어 봐요',
                   style: TextStyle(
                     color: AppColors.mainBlue2,
                     fontSize: 20,
@@ -180,7 +185,11 @@ class _MyPlanAndPromiseState extends ConsumerState<MyPlanAndPromise> {
                             // 약속명
                             Container(
                               padding: EdgeInsets.only(bottom: 8),
-                              child: Text(item['promiseTitle'],
+                              child: Text(
+                                  item['promiseTitle'].length > 12
+                                      ? '${item['promiseTitle'].substring(0, 12)}...'
+                                      : item['promiseTitle'],
+                                  overflow: TextOverflow.ellipsis,
                                   style: TextStyle(
                                       fontFamily: 'Pretendard',
                                       fontSize: 24,
@@ -238,7 +247,8 @@ class _MyPlanAndPromiseState extends ConsumerState<MyPlanAndPromise> {
                             Container(
                               height: 30,
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
                                     children: [
@@ -252,7 +262,11 @@ class _MyPlanAndPromiseState extends ConsumerState<MyPlanAndPromise> {
                                       item['promiseLocation'] == '미정'
                                           ? const CreateVote()
                                           : CustomText(
-                                              text: item['promiseLocation'],
+                                              text: item['promiseLocation']
+                                                          .length >
+                                                      12
+                                                  ? '${item['promiseLocation'].substring(0, 12)}...'
+                                                  : item['promiseLocation'],
                                               color: isClose
                                                   ? AppColors.grey50
                                                   : AppColors.grey700,
@@ -265,7 +279,8 @@ class _MyPlanAndPromiseState extends ConsumerState<MyPlanAndPromise> {
                                     children: [
                                       CircleAvatar(
                                         radius: 15,
-                                        backgroundColor: const Color(0xffEFF3F9),
+                                        backgroundColor:
+                                            const Color(0xffEFF3F9),
                                         child: Transform(
                                           alignment: Alignment.center,
                                           transform: Matrix4.identity()

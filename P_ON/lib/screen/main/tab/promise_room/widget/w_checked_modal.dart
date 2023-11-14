@@ -93,7 +93,9 @@ class _CheckedModalState extends ConsumerState<CheckedModal> {
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 8.0, horizontal: 16.0),
                                     child: Text(
-                                        '${promise.promise_title ?? '미정'}'),
+                                        '${promise.promise_title ?? '미정'}',
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -150,7 +152,9 @@ class _CheckedModalState extends ConsumerState<CheckedModal> {
                                     padding: const EdgeInsets.symmetric(
                                         vertical: 8.0, horizontal: 16.0),
                                     child: Text(
-                                        '${promise.promise_location ?? '미정'}'),
+                                        '${promise.promise_location ?? '미정'}',
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
                                 ),
                               ],
@@ -263,7 +267,7 @@ class _CheckedModalState extends ConsumerState<CheckedModal> {
           path: '$server/api/promise/room',
           headers: headers,
           data: data);
-      ref.read(promiseProvider.notifier).reset();
+      // ref.read(promiseProvider.notifier).reset();
 
 
       print(response);

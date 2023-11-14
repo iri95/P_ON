@@ -219,6 +219,15 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+    client.deactivate();
+    textController.dispose();
+    scrollController.dispose();
+    node.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     print(messages);
     print(messages.length);
