@@ -7,6 +7,7 @@ import com.google.firebase.messaging.Notification;
 import com.wanyviny.promise.domain.alarm.ALARM_TYPE;
 import com.wanyviny.promise.domain.alarm.entity.Alarm;
 import com.wanyviny.promise.domain.alarm.repository.AlarmRepository;
+import com.wanyviny.promise.domain.chat.entity.Chat;
 import com.wanyviny.promise.domain.chat.repository.ChatRepository;
 import com.wanyviny.promise.domain.item.entity.ItemType;
 import com.wanyviny.promise.domain.item.repository.ItemRepository;
@@ -132,21 +133,33 @@ public class RoomServiceImpl implements RoomService {
 
         userRooms.forEach(userRoom -> {
             String userChatId = userRoom.getChatId();
-            String lastChatId = chatRepository.findAllByRoomId(String.valueOf(userRoom.getRoom().getId())).stream()
+            List<String> lastChatIdList = chatRepository.findAllByRoomId(String.valueOf(userRoom.getRoom().getId())).stream()
                     .sorted(((o1, o2) -> {
                         if (o1.getCreateAt().isAfter(o2.getCreateAt())) return -1;
                         else if (o1.getCreateAt().isEqual(o2.getCreateAt())) return 0;
                         else return 1;
-                    })).toList().get(0).getId();
-            Room room = userRoom.getRoom();
-            response.add(RoomResponse.FindAll.builder()
-                    .id(room.getId())
-                    .promiseTitle(room.getPromiseTitle())
-                    .promiseDate(room.getPromiseDate())
-                    .promiseTime(room.getPromiseTime())
-                    .promiseLocation(room.getPromiseLocation())
-                    .read(userChatId.equals(lastChatId))
-                    .build());
+                    })).map(Chat::getId).toList();
+            if(lastChatIdList.size() != 0) {
+                String lastChatId = lastChatIdList.get(0);
+                Room room = userRoom.getRoom();
+                response.add(RoomResponse.FindAll.builder()
+                        .id(room.getId())
+                        .promiseTitle(room.getPromiseTitle())
+                        .promiseDate(room.getPromiseDate())
+                        .promiseTime(room.getPromiseTime())
+                        .promiseLocation(room.getPromiseLocation())
+                        .read(userChatId.equals(lastChatId))
+                        .build());
+            }else{
+                Room room = userRoom.getRoom();
+                response.add(RoomResponse.FindAll.builder()
+                        .id(room.getId())
+                        .promiseTitle(room.getPromiseTitle())
+                        .promiseDate(room.getPromiseDate())
+                        .promiseTime(room.getPromiseTime())
+                        .promiseLocation(room.getPromiseLocation())
+                        .build());
+            }
         });
         return response;
     }
