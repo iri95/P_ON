@@ -1,13 +1,12 @@
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import create_extraction_chain
 from langchain.schema import HumanMessage
-import pandas as pd
 from pymongo import MongoClient
 import os
 
 
 def to_datetime(inp):
-    
+
     chat = ChatOpenAI()
     output = chat(
             [
@@ -37,6 +36,7 @@ def to_datetime(inp):
     )
     
     return output.content
+
 
 
 def UserMessage_to_cal(userMessage):
@@ -69,7 +69,6 @@ def UserMessage_to_cal(userMessage):
         res = None
         
     return res
-
 
 
 mongo_password = os.environ.get('MONGO_AUTH')

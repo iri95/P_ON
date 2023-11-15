@@ -2,13 +2,13 @@ from kafka.connect_to_kafka import kafka_producer
 from model.modules import UserMessage_to_cal
 from model.modules import find_from_mongo
 
-from fastapi import FastAPI, Header, Request, BackgroundTasks
+from fastapi import FastAPI, Header, Request
 from typing import Union
 
 
 app = FastAPI()
 
-            
+# 일정 생성      
 @app.post("/chatbot")
 async def create_calendar(
     request: Request,
