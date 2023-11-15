@@ -67,7 +67,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
 
             WidgetsBinding.instance!.addPostFrameCallback((_) {
               _scrollController.animateTo(
-                _scrollController.position.maxScrollExtent + 10,
+                _scrollController.position.maxScrollExtent + 100,
                 duration: Duration(milliseconds: 300),
                 curve: Curves.ease,
               );
@@ -442,7 +442,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                 ),
                 Expanded(
                   child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 12),
+                    margin: const EdgeInsets.symmetric(horizontal: 8),
                     child: ListView.builder(
                       controller: _scrollController,
                       itemCount: messages.length,
@@ -500,8 +500,8 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                                     !isSameSender && !isCurrentUser
                                         ? ClipOval(
                                             child: SizedBox(
-                                              width: 50,
-                                              height: 50,
+                                              width: 40,
+                                              height: 40,
                                               child: Image.network(
                                                 messages[index]
                                                     ['senderProfileImage'],
@@ -509,7 +509,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                                             ),
                                           )
                                         : const SizedBox(
-                                            width: 50,
+                                            width: 40,
                                           ),
                                     // 채팅시간표시 부분 지금 보내는 사람이 나라면 채팅의 왼쪽에 표시
                                     if (isCurrentUser)
@@ -542,7 +542,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                                                 maxWidth: MediaQuery.of(context)
                                                         .size
                                                         .width *
-                                                    0.6, // 화면 너비의 80%를 최대 가로 길이로 설정
+                                                    0.65, // 화면 너비의 80%를 최대 가로 길이로 설정
                                               ),
                                               child: Container(
                                                 margin: const EdgeInsets.only(
