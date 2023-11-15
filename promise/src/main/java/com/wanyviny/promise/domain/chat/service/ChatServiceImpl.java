@@ -3,12 +3,14 @@ package com.wanyviny.promise.domain.chat.service;
 import com.wanyviny.promise.domain.chat.dto.ChatRequest;
 import com.wanyviny.promise.domain.chat.dto.ChatResponse;
 import com.wanyviny.promise.domain.chat.entity.Chat;
+import com.wanyviny.promise.domain.chat.entity.ChatType;
 import com.wanyviny.promise.domain.chat.repository.ChatRepository;
 import com.wanyviny.promise.domain.room.entity.UserRoom;
 import com.wanyviny.promise.domain.room.repository.UserRoomRepository;
 import com.wanyviny.promise.domain.user.entity.User;
 import com.wanyviny.promise.domain.user.repository.UserRepository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +50,7 @@ public class ChatServiceImpl implements ChatService {
                 .chatType(chat.getChatType())
                 .content(chat.getContent())
                 .createAt(chat.getCreateAt())
+                .senderProfileImage(user.getProfileImage())
                 .build();
     }
 
@@ -57,7 +60,12 @@ public class ChatServiceImpl implements ChatService {
         List<Chat> chats = chatRepository.findAllByRoomId(roomId);
         List<ChatResponse> response = new ArrayList<>();
 
-        chats.forEach(chat -> response.add(modelMapper.map(chat, ChatResponse.class)));
+        chats.forEach(chat -> {
+            String profileImage = userRepository.findById(Long.parseLong(chat.getSenderId())).orElseThrow(
+                    () -> new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
+            ).getProfileImage();
+            response.add(chat.entityToDto(profileImage));
+        });
         return response;
     }
 

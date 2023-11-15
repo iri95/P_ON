@@ -1,6 +1,8 @@
 package com.wanyviny.promise.domain.chat.entity;
 
 import java.time.LocalDateTime;
+
+import com.wanyviny.promise.domain.chat.dto.ChatResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,4 +26,17 @@ public class Chat {
 
     @CreatedDate
     private LocalDateTime createAt;
+
+    public ChatResponse entityToDto(String profileImage) {
+        return ChatResponse.builder()
+                .id(this.getId())
+                .roomId(this.getRoomId())
+                .senderId(this.getSenderId())
+                .sender(this.getSender())
+                .chatType(this.getChatType())
+                .content(this.getContent())
+                .createAt(this.getCreateAt())
+                .senderProfileImage(profileImage)
+                .build();
+    }
 }
