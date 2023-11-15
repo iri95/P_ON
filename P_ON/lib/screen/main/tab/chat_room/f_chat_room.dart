@@ -13,8 +13,6 @@ import '../promise_room/vo_server_url.dart';
 import 'w_header_text_vote.dart';
 import 'package:p_on/screen/main/user/fn_kakao.dart';
 import 'package:p_on/common/util/dio.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:p_on/screen/main/user/token_state.dart';
 
 class ChatRoom extends ConsumerStatefulWidget {
@@ -32,7 +30,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
   final TextEditingController textController = TextEditingController();
 
   // Expanded의 스크롤 컨트롤러
-  final ScrollController scrollController = ScrollController();
+  final ScrollController _scrollController = ScrollController();
 
   // endDrawer의 키값
   final _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -62,10 +60,14 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
             setState(() {
               messages.add(newMessage);
             });
+            print('현재 채팅목록들');
+            print(messages);
+            print('마지막 채팅기록');
+            print(messages.last);
 
             WidgetsBinding.instance!.addPostFrameCallback((_) {
-              scrollController.animateTo(
-                scrollController.position.maxScrollExtent,
+              _scrollController.animateTo(
+                _scrollController.position.maxScrollExtent,
                 duration: Duration(milliseconds: 300),
                 curve: Curves.ease,
               );
@@ -97,6 +99,41 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
       body: jsonEncode(message),
     );
     print('채팅보냄');
+  }
+
+  // 마지막 채팅 로그 전송하기
+  Future<void> sendChatLog() async {
+    // 현재 저장된 서버 토큰을 가져옵니다.
+    final loginState = ref.read(loginStateProvider);
+    final token = loginState.serverToken;
+    final id = loginState.id;
+
+    var headers = {'Authorization': '$token', 'id': '$id'};
+
+    // 서버 토큰이 없으면
+    if (token == null) {
+      await kakaoLogin(ref);
+      await fetchToken(ref);
+
+      // 토큰을 다시 읽습니다.
+      final newToken = ref.read(loginStateProvider).serverToken;
+      final newId = ref.read(loginStateProvider).id;
+
+      headers['Authorization'] = '$newToken';
+      headers['id'] = '$newId';
+    }
+
+    final apiService = ApiService();
+    try {
+      Response response = await apiService.sendRequest(
+        method: 'PUT',
+        path: '$server/api/promise/chat/${messages.last['roomId']}/${messages.last['id']}',
+        headers: headers
+      );
+      print('마지막 채팅 기록 저장');
+    } catch (e) {
+      print(e);
+    }
   }
 
   // 채팅방 정보 받아오기
@@ -138,9 +175,6 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
       print('==================================');
       print(response);
       print(response.data['result'][0]['votes']);
-
-      // 투표 진행여부 true => 투표끝 / false => 투표 진행중
-      bool is_complete = response.data['result'][0]['complete'];
 
       isDate = await response.data['result'][0]['date'];
       isTime = await response.data['result'][0]['time'];
@@ -186,7 +220,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
     getChatRoom();
     getChat();
     userId = ref.read(loginStateProvider).id;
-    Map<String, dynamic> formatedDateMap = {'content': formatedDate};
+    Map<String, dynamic> formatedDateMap = {'today': formatedDate};
     messages.add(formatedDateMap);
 
     client = StompClient(
@@ -209,8 +243,8 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
           });
         });
         // 키보드가 활성화되면 ListView를 가장 아래로 스크롤합니다.
-        scrollController.animateTo(
-          scrollController.position.maxScrollExtent,
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
           duration: Duration(milliseconds: 300),
           curve: Curves.ease,
         );
@@ -221,9 +255,10 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
   @override
   void dispose() {
     super.dispose();
+    // sendChatLog();
     client.deactivate();
     textController.dispose();
-    scrollController.dispose();
+    _scrollController.dispose();
     node.dispose();
   }
 
@@ -371,10 +406,10 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
               ),
               Expanded(
                 child: ListView.builder(
-                  controller: scrollController,
+                  controller: _scrollController,
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
-                    if (index == 0) {
+                    if (messages[index].containsKey('today')) {
                       return Column(
                         children: [
                           Container(
@@ -387,7 +422,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                               vertical: 4, horizontal: 24
                             ),
                             child: Text(
-                              messages[index]['content'],
+                              messages[index]['today'],
                               style: const TextStyle(color: Colors.white),
                             )
                           ),
