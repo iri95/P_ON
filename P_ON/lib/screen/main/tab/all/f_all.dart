@@ -22,6 +22,7 @@ import 'package:p_on/common/util/dio.dart';
 import 'package:p_on/screen/main/user/fn_kakao.dart';
 import 'package:p_on/screen/main/s_main.dart';
 import 'package:p_on/screen/main/tab/tab_item.dart';
+import 'package:p_on/screen/main/tab/benefit/complete_provider.dart';
 
 // Future<void> fetchFollow() async {
 final fetchFollowProvider = FutureProvider.autoDispose<void>((ref) async {
@@ -30,16 +31,6 @@ final fetchFollowProvider = FutureProvider.autoDispose<void>((ref) async {
   final id = loginState.id;
 
   var headers = {'Authorization': '$token', 'id': '$id'};
-
-  // if (token == null) {
-  //   await kakaoLogin(ref);
-  //   await fetchToken(ref);
-  //   // 토큰을 다시 읽습니다.
-  //   final newToken = ref.read(loginStateProvider).serverToken;
-  //   final newId = ref.read(loginStateProvider).id;
-  //   headers['Authorization'] = '$newToken';
-  //   headers['id'] = '$newId';
-  // }
 
   final apiService = ApiService();
 
@@ -80,8 +71,6 @@ class AllFragment extends ConsumerStatefulWidget {
 }
 
 class _AllFragmentState extends ConsumerState<AllFragment> {
-// TODO: 팔로우, 팔로워 리스트 저장하기
-
   @override
   Widget build(BuildContext context) {
     ref.listen(currentTabProvider, (_, TabItem? newTabItem) async {
@@ -90,8 +79,12 @@ class _AllFragmentState extends ConsumerState<AllFragment> {
       // currentTabProvider의 상태가 변경될 때마다 이 부분이 호출됩니다.
       // 마이페이지 일때
       if (newTabItem == TabItem.my) {
-        print(ref.read(userStateProvider)?.nickName);
+        // print(ref.read(userStateProvider)?.nickName);
         ref.read(fetchFollowProvider.future);
+      }
+
+      if (newTabItem == TabItem.history) {
+        ref.read(completeProvider.notifier).getCompleteRoom();
       }
     });
 
