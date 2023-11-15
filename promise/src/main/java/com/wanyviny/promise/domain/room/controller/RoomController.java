@@ -128,4 +128,17 @@ public class RoomController {
 
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
     }
+
+    @PutMapping("/{roomId}/complete")
+    @Operation(summary = "약속방 종료", description = "약속방을 종료합니다.")
+    public ResponseEntity<BasicResponse> completePromise(@PathVariable("roomId") Long roomId) {
+
+        roomService.completePromise(roomId);
+
+        BasicResponse basicResponse = BasicResponse.builder()
+                .message("약속방 종료 성공")
+                .build();
+
+        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+    }
 }
