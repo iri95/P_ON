@@ -62,14 +62,14 @@ public class RoomServiceImpl implements RoomService {
         List<Map<String, Object>> users = new ArrayList<>();
         Room room = modelMapper.map(request, Room.class);
         roomRepository.save(room);
-        if(!room.getPromiseDate().equals("미정")){
+        if (!room.getPromiseDate().equals("미정")) {
             roomRepository.completeDate(room.getId());
         }
-        if(!room.getPromiseTime().equals("미정")){
+        if (!room.getPromiseTime().equals("미정")) {
             roomRepository.completeTime(room.getId());
         }
 
-        if(!room.getPromiseLocation().equals("미정")){
+        if (!room.getPromiseLocation().equals("미정")) {
             roomRepository.completeLocation(room.getId());
         }
 
@@ -159,19 +159,30 @@ public class RoomServiceImpl implements RoomService {
                         else if (o1.getCreateAt().isEqual(o2.getCreateAt())) return 0;
                         else return 1;
                     })).map(Chat::getId).toList();
-            if (lastChatIdList.size() != 0) {
-                String lastChatId = lastChatIdList.get(0);
-                Room room = userRoom.getRoom();
-                String userChatId = userRoom.getChatId();
-                if (userChatId != null) {
-                    response.add(RoomResponse.FindAll.builder()
-                            .id(room.getId())
-                            .promiseTitle(room.getPromiseTitle())
-                            .promiseDate(room.getPromiseDate())
-                            .promiseTime(room.getPromiseTime())
-                            .promiseLocation(room.getPromiseLocation())
-                            .read(userChatId.equals(lastChatId))
-                            .build());
+            Room room = userRoom.getRoom();
+            if (!room.isComplete()) {
+                if (lastChatIdList.size() != 0) {
+                    String lastChatId = lastChatIdList.get(0);
+                    String userChatId = userRoom.getChatId();
+                    if (userChatId != null) {
+                        response.add(RoomResponse.FindAll.builder()
+                                .id(room.getId())
+                                .promiseTitle(room.getPromiseTitle())
+                                .promiseDate(room.getPromiseDate())
+                                .promiseTime(room.getPromiseTime())
+                                .promiseLocation(room.getPromiseLocation())
+                                .read(userChatId.equals(lastChatId))
+                                .build());
+                    } else {
+                        response.add(RoomResponse.FindAll.builder()
+                                .id(room.getId())
+                                .promiseTitle(room.getPromiseTitle())
+                                .promiseDate(room.getPromiseDate())
+                                .promiseTime(room.getPromiseTime())
+                                .promiseLocation(room.getPromiseLocation())
+                                .read(false)
+                                .build());
+                    }
                 } else {
                     response.add(RoomResponse.FindAll.builder()
                             .id(room.getId())
@@ -179,19 +190,9 @@ public class RoomServiceImpl implements RoomService {
                             .promiseDate(room.getPromiseDate())
                             .promiseTime(room.getPromiseTime())
                             .promiseLocation(room.getPromiseLocation())
-                            .read(false)
+                            .read(true)
                             .build());
                 }
-            } else {
-                Room room = userRoom.getRoom();
-                response.add(RoomResponse.FindAll.builder()
-                        .id(room.getId())
-                        .promiseTitle(room.getPromiseTitle())
-                        .promiseDate(room.getPromiseDate())
-                        .promiseTime(room.getPromiseTime())
-                        .promiseLocation(room.getPromiseLocation())
-                        .read(true)
-                        .build());
             }
         });
         return response;
