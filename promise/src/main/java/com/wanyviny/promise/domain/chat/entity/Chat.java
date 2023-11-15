@@ -39,4 +39,17 @@ public class Chat {
                 .senderProfileImage(profileImage)
                 .build();
     }
+
+    public ChatResponse entityToEmpty() {
+        return ChatResponse.builder()
+                .id(this.getId())
+                .roomId(this.getRoomId())
+                .senderId(this.getSenderId())
+                .sender("알 수 없 음")
+                .chatType(this.getChatType())
+                .content(this.getContent())
+                .createAt(this.getCreateAt())
+                .senderProfileImage("http://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_110x110.jpg")
+                .build();
+    }
 }
