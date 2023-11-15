@@ -168,7 +168,7 @@ Future<void> fetchToken(WidgetRef ref) async {
   }
   // final String mobileId = await getMobileId();
 
-  final String FCMToken = await getFCMToken();
+  final String FCMToken = await getFCMToken() ?? '';
   // print('진짜토큰 $FCMToken');
 
   // 발급받은 카카오 토큰을 이용해 서버 로그인 요청
