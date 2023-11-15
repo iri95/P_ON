@@ -46,31 +46,11 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
     print('f_home');
 
     super.initState();
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   scrollController = ref.read(homeScrollControllerProvider);
-    //   scrollController.addListener(_scrollListener);
-    //   // _fetchProfile();
-    // });
     scrollController = ref.read(homeScrollControllerProvider);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       scrollController.addListener(_scrollListener);
-      _fetchProfile();
     });
   }
-
-  // void _scrollListener() {
-  //   if (!mounted) return;
-  //   scrollController = ref.read(homeScrollControllerProvider);
-  //   scrollController.addListener(() {
-  //     final floatingState = ref.read(floatingButtonStateProvider);
-  //     if (scrollController.position.pixels > 100 && !floatingState.isSmall) {
-  //       ref.read(floatingButtonStateProvider.notifier).changeButtonSize(true);
-  //     } else if (scrollController.position.pixels < 100 &&
-  //         floatingState.isSmall) {
-  //       ref.read(floatingButtonStateProvider.notifier).changeButtonSize(false);
-  //     }
-  //   });
-  // }
 
   void _scrollListener() {
     if (!mounted) return;
@@ -83,11 +63,11 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
     }
   }
 
-  @override
+  // 뺴버리면 에러 안뜸
+  // @override
   void dispose() {
-    print('11111111111111111111111111111');
+    print('1111111111111디스포즈?');
     scrollController.removeListener(_scrollListener); // 리스너 해제
-    scrollController.dispose();
     super.dispose();
   }
 
