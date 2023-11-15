@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class KafkaProducerService {
-    private static final String TOPIC = "from-mysql-json";
+    private static final String TOPIC = "to-chatbot-json";
     private final KafkaTemplate<String, KafkaCalendarDto> kafkaTemplate;
 //    private final CalendarRepository calendarRepository;
 
