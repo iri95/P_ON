@@ -12,7 +12,6 @@ import com.wanyviny.promise.domain.calendar.entity.Calendar;
 import com.wanyviny.promise.domain.calendar.repository.CalendarRepository;
 import com.wanyviny.promise.domain.chat.entity.Chat;
 import com.wanyviny.promise.domain.chat.repository.ChatRepository;
-import com.wanyviny.promise.domain.item.entity.Item;
 import com.wanyviny.promise.domain.item.entity.ItemType;
 import com.wanyviny.promise.domain.item.repository.ItemRepository;
 import com.wanyviny.promise.domain.room.dto.RoomRequest;
@@ -325,11 +324,10 @@ public class RoomServiceImpl implements RoomService {
         Date startDate = Date.from(localDateStartTime.atZone(ZoneId.systemDefault()).toInstant());
         Date endDate = Date.from(localDateEndTime.atZone(ZoneId.systemDefault()).toInstant());
 
-        users.stream().map(userId -> {
-            return userRepository.findById(userId).orElseThrow(
-                    () -> new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
-            );
-        }).toList().forEach(user -> {
+        users.stream().map(userId -> userRepository.findById(userId).orElseThrow(
+                        () -> new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
+                )
+        ).toList().forEach(user ->
             calendarRepository.save(Calendar.builder()
                     .userId(user)
                     .title(room.getPromiseTitle())
@@ -337,8 +335,8 @@ public class RoomServiceImpl implements RoomService {
                     .startDate(startDate)
                     .endDate(endDate)
                     .type(CALENDAR_TYPE.PROMISE)
-                    .build());
-        });
+                    .build())
+        );
     }
 
 
