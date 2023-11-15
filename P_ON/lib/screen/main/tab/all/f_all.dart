@@ -31,16 +31,6 @@ final fetchFollowProvider = FutureProvider.autoDispose<void>((ref) async {
 
   var headers = {'Authorization': '$token', 'id': '$id'};
 
-  // if (token == null) {
-  //   await kakaoLogin(ref);
-  //   await fetchToken(ref);
-  //   // 토큰을 다시 읽습니다.
-  //   final newToken = ref.read(loginStateProvider).serverToken;
-  //   final newId = ref.read(loginStateProvider).id;
-  //   headers['Authorization'] = '$newToken';
-  //   headers['id'] = '$newId';
-  // }
-
   final apiService = ApiService();
 
   // 팔로잉
@@ -80,8 +70,6 @@ class AllFragment extends ConsumerStatefulWidget {
 }
 
 class _AllFragmentState extends ConsumerState<AllFragment> {
-// TODO: 팔로우, 팔로워 리스트 저장하기
-
   @override
   Widget build(BuildContext context) {
     ref.listen(currentTabProvider, (_, TabItem? newTabItem) async {

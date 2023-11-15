@@ -70,27 +70,31 @@ class PonAuth extends ChangeNotifier {
 
   // final container = ProviderContainer();
 
-  Future<void> signOut() async {
+  Future<void> signOut(context, ref) async {
     // 로그아웃 처리
     _signedIn = false;
     // container.read(currentTabProvider).state = TabItem.home;
 
-    notifyListeners();
-
     // 앱 종료
     // SystemNavigator.pop();
-
-    // TODO: 이거 하면 탭 초기화 안댐;;
+    ref.read(currentTabProvider.notifier).state = TabItem.home;
     runAppAgain();
+    notifyListeners();
+  }
+
+  Future<void> deleteUser(ref) async {
+    _signedIn = false;
+
+    await widthdrawal(ref);
+    ref.read(currentTabProvider.notifier).state = TabItem.home;
+    runAppAgain();
+    notifyListeners();
   }
 
   String? guard(BuildContext context, GoRouterState state) {
     // print('~~~~~~~~~~~~~~~~~~~~~~');
     // print(state.matchedLocation);
 
-    // user이면, true, true
-    // guest이면, true, false
-    // 아무것도 아니면 false, false
     final bool signedIn = this.signedIn;
     final bool signingIn = state.matchedLocation == '/signin';
 

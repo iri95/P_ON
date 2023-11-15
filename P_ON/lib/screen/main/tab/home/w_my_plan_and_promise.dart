@@ -27,6 +27,7 @@ class MyPlanAndPromise extends ConsumerStatefulWidget {
 class _MyPlanAndPromiseState extends ConsumerState<MyPlanAndPromise> {
   bool isClose = false;
   List<dynamic> promise = [];
+  var promiseCount = 1;
   final currentDate = DateTime.now();
 
   Future<void> getPromiseRoom() async {
@@ -41,7 +42,6 @@ class _MyPlanAndPromiseState extends ConsumerState<MyPlanAndPromise> {
     if (token == null) {
       await kakaoLogin(ref);
       await fetchToken(ref);
-
       // 토큰을 다시 읽습니다.
       final newToken = ref.read(loginStateProvider).serverToken;
       final newId = ref.read(loginStateProvider).id;
@@ -54,9 +54,10 @@ class _MyPlanAndPromiseState extends ConsumerState<MyPlanAndPromise> {
     try {
       Response response = await apiService.sendRequest(
           method: 'GET', path: '$server/api/promise/room', headers: headers);
-      print(response.data['result'][0]);
+      // print(response.data['result'][0]);
+      print('getPromiseRoom');
       promise = await response.data['result'][0];
-
+      promiseCount = response.data['count'];
       setState(() {});
     } catch (e) {
       print(e);
@@ -83,7 +84,8 @@ class _MyPlanAndPromiseState extends ConsumerState<MyPlanAndPromise> {
 
     // 화면 비율
     final Size size = MediaQuery.of(context).size;
-    if (promise.length == 0) {
+    // if (promise.length == 0) {
+    if (promiseCount == 0) {
       return Container(
         width: double.infinity,
         height: 500,
@@ -158,6 +160,16 @@ class _MyPlanAndPromiseState extends ConsumerState<MyPlanAndPromise> {
             }
 
             return TextButton(
+              style: ButtonStyle(
+                overlayColor: MaterialStateProperty.resolveWith<Color>(
+                  (Set<MaterialState> states) {
+                    if (states.contains(MaterialState.pressed)) {
+                      return Colors.transparent; // 눌렀을 때 배경색 없음
+                    }
+                    return Colors.transparent; // 기본 배경색 없음
+                  },
+                ),
+              ),
               onPressed: () {
                 final router = GoRouter.of(context);
                 router.go('/chatroom/${item['id']}');
@@ -275,30 +287,25 @@ class _MyPlanAndPromiseState extends ConsumerState<MyPlanAndPromise> {
                                             ),
                                     ],
                                   ),
-                                  // 채팅방 이동 버튼
+                                  // 채팅방
                                   Stack(
                                     children: [
                                       CircleAvatar(
-                                        radius: 15,
-                                        backgroundColor:
-                                            const Color(0xffEFF3F9),
-                                        child: Transform(
-                                          alignment: Alignment.center,
-                                          transform: Matrix4.identity()
-                                            ..scale(-1.0, 1.0),
-                                          child: IconButton(
-                                            icon: const Icon(Icons.chat_bubble,
-                                                size: 15),
-                                            onPressed: () {
-                                              // TODO: 버튼 누르면 해당 채팅방으로 이동
-                                              print('눌렸');
-                                            },
-                                            color: isClose
-                                                ? Color(0xffFFBA20)
-                                                : Color(0xffef8640),
-                                          ),
-                                        ),
-                                      ),
+                                          radius: 15,
+                                          backgroundColor:
+                                              const Color(0xffEFF3F9),
+                                          child: Transform(
+                                            alignment: Alignment.center,
+                                            transform: Matrix4.identity()
+                                              ..scale(-1.0, 1.0),
+                                            child: Icon(
+                                              Icons.chat_bubble,
+                                              size: 15,
+                                              color: isClose
+                                                  ? Color(0xffFFBA20)
+                                                  : Color(0xffef8640),
+                                            ),
+                                          )),
                                       if (item['read'])
                                         const Positioned(
                                             right: 5,
