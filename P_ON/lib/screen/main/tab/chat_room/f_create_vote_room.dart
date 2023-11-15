@@ -389,7 +389,7 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
                   centerTitle: true,
                   actions: [
                     TextButton(
-                        onPressed: handleVoteButton(vote, voteInfo),
+                        onPressed: () => handleVoteButton(vote, voteInfo),
                         child: Text(
                           widget.isUpdate ? '수정' : '저장',
                           style: const TextStyle(
