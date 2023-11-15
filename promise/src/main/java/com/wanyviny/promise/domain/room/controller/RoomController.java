@@ -66,7 +66,7 @@ public class RoomController {
     @Operation(summary = "약속방 전체 조회", description = "약속방 전체를 조회 합니다.")
     public ResponseEntity<BasicResponse> findAllRoom(@RequestHeader("id") Long userId) {
 
-        List<RoomResponse.FindAll> response = roomService.findAllRoom(userId);
+        List<RoomResponse.FindAll> response = roomService.findAllRoom(userId, false);
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .message("약속방 목록 조회 성공")
@@ -137,6 +137,21 @@ public class RoomController {
 
         BasicResponse basicResponse = BasicResponse.builder()
                 .message("약속방 종료 성공")
+                .build();
+
+        return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());
+    }
+
+    @GetMapping("/complete")
+    @Operation(summary = "종료된 약속방 조회", description = "종료된 약속방을 조회합니다.")
+    public ResponseEntity<BasicResponse> getCompletePromise(@RequestHeader("id") Long userId) {
+
+        List<RoomResponse.FindAll> response = roomService.findAllRoom(userId, true);
+
+        BasicResponse basicResponse = BasicResponse.builder()
+                .message("종료된 약속방 조회 성공")
+                .count(response.size())
+                .result(Collections.singletonList(response))
                 .build();
 
         return new ResponseEntity<>(basicResponse, basicResponse.getHttpStatus());

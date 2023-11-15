@@ -12,7 +12,6 @@ import com.wanyviny.promise.domain.calendar.entity.Calendar;
 import com.wanyviny.promise.domain.calendar.repository.CalendarRepository;
 import com.wanyviny.promise.domain.chat.entity.Chat;
 import com.wanyviny.promise.domain.chat.repository.ChatRepository;
-import com.wanyviny.promise.domain.item.entity.Item;
 import com.wanyviny.promise.domain.item.entity.ItemType;
 import com.wanyviny.promise.domain.item.repository.ItemRepository;
 import com.wanyviny.promise.domain.room.dto.RoomRequest;
@@ -62,14 +61,14 @@ public class RoomServiceImpl implements RoomService {
         List<Map<String, Object>> users = new ArrayList<>();
         Room room = modelMapper.map(request, Room.class);
         roomRepository.save(room);
-        if(!room.getPromiseDate().equals("미정")){
+        if (!room.getPromiseDate().equals("미정")) {
             roomRepository.completeDate(room.getId());
         }
-        if(!room.getPromiseTime().equals("미정")){
+        if (!room.getPromiseTime().equals("미정")) {
             roomRepository.completeTime(room.getId());
         }
 
-        if(!room.getPromiseLocation().equals("미정")){
+        if (!room.getPromiseLocation().equals("미정")) {
             roomRepository.completeLocation(room.getId());
         }
 
@@ -147,7 +146,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<RoomResponse.FindAll> findAllRoom(Long userId) {
+    public List<RoomResponse.FindAll> findAllRoom(Long userId, boolean complete) {
 
         List<UserRoom> userRooms = userRoomRepository.findAllByUserId(userId);
         List<RoomResponse.FindAll> response = new ArrayList<>();
@@ -159,19 +158,30 @@ public class RoomServiceImpl implements RoomService {
                         else if (o1.getCreateAt().isEqual(o2.getCreateAt())) return 0;
                         else return 1;
                     })).map(Chat::getId).toList();
-            if (lastChatIdList.size() != 0) {
-                String lastChatId = lastChatIdList.get(0);
-                Room room = userRoom.getRoom();
-                String userChatId = userRoom.getChatId();
-                if (userChatId != null) {
-                    response.add(RoomResponse.FindAll.builder()
-                            .id(room.getId())
-                            .promiseTitle(room.getPromiseTitle())
-                            .promiseDate(room.getPromiseDate())
-                            .promiseTime(room.getPromiseTime())
-                            .promiseLocation(room.getPromiseLocation())
-                            .read(userChatId.equals(lastChatId))
-                            .build());
+            Room room = userRoom.getRoom();
+            if (room.isComplete() == complete) {
+                if (lastChatIdList.size() != 0) {
+                    String lastChatId = lastChatIdList.get(0);
+                    String userChatId = userRoom.getChatId();
+                    if (userChatId != null) {
+                        response.add(RoomResponse.FindAll.builder()
+                                .id(room.getId())
+                                .promiseTitle(room.getPromiseTitle())
+                                .promiseDate(room.getPromiseDate())
+                                .promiseTime(room.getPromiseTime())
+                                .promiseLocation(room.getPromiseLocation())
+                                .read(userChatId.equals(lastChatId))
+                                .build());
+                    } else {
+                        response.add(RoomResponse.FindAll.builder()
+                                .id(room.getId())
+                                .promiseTitle(room.getPromiseTitle())
+                                .promiseDate(room.getPromiseDate())
+                                .promiseTime(room.getPromiseTime())
+                                .promiseLocation(room.getPromiseLocation())
+                                .read(false)
+                                .build());
+                    }
                 } else {
                     response.add(RoomResponse.FindAll.builder()
                             .id(room.getId())
@@ -179,19 +189,9 @@ public class RoomServiceImpl implements RoomService {
                             .promiseDate(room.getPromiseDate())
                             .promiseTime(room.getPromiseTime())
                             .promiseLocation(room.getPromiseLocation())
-                            .read(false)
+                            .read(true)
                             .build());
                 }
-            } else {
-                Room room = userRoom.getRoom();
-                response.add(RoomResponse.FindAll.builder()
-                        .id(room.getId())
-                        .promiseTitle(room.getPromiseTitle())
-                        .promiseDate(room.getPromiseDate())
-                        .promiseTime(room.getPromiseTime())
-                        .promiseLocation(room.getPromiseLocation())
-                        .read(true)
-                        .build());
             }
         });
         return response;
@@ -324,11 +324,10 @@ public class RoomServiceImpl implements RoomService {
         Date startDate = Date.from(localDateStartTime.atZone(ZoneId.systemDefault()).toInstant());
         Date endDate = Date.from(localDateEndTime.atZone(ZoneId.systemDefault()).toInstant());
 
-        users.stream().map(userId -> {
-            return userRepository.findById(userId).orElseThrow(
-                    () -> new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
-            );
-        }).toList().forEach(user -> {
+        users.stream().map(userId -> userRepository.findById(userId).orElseThrow(
+                        () -> new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
+                )
+        ).toList().forEach(user ->
             calendarRepository.save(Calendar.builder()
                     .userId(user)
                     .title(room.getPromiseTitle())
@@ -336,8 +335,8 @@ public class RoomServiceImpl implements RoomService {
                     .startDate(startDate)
                     .endDate(endDate)
                     .type(CALENDAR_TYPE.PROMISE)
-                    .build());
-        });
+                    .build())
+        );
     }
 
 
