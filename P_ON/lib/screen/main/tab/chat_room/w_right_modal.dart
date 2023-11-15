@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:nav/nav.dart';
@@ -25,8 +27,16 @@ class RightModal extends ConsumerStatefulWidget {
 }
 
 class _RightModalState extends ConsumerState<RightModal> {
+  late final ValueNotifier<List<Event>> _selectedEvents;
+  CalendarFormat _calendarFormat = CalendarFormat.month;
+  DateTime _focusedDay = DateTime.now();
+
   List<dynamic>? userSchedule;
   Map<DateTime, List> events = {};
+  bool isLoading = true;
+  Future<Response>? getUserScheduleFuture;  // Future 변수 추가
+
+
 
   Future<Response> getUserSchedule() async {
     // 현재 저장된 서버 토큰을 가져옵니다.
@@ -60,11 +70,35 @@ class _RightModalState extends ConsumerState<RightModal> {
         path: '$server/api/calendar/schedule/promise?userIdList=${userIdList}',
         headers: headers,
       );
+      var rawList = response.data['result'] as List<dynamic>; // Step 1
+      var convertedList = <Map<int, List<Map<String, dynamic>>>>[];
+
+      for (var rawItem in rawList) { // Step 2
+        var mapItem = Map<int, List<Map<String, dynamic>>>.from(
+            rawItem.map((key, value) {
+              var intKey = int.tryParse(key.toString()) ?? 0;
+              var listValue = List<Map<String, dynamic>>.from(
+                  value.map((item) => Map<String, dynamic>.from(item))
+              );
+
+              return MapEntry(intKey, listValue);
+            })
+        );
+
+        convertedList.add(mapItem); // Step 3
+      }
       print('일정조회 성ㄱㅇ');
       print(response.data['result']);
-      userSchedule = await response.data['result'];
+      setState(() {
+        userSchedule = convertedList;
+        isLoading = false;  // 로딩 상태 업데이트
+        populateEventsFromList(convertedList);
+      });
       return response;
     } catch (e) {
+      setState(() {
+        isLoading = false;  // 에러 발생 시에도 로딩 상태 업데이트
+      });
       throw e;
     }
   }
@@ -72,12 +106,51 @@ class _RightModalState extends ConsumerState<RightModal> {
   @override
   void initState() {
     super.initState();
-    getUserSchedule();
+
+    getUserScheduleFuture = getUserSchedule();
   }
+
+
+  List<Event> _getEventsForDay(DateTime day) {
+    // Implementation example
+    return kEvents[day] ?? [];
+  }
+
+  void populateEventsFromList(List<Map<int, List<Map<String, dynamic>>>> data) {
+    // kEvents 초기화
+    kEvents.clear();
+
+    for (var dayMap in data) {
+      for (var day in dayMap.keys) {
+        List<Map<String, dynamic>> events = dayMap[day]!;
+        for (var event in events) {
+          DateTime startDate = DateTime.parse(event['startDate']);
+          DateTime endDate = DateTime.parse(event['endDate']);
+          String nickName = event['nickName'];
+          String type = event['type'];
+
+          List<DateTime> datesInRange = getDatesInRange(startDate, endDate);
+          for (var date in datesInRange) {
+            if (kEvents.containsKey(date)) {
+              kEvents[date]!.add(Event('$nickName $type'));
+            } else {
+              kEvents[date] = [Event('$nickName $type')];
+            }
+          }
+        }
+      }
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
     print(widget.users);
+
+    if (isLoading) {
+      return CircularProgressIndicator();  // 로딩 표시
+    }
+
     return Container(
         color: AppColors.mainBlue50,
         width: MediaQuery.of(context).size.width - 60,
@@ -88,7 +161,7 @@ class _RightModalState extends ConsumerState<RightModal> {
             Text('${widget.id}'),
             Text('모두의 일정'),
             FutureBuilder(
-                future: getUserSchedule(),
+                future: getUserScheduleFuture,
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
                     return Container(
@@ -142,34 +215,55 @@ class _RightModalState extends ConsumerState<RightModal> {
                                 [],
                           ),
                         ),
-                        Container(
-                          margin: const EdgeInsets.all(10),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: AppColors.grey50),
-                          child: TableCalendar(
+                        Card(
+                          margin: const EdgeInsets.all(8.0),
+                          elevation: 5.0,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                            side: BorderSide( color:Colors.black26, width: 1.0),
+                          ),
+                          child: TableCalendar<Event>(
                             locale: 'ko_KR',
-                            focusedDay: DateTime.now(),
-                            firstDay: DateTime.utc(2018, 10, 22),
-                            lastDay: DateTime.utc(2030, 12, 9),
-                            eventLoader: (day) {
-                              return events?[day] ?? [];
-                            },
-
+                            firstDay: kFirstDay,
+                            lastDay: kLastDay,
+                            focusedDay: _focusedDay,
+                            daysOfWeekHeight: 40.0,
+                            calendarFormat: _calendarFormat,
+                            eventLoader: _getEventsForDay,
+                            startingDayOfWeek: StartingDayOfWeek.monday,
+                            calendarStyle: const CalendarStyle(
+                              tablePadding: EdgeInsets.only(bottom: 8.0),
+                              markerSize: 8.0,
+                              // marker 여러개 일 때 cell 영역을 벗어날지 여부
+                              canMarkersOverflow: false,
+                              markerDecoration: BoxDecoration(
+                                color: AppColors.calendarYellow,
+                                shape: BoxShape.circle,
+                                // shape: BoxShape.rectangle,
+                              ),
+                            ),
                             headerStyle: HeaderStyle(
                               titleCentered: true,
-                              titleTextFormatter: (date, locale) =>
-                                  DateFormat('yy년 MM월', locale).format(date),
+                              titleTextFormatter: (date, locale) => DateFormat('yy년 MM월', locale).format(date),
                               titleTextStyle: const TextStyle(
                                 fontSize: 20.0,
-                                color: AppColors.mainBlue,
-                                fontFamily: 'Pretendard',
-                                fontWeight: FontWeight.w500,
+                                color:  AppColors.mainBlue,
                               ),
                               formatButtonVisible: false,
-                              headerPadding:
-                                  const EdgeInsets.symmetric(vertical: 4.0),
+                              headerPadding: const EdgeInsets.symmetric(vertical: 4.0),
                             ),
+                            onFormatChanged: (format) {
+                              if (_calendarFormat != format) {
+                                setState(() {
+                                  _calendarFormat = format;
+                                });
+                              }
+                            },
+                            onPageChanged: (focusedDay) {
+                              _focusedDay = focusedDay;
+                            },
                           ),
                         ),
                       ],
@@ -193,3 +287,38 @@ class _RightModalState extends ConsumerState<RightModal> {
     }
   }
 }
+
+List<DateTime> getDatesInRange(DateTime start, DateTime end) {
+  List<DateTime> dates = [];
+  for (int i = 0; i <= end.difference(start).inDays; i++) {
+    dates.add(start.add(Duration(days: i)));
+  }
+  return dates;
+}
+
+// 이벤트 맵 초기화
+final kEvents = LinkedHashMap<DateTime, List<Event>>(
+  equals: isSameDay,
+  hashCode: getHashCode,
+);
+
+
+class Event {
+  final String title;
+
+  const Event(this.title);
+
+  @override
+  String toString() => title;
+}
+
+
+int getHashCode(DateTime key) {
+  return key.day * 1000000 + key.month * 10000 + key.year;
+}
+
+
+final kToday = DateTime.now();
+final kFirstDay = DateTime(kToday.year - 5, kToday.month - 3, kToday.day);
+final kLastDay = DateTime(kToday.year + 5, kToday.month + 3, kToday.day);
+
