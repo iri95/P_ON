@@ -6,8 +6,6 @@ import com.wanyviny.promise.domain.chat.entity.Chat;
 import com.wanyviny.promise.domain.chat.repository.ChatRepository;
 import com.wanyviny.promise.domain.room.entity.UserRoom;
 import com.wanyviny.promise.domain.room.repository.UserRoomRepository;
-import com.wanyviny.promise.domain.user.entity.PRIVACY;
-import com.wanyviny.promise.domain.user.entity.ROLE;
 import com.wanyviny.promise.domain.user.entity.User;
 import com.wanyviny.promise.domain.user.repository.UserRepository;
 
@@ -57,18 +55,20 @@ public class ChatServiceImpl implements ChatService {
 
         List<Chat> chats = chatRepository.findAllByRoomId(roomId);
         List<ChatResponse> response = new ArrayList<>();
+        List<Long> userList = userRoomRepository.findAllByRoomId(Long.parseLong(roomId)).stream()
+                .map(UserRoom::getUser)
+                .map(User::getId)
+                .toList();
 
         chats.forEach(chat -> {
-            String profileImage = userRepository.findById(Long.parseLong(chat.getSenderId())).orElse(
-                    User.builder()
-                            .nickname("알 수 없 다")
-                            .privacy(PRIVACY.PRIVATE)
-                            .role(ROLE.USER)
-                            .socialId(123123123L)
-                            .profileImage("http://k.kakaocdn.net/dn/dpk9l1/btqmGhA2lKL/Oz0wDuJn1YV2DIn92f6DVK/img_110x110.jpg")
-                            .build()
-            ).getProfileImage();
-            response.add(chat.entityToDto(profileImage));
+            if (userList.contains(Long.parseLong(chat.getSenderId()))) { // 탈퇴한 회원 처리
+                String profileImage = userRepository.findById(Long.parseLong(chat.getSenderId())).orElseThrow(
+                        () -> new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
+                ).getProfileImage();
+                response.add(chat.entityToDto(profileImage));
+            } else {
+                response.add(chat.entityToEmpty());
+            }
         });
         return response;
     }
