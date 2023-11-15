@@ -21,14 +21,14 @@ import 'package:p_on/screen/main/user/token_state.dart';
 late void Function() runAppAgain;
 
 void main() async {
-  runAppAgain = main;
+  // runAppAgain = main;
 
-  WidgetsFlutterBinding.ensureInitialized();
+  // WidgetsFlutterBinding.ensureInitialized();
 
-  // 안드로이드 플랫폼인 경우에만 NaverMapSdk 초기화
-  if (defaultTargetPlatform == TargetPlatform.android) {
-    await NaverMapSdk.instance.initialize(clientId: Naver_Map_Id);
-  }
+  final bindings = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: bindings);
+  await EasyLocalization.ensureInitialized();
+  await AppPreferences.init();
 
   // runApp() 호출 전 Flutter SDK 초기화
   KakaoSdk.init(
@@ -36,18 +36,14 @@ void main() async {
     javaScriptAppKey: '257ed79230fb398c5b7d48ae7ddb916d',
   );
 
-  await NaverMapSdk.instance.initialize(clientId: Naver_Map_Id);
-  final bindings = WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.preserve(widgetsBinding: bindings);
-  await EasyLocalization.ensureInitialized();
-  await AppPreferences.init();
-
-  if (defaultTargetPlatform == TargetPlatform.android) {
-    // 안드로이드 플랫폼인 경우 Firebase 초기화를 실행합니다.
-    await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-    );
-  }
+  // await NaverMapSdk.instance.initialize(clientId: Naver_Map_Id);
+  // if (kIsWeb) {
+  // } else {
+  //   await NaverMapSdk.instance.initialize(clientId: Naver_Map_Id);
+  // }
+  // await Firebase.initializeApp(
+  //   options: DefaultFirebaseOptions.currentPlatform,
+  // );
 
   timeago.setLocaleMessages('ko', timeago.KoMessages());
   runApp(EasyLocalization(

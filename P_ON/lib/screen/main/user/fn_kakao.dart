@@ -47,7 +47,10 @@ Future<String> getMobileId() async {
 
 // FCM 토큰 받아오기
 Future getFCMToken() async {
-  String? token = await FirebaseMessaging.instance.getToken();
+  String? token;
+  if (Platform.isAndroid) {
+    token = await FirebaseMessaging.instance.getToken();
+  }
   return token;
 }
 

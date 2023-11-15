@@ -15,6 +15,7 @@ import 'package:p_on/screen/main/tab/promise_room/f_create_promise.dart';
 import 'package:p_on/screen/main/tab/register/f_register.dart';
 import 'package:p_on/screen/main/tab/tab_item.dart';
 
+import 'package:flutter/foundation.dart';
 import 'auth.dart';
 import 'common/widget/w_round_button.dart';
 import 'screen/main/tab/chat_room/w_header_text_vote.dart';
@@ -39,8 +40,10 @@ class AppState extends ConsumerState<App> with Nav, WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    FcmManager.requestPermission();
-    FcmManager.initialize(ref);
+    if (!kIsWeb) {
+      FcmManager.requestPermission();
+      FcmManager.initialize(ref);
+    }
     WidgetsBinding.instance.addObserver(this);
   }
 
