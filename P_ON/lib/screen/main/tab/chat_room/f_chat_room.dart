@@ -72,8 +72,6 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                 curve: Curves.ease,
               );
             });
-
-
           } else {
             print('바디가 비었다 이말이야');
           }
@@ -126,10 +124,10 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
     final apiService = ApiService();
     try {
       Response response = await apiService.sendRequest(
-        method: 'PUT',
-        path: '$server/api/promise/chat/${messages.last['roomId']}/${messages.last['id']}',
-        headers: headers
-      );
+          method: 'PUT',
+          path:
+              '$server/api/promise/chat/${messages.last['roomId']}/${messages.last['id']}',
+          headers: headers);
       print('마지막 채팅 기록 저장');
     } catch (e) {
       print(e);
@@ -413,19 +411,17 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                       return Column(
                         children: [
                           Container(
-                            margin: const EdgeInsets.only(top: 12),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(20),
-                              color: const Color(0x80959CB1),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 4, horizontal: 24
-                            ),
-                            child: Text(
-                              messages[index]['today'],
-                              style: const TextStyle(color: Colors.white),
-                            )
-                          ),
+                              margin: const EdgeInsets.only(top: 12),
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20),
+                                color: const Color(0x80959CB1),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 4, horizontal: 24),
+                              child: Text(
+                                messages[index]['today'],
+                                style: const TextStyle(color: Colors.white),
+                              )),
                         ],
                       );
                     } else {
@@ -478,36 +474,46 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                                     ),
                                   ),
 
-
                                 if (!isSameSender && !isCurrentUser)
                                   Text(messages[index]['sender']),
                                 ConstrainedBox(
                                   constraints: BoxConstraints(
-                                    maxWidth: MediaQuery.of(context).size.width * 0.8, // 화면 너비의 80%를 최대 가로 길이로 설정
+                                    maxWidth:
+                                        MediaQuery.of(context).size.width *
+                                            0.8, // 화면 너비의 80%를 최대 가로 길이로 설정
                                   ),
                                   child: Container(
-                                    margin: const EdgeInsets.only(left: 8, top: 8),
-                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                    margin:
+                                        const EdgeInsets.only(left: 8, top: 8),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 8),
                                     decoration: !isCurrentUser
                                         ? BoxDecoration(
                                             color: AppColors.grey200,
                                             borderRadius: !isSameSender
                                                 ? const BorderRadius.only(
-                                                topRight: Radius.circular(20),
-                                                bottomRight: Radius.circular(20),
-                                                bottomLeft: Radius.circular(20),
-                                                )
+                                                    topRight:
+                                                        Radius.circular(20),
+                                                    bottomRight:
+                                                        Radius.circular(20),
+                                                    bottomLeft:
+                                                        Radius.circular(20),
+                                                  )
                                                 : BorderRadius.circular(20),
-                                        )
+                                          )
                                         : BoxDecoration(
                                             color: AppColors.mainBlue2,
                                             borderRadius:
                                                 isLastMessageFromSameSender
                                                     ? const BorderRadius.only(
-                                                        topLeft: Radius.circular(20),
-                                                        topRight: Radius.circular(20),
-                                                        bottomLeft: Radius.circular(20))
-                                                    : BorderRadius.circular(20)),
+                                                        topLeft:
+                                                            Radius.circular(20),
+                                                        topRight:
+                                                            Radius.circular(20),
+                                                        bottomLeft:
+                                                            Radius.circular(20))
+                                                    : BorderRadius.circular(
+                                                        20)),
                                     child: Text(
                                       messages[index]['content'],
                                       style: TextStyle(
@@ -608,7 +614,9 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                                       textController
                                           .text); // 방번호, 유저번호, 유저이름, 메시지
                                   textController.clear();
-                                } else { null; }
+                                } else {
+                                  null;
+                                }
                               },
                               icon: const Icon(
                                 Icons.send,

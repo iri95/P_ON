@@ -37,36 +37,57 @@ class HomeFragment extends ConsumerStatefulWidget {
 
 class _HomeFragmentState extends ConsumerState<HomeFragment> {
   // final scrollController = ScrollController();
-  late final ScrollController scrollController;
+  // final 문제였슴 ㅡㅡ
+  late ScrollController scrollController;
   List<dynamic>? promise;
 
   @override
   void initState() {
+    print('f_home');
+
     super.initState();
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   scrollController = ref.read(homeScrollControllerProvider);
+    //   scrollController.addListener(_scrollListener);
+    //   // _fetchProfile();
+    // });
+    scrollController = ref.read(homeScrollControllerProvider);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      scrollController = ref.read(homeScrollControllerProvider);
       scrollController.addListener(_scrollListener);
       _fetchProfile();
     });
   }
 
+  // void _scrollListener() {
+  //   if (!mounted) return;
+  //   scrollController = ref.read(homeScrollControllerProvider);
+  //   scrollController.addListener(() {
+  //     final floatingState = ref.read(floatingButtonStateProvider);
+  //     if (scrollController.position.pixels > 100 && !floatingState.isSmall) {
+  //       ref.read(floatingButtonStateProvider.notifier).changeButtonSize(true);
+  //     } else if (scrollController.position.pixels < 100 &&
+  //         floatingState.isSmall) {
+  //       ref.read(floatingButtonStateProvider.notifier).changeButtonSize(false);
+  //     }
+  //   });
+  // }
+
   void _scrollListener() {
     if (!mounted) return;
-    scrollController = ref.read(homeScrollControllerProvider);
-    scrollController.addListener(() {
-      final floatingState = ref.read(floatingButtonStateProvider);
-      if (scrollController.position.pixels > 100 && !floatingState.isSmall) {
-        ref.read(floatingButtonStateProvider.notifier).changeButtonSize(true);
-      } else if (scrollController.position.pixels < 100 &&
-          floatingState.isSmall) {
-        ref.read(floatingButtonStateProvider.notifier).changeButtonSize(false);
-      }
-    });
+    final floatingState = ref.read(floatingButtonStateProvider);
+    if (scrollController.position.pixels > 100 && !floatingState.isSmall) {
+      ref.read(floatingButtonStateProvider.notifier).changeButtonSize(true);
+    } else if (scrollController.position.pixels < 100 &&
+        floatingState.isSmall) {
+      ref.read(floatingButtonStateProvider.notifier).changeButtonSize(false);
+    }
   }
 
   @override
   void dispose() {
+    print('11111111111111111111111111111');
     scrollController.removeListener(_scrollListener); // 리스너 해제
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -96,7 +117,7 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
       Response response = await apiService.sendRequest(
           method: 'GET', path: '/api/user/profile', headers: headers);
 
-      // 여기서 서버에서 받앙온 회원 정보 저장
+      // 여기서 서버에서 받아온 회원 정보 저장
       var user = UserState(
         profileImage: response.data['result'][0]['profileImage'] as String,
         nickName: response.data['result'][0]['nickName'] as String,
@@ -113,9 +134,13 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
     }
   }
 
+  late var _user;
+
   @override
   Widget build(BuildContext context) {
     scrollController = ref.watch(homeScrollControllerProvider);
+    _user = ref.watch(userStateProvider);
+
     return Container(
       // color: Colors.white,
       child: Stack(
@@ -147,7 +172,7 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          '${ref.watch(userStateProvider)?.nickName ?? ''}'
+                          '${_user?.nickName ?? ''}'
                               .text
                               .fontWeight(FontWeight.w800)
                               .size(26)

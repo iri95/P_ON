@@ -18,13 +18,14 @@ class ScrollToUpHome extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          Tap(onTap: (){
-            scrollController.animateTo(
-              0,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeOut,
-            );
-          },
+          Tap(
+              onTap: () {
+                scrollController.animateTo(
+                  0,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeOut,
+                );
+              },
               child: Container(
                 height: MainScreenState.bottomNavigatorHeight,
                 width: myScreenWidth,
