@@ -1,11 +1,12 @@
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import create_extraction_chain
 from langchain.schema import HumanMessage
-import pandas as pd
-import json 
+from pymongo import MongoClient
+import os
+
 
 def to_datetime(inp):
-    
+
     chat = ChatOpenAI()
     output = chat(
             [
@@ -35,6 +36,7 @@ def to_datetime(inp):
     )
     
     return output.content
+
 
 
 def UserMessage_to_cal(userMessage):
@@ -69,12 +71,28 @@ def UserMessage_to_cal(userMessage):
     return res
 
 
-def find_from_csv(userId, userMessage):
+mongo_password = os.environ.get('MONGO_AUTH')
+def find_from_mongo(userId, userMessage):
+    client = MongoClient(f'mongodb://root:{mongo_password}@server2:27017/')
+    db = client.chatbot 
+    collection = db.test
+
     date_res = to_datetime(userMessage)
     date_res = date_res.split(', ')
     
-    csv_file_path = f"./data/cal_{userId}.csv"
-    df = pd.read_csv(csv_file_path)
-    res = df[df['calendar_start_date'].isin(date_res)].to_json(orient="records", force_ascii=False)
-    res = json.loads(res)
+    query = {
+        'userId': userId,
+        'cal.calendar_start_date': {'$in': date_res}
+    }
+    result_cursor = collection.find(query)
+
+    res = []
+    for doc in result_cursor:
+        res_doc = {
+            'userId': doc['userId'],
+            'cal': doc['cal']
+        }
+        res.append(res_doc)
+        
     return res
+
