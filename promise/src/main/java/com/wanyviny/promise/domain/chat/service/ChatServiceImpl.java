@@ -3,14 +3,12 @@ package com.wanyviny.promise.domain.chat.service;
 import com.wanyviny.promise.domain.chat.dto.ChatRequest;
 import com.wanyviny.promise.domain.chat.dto.ChatResponse;
 import com.wanyviny.promise.domain.chat.entity.Chat;
-import com.wanyviny.promise.domain.chat.entity.ChatType;
 import com.wanyviny.promise.domain.chat.repository.ChatRepository;
 import com.wanyviny.promise.domain.room.entity.UserRoom;
 import com.wanyviny.promise.domain.room.repository.UserRoomRepository;
 import com.wanyviny.promise.domain.user.entity.User;
 import com.wanyviny.promise.domain.user.repository.UserRepository;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +20,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService {
 
-    private final ModelMapper modelMapper;
     private final ChatRepository chatRepository;
     private final UserRepository userRepository;
     private final UserRoomRepository userRoomRepository;
