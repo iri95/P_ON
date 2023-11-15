@@ -221,3 +221,32 @@ Future<void> fetchProfile(WidgetRef ref) async {
     print(e);
   }
 }
+
+Future<void> widthdrawal(WidgetRef ref) async {
+  final loginState = ref.read(loginStateProvider);
+  final token = loginState.serverToken;
+  final id = loginState.id;
+
+  var headers = {'Authorization': '$token', 'id': '$id'};
+
+  // 서버 토큰이 없으면
+  if (token == null) {
+    await kakaoLogin(ref);
+    await fetchToken(ref);
+
+    // 토큰을 다시 읽습니다.
+    final newToken = ref.read(loginStateProvider).serverToken;
+    final newId = ref.read(loginStateProvider).id;
+
+    headers['Authorization'] = '$newToken';
+    headers['id'] = '$newId';
+  }
+
+  final apiService = ApiService();
+  try {
+    await apiService.sendRequest(
+        method: 'DELETE', path: '/api/user/withdrawal', headers: headers);
+  } catch (e) {
+    print(e);
+  }
+}
