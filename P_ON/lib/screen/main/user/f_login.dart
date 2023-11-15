@@ -36,59 +36,57 @@ class _LoginPageState extends ConsumerState<LoginPage>
   Widget build(BuildContext context) {
     final auth = PonAuthScope.of(context);
 
-    Future<void> fetchProfile() async {
-      final loginState = ref.read(loginStateProvider);
-      final token = loginState.serverToken;
-      final id = loginState.id;
+    // Future<void> fetchProfile() async {
+    //   final loginState = ref.read(loginStateProvider);
+    //   final token = loginState.serverToken;
+    //   final id = loginState.id;
 
-      var headers = {'Authorization': '$token', 'id': '$id'};
+    //   var headers = {'Authorization': '$token', 'id': '$id'};
 
-      // 서버 토큰이 없으면
-      if (token == null) {
-        await kakaoLogin(ref);
-        await fetchToken(ref);
+    //   // 서버 토큰이 없으면
+    //   if (token == null) {
+    //     await kakaoLogin(ref);
+    //     await fetchToken(ref);
 
-        // 토큰을 다시 읽습니다.
-        final newToken = ref.read(loginStateProvider).serverToken;
-        final newId = ref.read(loginStateProvider).id;
+    //     // 토큰을 다시 읽습니다.
+    //     final newToken = ref.read(loginStateProvider).serverToken;
+    //     final newId = ref.read(loginStateProvider).id;
 
-        headers['Authorization'] = '$newToken';
-        headers['id'] = '$newId';
-      }
+    //     headers['Authorization'] = '$newToken';
+    //     headers['id'] = '$newId';
+    //   }
 
-      final apiService = ApiService();
-      try {
-        Response response = await apiService.sendRequest(
-            method: 'GET', path: '/api/user/profile', headers: headers);
+    //   final apiService = ApiService();
+    //   try {
+    //     Response response = await apiService.sendRequest(
+    //         method: 'GET', path: '/api/user/profile', headers: headers);
 
-        // 여기서 회원 정보 프로바이더 저장 후 전달
-        var user = UserState(
-          profileImage: response.data['result'][0]['profileImage'] as String,
-          nickName: response.data['result'][0]['nickName'] as String,
-          privacy: response.data['result'][0]['privacy'] as String,
-          stateMessage: response.data['result'][0]['stateMessage'] as String?,
-        );
+    //     // 여기서 회원 정보 프로바이더 저장 후 전달
+    //     var user = UserState(
+    //       profileImage: response.data['result'][0]['profileImage'] as String,
+    //       nickName: response.data['result'][0]['nickName'] as String,
+    //       privacy: response.data['result'][0]['privacy'] as String,
+    //       stateMessage: response.data['result'][0]['stateMessage'] as String?,
+    //     );
 
-        ref.read(userStateProvider.notifier).setUserState(user);
-        print('여긴 로그인이고 프로필 조회 끝 ${ref.read(userStateProvider)?.nickName}');
-      } catch (e) {
-        print('여긴 로그인이고 프로필 에러 $e');
-      }
-    }
+    //     ref.read(userStateProvider.notifier).setUserState(user);
+    //     print('여긴 로그인이고 프로필 조회 끝 ${ref.read(userStateProvider)?.nickName}');
+    //   } catch (e) {
+    //     print('여긴 로그인이고 프로필 에러 $e');
+    //   }
+    // }
 
     Future<void> goLogin() async {
       // 여기서 user이면, 바로 true로 변하고 이동 바로됨
-      // 그러면 프로필 데이터는 어디서 받아옴?
       await auth.signInWithKakao(ref);
 
       // role이 user이면 회원, guest이면 비회원
       // 비회원이면, 회원 가입으로
       if (ref.read(loginStateProvider).role == 'GUEST') {
         print('난 게스트고 가입으로');
-        await fetchProfile();
+        await fetchProfile(ref);
         // 저장된 userState
         final userState = ref.watch(userStateProvider);
-        print('${userState}');
         await Nav.push(RegisterFragment(
           nickName: userState?.nickName ?? "",
           profileImage: userState?.profileImage ?? "",
@@ -104,9 +102,6 @@ class _LoginPageState extends ConsumerState<LoginPage>
         // });
       } else {
         // 회원이면 메인 페이지로
-        // TODO: 메인 페이지 라우팅 안됨
-        // await fetchProfile();
-        // GoRouter.of(context).go('/');
         print('난 유저고 메인으로 ${auth.signedIn}');
       }
     }
@@ -132,8 +127,7 @@ class _LoginPageState extends ConsumerState<LoginPage>
               onPressed: () async {
                 // FIXME: 이게 키해시임
                 print("=====");
-                print("=====");
-                print(await KakaoSdk.origin);
+                // print(await KakaoSdk.origin);
 
                 await goLogin();
               },

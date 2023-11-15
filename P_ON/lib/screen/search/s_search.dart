@@ -151,7 +151,6 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
   void dispose() {
     searchData.searchResult.clear();
     focusNode.dispose();
-
     // Get.dispose<SearchData>();
     super.dispose();
   }
