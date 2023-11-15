@@ -37,13 +37,13 @@ void main() async {
   );
 
   // await NaverMapSdk.instance.initialize(clientId: Naver_Map_Id);
-  // if (kIsWeb) {
-  // } else {
-  //   await NaverMapSdk.instance.initialize(clientId: Naver_Map_Id);
-  // }
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
+  if (kIsWeb) {
+  } else {
+    await NaverMapSdk.instance.initialize(clientId: Naver_Map_Id);
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
 
   timeago.setLocaleMessages('ko', timeago.KoMessages());
   runApp(EasyLocalization(
