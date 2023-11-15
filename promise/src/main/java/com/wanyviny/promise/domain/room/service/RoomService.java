@@ -12,4 +12,6 @@ public interface RoomService {
     RoomResponse.Join joinRoom(Long userId, Long roomId);
     List<RoomResponse.Exit> exitRoom(Long userId, Long roomId);
     void deleteRoom(Long roomId);
+
+    void completePromise(Long roomId);
 }

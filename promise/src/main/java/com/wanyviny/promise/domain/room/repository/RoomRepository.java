@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface RoomRepository extends JpaRepository<Room, Long> {
 
-    List<Room> findByDateCompleteIsOrTimeCompleteIsOrLocationCompleteIs(boolean dateComplete,boolean timeComplete,boolean locationComplete);
+    List<Room> findByDateCompleteIsOrTimeCompleteIsOrLocationCompleteIs(boolean dateComplete, boolean timeComplete, boolean locationComplete);
 
     @Modifying
     @Transactional
@@ -32,4 +32,8 @@ public interface RoomRepository extends JpaRepository<Room, Long> {
     @Query("update Room r set r.locationComplete = true where r.id = :roomId")
     void completeLocation(Long roomId);
 
+    @Modifying
+    @Transactional
+    @Query("update Room r set r.complete = true where r.id = :roomId")
+    void completePromise(Long roomId);
 }

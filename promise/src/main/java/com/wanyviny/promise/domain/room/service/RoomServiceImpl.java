@@ -254,6 +254,12 @@ public class RoomServiceImpl implements RoomService {
         roomRepository.deleteById(roomId);
     }
 
+    @Override
+    @Transactional
+    public void completePromise(Long roomId) {
+        roomRepository.completePromise(roomId);
+    }
+
     private boolean isComplete(String deadDate, String deadTime) {
 
         if (deadDate == null) {
@@ -333,4 +339,6 @@ public class RoomServiceImpl implements RoomService {
                     .build());
         });
     }
+
+
 }
