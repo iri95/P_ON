@@ -66,7 +66,6 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
   // 뺴버리면 에러 안뜸
   // @override
   void dispose() {
-    print('1111111111111디스포즈?');
     scrollController.removeListener(_scrollListener); // 리스너 해제
     super.dispose();
   }

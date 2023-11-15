@@ -160,6 +160,16 @@ class _MyPlanAndPromiseState extends ConsumerState<MyPlanAndPromise> {
             }
 
             return TextButton(
+              style: ButtonStyle(
+                overlayColor: MaterialStateProperty.resolveWith<Color>(
+                  (Set<MaterialState> states) {
+                    if (states.contains(MaterialState.pressed)) {
+                      return Colors.transparent; // 눌렀을 때 배경색 없음
+                    }
+                    return Colors.transparent; // 기본 배경색 없음
+                  },
+                ),
+              ),
               onPressed: () {
                 final router = GoRouter.of(context);
                 router.go('/chatroom/${item['id']}');
