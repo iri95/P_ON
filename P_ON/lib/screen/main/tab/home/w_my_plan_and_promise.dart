@@ -65,6 +65,7 @@ class _MyPlanAndPromiseState extends ConsumerState<MyPlanAndPromise> {
 
   @override
   void initState() {
+    print('w_myPlan');
     getPromiseRoom();
     super.initState();
   }

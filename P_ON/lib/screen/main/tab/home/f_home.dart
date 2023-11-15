@@ -9,6 +9,7 @@ import 'package:p_on/screen/main/tab/home/w_p_on_app_bar.dart';
 import 'package:p_on/screen/main/tab/promise_room/dto_promise.dart';
 import 'package:p_on/screen/main/tab/promise_room/f_create_promise.dart';
 import 'package:flutter/material.dart';
+
 import '../../../../common/widget/w_big_button.dart';
 import '../../../dialog/d_color_bottom.dart';
 import '../../../dialog/d_confirm.dart';
@@ -17,48 +18,79 @@ import '../../fab/w_bottom_nav_floating_button.riverpod.dart';
 import '../../s_main.dart';
 import '../promise_room/vo_server_url.dart';
 import 'bank_accounts_dummy.dart';
+
 import 'package:dio/dio.dart';
 import 'package:p_on/common/util/dio.dart';
 import 'package:p_on/screen/main/user/fn_kakao.dart';
+
 import 'package:p_on/screen/main/user/token_state.dart';
 import 'package:p_on/screen/main/user/user_state.dart';
+
 import 'home_scroll_provider/scroll_controller_provider.dart';
+
 class HomeFragment extends ConsumerStatefulWidget {
   const HomeFragment({super.key});
+
   @override
   ConsumerState<HomeFragment> createState() => _HomeFragmentState();
 }
+
 class _HomeFragmentState extends ConsumerState<HomeFragment> {
   // final scrollController = ScrollController();
-  late final ScrollController scrollController;
+  // final 문제였슴 ㅡㅡ
+  late ScrollController scrollController;
   List<dynamic>? promise;
+
   @override
   void initState() {
+    print('f_home');
+
     super.initState();
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   scrollController = ref.read(homeScrollControllerProvider);
+    //   scrollController.addListener(_scrollListener);
+    //   // _fetchProfile();
+    // });
+    scrollController = ref.read(homeScrollControllerProvider);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      scrollController = ref.read(homeScrollControllerProvider);
       scrollController.addListener(_scrollListener);
       _fetchProfile();
     });
   }
+
+  // void _scrollListener() {
+  //   if (!mounted) return;
+  //   scrollController = ref.read(homeScrollControllerProvider);
+  //   scrollController.addListener(() {
+  //     final floatingState = ref.read(floatingButtonStateProvider);
+  //     if (scrollController.position.pixels > 100 && !floatingState.isSmall) {
+  //       ref.read(floatingButtonStateProvider.notifier).changeButtonSize(true);
+  //     } else if (scrollController.position.pixels < 100 &&
+  //         floatingState.isSmall) {
+  //       ref.read(floatingButtonStateProvider.notifier).changeButtonSize(false);
+  //     }
+  //   });
+  // }
+
   void _scrollListener() {
     if (!mounted) return;
-    scrollController = ref.read(homeScrollControllerProvider);
-    scrollController.addListener(() {
-      final floatingState = ref.read(floatingButtonStateProvider);
-      if (scrollController.position.pixels > 100 && !floatingState.isSmall) {
-        ref.read(floatingButtonStateProvider.notifier).changeButtonSize(true);
-      } else if (scrollController.position.pixels < 100 &&
-          floatingState.isSmall) {
-        ref.read(floatingButtonStateProvider.notifier).changeButtonSize(false);
-      }
-    });
+    final floatingState = ref.read(floatingButtonStateProvider);
+    if (scrollController.position.pixels > 100 && !floatingState.isSmall) {
+      ref.read(floatingButtonStateProvider.notifier).changeButtonSize(true);
+    } else if (scrollController.position.pixels < 100 &&
+        floatingState.isSmall) {
+      ref.read(floatingButtonStateProvider.notifier).changeButtonSize(false);
+    }
   }
+
   @override
   void dispose() {
+    print('11111111111111111111111111111');
     scrollController.removeListener(_scrollListener); // 리스너 해제
+    scrollController.dispose();
     super.dispose();
   }
+
   void _fetchProfile() async {
     final loginState = ref.read(loginStateProvider);
     final userState = ref.read(userStateProvider);
@@ -66,37 +98,49 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
     final id = loginState.id;
     print('${loginState}, ${token}, ${id}');
     var headers = {'Authorization': '$token', 'id': '$id'};
+
     // 서버 토큰이 없으면
     if (token == null) {
       await kakaoLogin(ref);
       await fetchToken(ref);
+
       // 토큰을 다시 읽습니다.
       final newToken = ref.read(loginStateProvider).serverToken;
       final newId = ref.read(loginStateProvider).id;
+
       headers['Authorization'] = '$newToken';
       headers['id'] = '$newId';
     }
+
     final apiService = ApiService();
     try {
       Response response = await apiService.sendRequest(
           method: 'GET', path: '/api/user/profile', headers: headers);
-      // 여기서 서버에서 받앙온 회원 정보 저장
+
+      // 여기서 서버에서 받아온 회원 정보 저장
       var user = UserState(
         profileImage: response.data['result'][0]['profileImage'] as String,
         nickName: response.data['result'][0]['nickName'] as String,
         privacy: response.data['result'][0]['privacy'] as String,
         stateMessage: response.data['result'][0]['stateMessage'] as String?,
       );
-      // if (!mounted) return;
+
+      if (!mounted) return;
+
       ref.read(userStateProvider.notifier).setUserState(user);
       print('여긴 메인이고 프로필 조회 끝 ${ref.read(userStateProvider)?.nickName}');
     } catch (e) {
       print('여긴 메인이고 프로필 에러 $e');
     }
   }
+
+  late var _user;
+
   @override
   Widget build(BuildContext context) {
     scrollController = ref.watch(homeScrollControllerProvider);
+    _user = ref.watch(userStateProvider);
+
     return Container(
       // color: Colors.white,
       child: Stack(
@@ -123,33 +167,33 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
                   // 상단 멘트
                   RoundedContainer(
                       child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              '${ref.watch(userStateProvider)?.nickName ?? ''}'
-                                  .text
-                                  .fontWeight(FontWeight.w800)
-                                  .size(26)
-                                  .color(AppColors.mainBlue)
-                                  .make(),
-                              '님,'
-                                  .text
-                                  .semiBold
-                                  .size(24)
-                                  .color(Colors.black)
-                                  .make(),
-                            ],
-                          ),
-                          '다가오는 약속이 있어요!'
+                          '${_user?.nickName ?? ''}'
+                              .text
+                              .fontWeight(FontWeight.w800)
+                              .size(26)
+                              .color(AppColors.mainBlue)
+                              .make(),
+                          '님,'
                               .text
                               .semiBold
                               .size(24)
                               .color(Colors.black)
                               .make(),
-                        ], // 로그인한 유저 이름으로 변경하기
-                      )),
+                        ],
+                      ),
+                      '다가오는 약속이 있어요!'
+                          .text
+                          .semiBold
+                          .size(24)
+                          .color(Colors.black)
+                          .make(),
+                    ], // 로그인한 유저 이름으로 변경하기
+                  )),
                   // 약속방들
                   MyPlanAndPromise(),
                   height100

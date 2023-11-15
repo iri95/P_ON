@@ -11,6 +11,9 @@ import 'package:flutter/services.dart'; //PlatformException 사용을 위한 패
 import 'package:device_info/device_info.dart'; // 디바이스 정보 사용 패키지
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+import 'package:p_on/screen/main/user/user_state.dart';
+import 'package:p_on/common/util/dio.dart';
+
 // 디바이스 아이디 받아오기
 Future<String> getMobileId() async {
   // DeviceInfoPlugin 클래스 생성
@@ -175,5 +178,46 @@ Future<void> fetchToken(WidgetRef ref) async {
   } catch (e) {
     // 에러 처리
     throw Exception('서버 토큰을 가져오는데 실패했습니다: $e');
+  }
+}
+
+// 서버 API로 정보 받아오는거임
+Future<void> fetchProfile(WidgetRef ref) async {
+  final loginState = ref.read(loginStateProvider);
+  final token = loginState.serverToken;
+  final id = loginState.id;
+
+  var headers = {'Authorization': '$token', 'id': '$id'};
+
+  // 서버 토큰이 없으면
+  if (token == null) {
+    await kakaoLogin(ref);
+    await fetchToken(ref);
+
+    // 토큰을 다시 읽습니다.
+    final newToken = ref.read(loginStateProvider).serverToken;
+    final newId = ref.read(loginStateProvider).id;
+
+    headers['Authorization'] = '$newToken';
+    headers['id'] = '$newId';
+  }
+
+  final apiService = ApiService();
+  try {
+    Response response = await apiService.sendRequest(
+        method: 'GET', path: '/api/user/profile', headers: headers);
+
+    // 여기서 회원 정보 프로바이더 저장 후 전달
+    var user = UserState(
+      profileImage: response.data['result'][0]['profileImage'] as String,
+      nickName: response.data['result'][0]['nickName'] as String,
+      privacy: response.data['result'][0]['privacy'] as String,
+      stateMessage: response.data['result'][0]['stateMessage'] as String?,
+    );
+
+    ref.read(userStateProvider.notifier).setUserState(user);
+    print('프로필 조회 끝 ${ref.read(userStateProvider)?.nickName}');
+  } catch (e) {
+    print(e);
   }
 }
