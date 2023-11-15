@@ -4,11 +4,8 @@ import com.wanyviny.promise.domain.chat.dto.ChatRequest;
 import com.wanyviny.promise.domain.chat.dto.ChatResponse;
 import com.wanyviny.promise.domain.chat.entity.Chat;
 import com.wanyviny.promise.domain.chat.repository.ChatRepository;
-import com.wanyviny.promise.domain.room.entity.Room;
 import com.wanyviny.promise.domain.room.entity.UserRoom;
 import com.wanyviny.promise.domain.room.repository.UserRoomRepository;
-import com.wanyviny.promise.domain.user.entity.PRIVACY;
-import com.wanyviny.promise.domain.user.entity.ROLE;
 import com.wanyviny.promise.domain.user.entity.User;
 import com.wanyviny.promise.domain.user.repository.UserRepository;
 
