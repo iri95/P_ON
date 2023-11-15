@@ -280,7 +280,12 @@ class _SearchNaverState extends ConsumerState<SearchNaver> {
                                                       .read(promiseProvider
                                                           .notifier)
                                                       .setPromiseLocation(
-                                                          item['title'],
+                                                          item['title'].replaceAll(RegExp(r'<[^>]*>'), '')
+                                                              .replaceAll('&amp;', '&')
+                                                              .replaceAll('&lt;', '<')
+                                                              .replaceAll('&gt;', '>')
+                                                              .replaceAll('&quot;', '"')
+                                                              .replaceAll('&#39;', "'"),
                                                           NLatLng(y,
                                                               x));// 약속 장소와 좌표 저장
                                                   ref

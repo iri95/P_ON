@@ -66,8 +66,7 @@ class _ChatBotState extends ConsumerState<ChatBot> {
       print('이거보이면 데이터 받아온거임');
       print(response);
     } catch (e) {
-      print('에라다에라');
-      print(e);
+      messages.add(Message(text: '유효하지 않은 입력이에요!', user: false));
     }
     setState(() {});
   }
@@ -143,7 +142,7 @@ class _ChatBotState extends ConsumerState<ChatBot> {
           backgroundColor: Colors.white,
         ),
         body: Container(
-          padding: const EdgeInsets.only(bottom: 60),
+          padding: const EdgeInsets.only(bottom: 60, left: 8, right: 8),
           child: Column(
             children: [
               Expanded(
@@ -230,10 +229,16 @@ class _ChatBotState extends ConsumerState<ChatBot> {
                     } else if (index == 3) {
                       return Container();
                     } else {
+                      var sameSender = false;
+                      if (index - 1 != 3 && messages[index-1].user == messages[index].user) {
+                        sameSender = true;
+                      } else {
+                        sameSender = false; 
+                      }
                       return Column(
                         children: [
                           Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 4),
+                            margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
                             child: Row(
                               mainAxisAlignment: messages[index].user
                                   ? MainAxisAlignment.end
@@ -260,12 +265,14 @@ class _ChatBotState extends ConsumerState<ChatBot> {
                                         child: Container(
                                           margin: const EdgeInsets.only(top: 4),
                                           padding: const EdgeInsets.symmetric(
-                                              vertical: 4, horizontal: 12),
+                                              vertical: 8, horizontal: 16),
                                           decoration: BoxDecoration(
                                             color: messages[index].user
                                                 ? AppColors.pointOrange2
                                                 : AppColors.grey200,
-                                            borderRadius: messages[index].user
+                                            
+                                            borderRadius: sameSender ? BorderRadius.all(Radius.circular(20)) :
+                                            messages[index].user
                                                 ? const BorderRadius.only(
                                                     topLeft:
                                                         Radius.circular(20),
@@ -314,12 +321,12 @@ class _ChatBotState extends ConsumerState<ChatBot> {
           ),
           child: Row(
             children: [
-              IconButton(
-                  onPressed: () {},
-                  icon: const Icon(
-                    Icons.mic,
-                    color: AppColors.pointOrange,
-                  )),
+              ClipOval(
+                child: Container(
+                  margin: const EdgeInsets.all(4),
+                    child: Image.asset('assets/image/main/핑키1.png')),
+              ),
+              
               Expanded(
                   child: Column(
                 children: [
