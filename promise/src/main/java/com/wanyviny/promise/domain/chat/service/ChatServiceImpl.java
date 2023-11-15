@@ -13,14 +13,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class ChatServiceImpl implements ChatService {
 
-    private final ModelMapper modelMapper;
     private final ChatRepository chatRepository;
     private final UserRepository userRepository;
     private final UserRoomRepository userRoomRepository;
@@ -48,6 +46,7 @@ public class ChatServiceImpl implements ChatService {
                 .chatType(chat.getChatType())
                 .content(chat.getContent())
                 .createAt(chat.getCreateAt())
+                .senderProfileImage(user.getProfileImage())
                 .build();
     }
 
@@ -57,7 +56,12 @@ public class ChatServiceImpl implements ChatService {
         List<Chat> chats = chatRepository.findAllByRoomId(roomId);
         List<ChatResponse> response = new ArrayList<>();
 
-        chats.forEach(chat -> response.add(modelMapper.map(chat, ChatResponse.class)));
+        chats.forEach(chat -> {
+            String profileImage = userRepository.findById(Long.parseLong(chat.getSenderId())).orElseThrow(
+                    () -> new IllegalArgumentException("해당 유저가 존재하지 않습니다.")
+            ).getProfileImage();
+            response.add(chat.entityToDto(profileImage));
+        });
         return response;
     }
 

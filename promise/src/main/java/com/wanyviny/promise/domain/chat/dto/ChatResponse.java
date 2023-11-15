@@ -17,6 +17,7 @@ public class ChatResponse {
     private String roomId;
     private String senderId;
     private String sender;
+    private String senderProfileImage;
     private ChatType chatType;
     private String content;
     private LocalDateTime createAt;
