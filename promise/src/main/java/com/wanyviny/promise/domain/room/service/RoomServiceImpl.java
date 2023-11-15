@@ -147,7 +147,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
-    public List<RoomResponse.FindAll> findAllRoom(Long userId) {
+    public List<RoomResponse.FindAll> findAllRoom(Long userId, boolean complete) {
 
         List<UserRoom> userRooms = userRoomRepository.findAllByUserId(userId);
         List<RoomResponse.FindAll> response = new ArrayList<>();
@@ -160,7 +160,7 @@ public class RoomServiceImpl implements RoomService {
                         else return 1;
                     })).map(Chat::getId).toList();
             Room room = userRoom.getRoom();
-            if (!room.isComplete()) {
+            if (room.isComplete() == complete) {
                 if (lastChatIdList.size() != 0) {
                     String lastChatId = lastChatIdList.get(0);
                     String userChatId = userRoom.getChatId();
