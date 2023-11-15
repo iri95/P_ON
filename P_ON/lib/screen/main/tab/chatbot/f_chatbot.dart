@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:p_on/common/common.dart';
 import 'package:p_on/common/util/dio.dart';
+import 'package:p_on/screen/main/tab/chatbot/w_chatbot_example.dart';
 
 import '../../user/fn_kakao.dart';
 import '../../user/token_state.dart';
@@ -19,10 +20,14 @@ class ChatBot extends ConsumerStatefulWidget {
 }
 
 class _ChatBotState extends ConsumerState<ChatBot> {
-  List<Message> messages = [];
+  List<dynamic> messages = [];
   final messageController = TextEditingController();
   bool createSchedule = false;
   bool checkSchedule = false;
+  final ScrollController _scrollController = ScrollController();
+  final FocusNode node = FocusNode();
+
+
 
   Future<void> postChatbot(String text) async {
     // 현재 저장된 서버 토큰을 가져옵니다.
@@ -44,15 +49,12 @@ class _ChatBotState extends ConsumerState<ChatBot> {
       headers['Authorization'] = '$newToken';
       headers['id'] = '$newId';
     }
-    var data = {
-      'content' : text
-    };
+    var data = {'content': text};
     print(text);
     print('post요청 보냄슨');
     print(headers['id'].runtimeType);
 
-
-    messages.add(Message(text: '일정이 생성되면 알려드릴게요!', user: false));
+    messages.add((text: '일정이 생성되면 알려드릴게요!', user: false));
 
     final apiService = ApiService();
     try {
@@ -65,8 +67,16 @@ class _ChatBotState extends ConsumerState<ChatBot> {
       print('이거보이면 데이터 받아온거임');
       print('이거보이면 데이터 받아온거임');
       print(response);
+
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent + 100,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.ease,
+        );
+      });
     } catch (e) {
-      messages.add(Message(text: '유효하지 않은 입력이에요!', user: false));
+      messages.add((text: '유효하지 않은 입력이에요!', user: false));
     }
     setState(() {});
   }
@@ -99,6 +109,16 @@ class _ChatBotState extends ConsumerState<ChatBot> {
         headers: headers,
         data: text,
       );
+      print('get 요청 보냄');
+      print(response);
+
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent + 100,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.ease,
+        );
+      });
     } catch (e) {
       print(e);
     }
@@ -112,10 +132,30 @@ class _ChatBotState extends ConsumerState<ChatBot> {
     var formatter = DateFormat('yyyy-MM-dd (E)', 'ko_KR');
     String formattedDate = formatter.format(now);
 
-    messages.add(Message(text: formattedDate, user: false));
-    messages.add(Message(text: '하고 싶은 채팅을 선택해 주세요!', user: false));
-    messages.add(Message(text: '일정 생성', user: false));
-    messages.add(Message(text: '일정 확인', user: false));
+    messages.add((text: formattedDate, user: false));
+    messages.add((text: '하고 싶은 채팅을 선택해 주세요!', user: false));
+    messages.add((text: '일정 생성', user: false));
+    messages.add((text: '일정 확인', user: false));
+
+    node.addListener(() {
+      if (node.hasFocus) {
+        Future.delayed(Duration(milliseconds: 300)).then((_) {
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent + 100,
+            duration: Duration(milliseconds: 300),
+            curve: Curves.ease,
+          );
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _scrollController.dispose();
+    node.dispose();
+    messageController.dispose();
   }
 
   @override
@@ -131,7 +171,7 @@ class _ChatBotState extends ConsumerState<ChatBot> {
             },
           ),
           title: Text(
-            'Pinck Chat',
+            'Pinky Chat',
             style: GoogleFonts.fredokaOne(
                 textStyle: Theme.of(context).textTheme.displayLarge,
                 fontSize: 24,
@@ -147,6 +187,7 @@ class _ChatBotState extends ConsumerState<ChatBot> {
             children: [
               Expanded(
                 child: ListView.builder(
+                  controller: _scrollController,
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
                     if (index == 0 || index == 1) {
@@ -182,7 +223,7 @@ class _ChatBotState extends ConsumerState<ChatBot> {
                                   createSchedule = true;
                                   checkSchedule = false;
                                   setState(() {
-                                    messages.add(Message(
+                                    messages.add((
                                         text: '생성할 일정을 말씀해주세요!', user: false));
                                   });
                                 },
@@ -209,7 +250,7 @@ class _ChatBotState extends ConsumerState<ChatBot> {
                                   createSchedule = false;
                                   checkSchedule = true;
                                   setState(() {
-                                    messages.add(Message(
+                                    messages.add((
                                         text: '확인할 일정을 말씀해 주세요!', user: false));
                                   });
                                 },
@@ -230,15 +271,17 @@ class _ChatBotState extends ConsumerState<ChatBot> {
                       return Container();
                     } else {
                       var sameSender = false;
-                      if (index - 1 != 3 && messages[index-1].user == messages[index].user) {
+                      if (index - 1 != 3 &&
+                          messages[index - 1].user == messages[index].user) {
                         sameSender = true;
                       } else {
-                        sameSender = false; 
+                        sameSender = false;
                       }
                       return Column(
                         children: [
                           Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 4, vertical: 8),
                             child: Row(
                               mainAxisAlignment: messages[index].user
                                   ? MainAxisAlignment.end
@@ -270,25 +313,26 @@ class _ChatBotState extends ConsumerState<ChatBot> {
                                             color: messages[index].user
                                                 ? AppColors.pointOrange2
                                                 : AppColors.grey200,
-                                            
-                                            borderRadius: sameSender ? BorderRadius.all(Radius.circular(20)) :
-                                            messages[index].user
-                                                ? const BorderRadius.only(
-                                                    topLeft:
-                                                        Radius.circular(20),
-                                                    topRight:
-                                                        Radius.circular(20),
-                                                    bottomLeft:
-                                                        Radius.circular(20),
-                                                  )
-                                                : const BorderRadius.only(
-                                                    topRight:
-                                                        Radius.circular(20),
-                                                    bottomRight:
-                                                        Radius.circular(20),
-                                                    bottomLeft:
-                                                        Radius.circular(20),
-                                                  ),
+                                            borderRadius: sameSender
+                                                ? BorderRadius.all(
+                                                    Radius.circular(20))
+                                                : messages[index].user
+                                                    ? const BorderRadius.only(
+                                                        topLeft:
+                                                            Radius.circular(20),
+                                                        topRight:
+                                                            Radius.circular(20),
+                                                        bottomLeft:
+                                                            Radius.circular(20),
+                                                      )
+                                                    : const BorderRadius.only(
+                                                        topRight:
+                                                            Radius.circular(20),
+                                                        bottomRight:
+                                                            Radius.circular(20),
+                                                        bottomLeft:
+                                                            Radius.circular(20),
+                                                      ),
                                           ),
                                           child: Text(
                                             messages[index].text,
@@ -321,12 +365,21 @@ class _ChatBotState extends ConsumerState<ChatBot> {
           ),
           child: Row(
             children: [
-              ClipOval(
-                child: Container(
-                  margin: const EdgeInsets.all(4),
-                    child: Image.asset('assets/image/main/핑키1.png')),
+              TextButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return ChatbotExample();
+                    },
+                  );
+                },
+                child: ClipOval(
+                  child: Container(
+                      margin: const EdgeInsets.all(4),
+                      child: Image.asset('assets/image/main/핑키1.png')),
+                ),
               ),
-              
               Expanded(
                   child: Column(
                 children: [
@@ -341,19 +394,20 @@ class _ChatBotState extends ConsumerState<ChatBot> {
                       children: [
                         Expanded(
                           child: TextField(
+                            focusNode: node,
                             controller: messageController,
                             cursorColor: AppColors.pointOrange,
                             decoration: const InputDecoration(
-                              enabledBorder: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                            ),
+                                enabledBorder: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                hintText: '핑키를 누르시면 설명을 볼 수 있어요!'),
                             onSubmitted: (text) {
                               if (text.isEmpty) {
                                 null;
                               } else {
                                 setState(() {
                                   messageController.text = '';
-                                  messages.add(Message(text: text, user: true));
+                                  messages.add((text: text, user: true));
                                   if (createSchedule == true &&
                                       checkSchedule == false) {
                                     postChatbot(text);
@@ -361,7 +415,7 @@ class _ChatBotState extends ConsumerState<ChatBot> {
                                       createSchedule == false) {
                                     getChatbot(text);
                                   } else {
-                                    messages.add(Message(
+                                    messages.add((
                                         text: '하고싶은 채팅을 먼저 선택해 주세요!',
                                         user: false));
                                   }
@@ -376,8 +430,9 @@ class _ChatBotState extends ConsumerState<ChatBot> {
                                 null;
                               } else {
                                 setState(() {
-                                  messages.add(Message(
-                                      text: messageController.text, user: true));
+                                  messages.add((
+                                      text: messageController.text,
+                                      user: true));
                                   if (createSchedule == true &&
                                       checkSchedule == false) {
                                     postChatbot(messageController.text);
@@ -385,11 +440,11 @@ class _ChatBotState extends ConsumerState<ChatBot> {
                                       createSchedule == false) {
                                     getChatbot(messageController.text);
                                   } else {
-                                    messages.add(Message(
+                                    messages.add((
                                         text: '하고싶은 채팅을 먼저 선택해 주세요!',
                                         user: false));
                                   }
-                                  messageController.text='';
+                                  messageController.text = '';
                                 });
                               }
                             },
@@ -408,11 +463,4 @@ class _ChatBotState extends ConsumerState<ChatBot> {
       ),
     );
   }
-}
-
-class Message {
-  final String text;
-  final bool user;
-
-  Message({required this.text, required this.user});
 }

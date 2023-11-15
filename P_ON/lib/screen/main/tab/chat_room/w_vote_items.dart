@@ -632,6 +632,8 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
                 ],
               ),
             ),
+          /// TODO
+          /// 초록창 부분
           if (widget.voteType == 'DATE')
             Container(
               width: double.infinity,
@@ -639,6 +641,8 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
               color: Colors.green,
               margin: EdgeInsets.fromLTRB(24, 0, 24, 24),
             ),
+          /// 여기까지 입니다
+          /// 이 사이에 모두의 일정이 포함된 공유 캘린더 넣어 주시면 되용
           if (widget.voteType == 'LOCATION' &&
               widget.voteData != null &&
               widget.voteData!.length > 0)
