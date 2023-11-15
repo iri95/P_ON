@@ -1,6 +1,6 @@
-from kafka.connect_to_kafka import kafka_producer, kafka_consumer
+from kafka.connect_to_kafka import kafka_producer
 from model.modules import UserMessage_to_cal
-from model.modules import find_from_csv
+from model.modules import find_from_mongo
 
 from fastapi import FastAPI, Header, Request, BackgroundTasks
 from typing import Union
@@ -8,15 +8,7 @@ from typing import Union
 
 app = FastAPI()
 
-
-
-@app.on_event("startup")
-async def execute_background_task(background_tasks: BackgroundTasks):
-    res = "테스트"
-    # background_tasks.add_task(some_background_task)
-    # res = kafka_consumer()
-    print(res)
-
+            
 @app.post("/chatbot")
 async def create_calendar(
     request: Request,
@@ -46,7 +38,7 @@ async def root(
     json_data = await request.json()
     text = json_data.get("content", "")
 
-    res = find_from_csv(userId, text)
+    res = find_from_mongo(userId, text)
     return {"res" : res}
 
 
