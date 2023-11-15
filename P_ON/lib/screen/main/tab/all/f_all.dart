@@ -22,6 +22,7 @@ import 'package:p_on/common/util/dio.dart';
 import 'package:p_on/screen/main/user/fn_kakao.dart';
 import 'package:p_on/screen/main/s_main.dart';
 import 'package:p_on/screen/main/tab/tab_item.dart';
+import 'package:p_on/screen/main/tab/benefit/complete_provider.dart';
 
 // Future<void> fetchFollow() async {
 final fetchFollowProvider = FutureProvider.autoDispose<void>((ref) async {
@@ -78,8 +79,12 @@ class _AllFragmentState extends ConsumerState<AllFragment> {
       // currentTabProvider의 상태가 변경될 때마다 이 부분이 호출됩니다.
       // 마이페이지 일때
       if (newTabItem == TabItem.my) {
-        print(ref.read(userStateProvider)?.nickName);
+        // print(ref.read(userStateProvider)?.nickName);
         ref.read(fetchFollowProvider.future);
+      }
+
+      if (newTabItem == TabItem.history) {
+        ref.read(completeProvider.notifier).getCompleteRoom();
       }
     });
 

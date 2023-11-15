@@ -36,7 +36,6 @@ class HomeFragment extends ConsumerStatefulWidget {
 }
 
 class _HomeFragmentState extends ConsumerState<HomeFragment> {
-  // final scrollController = ScrollController();
   // final 문제였슴 ㅡㅡ
   late ScrollController scrollController;
   List<dynamic>? promise;
@@ -68,49 +67,6 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
   void dispose() {
     scrollController.removeListener(_scrollListener); // 리스너 해제
     super.dispose();
-  }
-
-  void _fetchProfile() async {
-    final loginState = ref.read(loginStateProvider);
-    final userState = ref.read(userStateProvider);
-    final token = loginState.serverToken;
-    final id = loginState.id;
-    print('${loginState}, ${token}, ${id}');
-    var headers = {'Authorization': '$token', 'id': '$id'};
-
-    // 서버 토큰이 없으면
-    if (token == null) {
-      await kakaoLogin(ref);
-      await fetchToken(ref);
-
-      // 토큰을 다시 읽습니다.
-      final newToken = ref.read(loginStateProvider).serverToken;
-      final newId = ref.read(loginStateProvider).id;
-
-      headers['Authorization'] = '$newToken';
-      headers['id'] = '$newId';
-    }
-
-    final apiService = ApiService();
-    try {
-      Response response = await apiService.sendRequest(
-          method: 'GET', path: '/api/user/profile', headers: headers);
-
-      // 여기서 서버에서 받아온 회원 정보 저장
-      var user = UserState(
-        profileImage: response.data['result'][0]['profileImage'] as String,
-        nickName: response.data['result'][0]['nickName'] as String,
-        privacy: response.data['result'][0]['privacy'] as String,
-        stateMessage: response.data['result'][0]['stateMessage'] as String?,
-      );
-
-      if (!mounted) return;
-
-      ref.read(userStateProvider.notifier).setUserState(user);
-      print('여긴 메인이고 프로필 조회 끝 ${ref.read(userStateProvider)?.nickName}');
-    } catch (e) {
-      print('여긴 메인이고 프로필 에러 $e');
-    }
   }
 
   late var _user;
@@ -171,10 +127,10 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
                           .size(24)
                           .color(Colors.black)
                           .make(),
-                    ], // 로그인한 유저 이름으로 변경하기
+                    ],
                   )),
                   // 약속방들
-                  MyPlanAndPromise(),
+                  const MyPlanAndPromise(),
                   height100
                 ],
               ),
