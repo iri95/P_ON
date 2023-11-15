@@ -8,12 +8,15 @@ class Vote extends StatefulWidget {
   final VoteType voteType;
   final int roomId;
   final bool isVote;
+  final String voteInfo;
 
   const Vote(
       {super.key,
       required this.roomId,
       required this.voteType,
-      required this.isVote});
+      required this.isVote,
+      required this.voteInfo,
+      });
 
   @override
   State<Vote> createState() => _VoteState();
@@ -41,30 +44,30 @@ class _VoteState extends State<Vote> {
                 print('date');
                 print(widget.voteType);
                 if (widget.isVote! == true) {
-                  router.go('/selecte/vote/${widget.roomId}');
+                  router.go('/selecte/vote/${widget.roomId}/${widget.voteInfo}');
                 } else {
                   router.go(
-                      '/create/vote/${widget.roomId}/${voteTypeToString(widget.voteType)}/$isUpdate');
+                      '/create/vote/${widget.roomId}/${voteTypeToString(widget.voteType)}/$isUpdate/${widget.voteInfo}');
                 }
                 break;
               case VoteType.TIME:
                 print('time');
                 print(widget.voteType);
                 if (widget.isVote! == true) {
-                  router.go('/selecte/vote/${widget.roomId}');
+                  router.go('/selecte/vote/${widget.roomId}/${widget.voteInfo}');
                 } else {
                   router.go(
-                      '/create/vote/${widget.roomId}/${voteTypeToString(widget.voteType)}/$isUpdate');
+                      '/create/vote/${widget.roomId}/${voteTypeToString(widget.voteType)}/$isUpdate/${widget.voteInfo}');
                 }
                 break;
               case VoteType.LOCATION:
                 print('location');
                 print(widget.voteType);
                 if (widget.isVote! == true) {
-                  router.go('/selecte/vote/${widget.roomId}');
+                  router.go('/selecte/vote/${widget.roomId}/${widget.voteInfo}');
                 } else {
                   router.go(
-                      '/create/vote/${widget.roomId}/${voteTypeToString(widget.voteType)}/$isUpdate');
+                      '/create/vote/${widget.roomId}/${voteTypeToString(widget.voteType)}/$isUpdate/${widget.voteInfo}');
                 }
                 break;
             }

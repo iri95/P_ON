@@ -23,7 +23,6 @@ class PonAuth extends ChangeNotifier {
   /// Whether user has signed in.
   bool get signedIn => _signedIn;
 
-  // /// Signs in a user.
   // 로그인
   // 서버 토큰이 있으면, 카카오 로그인 -> 서버 토큰 발급 진행
   Future<bool> signInWithKakao(WidgetRef ref) async {
@@ -34,12 +33,15 @@ class PonAuth extends ChangeNotifier {
     // fetch Token 하면 token, role이 담김
     final token = ref.read(loginStateProvider).serverToken;
     final role = ref.read(loginStateProvider).role;
-    print('1 ${token}, ${role}');
 
     if (token != null && role == 'USER') {
       // await kakaoLogin(ref);
       // await fetchToken(ref);
       _signedIn = true;
+      print('토큰이 있고, role이 user');
+
+      await fetchProfile(ref);
+
       // 그러면 여기서 토큰으로 프로필을 저장하고 메인으로 이동해야 함
       print('${ref.read(userStateProvider)?.nickName}');
     } else if (token != null && role == 'GUEST') {

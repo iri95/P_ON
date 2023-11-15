@@ -34,11 +34,9 @@ final fetchFollowProvider = FutureProvider.autoDispose<void>((ref) async {
   // if (token == null) {
   //   await kakaoLogin(ref);
   //   await fetchToken(ref);
-
   //   // 토큰을 다시 읽습니다.
   //   final newToken = ref.read(loginStateProvider).serverToken;
   //   final newId = ref.read(loginStateProvider).id;
-
   //   headers['Authorization'] = '$newToken';
   //   headers['id'] = '$newId';
   // }
@@ -92,6 +90,7 @@ class _AllFragmentState extends ConsumerState<AllFragment> {
       // currentTabProvider의 상태가 변경될 때마다 이 부분이 호출됩니다.
       // 마이페이지 일때
       if (newTabItem == TabItem.my) {
+        print(ref.read(userStateProvider)?.nickName);
         ref.read(fetchFollowProvider.future);
       }
     });

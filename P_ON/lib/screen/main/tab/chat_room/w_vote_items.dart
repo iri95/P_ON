@@ -21,6 +21,7 @@ class VoteItems extends ConsumerStatefulWidget {
   final int? count;
   final bool isDone;
   final ValueNotifier<bool> voteCompletedNotifier;
+  final String voteInfo;
 
   const VoteItems(
       {super.key,
@@ -30,7 +31,9 @@ class VoteItems extends ConsumerStatefulWidget {
       required this.voteType,
       required this.count,
       required this.isDone,
-      required this.voteCompletedNotifier});
+      required this.voteCompletedNotifier,
+      required this.voteInfo,
+      });
 
   @override
   ConsumerState<VoteItems> createState() => _VoteItemsState();
@@ -44,6 +47,7 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
   final isUpdate = true;
   List<dynamic> selectedItems = [];
   bool? isComplete = false;
+  bool isVoteComplete = false;
 
   String changeDate(String date) {
     DateTime chatRoomDate = DateTime.parse(date);
@@ -108,6 +112,7 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
   }
 
   Future<void> postVote(selectedItems) async {
+    isVoteComplete = true;
     // 현재 저장된 서버 토큰을 가져옵니다.
     final loginState = ref.read(loginStateProvider);
     final token = loginState.serverToken;
@@ -149,6 +154,10 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
   }
 
   Future<void> putVote(selectedItems) async {
+    isVoteComplete = false;
+    for (int i = 0; i < widget.voteData!.length; i++) {
+      _checkboxValues[i] = false;
+    }
     // 현재 저장된 서버 토큰을 가져옵니다.
     final loginState = ref.read(loginStateProvider);
     final token = loginState.serverToken;
@@ -277,6 +286,7 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
     print('===================');
     print(isComplete);
     print(widget.voteType);
+
     return Container(
       decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(color: Colors.grey))),
@@ -296,12 +306,14 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
               PopupMenuButton<int>(
                   icon: const Icon(Icons.more_vert),
                   itemBuilder: (context) => <PopupMenuEntry<int>>[
+                    if (widget.isDone == false)
                         const PopupMenuItem(
                           textStyle: TextStyle(color: AppColors.grey500),
                           value: 1,
                           child: Center(child: Text('수정')),
                         ),
-                        const PopupMenuDivider(),
+                    if (widget.isDone == false)
+                      const PopupMenuDivider(),
                         const PopupMenuItem(
                           textStyle: TextStyle(color: AppColors.grey500),
                           value: 2,
@@ -312,7 +324,7 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
                     if (value == 1) {
                       final router = GoRouter.of(context);
                       router.go(
-                          '/create/vote/${widget.roomId}/${widget.voteType}/$isUpdate');
+                          '/create/vote/${widget.roomId}/${widget.voteType}/$isUpdate/${widget.voteInfo}');
                     } else if (value == 2) {
                       showDialog(
                         context: context,
@@ -456,7 +468,7 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
                   children: [
                     Checkbox(
                       value: _checkboxValues[i],
-                      onChanged: (bool? newValue) {
+                      onChanged: widget.isDone ? null : isVoteComplete ? null : (bool? newValue) {
                         setState(() {
                           if (newValue == true) {
                             if (isMultipleChoice == false) {
@@ -655,10 +667,12 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
 
   List<NMarker> _markers = [];
 
+
+
   addMarker() {
     for (int i = 0; i < widget.voteData!.length; i++) {
       var marker = NMarker(
-          id: widget.voteData![i]['location'],
+          id: 'marker_$i',
           position: NLatLng(double.parse(widget.voteData![i]['lat']),
               double.parse(widget.voteData![i]['lng'])));
       _markers.add(marker);

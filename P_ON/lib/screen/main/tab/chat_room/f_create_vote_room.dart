@@ -18,12 +18,15 @@ class CreateVoteRoom extends ConsumerStatefulWidget {
   final String id;
   final VoteType voteType;
   final bool isUpdate;
+  final String voteInfo;
 
-  const CreateVoteRoom(
-      {super.key,
-      required this.id,
-      required this.voteType,
-      required this.isUpdate});
+  const CreateVoteRoom({
+    super.key,
+    required this.id,
+    required this.voteType,
+    required this.isUpdate,
+    required this.voteInfo,
+  });
 
   @override
   ConsumerState<CreateVoteRoom> createState() => _CreateVoteRoomState();
@@ -44,7 +47,6 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
   late Future<LocationData> locationData;
   late NaverMapController _mapController;
   Future<void>? futureGetVoteDate;
-
 
   void addMarker(double lat, double lng, String id, [int? index]) {
     final marker = NMarker(id: id, position: NLatLng(lat, lng));
@@ -193,63 +195,64 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
       final anonymous = response.data['result'][0]['anonymous'];
       final multipleChoice = response.data['result'][0]['multipleChoice'];
 
-        if (deadDate != null && deadTime != null) {
-          isEndTimeSet = true;
-          _endDateController.text = deadDate;
-          _endTimeController.text = deadTime;
-        }
-        isAnonymous = anonymous;
-        isMultipleChoice = multipleChoice;
+      if (deadDate != null && deadTime != null) {
+        isEndTimeSet = true;
+        _endDateController.text = deadDate;
+        _endTimeController.text = deadTime;
+      }
+      isAnonymous = anonymous;
+      isMultipleChoice = multipleChoice;
 
-        print(date.length);
-        print(voteItems[VoteType.DATE]?.length);
+      print(date.length);
+      print(voteItems[VoteType.DATE]?.length);
 
-        // 리스트 길이가 모자라면 길이 늘려주기
-        int dateDiff = date.length - (voteItems[VoteType.DATE]?.length ?? 0);
-        if (dateDiff > 0) {
-          for (int i = 0; i < dateDiff; i++) {
-            voteItems[VoteType.DATE]?.add('');
-            textEditingControllers[VoteType.DATE]?.add(TextEditingController());
-          }
+      // 리스트 길이가 모자라면 길이 늘려주기
+      int dateDiff = date.length - (voteItems[VoteType.DATE]?.length ?? 0);
+      if (dateDiff > 0) {
+        for (int i = 0; i < dateDiff; i++) {
+          voteItems[VoteType.DATE]?.add('');
+          textEditingControllers[VoteType.DATE]?.add(TextEditingController());
         }
+      }
 
-        int timeDiff = time.length - (voteItems[VoteType.TIME]?.length ?? 0);
-        if (timeDiff > 0) {
-          for (int i = 0; i < timeDiff; i++) {
-            voteItems[VoteType.TIME]?.add('');
-            textEditingControllers[VoteType.TIME]?.add(TextEditingController());
-          }
+      int timeDiff = time.length - (voteItems[VoteType.TIME]?.length ?? 0);
+      if (timeDiff > 0) {
+        for (int i = 0; i < timeDiff; i++) {
+          voteItems[VoteType.TIME]?.add('');
+          textEditingControllers[VoteType.TIME]?.add(TextEditingController());
         }
-        int locationDiff = location.length - (voteItems[VoteType.LOCATION]?.length ?? 0);
-        if (locationDiff > 0) {
-          for (int i = 0; i < locationDiff; i ++) {
-            voteItems[VoteType.LOCATION]?.add('');
-            textEditingControllers[VoteType.LOCATION]
-                ?.add(TextEditingController());
-          }
+      }
+      int locationDiff =
+          location.length - (voteItems[VoteType.LOCATION]?.length ?? 0);
+      if (locationDiff > 0) {
+        for (int i = 0; i < locationDiff; i++) {
+          voteItems[VoteType.LOCATION]?.add('');
+          textEditingControllers[VoteType.LOCATION]
+              ?.add(TextEditingController());
         }
-        // 해당값들 기본값으로 설정하기
-        for (int j = 0; j < date.length; j++) {
-          voteItems[VoteType.DATE]![j] = date[j];
-          textEditingControllers[VoteType.DATE]![j].text = changeDate(date[j]);
-        }
-        for (int j = 0; j < time.length; j++) {
-          voteItems[VoteType.TIME]![j] = time[j];
-          textEditingControllers[VoteType.TIME]![j].text = time[j];
-        }
-        for (int j = 0; j < location.length; j++) {
-          voteItems[VoteType.LOCATION]![j] = location[j]['location'];
-          textEditingControllers[VoteType.LOCATION]![j].text =
-              location[j]['location'];
-          addMarker(double.parse(location[j]['lat']),
-              double.parse(location[j]['lng']), location[j]['location']);
-        }
-        ref.read(voteProvider.notifier).setVoteData(date, time, location);
+      }
+      // 해당값들 기본값으로 설정하기
+      for (int j = 0; j < date.length; j++) {
+        voteItems[VoteType.DATE]![j] = date[j];
+        textEditingControllers[VoteType.DATE]![j].text = changeDate(date[j]);
+      }
+      for (int j = 0; j < time.length; j++) {
+        voteItems[VoteType.TIME]![j] = time[j];
+        textEditingControllers[VoteType.TIME]![j].text = time[j];
+      }
+      for (int j = 0; j < location.length; j++) {
+        voteItems[VoteType.LOCATION]![j] = location[j]['location'];
+        textEditingControllers[VoteType.LOCATION]![j].text =
+            location[j]['location'];
+        addMarker(double.parse(location[j]['lat']),
+            double.parse(location[j]['lng']), location[j]['location']);
+      }
+      ref.read(voteProvider.notifier).setVoteData(date, time, location);
 
-        print('리버팟 상태 찍기');
-        print(ref.read(voteProvider).vote_date);
-        print(ref.read(voteProvider).vote_time);
-        print(ref.read(voteProvider).vote_location);
+      print('리버팟 상태 찍기');
+      print(ref.read(voteProvider).vote_date);
+      print(ref.read(voteProvider).vote_time);
+      print(ref.read(voteProvider).vote_location);
     } catch (e) {
       print('지금 못받아옴 왜 ');
       print('여기에러임 뭐가 문제지 $e');
@@ -353,6 +356,13 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
   Widget build(BuildContext context) {
     final vote = ref.watch(voteProvider);
     final voteInfo = ref.watch(voteInfoProvider);
+    print('--------');
+    print('--------');
+    print('--------');
+    print(widget.voteInfo);
+    print('--------');
+    print('--------');
+    print('--------');
 
     return MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -379,11 +389,7 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
                   centerTitle: true,
                   actions: [
                     TextButton(
-                        onPressed: () {
-                          widget.isUpdate
-                          ? putVote(vote, voteInfo)
-                          : postVote(vote, voteInfo);
-                        },
+                        onPressed: handleVoteButton(vote, voteInfo),
                         child: Text(
                           widget.isUpdate ? '수정' : '저장',
                           style: const TextStyle(
@@ -907,11 +913,13 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
                                     activeColor: AppColors.mainBlue,
                                     value: voteType,
                                     groupValue: selectedVoteType,
-                                    onChanged: (VoteType? value) {
-                                      setState(() {
-                                        selectedVoteType = value;
-                                      });
-                                    },
+                                    onChanged: widget.voteInfo != '미정'
+                                        ? null
+                                        : (VoteType? value) {
+                                            setState(() {
+                                              selectedVoteType = value;
+                                            });
+                                          },
                                   ),
                                 ),
                               );
@@ -1508,5 +1516,221 @@ class _CreateVoteRoomState extends ConsumerState<CreateVoteRoom> {
             ),
           );
         });
+  }
+
+  handleVoteButton(vote, voteInfo) {
+    if (isEndTimeSet == true) {
+      if (_endDateController.text == "" || _endTimeController.text == "") {
+        showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  contentPadding: EdgeInsets.zero,
+                  content: Stack(
+                    children: [
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(vertical: 6),
+                            decoration: const BoxDecoration(
+                              color: AppColors.mainBlue2,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(20),
+                                topRight: Radius.circular(20),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    Nav.pop(context);
+                                  },
+                                  icon: const Icon(
+                                    Icons.close,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(top: 24, bottom: 12),
+                            child: const Text(
+                              '종료시간을 확인해 주세요!',
+                              style: TextStyle(
+                                fontFamily: 'Pretendard',
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.symmetric(vertical: 12),
+                            child: Text(
+                              _endDateController.text == ""
+                                ? _endTimeController.text == ""
+                              ? "날짜와 시간이 설정되지 않았어요!"
+                              : "종료날짜가 제대로 설정되지 않았어요!"
+                              : "종료시간이 제대로 설정되지 않았어요!",
+                              style: const TextStyle(
+                                  fontFamily: 'Pretendard', fontSize: 14),
+                            ),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 8),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                    child: Container(
+                                  decoration: BoxDecoration(
+                                      color: AppColors.mainBlue2,
+                                      borderRadius: BorderRadius.circular(4)),
+                                  child: TextButton(
+                                    onPressed: () {
+                                      Nav.pop(context);
+                                    },
+                                    child: const Text(
+                                      '확인',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: 'Pretendard'),
+                                    ),
+                                  ),
+                                ))
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                      Positioned(
+                        top: 30,
+                        left: 30,
+                        child: Image.asset(
+                          'assets/image/main/핑키4.png',
+                          width: 48,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+        );
+      } else {
+        String formattedEndDate = _endDateController.text.substring(0, 10);
+        int endHour = int.parse(_endTimeController.text.substring(3, 5));
+        if (_endTimeController.text.startsWith("오후")) {
+          endHour += 12;
+        }
+        DateTime endDateTime = DateTime.parse("$formattedEndDate ${endHour.toString().padLeft(2, '0')}:05:00");
+        if (endDateTime.isAfter(DateTime.now())) {
+          widget.isUpdate
+            ? putVote(vote, voteInfo)
+            : postVote(vote, voteInfo);
+        } else {
+          showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              contentPadding: EdgeInsets.zero,
+              content: Stack(
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(vertical: 6),
+                        decoration: const BoxDecoration(
+                          color: AppColors.mainBlue2,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(20),
+                            topRight: Radius.circular(20),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                Nav.pop(context);
+                              },
+                              icon: const Icon(
+                                Icons.close,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.only(top: 24, bottom: 12),
+                        child: const Text(
+                          '종료시간을 확인해 주세요!',
+                          style: TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.symmetric(vertical: 12),
+                        child: const Text(
+                          "종료시간을 과거로 설정할 수 는 없어요!",
+                          style: TextStyle(
+                              fontFamily: 'Pretendard', fontSize: 14),
+                        ),
+                      ),
+                      Container(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 8),
+                        child: Row(
+                          children: [
+                            Expanded(
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      color: AppColors.mainBlue2,
+                                      borderRadius: BorderRadius.circular(4)),
+                                  child: TextButton(
+                                    onPressed: () {
+                                      Nav.pop(context);
+                                    },
+                                    child: const Text(
+                                      '확인',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontFamily: 'Pretendard'),
+                                    ),
+                                  ),
+                                ))
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                  Positioned(
+                    top: 30,
+                    left: 30,
+                    child: Image.asset(
+                      'assets/image/main/핑키4.png',
+                      width: 48,
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        }
+      }
+    } else {
+      widget.isUpdate
+        ? putVote(vote, voteInfo)
+        : postVote(vote, voteInfo);
+    }
   }
 }

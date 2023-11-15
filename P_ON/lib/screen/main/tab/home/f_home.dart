@@ -16,6 +16,8 @@ import '../../../dialog/d_confirm.dart';
 import '../../fab/w_bottom_nav_floating_button.dart';
 import '../../fab/w_bottom_nav_floating_button.riverpod.dart';
 import '../../s_main.dart';
+import '../promise_room/vo_server_url.dart';
+import 'bank_accounts_dummy.dart';
 
 import 'package:dio/dio.dart';
 import 'package:p_on/common/util/dio.dart';
@@ -35,23 +37,38 @@ class HomeFragment extends ConsumerStatefulWidget {
 
 class _HomeFragmentState extends ConsumerState<HomeFragment> {
   // final scrollController = ScrollController();
-  late final ScrollController scrollController;
+  // final 문제였슴 ㅡㅡ
+  late ScrollController scrollController;
+  List<dynamic>? promise;
 
   @override
   void initState() {
-    scrollController = ref.read(homeScrollControllerProvider);
-    scrollController.addListener(() {
-      final floatingState = ref.read(floatingButtonStateProvider);
+    print('f_home');
 
-      if (scrollController.position.pixels > 100 && !floatingState.isSmall) {
-        ref.read(floatingButtonStateProvider.notifier).changeButtonSize(true);
-      } else if (scrollController.position.pixels < 100 &&
-          floatingState.isSmall) {
-        ref.read(floatingButtonStateProvider.notifier).changeButtonSize(false);
-      }
-    });
-    _fetchProfile();
     super.initState();
+    scrollController = ref.read(homeScrollControllerProvider);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      scrollController.addListener(_scrollListener);
+    });
+  }
+
+  void _scrollListener() {
+    if (!mounted) return;
+    final floatingState = ref.read(floatingButtonStateProvider);
+    if (scrollController.position.pixels > 100 && !floatingState.isSmall) {
+      ref.read(floatingButtonStateProvider.notifier).changeButtonSize(true);
+    } else if (scrollController.position.pixels < 100 &&
+        floatingState.isSmall) {
+      ref.read(floatingButtonStateProvider.notifier).changeButtonSize(false);
+    }
+  }
+
+  // 뺴버리면 에러 안뜸
+  // @override
+  void dispose() {
+    print('1111111111111디스포즈?');
+    scrollController.removeListener(_scrollListener); // 리스너 해제
+    super.dispose();
   }
 
   void _fetchProfile() async {
@@ -80,13 +97,15 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
       Response response = await apiService.sendRequest(
           method: 'GET', path: '/api/user/profile', headers: headers);
 
-      // 여기서 서버에서 받앙온 회원 정보 저장
+      // 여기서 서버에서 받아온 회원 정보 저장
       var user = UserState(
         profileImage: response.data['result'][0]['profileImage'] as String,
         nickName: response.data['result'][0]['nickName'] as String,
         privacy: response.data['result'][0]['privacy'] as String,
         stateMessage: response.data['result'][0]['stateMessage'] as String?,
       );
+
+      if (!mounted) return;
 
       ref.read(userStateProvider.notifier).setUserState(user);
       print('여긴 메인이고 프로필 조회 끝 ${ref.read(userStateProvider)?.nickName}');
@@ -95,8 +114,13 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
     }
   }
 
+  late var _user;
+
   @override
   Widget build(BuildContext context) {
+    scrollController = ref.watch(homeScrollControllerProvider);
+    _user = ref.watch(userStateProvider);
+
     return Container(
       // color: Colors.white,
       child: Stack(
@@ -128,7 +152,7 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          '${ref.watch(userStateProvider)?.nickName ?? ''}'
+                          '${_user?.nickName ?? ''}'
                               .text
                               .fontWeight(FontWeight.w800)
                               .size(26)
@@ -151,13 +175,7 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
                     ], // 로그인한 유저 이름으로 변경하기
                   )),
                   // 약속방들
-                  Container(
-                      child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ...planList.map((e) => MyPlanAndPromise(e)).toList()
-                    ],
-                  )),
+                  MyPlanAndPromise(),
                   height100
                 ],
               ),

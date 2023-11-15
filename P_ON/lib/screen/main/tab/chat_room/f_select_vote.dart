@@ -15,7 +15,10 @@ import 'package:p_on/screen/main/user/token_state.dart';
 
 class SelectVote extends ConsumerStatefulWidget {
   final String id;
-  const SelectVote({super.key, required this.id});
+  final String voteInfo;
+
+  const SelectVote({super.key, required this.id, required this.voteInfo});
+
   @override
   ConsumerState<SelectVote> createState() => _SelectVoteState();
 }
@@ -57,10 +60,9 @@ class _SelectVoteState extends ConsumerState<SelectVote> {
 
     try {
       Response response = await apiService.sendRequest(
-        method: 'GET',
-        path: '$server/api/promise/vote/${widget.id}',
-        headers: headers
-      );
+          method: 'GET',
+          path: '$server/api/promise/vote/${widget.id}',
+          headers: headers);
       print(response);
       count = await response.data['count'];
       date = await response.data['result'][0]['dates'];
@@ -120,9 +122,36 @@ class _SelectVoteState extends ConsumerState<SelectVote> {
             }
             return ListView(
               children: [
-                VoteItems(text: '일정', roomId: widget.id, voteData: date, voteType: 'DATE', count: count, isDone: doDate, voteCompletedNotifier: voteCompletedNotifier),
-                VoteItems(text: '시간', roomId: widget.id, voteData: time, voteType: 'TIME', count: count, isDone: doTime, voteCompletedNotifier: voteCompletedNotifier),
-                VoteItems(text: '장소', roomId: widget.id, voteData: location, voteType: 'LOCATION', count: count, isDone: doLocation, voteCompletedNotifier: voteCompletedNotifier),
+                VoteItems(
+                  text: '일정',
+                  roomId: widget.id,
+                  voteData: date,
+                  voteType: 'DATE',
+                  count: count,
+                  isDone: doDate,
+                  voteCompletedNotifier: voteCompletedNotifier,
+                  voteInfo: widget.voteInfo,
+                ),
+                VoteItems(
+                  text: '시간',
+                  roomId: widget.id,
+                  voteData: time,
+                  voteType: 'TIME',
+                  count: count,
+                  isDone: doTime,
+                  voteCompletedNotifier: voteCompletedNotifier,
+                  voteInfo: widget.voteInfo,
+                ),
+                VoteItems(
+                  text: '장소',
+                  roomId: widget.id,
+                  voteData: location,
+                  voteType: 'LOCATION',
+                  count: count,
+                  isDone: doLocation,
+                  voteCompletedNotifier: voteCompletedNotifier,
+                  voteInfo: widget.voteInfo,
+                ),
               ],
             );
           },
