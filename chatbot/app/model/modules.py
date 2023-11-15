@@ -75,7 +75,7 @@ mongo_password = os.environ.get('MONGO_AUTH')
 def find_from_mongo(userId, userMessage):
     client = MongoClient(f'mongodb://root:{mongo_password}@server2:27017/')
     db = client.chatbot 
-    collection = db.test
+    collection = db.calendar
 
     date_res = to_datetime(userMessage)
     date_res = date_res.split(', ')
