@@ -23,7 +23,6 @@ class _BenefitFragmentState extends ConsumerState<BenefitFragment> {
   late var _user;
 
 // 추억리스트 받아오기
-
   @override
   void initState() {
     print('추억');

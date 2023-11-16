@@ -43,7 +43,11 @@ class CompleteState extends StateNotifier<CompleteData> {
       Response response = await apiService.sendRequest(
           method: 'GET', path: '/api/promise/room', headers: headers);
       // print(response.data['result'][0]);
-      print('getPromiseRoom');
+      // List<dynamic> newPromise = await response.data['result'][0];
+      // int newPromiseCount = response.data['count'];
+      // state = PromiseData(promise: newPromise, promiseCount: newPromiseCount);
+
+      print('2getPromiseRoom');
     } catch (e) {
       print(e);
     }

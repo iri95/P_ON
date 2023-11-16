@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:p_on/common/common.dart';
 import 'package:p_on/common/widget/w_list_container.dart';
 import 'package:flutter/material.dart';
+import 'package:p_on/screen/main/tab/benefit/complete_provider.dart';
 import 'package:p_on/screen/main/tab/chat_room/dto_vote.dart';
 import 'package:p_on/screen/main/tab/promise_room/dto_promise.dart';
 import 'package:p_on/screen/main/tab/promise_room/vo_server_url.dart';
@@ -16,6 +17,8 @@ import 'package:dio/dio.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:p_on/screen/main/user/token_state.dart';
+import 'package:p_on/screen/main/s_main.dart';
+import 'package:p_on/screen/main/tab/tab_item.dart';
 
 class MyPlanAndPromise extends ConsumerStatefulWidget {
   const MyPlanAndPromise({super.key});
@@ -55,7 +58,8 @@ class _MyPlanAndPromiseState extends ConsumerState<MyPlanAndPromise> {
       Response response = await apiService.sendRequest(
           method: 'GET', path: '$server/api/promise/room', headers: headers);
       // print(response.data['result'][0]);
-      print('getPromiseRoom');
+      print('1getPromiseRoom');
+      print(response);
       promise = await response.data['result'][0];
       promiseCount = response.data['count'];
       setState(() {});
@@ -80,6 +84,16 @@ class _MyPlanAndPromiseState extends ConsumerState<MyPlanAndPromise> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(completeProvider, (_, CompleteData? newComplete) async {
+      await getPromiseRoom();
+    });
+
+    ref.listen(currentTabProvider, (_, TabItem? newTabItem) async {
+      if (newTabItem == TabItem.home) {
+        await getPromiseRoom();
+      }
+    });
+
     Future.microtask(() => ref.read(promiseProvider.notifier).reset());
 
     // 화면 비율

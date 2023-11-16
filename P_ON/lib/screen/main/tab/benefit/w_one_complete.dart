@@ -11,7 +11,8 @@ import 'package:dio/dio.dart';
 import 'package:p_on/screen/main/user/token_state.dart';
 
 import 'package:p_on/screen/main/tab/home/w_custom_text.dart';
-
+import 'package:p_on/screen/main/s_main.dart';
+import 'package:p_on/screen/main/tab/tab_item.dart';
 import 'complete_provider.dart';
 import 'package:p_on/screen/main/tab/tab_item.dart';
 import 'package:p_on/screen/main/s_main.dart';
@@ -65,7 +66,6 @@ class _OneCompletePromiseState extends ConsumerState<OneCompletePromise> {
   @override
   void initState() {
     super.initState();
-    print(11);
     oneComplete(widget.item);
   }
 
@@ -76,6 +76,10 @@ class _OneCompletePromiseState extends ConsumerState<OneCompletePromise> {
         print('dd');
         oneComplete(widget.item);
       }
+    });
+    ref.listen<CompleteData>(completeProvider, (_, CompleteData completeData) {
+      // Call oneComplete function when completeProvider changes
+      oneComplete(widget.item);
     });
 
     final completeData = ref.watch(completeProvider);
