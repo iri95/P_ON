@@ -73,24 +73,32 @@ class _RightModalState extends ConsumerState<RightModal> {
       var rawList = response.data['result'] as List<dynamic>; // Step 1
       var convertedList = <Map<int, List<Map<String, dynamic>>>>[];
 
-      for (var rawItem in rawList) { // Step 2
-        var mapItem = Map<int, List<Map<String, dynamic>>>.from(
-            rawItem.map((key, value) {
-              var intKey = int.tryParse(key.toString()) ?? 0;
-              var listValue = List<Map<String, dynamic>>.from(
-                  value.map((item) => Map<String, dynamic>.from(item))
-              );
+      for (var rawItem in rawList) {
+        var mapItem = <int, List<Map<String, dynamic>>>{};
 
-              return MapEntry(intKey, listValue);
-            })
-        );
+        rawItem.forEach((key, value) {
+          var intKey = int.tryParse(key) ?? 0;
 
-        convertedList.add(mapItem); // Step 3
+          // value가 null이거나 빈 리스트인 경우 건너뜁니다.
+          if (value == null || (value as List<dynamic>).isEmpty) {
+            return;
+          }
+
+          var listValue = value as List<dynamic>;
+          var mapList = listValue.map((item) => item as Map<String, dynamic>).toList();
+
+          mapItem[intKey] = mapList;
+        });
+
+        if (mapItem.isNotEmpty) {
+          convertedList.add(mapItem);
+        }
       }
       print('일정조회 성ㄱㅇ');
       print(response.data['result']);
       setState(() {
         userSchedule = convertedList;
+        print('유저스케줄 들어감? : ${userSchedule}');
         isLoading = false;  // 로딩 상태 업데이트
         populateEventsFromList(convertedList);
       });
@@ -108,6 +116,7 @@ class _RightModalState extends ConsumerState<RightModal> {
     super.initState();
 
     getUserScheduleFuture = getUserSchedule();
+    // getUserSchedule();
   }
 
 
@@ -140,8 +149,52 @@ class _RightModalState extends ConsumerState<RightModal> {
         }
       }
     }
+    print('======');
+    print('======');
+    print('======');
+    print(kEvents);
   }
 
+  void populateEventsForUserId(int key) {
+    // kEvents 초기화
+    print(key);
+    print('kEvent 초기화 전: ${kEvents}');
+    kEvents.clear();
+    print('kEvent 초기화 후: ${kEvents}');
+    print('유저스케줄 있나? : ${userSchedule}');
+
+    // userSchedule에서 특정 키에 해당하는 데이터만 추출
+    var eventsForDay = userSchedule?.firstWhere(
+          (dayMap) => dayMap.containsKey(key),
+      orElse: () => <int, List<Map<String, dynamic>>>{},
+    );
+
+    if (eventsForDay != null) {
+      List<Map<String, dynamic>> events = eventsForDay[key]!;
+      for (var event in events) {
+        DateTime startDate = DateTime.parse(event['startDate']);
+        DateTime endDate = DateTime.parse(event['endDate']);
+        String nickName = event['nickName'];
+        String type = event['type'];
+
+        List<DateTime> datesInRange = getDatesInRange(startDate, endDate);
+        for (var date in datesInRange) {
+          if (kEvents.containsKey(date)) {
+            kEvents[date]!.add(Event('$nickName $type'));
+          } else {
+            kEvents[date] = [Event('$nickName $type')];
+          }
+        }
+      }
+    }
+
+    print('======');
+    print('======');
+    print('======');
+    print('kEvent 변경 후: ${kEvents}');
+    // 캘린더 위젯 갱신을 위해 setState 호출
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -193,7 +246,7 @@ class _RightModalState extends ConsumerState<RightModal> {
                                     height: 80,
                                     child: TextButton(
                                         onPressed: () {
-                                          addCalendarMarker(item['userId']);
+                                          populateEventsForUserId(item['userId']);
                                         },
                                         child: ClipOval(
                                           child: Image.network(
@@ -266,25 +319,16 @@ class _RightModalState extends ConsumerState<RightModal> {
                             },
                           ),
                         ),
+                        ElevatedButton(onPressed: (){
+                          getUserSchedule();
+                        },
+                            child: Text('일정 새로고침'),)
                       ],
                     );
                   }
                 })
           ],
         )));
-  }
-
-  void addCalendarMarker(id) {
-    List<dynamic> selectedUserSchedule = userSchedule![0][id.toString()];
-    for (var event in selectedUserSchedule) {
-      DateTime startDate = DateTime.parse(event['startDate']);
-      startDate = DateTime(startDate.year, startDate.month, startDate.day);
-      // events 맵에 새로운 이벤트를 추가
-      if (!events.containsKey(startDate)) {
-        events[startDate] = [];  // 날짜에 해당하는 이벤트 목록을 초기화
-      }
-      events[startDate]?.add(event);  // 이벤트를 목록에 추가
-    }
   }
 }
 
