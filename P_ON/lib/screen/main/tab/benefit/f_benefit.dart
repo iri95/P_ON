@@ -28,7 +28,7 @@ class _BenefitFragmentState extends ConsumerState<BenefitFragment> {
     super.initState();
   }
 
-// TODO: 여기도 끌어서 새로고침이랑, 탭 클릭 시 맨 위로 올라가게 해줘
+// TODO: 탭 클릭 시 맨 위로 올라가게 해줘
   @override
   Widget build(BuildContext context) {
     final completeData = ref.watch(completeProvider);
@@ -40,43 +40,51 @@ class _BenefitFragmentState extends ConsumerState<BenefitFragment> {
         child: Column(children: [
       const PONAppBar(),
       Expanded(
-          child: SingleChildScrollView(
+          child: RefreshIndicator(
+            color: const Color(0xff3F48CC),
+            backgroundColor: const Color(0xffFFBA20),
+            edgeOffset: PONAppBar.appBarHeight,
+            onRefresh: () async {
+              await sleepAsync(500.ms);
+            },
+            child: SingleChildScrollView(
         child: Column(
-          children: [
-            RoundedContainer(
-                child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    '${_user?.nickName ?? ''}'
-                        .text
-                        .fontWeight(FontWeight.w800)
-                        .size(26)
-                        .color(AppColors.mainBlue)
-                        .make(),
-                    '님 '.text.semiBold.size(24).color(Colors.black).make(),
-                    '${_completeCount} 개'
-                        .text
-                        .fontWeight(FontWeight.w800)
-                        .size(26)
-                        .color(AppColors.mainBlue)
-                        .make(),
-                    '의'.text.semiBold.size(24).color(Colors.black).make(),
-                  ],
-                ),
-                '저장된 추억이 있어요'.text.semiBold.size(24).color(Colors.black).make(),
-              ],
-            )),
-            // 추억 약속방들
+            children: [
+              RoundedContainer(
+                  child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      '${_user?.nickName ?? ''}'
+                          .text
+                          .fontWeight(FontWeight.w800)
+                          .size(26)
+                          .color(AppColors.mainBlue)
+                          .make(),
+                      '님 '.text.semiBold.size(24).color(Colors.black).make(),
+                      '${_completeCount} 개'
+                          .text
+                          .fontWeight(FontWeight.w800)
+                          .size(26)
+                          .color(AppColors.mainBlue)
+                          .make(),
+                      '의'.text.semiBold.size(24).color(Colors.black).make(),
+                    ],
+                  ),
+                  '저장된 추억이 있어요'.text.semiBold.size(24).color(Colors.black).make(),
+                ],
+              )),
+              // 추억 약속방들
 
-            const MyCompletePromise(),
-            // const MyPlanAndPromise(),
-            height100
-          ],
+              const MyCompletePromise(),
+              // const MyPlanAndPromise(),
+              height100
+            ],
         ),
-      ))
+      ),
+          ))
     ]));
   }
 }
