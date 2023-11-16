@@ -2,7 +2,6 @@ package com.wanyviny.calendar.global.kafka.dto;
 
 import com.wanyviny.calendar.domain.CALENDAR_TYPE;
 import com.wanyviny.calendar.domain.calendar.dto.CalendarDto;
-import com.wanyviny.calendar.domain.user.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,7 +30,7 @@ public class KafkaCalendarDto {
         private String calendar_end_date;
     }
 
-    public CalendarDto.setSchedule kafkaToSet() throws ParseException {
+    public CalendarDto.setSchedule kafkaToSet() {
 
         // date 형 변환
         cal.calendar_start_date = cal.calendar_start_date + " 00:00:00";
