@@ -165,12 +165,16 @@ class _MyPlanAndPromiseState extends ConsumerState<MyPlanAndPromise> {
               promiseDate = DateTime.parse(promiseDateString);
 
               var diffDate = promiseDate.difference(currentDate);
-
+              print(diffDate);
               if (!diffDate.isNegative && diffDate.inDays < 3) {
+                isClose = true;
+              } else if (diffDate.isNegative) {
                 isClose = true;
               } else {
                 isClose = false;
               }
+            } else {
+              isClose = false;
             }
 
             return TextButton(
