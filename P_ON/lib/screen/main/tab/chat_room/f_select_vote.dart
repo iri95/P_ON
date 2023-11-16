@@ -103,7 +103,7 @@ class _SelectVoteState extends ConsumerState<SelectVote> {
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
                 onPressed: () {
-                  context.go('/chatroom/${widget.id}');
+                  context.push('/chatroom/${widget.id}');
                 },
               ),
               title: const Text('투표하기',
