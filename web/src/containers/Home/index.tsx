@@ -58,6 +58,21 @@ export default function Index() {
       <div className={`${styles.scroll}`}>
         <Section1 />
 
+        <div className={`${styles.ucc} ${styles.section}`}>
+          <div className={styles.uccFrame}>
+            <iframe
+              width="100%"
+              height="100%"
+              // 컨트롤러 없이
+              src=""
+              title="YouTube video player"
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            />
+          </div>
+        </div>
+
         <SectionPage data={serviceFunction} />
 
         <SectionEnd />

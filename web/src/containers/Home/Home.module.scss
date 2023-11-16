@@ -80,6 +80,19 @@ div.section1 {
   }
 }
 
+div.ucc {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .uccFrame {
+    margin-top: 60px;
+    position: relative;
+    height: 80%;
+    width: 80%;
+  }
+}
+
 .downloadBtns {
   margin: 30px 0;
   width: auto;

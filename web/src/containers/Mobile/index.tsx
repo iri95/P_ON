@@ -10,7 +10,7 @@ export default function index() {
           src="/Pinkys.png"
           alt="핑키 배경"
           layout="fill"
-          objectFit="cover"
+          style={{ objectFit: 'cover' }}
           objectPosition="center"
           quality={100}
           priority

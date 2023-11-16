@@ -1,7 +1,8 @@
 .mobile-container {
   // border: solid red;
   margin-top: 20px;
-  height: 90vh;
+  height: 100vh;
+  background-color: #eff3f9;
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -10,8 +11,9 @@
 
 .text {
   z-index: 10;
-  position: absolute;
-  left: 10vw;
+  // position: absolute;
+  // left: 10vw;
+  width: 30%;
 
   & p {
     padding: 0;
@@ -34,7 +36,8 @@
 }
 
 .device {
-  margin-left: 35vw;
+  // margin-left: 35vw;
+  // width: 30%;
   display: inline-block;
   position: relative;
   -webkit-box-sizing: content-box !important;

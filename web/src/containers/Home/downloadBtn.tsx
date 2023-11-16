@@ -11,21 +11,18 @@ export default function googleBtn() {
         target="_blank"
         className={styles['google-btn']}
       >
-        <Image src="/google-play-badge.png" alt="다운로드하기 Google Play" fill quality={100} objectFit="contain" />
-      </Link>
-
-      <div className={styles.qrcode}>
-        <Image src="/qrcode.png" alt="PlayStoreQR" objectFit="contain" fill />
-      </div>
-      {/* <Link href="/" target="_blank" className={styles['google-btn']}>
         <Image
-          src="/one_downloadbadge_red_black_kr.png"
+          src="/google-play-badge.png"
           alt="다운로드하기 Google Play"
           fill
           quality={100}
-          objectFit="contain"
+          style={{ objectFit: 'contain' }}
         />
-      </Link> */}
+      </Link>
+
+      <div className={styles.qrcode}>
+        <Image src="/qrcode.png" alt="PlayStoreQR" style={{ objectFit: 'contain' }} fill />
+      </div>
     </div>
   );
 }
