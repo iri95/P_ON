@@ -85,7 +85,7 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
             backgroundColor: const Color(0xffFFBA20),
             edgeOffset: PONAppBar.appBarHeight,
             onRefresh: () async {
-              await sleepAsync(500.ms);
+              await sleepAsync(2000.ms);
             },
             child: SingleChildScrollView(
               padding: const EdgeInsets.only(

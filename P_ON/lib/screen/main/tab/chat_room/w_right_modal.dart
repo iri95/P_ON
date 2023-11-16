@@ -30,6 +30,8 @@ class _RightModalState extends ConsumerState<RightModal> {
   late final ValueNotifier<List<Event>> _selectedEvents;
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
+  int? selectedUserId;
+
 
   List<dynamic>? userSchedule;
   Map<DateTime, List> events = {};
@@ -101,6 +103,7 @@ class _RightModalState extends ConsumerState<RightModal> {
         print('유저스케줄 들어감? : ${userSchedule}');
         isLoading = false;  // 로딩 상태 업데이트
         populateEventsFromList(convertedList);
+        selectedUserId = null;
       });
       return response;
     } catch (e) {
@@ -169,7 +172,7 @@ class _RightModalState extends ConsumerState<RightModal> {
       orElse: () => <int, List<Map<String, dynamic>>>{},
     );
 
-    if (eventsForDay != null) {
+    if (eventsForDay != null && eventsForDay[key] != null) {
       List<Map<String, dynamic>> events = eventsForDay[key]!;
       for (var event in events) {
         DateTime startDate = DateTime.parse(event['startDate']);
@@ -232,40 +235,61 @@ class _RightModalState extends ConsumerState<RightModal> {
                     return Column(
                       children: [
                         Container(
-                          height: 100,
+                          height: 120,
                           child: ListView(
                             scrollDirection: Axis.horizontal,
-                            children: widget.users
-                                ?.map((item) => Container(
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 4),
-                              child: Column(
-                                children: [
-                                  SizedBox(
-                                    width: 80,
-                                    height: 80,
-                                    child: TextButton(
-                                        onPressed: () {
-                                          populateEventsForUserId(item['userId']);
-                                        },
-                                        child: ClipOval(
-                                          child: Image.network(
-                                              item['profileImage'],
-                                              fit: BoxFit.cover),
-                                        )),
+                            children: widget.users?.map((item) {
+                              return GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    selectedUserId = item['userId'];
+                                    populateEventsForUserId(item['userId']);
+                                  });
+                                },
+                                child: Container(
+                                  margin: const EdgeInsets.symmetric(horizontal: 4),
+                                  child: Column(
+                                    children: [
+                                      SizedBox(
+                                        width: 80,
+                                        height: 80,
+                                        child: TextButton(
+                                          onPressed: () {
+                                            setState(() {
+                                              selectedUserId = item['userId'];
+                                              populateEventsForUserId(item['userId']);
+                                            });
+                                          },
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                color: selectedUserId == item['userId'] ? Colors.blue : Colors.transparent,
+                                                width: 4.0,
+                                              ),
+                                            ),
+                                            child: ClipOval(
+                                              child: Image.network(
+                                                item['profileImage'],
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Text(
+                                        item['nickname'],
+                                        style: const TextStyle(
+                                          fontFamily: 'Pretendard',
+                                          fontWeight: FontWeight.w500,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  Text(
-                                    item['nickname'],
-                                    style: const TextStyle(
-                                        fontFamily: 'Pretendard',
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 16),
-                                  ),
-                                ],
-                              ),
-                            ))
-                                .toList() ??
-                                [],
+                                ),
+                              );
+                            }).toList()??[],
                           ),
                         ),
                         Card(
