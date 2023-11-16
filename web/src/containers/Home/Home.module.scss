@@ -82,9 +82,10 @@ div.section1 {
 
 .downloadBtns {
   margin: 30px 0;
-  width: 550px;
+  width: auto;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
+  align-items: center;
 
   .google-btn {
     position: relative;
@@ -92,6 +93,12 @@ div.section1 {
     width: auto;
     aspect-ratio: 646 / 250;
     display: block;
+  }
+  .qrcode {
+    position: relative;
+    margin: 0 30px;
+    height: 80px;
+    width: 80px;
   }
 }
 
