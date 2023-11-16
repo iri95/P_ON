@@ -2,17 +2,23 @@ from langchain.chat_models import ChatOpenAI
 from langchain.chains import create_extraction_chain
 from langchain.schema import HumanMessage
 from pymongo import MongoClient
+from datetime import datetime
 import os
 
 
 def to_datetime(inp):
 
     chat = ChatOpenAI()
+    
+    today = datetime.now().date()
     output = chat(
             [
                 HumanMessage(
                     content=f"""Convert the phrase "{inp}" to a date in YYYY-MM-DD format, considering today as the reference.
                     
+                    Input: 오늘
+                    Output: {today}
+
                     Input: 이번 주 일요일  
                     Output: 2023-11-19
                     
