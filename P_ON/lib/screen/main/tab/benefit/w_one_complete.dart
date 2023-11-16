@@ -62,12 +62,14 @@ class _OneCompletePromiseState extends ConsumerState<OneCompletePromise> {
 
   @override
   void initState() {
-    oneComplete(widget.item);
     super.initState();
+    print(11);
+    oneComplete(widget.item);
   }
 
   @override
   Widget build(BuildContext context) {
+    final completeData = ref.watch(completeProvider);
     dynamic item = widget.item;
 
     return TextButton(
