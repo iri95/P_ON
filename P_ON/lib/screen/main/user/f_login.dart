@@ -134,8 +134,20 @@ class _LoginPageState extends ConsumerState<LoginPage>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Image.asset('assets/image/icon/kakao.png',
-                      width: 48, height: 48),
+                  Ink(
+                    decoration: const BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage('assets/image/icon/kakao.png'),
+                        fit: BoxFit.cover
+                      ),
+                      shape: BoxShape.circle
+                    ),
+                    width: 48,
+                    height: 48,
+                    child: InkWell(
+                      onTap: () {},
+                    ),
+                  ),
                   const Text('카카오로 시작하기',
                       style: TextStyle(
                           color: Color(0xff371C1D),

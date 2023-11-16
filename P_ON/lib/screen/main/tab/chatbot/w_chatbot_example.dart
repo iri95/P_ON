@@ -211,7 +211,7 @@ class _ChatbotExampleState extends State<ChatbotExample> {
                     child: const Text(
                       '*정확한 일정 생성을 위해 날짜와 장소를 말씀해주세요!',
                       style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 13,
                           color: AppColors.mainBlue,
                           fontStyle: FontStyle.italic),
                     ))
