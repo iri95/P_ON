@@ -43,6 +43,8 @@ public class KafkaCalendarDto {
         try {
             startDate = format.parse(cal.calendar_end_date);
             endDate = format.parse(cal.calendar_start_date);
+            System.out.println(startDate);
+            System.out.println(endDate);
             return CalendarDto.setSchedule.builder()
                     .title(cal.calendar_title)
                     .content(cal.calendar_title)
