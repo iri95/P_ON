@@ -1,5 +1,5 @@
 import 'dart:collection';
-import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +39,17 @@ class _RightModalState extends ConsumerState<RightModal> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   int? selectedUserId;
+
+  Color _getColorFromId(String id) {
+    final int hash = id.hashCode;
+    final Random random = Random(hash);
+    return Color.fromRGBO(
+      random.nextInt(256),
+      random.nextInt(256),
+      random.nextInt(256),
+      1,
+    );
+  }
 
 
   List<dynamic>? userSchedule;
@@ -467,14 +478,15 @@ class _RightModalState extends ConsumerState<RightModal> {
           DateTime endDate = DateTime.parse(event['endDate']);
           String nickName = event['nickName'];
           String type = event['type'];
+          String userId = event['userId'].toString();
 
           List<DateTime> datesInRange = getDatesInRange(startDate, endDate);
           for (var date in datesInRange) {
-            if (kEvents.containsKey(date)) {
-              kEvents[date]!.add(Event('$nickName $type'));
-            } else {
-              kEvents[date] = [Event('$nickName $type')];
+            if (!kEvents.containsKey(date)) {
+              kEvents[date] = [];
             }
+            // Event 객체 생성 시 userId를 포함
+            kEvents[date]!.add(Event('$nickName $type', userId));
           }
         }
       }
@@ -486,45 +498,38 @@ class _RightModalState extends ConsumerState<RightModal> {
   }
 
   void populateEventsForUserId(int key) {
-    // kEvents 초기화
-    print(key);
-    print('kEvent 초기화 전: ${kEvents}');
-    kEvents.clear();
-    print('kEvent 초기화 후: ${kEvents}');
-    print('유저스케줄 있나? : ${userSchedule}');
+    print('populateEventsForUserId 실행: userId = $key');
 
-    // userSchedule에서 특정 키에 해당하는 데이터만 추출
     var eventsForDay = userSchedule?.firstWhere(
-      (dayMap) => dayMap.containsKey(key),
+          (dayMap) => dayMap.containsKey(key),
       orElse: () => <int, List<Map<String, dynamic>>>{},
     );
 
     if (eventsForDay != null && eventsForDay[key] != null) {
       List<Map<String, dynamic>> events = eventsForDay[key]!;
+      Set<DateTime> addedDates = {}; // 특정 유저에 대해 날짜별로 이벤트 추가 여부를 추적
+
       for (var event in events) {
         DateTime startDate = DateTime.parse(event['startDate']);
         DateTime endDate = DateTime.parse(event['endDate']);
-        String nickName = event['nickName'];
-        String type = event['type'];
+        String userId = key.toString();
 
         List<DateTime> datesInRange = getDatesInRange(startDate, endDate);
         for (var date in datesInRange) {
-          if (kEvents.containsKey(date)) {
-            kEvents[date]!.add(Event('$nickName $type'));
-          } else {
-            kEvents[date] = [Event('$nickName $type')];
+          if (!addedDates.contains(date)) {
+            // 해당 유저의 이벤트가 해당 날짜에 아직 추가되지 않았으면 새로운 이벤트 추가
+            String nickName = event['nickName'];
+            String type = event['type'];
+            kEvents[date] = [Event('$nickName $type', userId)];
+            addedDates.add(date); // 이벤트 추가 표시
           }
         }
       }
     }
 
-    print('======');
-    print('======');
-    print('======');
-    print('kEvent 변경 후: ${kEvents}');
-    // 캘린더 위젯 갱신을 위해 setState 호출
     setState(() {});
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -645,6 +650,41 @@ class _RightModalState extends ConsumerState<RightModal> {
                             calendarFormat: _calendarFormat,
                             eventLoader: _getEventsForDay,
                             startingDayOfWeek: StartingDayOfWeek.monday,
+                            calendarBuilders: CalendarBuilders<Event>(
+                              markerBuilder: (context, date, events) {
+                                if (events.isNotEmpty) {
+                                  // 마커를 저장할 리스트
+                                  List<Widget> markers = [];
+
+                                  // 모든 이벤트에 대해 마커 생성
+                                  for (var event in events) {
+                                    if (markers.length >= 4) {
+                                      // 마커의 개수가 4개에 도달하면 루프 중단
+                                      break;
+                                    }
+                                    Color markerColor = _getColorFromId(event.userId);
+
+                                    markers.add(
+                                      Container(
+                                        margin: EdgeInsets.symmetric(horizontal: 1.5),
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: markerColor,
+                                        ),
+                                        width: 7,
+                                        height: 7,
+                                      ),
+                                    );
+                                  }
+
+                                  // 모든 마커가 포함된 리스트 반환
+                                  return Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: markers,
+                                  );
+                                }
+                              },
+                            ),
                             calendarStyle: const CalendarStyle(
                               tablePadding: EdgeInsets.only(bottom: 8.0),
                               markerSize: 8.0,
@@ -762,8 +802,9 @@ final kEvents = LinkedHashMap<DateTime, List<Event>>(
 
 class Event {
   final String title;
+  final String userId;
 
-  const Event(this.title);
+  const Event(this.title, this.userId);
 
   @override
   String toString() => title;
