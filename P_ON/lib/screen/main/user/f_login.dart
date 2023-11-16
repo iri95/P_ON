@@ -17,6 +17,7 @@ import 'package:p_on/screen/main/user/token_state.dart';
 import 'package:p_on/screen/main/user/user_state.dart';
 
 import 'package:go_router/go_router.dart';
+import 'package:flutter/foundation.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -36,46 +37,6 @@ class _LoginPageState extends ConsumerState<LoginPage>
   Widget build(BuildContext context) {
     final auth = PonAuthScope.of(context);
 
-    // Future<void> fetchProfile() async {
-    //   final loginState = ref.read(loginStateProvider);
-    //   final token = loginState.serverToken;
-    //   final id = loginState.id;
-
-    //   var headers = {'Authorization': '$token', 'id': '$id'};
-
-    //   // 서버 토큰이 없으면
-    //   if (token == null) {
-    //     await kakaoLogin(ref);
-    //     await fetchToken(ref);
-
-    //     // 토큰을 다시 읽습니다.
-    //     final newToken = ref.read(loginStateProvider).serverToken;
-    //     final newId = ref.read(loginStateProvider).id;
-
-    //     headers['Authorization'] = '$newToken';
-    //     headers['id'] = '$newId';
-    //   }
-
-    //   final apiService = ApiService();
-    //   try {
-    //     Response response = await apiService.sendRequest(
-    //         method: 'GET', path: '/api/user/profile', headers: headers);
-
-    //     // 여기서 회원 정보 프로바이더 저장 후 전달
-    //     var user = UserState(
-    //       profileImage: response.data['result'][0]['profileImage'] as String,
-    //       nickName: response.data['result'][0]['nickName'] as String,
-    //       privacy: response.data['result'][0]['privacy'] as String,
-    //       stateMessage: response.data['result'][0]['stateMessage'] as String?,
-    //     );
-
-    //     ref.read(userStateProvider.notifier).setUserState(user);
-    //     print('여긴 로그인이고 프로필 조회 끝 ${ref.read(userStateProvider)?.nickName}');
-    //   } catch (e) {
-    //     print('여긴 로그인이고 프로필 에러 $e');
-    //   }
-    // }
-
     Future<void> goLogin() async {
       // 여기서 user이면, 바로 true로 변하고 이동 바로됨
       await auth.signInWithKakao(ref);
@@ -93,13 +54,6 @@ class _LoginPageState extends ConsumerState<LoginPage>
           privacy: userState?.privacy ?? "ALL",
           stateMessage: userState?.stateMessage ?? "",
         ));
-
-        // GoRouter.of(context).go('/register', extra: {
-        //   'nickName': userState?.nickName ?? "",
-        //   'profileImage': userState?.profileImage ?? "",
-        //   'privacy': userState?.privacy ?? "PRIVATE / ALL",
-        //   'stateMessage': userState?.stateMessage ?? "",
-        // });
       } else {
         // 회원이면 메인 페이지로
         print('난 유저고 메인으로 ${auth.signedIn}');
@@ -122,27 +76,36 @@ class _LoginPageState extends ConsumerState<LoginPage>
             margin: const EdgeInsets.fromLTRB(50, 20, 50, 80),
             decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(10),
-                color: const Color(0xffF9E000)),
+                color: (kIsWeb) ? Color(0xffffca38) : const Color(0xffF9E000)),
             child: TextButton(
               onPressed: () async {
                 // FIXME: 이게 키해시임
                 print("=====");
-                print(await KakaoSdk.origin);
+                // print(await KakaoSdk.origin);
 
                 await goLogin();
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset('assets/image/icon/kakao.png',
-                      width: 48, height: 48),
-                  const Text('카카오로 시작하기',
-                      style: TextStyle(
-                          color: Color(0xff371C1D),
-                          fontFamily: 'Pretendard',
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700))
-                ],
+                children: (kIsWeb)
+                    ? [
+                        const Text('P:ON 미리보기',
+                            style: TextStyle(
+                                color: Color(0xff371C1D),
+                                fontFamily: 'Pretendard',
+                                fontSize: 24,
+                                fontWeight: FontWeight.w700))
+                      ]
+                    : [
+                        Image.asset('assets/image/icon/kakao.png',
+                            width: 48, height: 48),
+                        const Text('카카오로 시작하기',
+                            style: TextStyle(
+                                color: Color(0xff371C1D),
+                                fontFamily: 'Pretendard',
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700))
+                      ],
               ),
             ),
           ),

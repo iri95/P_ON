@@ -22,7 +22,6 @@ late void Function() runAppAgain;
 
 void main() async {
   // runAppAgain = main;
-
   // WidgetsFlutterBinding.ensureInitialized();
 
   final bindings = WidgetsFlutterBinding.ensureInitialized();

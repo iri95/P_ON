@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:p_on/screen/main/user/token_state.dart';
 import 'package:p_on/screen/main/user/fn_kakao.dart';
 
+import 'package:flutter/foundation.dart';
+
 class ApiService {
   Dio dio;
 
@@ -19,6 +21,11 @@ class ApiService {
     this.dio.interceptors.add(InterceptorsWrapper(
           onRequest: (options, handler) async {
             // 요청이 전송되기 전에 여기서 무언가를 할 수 있습니다.
+            if (kIsWeb) {
+              print('웹웹');
+              return;
+            }
+
             return handler.next(options); // 계속해서 요청을 전송합니다.
           },
           onResponse: (response, handler) {
