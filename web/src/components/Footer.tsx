@@ -21,9 +21,9 @@ export default function Footer() {
               </Link>
             </li>
             <li>
-              <Link href="/service" target="_blank" scroll={false}>
+              {/* <Link href="/service" target="_blank" scroll={false}>
                 서비스 이용약관
-              </Link>
+              </Link> */}
             </li>
           </ul>
           <ul className={styles['footer-info']}>
