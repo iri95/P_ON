@@ -153,6 +153,8 @@ class _ChatBotState extends ConsumerState<ChatBot> {
         );
       });
     } catch (e) {
+      print(e);
+      print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~');
       messages.add({'text': '유효하지 않은 입력이에요!', 'user': false});
       WidgetsBinding.instance!.addPostFrameCallback((_) {
         _scrollController.animateTo(
@@ -456,44 +458,54 @@ class _ChatBotState extends ConsumerState<ChatBot> {
                                           Container(
                                             margin: const EdgeInsets.only(
                                                 bottom: 2),
-                                            child: messages[index]['location'] =='미정' ? const Row(children: [
-                                              Text('장소',style: TextStyle(
-                                                  fontFamily:
-                                                  'Pretendard',
-                                                  fontWeight:
-                                                  FontWeight.bold,
-                                                  fontSize: 16,
-                                                  color: AppColors
-                                                      .mainBlue)),
-                                              Text('가 정해지지 않았어요!',style: TextStyle(
-                                                  fontFamily:
-                                                  'Pretendard'))
-                                            ],) : Row(
-                                              children: [
-                                                Row(
-                                                  children: [
-                                                    Text(
-                                                      messages[index]
-                                                          ['location'],
-                                                      style: const TextStyle(
-                                                          fontFamily:
-                                                              'Pretendard',
-                                                          fontWeight:
-                                                              FontWeight.bold,
-                                                          fontSize: 16,
-                                                          color: AppColors
-                                                              .mainBlue),
-                                                    ),
-                                                    const Text(
-                                                      ' 에서',
-                                                      style: TextStyle(
-                                                          fontFamily:
-                                                              'Pretendard'),
-                                                    )
-                                                  ],
-                                                )
-                                              ],
-                                            ),
+                                            child: messages[index]
+                                                        ['location'] ==
+                                                    '미정'
+                                                ? const Row(
+                                                    children: [
+                                                      Text('장소',
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  'Pretendard',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 16,
+                                                              color: AppColors
+                                                                  .mainBlue)),
+                                                      Text('가 정해지지 않았어요!',
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  'Pretendard'))
+                                                    ],
+                                                  )
+                                                : Row(
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            messages[index]
+                                                                ['location'],
+                                                            style: const TextStyle(
+                                                                fontFamily:
+                                                                    'Pretendard',
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 16,
+                                                                color: AppColors
+                                                                    .mainBlue),
+                                                          ),
+                                                          const Text(
+                                                            ' 에서',
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    'Pretendard'),
+                                                          )
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
                                           ),
                                           Container(
                                             margin: const EdgeInsets.only(
@@ -589,7 +601,8 @@ class _ChatBotState extends ConsumerState<ChatBot> {
                                             ),
                                             child: Text(
                                               messages[index]['text'],
-                                              style: const TextStyle(fontSize: 16),
+                                              style:
+                                                  const TextStyle(fontSize: 16),
                                             ),
                                           ),
                                         ),
