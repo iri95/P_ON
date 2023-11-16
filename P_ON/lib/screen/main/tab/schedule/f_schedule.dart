@@ -287,7 +287,43 @@ class _CalendarFragmentState extends ConsumerState<ScheduleFragment> {
       child: Column(
         children: [
           const PONAppBar(),
-
+          Container(
+            height: 100,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: userList
+                  ?.map((item) => Container(
+                margin: const EdgeInsets.symmetric(
+                    horizontal: 4),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: 80,
+                      height: 80,
+                      child: TextButton(
+                          onPressed: () {
+                            populateEventsForUserId(item['userId']);
+                          },
+                          child: ClipOval(
+                            child: Image.network(
+                                item['profileImage'],
+                                fit: BoxFit.cover),
+                          )),
+                    ),
+                    Text(
+                      item['nickname'],
+                      style: const TextStyle(
+                          fontFamily: 'Pretendard',
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16),
+                    ),
+                  ],
+                ),
+              ))
+                  .toList() ??
+                  [],
+            ),
+          ),
           Card(
             margin: const EdgeInsets.all(8.0),
             elevation: 5.0,

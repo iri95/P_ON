@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:after_layout/after_layout.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:p_on/screen/main/fab/w_scroll_bottom_history.dart';
 import 'package:p_on/screen/main/fab/w_scroll_bottom_home.dart';
 import 'package:p_on/screen/main/tab/tab_item.dart';
 import 'package:p_on/screen/main/tab/tab_navigator.dart';
@@ -126,14 +127,8 @@ class MainScreenState extends ConsumerState<MainScreen>
             ),
             Stack(
               children: [
-                Opacity(
-                  opacity: 0,
-                  child: IgnorePointer(
-                    ignoring: _currentTab != TabItem.home,
-                    // 스크롤 위로
-                    child: ScrollToUpHome(),
-                  ),
-                ),
+                _buildScrollToUpWidget(_currentTab, TabItem.home, ScrollToUpHome()),
+                _buildScrollToUpWidget(_currentTab, TabItem.history, ScrollToUpHistory()),
                 AnimatedOpacity(
                   opacity: (_currentTab == TabItem.home ||
                           _currentTab == TabItem.plan)
@@ -200,6 +195,16 @@ class MainScreenState extends ConsumerState<MainScreen>
     }
     // maybePop 가능하면 나가지 않는다.
     return isFirstRouteInCurrentTab;
+  }
+
+  Widget _buildScrollToUpWidget(TabItem currentTab, TabItem targetTab, Widget child) {
+    return Opacity(
+      opacity: 0,
+      child: IgnorePointer(
+        ignoring: currentTab != targetTab,
+        child: child,
+      ),
+    );
   }
 
   Widget _buildBottomNavigationBar(BuildContext context) {
