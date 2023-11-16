@@ -87,7 +87,7 @@ public class PushAlarmService {
 
         localDateTime = localDateTime.minusHours(minusHours);
 
-        return !localDateTime.isAfter(LocalDateTime.now());
+        return !localDateTime.isEqual(LocalDateTime.now());
     }
 
 
