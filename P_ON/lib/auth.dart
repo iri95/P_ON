@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
@@ -27,8 +28,12 @@ class PonAuth extends ChangeNotifier {
   // 서버 토큰이 있으면, 카카오 로그인 -> 서버 토큰 발급 진행
   Future<bool> signInWithKakao(WidgetRef ref) async {
     // 로그인
-    await kakaoLogin(ref);
-    await fetchToken(ref);
+    if (kIsWeb) {
+      webFetch(ref);
+    } else {
+      await kakaoLogin(ref);
+      await fetchToken(ref);
+    }
 
     // fetch Token 하면 token, role이 담김
     final token = ref.read(loginStateProvider).serverToken;

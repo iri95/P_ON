@@ -14,6 +14,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:p_on/screen/main/user/user_state.dart';
 import 'package:p_on/common/util/dio.dart';
 import 'package:flutter/foundation.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // 디바이스 아이디 받아오기
 Future<String> getMobileId() async {
@@ -95,12 +96,20 @@ Future<void> kakaoLogin(WidgetRef ref) async {
       }
     }
   } else if (kIsWeb) {
-    var redirectUri = "https://p-on.site:8000/login/oauth2/code/kakao";
+    String clientId = '2acefa48c84288f725f06d2eb99b2804';
+    String redirectUri = 'YOUR_REDIRECT_URI';
+    String authUrl =
+        'https://kauth.kakao.com/oauth/authorize?client_id=$clientId&redirect_uri=$redirectUri&response_type=code';
+
+// Web에서 URL 열기
+    launch(authUrl);
+
     if (await isKakaoTalkInstalled()) {
       try {
         await AuthCodeClient.instance.authorizeWithTalk(
-          redirectUri: '${redirectUri}',
-        );
+            clientId: '${clientId}',
+            redirectUri: '${redirectUri}',
+            webPopupLogin: true);
       } catch (error) {
         print('카카오톡으로 로그인 실패 $error');
       }
@@ -108,11 +117,18 @@ Future<void> kakaoLogin(WidgetRef ref) async {
       try {
         await AuthCodeClient.instance.authorize(
           redirectUri: '${redirectUri}',
+          clientId: '${clientId}',
         );
       } catch (error) {
         print('카카오계정으로 로그인 실패 $error');
       }
     }
+    // 서비스 서버가 전달한 response 데이터에서 토큰 획득 후 Flutter SDK에서 사용하는 타입으로 변환
+    // var tokenResponse = AccessTokenResponse.fromJson(response);
+    // var token = OAuthToken.fromResponse(tokenResponse);
+
+    // // 토큰 저장
+    // TokenManagerProvider.instance.manager.setToken(token);
   }
 }
 
@@ -204,6 +220,27 @@ Future<void> fetchToken(WidgetRef ref) async {
     // 에러 처리
     throw Exception('서버 토큰을 가져오는데 실패했습니다: $e');
   }
+}
+
+Future<void> webFetch(ref) async {
+  final serverToken = '';
+  final role = 'USER';
+  final id = '46';
+
+  // loginStateProvider를 통해 상태 갱신
+  if (serverToken != null) {
+    ref.read(loginStateProvider.notifier).updateServerToken(serverToken);
+  }
+  if (role != null) {
+    ref.read(loginStateProvider.notifier).updateRole(role);
+  }
+  if (id != null) {
+    ref.read(loginStateProvider.notifier).updateId(id);
+  }
+
+  print('서버 ${ref.read(loginStateProvider).serverToken} ================');
+  print('서버롤 ${ref.read(loginStateProvider).role} ================');
+  print('서버아이디 ${ref.read(loginStateProvider).id}');
 }
 
 // 서버 API로 정보 받아오는거임

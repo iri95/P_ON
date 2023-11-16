@@ -126,8 +126,8 @@ class _LoginPageState extends ConsumerState<LoginPage>
             child: TextButton(
               onPressed: () async {
                 // FIXME: 이게 키해시임
-                // print("=====");
-                // print(await KakaoSdk.origin);
+                print("=====");
+                print(await KakaoSdk.origin);
 
                 await goLogin();
               },
