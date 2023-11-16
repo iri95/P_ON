@@ -63,7 +63,7 @@ class _SelectVoteState extends ConsumerState<SelectVote> {
           method: 'GET',
           path: '$server/api/promise/vote/${widget.id}',
           headers: headers);
-      print(response);
+      // print(response);
       count = await response.data['count'];
       date = await response.data['result'][0]['dates'];
       time = await response.data['result'][0]['times'];
@@ -87,9 +87,9 @@ class _SelectVoteState extends ConsumerState<SelectVote> {
 
   @override
   Widget build(BuildContext context) {
-    print(doDate);
-    print(doTime);
-    print(doLocation);
+    // print(doDate);
+    // print(doTime);
+    // print(doLocation);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
@@ -103,7 +103,7 @@ class _SelectVoteState extends ConsumerState<SelectVote> {
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
                 onPressed: () {
-                  context.go('/chatroom/${widget.id}');
+                  context.push('/chatroom/${widget.id}');
                 },
               ),
               title: const Text('투표하기',

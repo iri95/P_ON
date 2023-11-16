@@ -26,17 +26,17 @@ class VoteItems extends ConsumerStatefulWidget {
   final ValueNotifier<bool> voteCompletedNotifier;
   final String voteInfo;
 
-  const VoteItems(
-      {super.key,
-      required this.roomId,
-      required this.text,
-      required this.voteData,
-      required this.voteType,
-      required this.count,
-      required this.isDone,
-      required this.voteCompletedNotifier,
-      required this.voteInfo,
-      });
+  const VoteItems({
+    super.key,
+    required this.roomId,
+    required this.text,
+    required this.voteData,
+    required this.voteType,
+    required this.count,
+    required this.isDone,
+    required this.voteCompletedNotifier,
+    required this.voteInfo,
+  });
 
   @override
   ConsumerState<VoteItems> createState() => _VoteItemsState();
@@ -56,9 +56,6 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   final kToday = DateTime.now();
-
-
-
 
   String changeDate(String date) {
     DateTime chatRoomDate = DateTime.parse(date);
@@ -94,24 +91,24 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
           method: 'GET',
           path: '$server/api/promise/vote/${widget.roomId}',
           headers: headers);
-      print('이거 위젯안에서 한번더 조회하는거임');
-      print('이거 위젯안에서 한번더 조회하는거임');
-      print('이거 위젯안에서 한번더 조회하는거임');
-      print(response);
+      // print('이거 위젯안에서 한번더 조회하는거임');
+      // print('이거 위젯안에서 한번더 조회하는거임');
+      // print('이거 위젯안에서 한번더 조회하는거임');
+      // print(response);
       switch (widget.voteType) {
         case 'DATE':
-          print('여기는 date');
-          print(widget.voteType);
+          // print('여기는 date');
+          // print(widget.voteType);
           isComplete = await response.data['result'][0]['dateComplete'];
           break;
         case 'TIME':
-          print('여기는 time');
-          print(widget.voteType);
+          // print('여기는 time');
+          // print(widget.voteType);
           isComplete = await response.data['result'][0]['timeComplete'];
           break;
         case 'LOCATION':
-          print('여기는 location');
-          print(widget.voteType);
+          // print('여기는 location');
+          // print(widget.voteType);
           isComplete = await response.data['result'][0]['locationComplete'];
           break;
         default:
@@ -156,7 +153,8 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
           }
 
           var listValue = value as List<dynamic>;
-          var mapList = listValue.map((item) => item as Map<String, dynamic>).toList();
+          var mapList =
+              listValue.map((item) => item as Map<String, dynamic>).toList();
 
           mapItem[intKey] = mapList;
         });
@@ -165,17 +163,17 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
           convertedList.add(mapItem);
         }
       }
-      print('일정조회 성ㄱㅇ');
-      print(response.data['result']);
+      // print('일정조회 성ㄱㅇ');
+      // print(response.data['result']);
       setState(() {
-        print('컨버티드 리스트 만들어짐? : $convertedList');
-        isLoading = false;  // 로딩 상태 업데이트
+        // print('컨버티드 리스트 만들어짐? : $convertedList');
+        isLoading = false; // 로딩 상태 업데이트
         populateEventsFromList(convertedList);
       });
       return response;
     } catch (e) {
       setState(() {
-        isLoading = false;  // 에러 발생 시에도 로딩 상태 업데이트
+        isLoading = false; // 에러 발생 시에도 로딩 상태 업데이트
       });
       throw e;
     }
@@ -206,17 +204,17 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
 
     final apiService = ApiService();
     try {
-      print(selectedItems);
+      // print(selectedItems);
       Response response = await apiService.sendRequest(
           method: 'POST',
           path: '$server/api/promise/vote',
           headers: {...headers, 'Content-Type': 'application/json'},
           data: data);
-      print('저장성공');
-      print(selectedItems);
-      print('초기화');
+      // print('저장성공');
+      // print(selectedItems);
+      // print('초기화');
       selectedItems.clear();
-      print(selectedItems);
+      // print(selectedItems);
       widget.voteCompletedNotifier.value = true;
     } catch (e) {
       print(e);
@@ -315,7 +313,6 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
     if (token == null) {
       await kakaoLogin(ref);
       await fetchToken(ref);
-
       // 토큰을 다시 읽습니다.
       final newToken = ref.read(loginStateProvider).serverToken;
       final newId = ref.read(loginStateProvider).id;
@@ -327,11 +324,11 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
     try {
       Response response = await apiService.sendRequest(
           method: 'PUT',
-          path: '$server/api/promise/item/${widget.roomId}/${widget.voteType}',
+          path: '/api/promise/item/${widget.roomId}/${widget.voteType}',
           headers: headers);
-      print(response);
+      // print(response);
       final router = GoRouter.of(context);
-      router.go('/chatroom/${widget.roomId}');
+      router.push('/chatroom/${widget.roomId}');
     } catch (e) {
       print(e);
     }
@@ -376,10 +373,10 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
       }
     }
 
-    print('======');
-    print('======');
-    print('======');
-    print(kEvents);
+    // print('======');
+    // print('======');
+    // print('======');
+    // print(kEvents);
   }
 
   @override
@@ -389,9 +386,9 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
     final currentUser = ref.read(loginStateProvider).id;
     final createUser = ref.read(voteInfoProvider).create_user.toString();
     final voteUpdate = currentUser == createUser ? true : false;
-    print('===================');
-    print(isComplete);
-    print(widget.voteType);
+    // print('===================');
+    // print(isComplete);
+    // print(widget.voteType);
 
     if (isLoading) {
       return Stack(
@@ -430,14 +427,13 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
               PopupMenuButton<int>(
                   icon: const Icon(Icons.more_vert),
                   itemBuilder: (context) => <PopupMenuEntry<int>>[
-                    if (widget.isDone == false)
-                        const PopupMenuItem(
-                          textStyle: TextStyle(color: AppColors.grey500),
-                          value: 1,
-                          child: Center(child: Text('수정')),
-                        ),
-                    if (widget.isDone == false)
-                      const PopupMenuDivider(),
+                        if (widget.isDone == false)
+                          const PopupMenuItem(
+                            textStyle: TextStyle(color: AppColors.grey500),
+                            value: 1,
+                            child: Center(child: Text('수정')),
+                          ),
+                        if (widget.isDone == false) const PopupMenuDivider(),
                         const PopupMenuItem(
                           textStyle: TextStyle(color: AppColors.grey500),
                           value: 2,
@@ -592,24 +588,31 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
                   children: [
                     Checkbox(
                       value: _checkboxValues[i],
-                      onChanged: widget.isDone ? null : isVoteComplete ? null : (bool? newValue) {
-                        setState(() {
-                          if (newValue == true) {
-                            if (isMultipleChoice == false) {
-                              for (int j = 0; j < _checkboxValues.length; j++) {
-                                if (i != j) {
-                                  _checkboxValues[j] = false;
-                                }
-                              }
-                              selectedItems.clear();
-                            }
-                            selectedItems.add(widget.voteData![i]['itemId']);
-                          } else {
-                            selectedItems.remove(widget.voteData![i]);
-                          }
-                          _checkboxValues[i] = newValue!;
-                        });
-                      },
+                      onChanged: widget.isDone
+                          ? null
+                          : isVoteComplete
+                              ? null
+                              : (bool? newValue) {
+                                  setState(() {
+                                    if (newValue == true) {
+                                      if (isMultipleChoice == false) {
+                                        for (int j = 0;
+                                            j < _checkboxValues.length;
+                                            j++) {
+                                          if (i != j) {
+                                            _checkboxValues[j] = false;
+                                          }
+                                        }
+                                        selectedItems.clear();
+                                      }
+                                      selectedItems
+                                          .add(widget.voteData![i]['itemId']);
+                                    } else {
+                                      selectedItems.remove(widget.voteData![i]);
+                                    }
+                                    _checkboxValues[i] = newValue!;
+                                  });
+                                },
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15)),
                       checkColor: Colors.white,
@@ -739,8 +742,8 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
                               : AppColors.mainBlue,
                         ),
                         child: TextButton(
-                          onPressed: () {
-                            isComplete! ? null : doneVote();
+                          onPressed: () async {
+                            isComplete! ? null : await doneVote();
                           },
                           child: const Text(
                             '투표종료',
@@ -756,6 +759,7 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
                 ],
               ),
             ),
+
           /// TODO : 여기 캘린더 넣어, 일정 마커 추가된것만
           /// 초록창 부분
           if (widget.voteType == 'DATE')
@@ -766,7 +770,7 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
                 borderRadius: BorderRadius.all(
                   Radius.circular(10),
                 ),
-                side: BorderSide( color:Colors.black26, width: 1.0),
+                side: BorderSide(color: Colors.black26, width: 1.0),
               ),
               child: TableCalendar<Event>(
                 locale: 'ko_KR',
@@ -797,20 +801,21 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
                 calendarStyle: const CalendarStyle(
                   tablePadding: EdgeInsets.only(bottom: 8.0),
                   markerSize: 16.0,
-                //   // marker 여러개 일 때 cell 영역을 벗어날지 여부
+                  //   // marker 여러개 일 때 cell 영역을 벗어날지 여부
                   canMarkersOverflow: false,
-                //   markerDecoration: BoxDecoration(
-                //     color: AppColors.calendarYellow,
-                //     shape: BoxShape.circle,
-                //     // shape: BoxShape.rectangle,
-                //   ),
+                  //   markerDecoration: BoxDecoration(
+                  //     color: AppColors.calendarYellow,
+                  //     shape: BoxShape.circle,
+                  //     // shape: BoxShape.rectangle,
+                  //   ),
                 ),
                 headerStyle: HeaderStyle(
                   titleCentered: true,
-                  titleTextFormatter: (date, locale) => DateFormat('yy년 MM월', locale).format(date),
+                  titleTextFormatter: (date, locale) =>
+                      DateFormat('yy년 MM월', locale).format(date),
                   titleTextStyle: const TextStyle(
                     fontSize: 20.0,
-                    color:  AppColors.mainBlue,
+                    color: AppColors.mainBlue,
                   ),
                   formatButtonVisible: false,
                   headerPadding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -827,6 +832,7 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
                 },
               ),
             ),
+
           /// 여기까지 입니다
           /// 이 사이에 모두의 일정이 포함된 공유 캘린더 넣어 주시면 되용
           if (widget.voteType == 'LOCATION' &&
@@ -857,8 +863,6 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
 
   List<NMarker> _markers = [];
 
-
-
   addMarker() {
     for (int i = 0; i < widget.voteData!.length; i++) {
       var marker = NMarker(
@@ -887,7 +891,6 @@ final kEvents = LinkedHashMap<DateTime, List<Event>>(
   hashCode: getHashCode,
 );
 
-
 class Event {
   final String title;
 
@@ -896,7 +899,6 @@ class Event {
   @override
   String toString() => title;
 }
-
 
 int getHashCode(DateTime key) {
   return key.day * 1000000 + key.month * 10000 + key.year;
