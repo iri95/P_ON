@@ -23,6 +23,8 @@ class FriendsItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    bool isFollow;
+
     Future<void> submitFollow(friend) async {
       print(friend);
       print(friend.followBack);
@@ -46,7 +48,12 @@ class FriendsItem extends ConsumerWidget {
       }
 
       final apiService = ApiService();
-      final _method = friend.followBack == true ? 'DELETE' : 'POST';
+
+      final _method = isSelected
+          ? 'DELETE'
+          : friend.followBack == true
+              ? 'DELETE'
+              : 'POST';
 
       try {
         await apiService.sendRequest(
@@ -103,17 +110,27 @@ class FriendsItem extends ConsumerWidget {
                   minimumSize: const Size(75, 36),
                   backgroundColor:
                       // 팔로우백이 true이면 맞팔
-                      friend.followBack
+                      isSelected
                           ? AppColors.grey500
-                          : AppColors.mainBlue),
+                          : friend.followBack
+                              ? AppColors.grey500
+                              : AppColors.mainBlue),
               onPressed: () async {
                 await submitFollow(friend);
 
                 // // FIXME: 이게맞나
                 // ref.refresh(fetchFollowProvider);
               },
+
+              // 이 탭이 following이면 isSelected true? 항상 true
+              // 팔로우이면, followback이
+              // isSelected ? 'DELETE' : friend.followBack == true ? 'DELETE' : 'POST';
               child: Text(
-                friend.followBack ? '팔로잉' : '팔로우',
+                isSelected
+                    ? '팔로잉'
+                    : friend.followBack
+                        ? '팔로잉'
+                        : '팔로우',
                 style: const TextStyle(
                     fontFamily: 'Pretendard',
                     fontWeight: FontWeight.w500,
