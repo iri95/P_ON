@@ -29,7 +29,7 @@ class PonAuth extends ChangeNotifier {
   Future<bool> signInWithKakao(WidgetRef ref) async {
     // 로그인
     if (kIsWeb) {
-      webFetch(ref);
+      fetchWeb(ref);
     } else {
       await kakaoLogin(ref);
       await fetchToken(ref);
@@ -45,7 +45,9 @@ class PonAuth extends ChangeNotifier {
       _signedIn = true;
       print('토큰이 있고, role이 user');
 
-      await fetchProfile(ref);
+      if (!kIsWeb) {
+        await fetchProfile(ref);
+      }
 
       // 그러면 여기서 토큰으로 프로필을 저장하고 메인으로 이동해야 함
       print('${ref.read(userStateProvider)?.nickName}');

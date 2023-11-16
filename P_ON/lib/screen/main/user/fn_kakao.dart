@@ -14,7 +14,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:p_on/screen/main/user/user_state.dart';
 import 'package:p_on/common/util/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 // FCM 토큰 받아오기
 Future getFCMToken() async {
@@ -67,88 +66,8 @@ Future<void> kakaoLogin(WidgetRef ref) async {
     }
   } else if (kIsWeb) {
     print('나는웹');
-    launch('http://k9e102.p.ssafy.io:8000/oauth2/authorization/kakao');
-
-    // launchUrl(Url: 'http://k9e102.p.ssafy.io:8000/oauth2/authorization/kakao');
-    String clientId = '2acefa48c84288f725f06d2eb99b2804';
-
-    // String redirectUri =
-    //     'http://k9e102.p.ssafy.io:8000/oauth2/authorization/kakao';
-    String redirectUri = 'http://localhost:55694/wanyviny#/main/home';
-    String authUrl =
-        'https://kauth.kakao.com/oauth/authorize?client_id=$clientId&redirect_uri=$redirectUri&response_type=code';
-
-    // if (await isKakaoTalkInstalled()) {
-    //   try {
-    //     await AuthCodeClient.instance.authorizeWithTalk(
-    //         // clientId: '${clientId}',
-    //         redirectUri: '${redirectUri}',
-    //         webPopupLogin: true);
-    //   } catch (error) {
-    //     print('카카오톡으로 로그인 실패 $error');
-    //   }
-    // } else {
-    //   try {
-    //     await AuthCodeClient.instance.authorize(
-    //       redirectUri: '${redirectUri}',
-    //       // clientId: '${clientId}',
-    //     );
-    //   } catch (error) {
-    //     print('카카오계정으로 로그인 실패 $error');
-    //   }
-    // }
-
-    // 서비스 서버가 전달한 response 데이터에서 토큰 획득 후 Flutter SDK에서 사용하는 타입으로 변환
-    // var tokenResponse = AccessTokenResponse.fromJson(response);
-    // var token = OAuthToken.fromResponse(tokenResponse);
-
-    // // 토큰 저장
-    // TokenManagerProvider.instance.manager.setToken(token);
   }
 }
-
-// 유저 정보
-// Future getUserInfo() async {
-//   try {
-//     await isToken();
-//     User user = await UserApi.instance.me();
-//     print('사용자 정보'
-//         '\n회원번호: ${user.id}'
-//         '\n닉네임: ${user.kakaoAccount?.profile?.nickname}'
-//         '\n프로필: ${user.kakaoAccount?.profile?.profileImageUrl}'
-//         '\n이메일: ${user.kakaoAccount?.email}');
-
-//     return user;
-//   } catch (error) {
-//     print('사용자 정보 요청 실패 $error');
-//     await isToken();
-//   }
-// }
-
-// // 카카오 토큰 유효성 체크
-// Future<void> isToken() async {
-//   // hasToken이 true: 기존에 발급받은 액세스 토큰 또는 리프레시 토큰이 존재
-//   if (await AuthApi.instance.hasToken()) {
-//     try {
-//       AccessTokenInfo tokenInfo = await UserApi.instance.accessTokenInfo();
-//       print('토큰 유효성 체크 성공'
-//           '\n회원정보: ${tokenInfo.id}'
-//           '\n만료시간: ${tokenInfo.expiresIn} 초');
-//     } catch (error) {
-//       if (error is KakaoException && error.isInvalidTokenError()) {
-//         print('토큰 만료 $error');
-//       } else {
-//         print('토큰 정보 조회 실패 $error');
-//       }
-//       // 카카오 로그인
-//       await kakaoLogin();
-//     }
-//   } else {
-//     print('발급된 토큰 없음');
-//     // 카카오 로그인
-//     await kakaoLogin();
-//   }
-// }
 
 // kakao 로그인 후 서버 토큰 받아내기
 Future<void> fetchToken(WidgetRef ref) async {
@@ -197,10 +116,10 @@ Future<void> fetchToken(WidgetRef ref) async {
   }
 }
 
-Future<void> webFetch(ref) async {
-  final serverToken = '';
+Future<void> fetchWeb(ref) async {
+  final serverToken = 'DUMMY';
   final role = 'USER';
-  final id = '46';
+  final id = '0';
 
   // loginStateProvider를 통해 상태 갱신
   if (serverToken != null) {
