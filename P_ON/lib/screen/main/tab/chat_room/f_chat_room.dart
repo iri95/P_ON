@@ -335,7 +335,7 @@ class _ChatRoomState extends ConsumerState<ChatRoom> {
                   icon: const Icon(Icons.menu, color: Colors.black))
             ],
           ),
-          endDrawer: RightModal(id: widget.id, users: userData),
+          endDrawer: RightModal(id: widget.id, users: userData, date: chatRoomInfo['promiseDate']??'미정', time: chatRoomInfo['promiseTime']??'미정', location: chatRoomInfo['promiseLocation']??'미정',),
           body: Container(
             padding: const EdgeInsets.only(bottom: 60),
             child: Column(
