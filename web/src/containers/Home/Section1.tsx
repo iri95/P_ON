@@ -18,13 +18,13 @@ export default function Section1() {
       <motion.div style={{ position }} className={styles.section1}>
         <div className={styles.screenshots}>
           <div className={styles.screen}>
-            <Image src="/main1_black.png" alt="PON스플래시" objectFit="contain" fill quality={100} />
+            <Image src="/main/main1_black.png" alt="PON스플래시" objectFit="contain" fill quality={100} />
           </div>
           <div className={`${styles.screen}`}>
-            <Image src="/main1_black.png" alt="PON약속화면" objectFit="contain" fill quality={100} />
+            <Image src="/main/main2.png" alt="PON홈화면" objectFit="contain" fill quality={100} />
           </div>
           <div className={`${styles.screen}`}>
-            <Image src="/main1_black.png" alt="PON캘린더" objectFit="contain" fill quality={100} />
+            <Image src="/main/main3.png" alt="PON채팅방" objectFit="contain" fill quality={100} />
           </div>
         </div>
 

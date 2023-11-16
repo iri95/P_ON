@@ -44,11 +44,11 @@ export default function Nav() {
           <li
             className={`${styles['nav-item']} ${active === '/how-to-use' || active === '/mobile' ? styles.active : ''}`}
           >
-            <Link href="/how-to-use" scroll className={styles['main-item']}>
-              가이드
+            <Link href="/mobile" scroll className={styles['main-item']}>
+              미리보기
               {(active === '/how-to-use' || active === '/mobile') && <div className={styles.line} />}
             </Link>
-            <ul className={styles.dropdown}>
+            {/* <ul className={styles.dropdown}>
               <li>
                 <Link scroll href="/how-to-use">
                   P:ON 사용법
@@ -59,7 +59,7 @@ export default function Nav() {
                   미리보기
                 </Link>
               </li>
-            </ul>
+            </ul> */}
           </li>
           <li className={`${styles['nav-item']} ${active === '/faq' ? styles.active : ''}`}>
             <Link href="/faq" scroll className={styles['main-item']}>
