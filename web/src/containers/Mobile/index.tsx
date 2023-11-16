@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import styles from './mobile.module.scss';
+import GoogleBtn from '../Home/downloadBtn';
 
 export default function index() {
   return (
@@ -15,6 +16,16 @@ export default function index() {
           priority
         />
       </div>
+
+      <div className={styles.text}>
+        <p> ⁕ 실제 서비스가 아닌 데모 버전입니다</p>
+        <p>
+          <span>P:ON</span>을 다운받고
+        </p>
+        <p>직접 사용해보세요</p>
+        <GoogleBtn />
+      </div>
+
       <div className={`${styles.device} ${styles.note8}`}>
         <div className={styles.inner} />
         <div className={styles.overflow}>
