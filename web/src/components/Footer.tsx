@@ -9,7 +9,14 @@ export default function Footer() {
       <div className={styles.content}>
         <div className={styles.company}>
           <div className={styles.logo}>
-            <Image src="/WANYVINY.png" alt="WANYVINY Logo" style={{ objectFit: 'contain' }} fill quality={100} />
+            <Image
+              priority
+              src="/WANYVINY.png"
+              alt="WANYVINY Logo"
+              style={{ objectFit: 'contain' }}
+              fill
+              quality={100}
+            />
           </div>
           <p>와니비니</p>
         </div>

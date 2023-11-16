@@ -64,7 +64,7 @@ export default function Index() {
               width="100%"
               height="100%"
               // 컨트롤러 없이
-              src=""
+              src="https://www.youtube.com/embed/uoLt6lE4q3U?si=ApNRQoysh3SZsp0v&amp;controls=0"
               title="YouTube video player"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

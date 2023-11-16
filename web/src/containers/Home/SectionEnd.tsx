@@ -9,17 +9,17 @@ export default function SectionEnd() {
         <Image
           src="/Pinkys.png"
           alt="핑키 배경"
-          layout="fill"
-          style={{ objectFit: 'cover' }}
-          objectPosition="center"
+          fill
+          style={{ objectFit: 'cover', objectPosition: 'center' }}
           quality={100}
+          priority
         />
       </div>
       <div className={styles.title}>
         <p>
           지금
           <span className={styles.logo}>
-            <Image src="/P_ON.png" alt="P:ON 로고" style={{ objectFit: 'contain' }} fill quality={100} />
+            <Image priority src="/P_ON.png" alt="P:ON 로고" style={{ objectFit: 'contain' }} fill quality={100} />
           </span>
           에서
         </p>

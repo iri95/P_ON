@@ -17,11 +17,12 @@ export default function googleBtn() {
           fill
           quality={100}
           style={{ objectFit: 'contain' }}
+          priority
         />
       </Link>
 
       <div className={styles.qrcode}>
-        <Image src="/qrcode.png" alt="PlayStoreQR" style={{ objectFit: 'contain' }} fill />
+        <Image src="/qrcode.png" alt="PlayStoreQR" style={{ objectFit: 'contain' }} fill priority />
       </div>
     </div>
   );

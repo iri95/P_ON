@@ -9,9 +9,8 @@ export default function index() {
         <Image
           src="/Pinkys.png"
           alt="핑키 배경"
-          layout="fill"
-          style={{ objectFit: 'cover' }}
-          objectPosition="center"
+          fill
+          style={{ objectFit: 'cover', objectPosition: 'center' }}
           quality={100}
           priority
         />

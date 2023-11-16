@@ -18,10 +18,10 @@ export default function Nav() {
     <header className={styles['nav-container']}>
       <Link href="/" className={styles['nav-icon']}>
         <div className={styles.big}>
-          <Image alt="p-on logo" src="/pon-logo.png" fill style={{ objectFit: 'contain' }} quality={100} />
+          <Image priority alt="p-on logo" src="/pon-logo.png" fill style={{ objectFit: 'contain' }} quality={100} />
         </div>
         <div className={styles.small}>
-          <Image alt="p-on logo" src="/Pinky/Pinky1.png" fill style={{ objectFit: 'contain' }} quality={100} />
+          <Image priority alt="p-on logo" src="/Pinky/Pinky1.png" fill style={{ objectFit: 'contain' }} quality={100} />
         </div>
       </Link>
       <nav className={styles['nav-items']}>
