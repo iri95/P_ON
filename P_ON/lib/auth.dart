@@ -29,9 +29,7 @@ class PonAuth extends ChangeNotifier {
   Future<bool> signInWithKakao(WidgetRef ref) async {
     // 로그인
     if (kIsWeb) {
-      // webFetch(ref);
-      await kakaoLogin(ref);
-      await fetchToken(ref);
+      webFetch(ref);
     } else {
       await kakaoLogin(ref);
       await fetchToken(ref);
