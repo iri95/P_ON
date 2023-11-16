@@ -96,33 +96,37 @@ Future<void> kakaoLogin(WidgetRef ref) async {
       }
     }
   } else if (kIsWeb) {
+    launch('http://k9e102.p.ssafy.io:8000/oauth2/authorization/kakao');
+
+    // launchUrl(Url: 'http://k9e102.p.ssafy.io:8000/oauth2/authorization/kakao');
     String clientId = '2acefa48c84288f725f06d2eb99b2804';
-    String redirectUri = 'YOUR_REDIRECT_URI';
+
+    // String redirectUri =
+    //     'http://k9e102.p.ssafy.io:8000/oauth2/authorization/kakao';
+    String redirectUri = 'http://localhost:55694/wanyviny#/main/home';
     String authUrl =
         'https://kauth.kakao.com/oauth/authorize?client_id=$clientId&redirect_uri=$redirectUri&response_type=code';
 
-// Web에서 URL 열기
-    launch(authUrl);
+    // if (await isKakaoTalkInstalled()) {
+    //   try {
+    //     await AuthCodeClient.instance.authorizeWithTalk(
+    //         // clientId: '${clientId}',
+    //         redirectUri: '${redirectUri}',
+    //         webPopupLogin: true);
+    //   } catch (error) {
+    //     print('카카오톡으로 로그인 실패 $error');
+    //   }
+    // } else {
+    //   try {
+    //     await AuthCodeClient.instance.authorize(
+    //       redirectUri: '${redirectUri}',
+    //       // clientId: '${clientId}',
+    //     );
+    //   } catch (error) {
+    //     print('카카오계정으로 로그인 실패 $error');
+    //   }
+    // }
 
-    if (await isKakaoTalkInstalled()) {
-      try {
-        await AuthCodeClient.instance.authorizeWithTalk(
-            clientId: '${clientId}',
-            redirectUri: '${redirectUri}',
-            webPopupLogin: true);
-      } catch (error) {
-        print('카카오톡으로 로그인 실패 $error');
-      }
-    } else {
-      try {
-        await AuthCodeClient.instance.authorize(
-          redirectUri: '${redirectUri}',
-          clientId: '${clientId}',
-        );
-      } catch (error) {
-        print('카카오계정으로 로그인 실패 $error');
-      }
-    }
     // 서비스 서버가 전달한 response 데이터에서 토큰 획득 후 Flutter SDK에서 사용하는 타입으로 변환
     // var tokenResponse = AccessTokenResponse.fromJson(response);
     // var token = OAuthToken.fromResponse(tokenResponse);
