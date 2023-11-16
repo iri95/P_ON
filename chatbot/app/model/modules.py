@@ -12,10 +12,6 @@ def to_datetime(inp):
             [
                 HumanMessage(
                     content=f"""Convert the phrase "{inp}" to a date in YYYY-MM-DD format, considering today as the reference.
-                    If today's date is 2023-11-14,
-                        
-                    Input: 오늘 
-                    Output: 2023-11-14
                     
                     Input: 이번 주 일요일  
                     Output: 2023-11-19
