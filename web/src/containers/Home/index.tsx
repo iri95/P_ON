@@ -38,7 +38,7 @@ export default function Index() {
     {
       id: 4,
       tag: '챗봇 - 핑키',
-      image_alt: ['챗봇 대화 화면 1', '챗봇 대화 화면 2'],
+      image_alt: ['챗봇 대화 화면 1', '챗봇 설명 화면'],
       image_src: ['/section/section7.png', '/section/section8.png'],
       title: ['일정을 간편하게 확인할 수 있어요'],
       description: ['챗봇 핑키에게 원하는 날짜의 일정을 조회할 수 있어요', '약속에 대한 정보를 확인할 수 있어요'],
