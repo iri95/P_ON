@@ -44,9 +44,9 @@ class _VoteState extends State<Vote> {
                 print('date');
                 print(widget.voteType);
                 if (widget.isVote! == true) {
-                  router.go('/selecte/vote/${widget.roomId}/${widget.voteInfo}');
+                  router.push('/selecte/vote/${widget.roomId}/${widget.voteInfo}');
                 } else {
-                  router.go(
+                  router.push(
                       '/create/vote/${widget.roomId}/${voteTypeToString(widget.voteType)}/$isUpdate/${widget.voteInfo}');
                 }
                 break;
@@ -54,9 +54,9 @@ class _VoteState extends State<Vote> {
                 print('time');
                 print(widget.voteType);
                 if (widget.isVote! == true) {
-                  router.go('/selecte/vote/${widget.roomId}/${widget.voteInfo}');
+                  router.push('/selecte/vote/${widget.roomId}/${widget.voteInfo}');
                 } else {
-                  router.go(
+                  router.push(
                       '/create/vote/${widget.roomId}/${voteTypeToString(widget.voteType)}/$isUpdate/${widget.voteInfo}');
                 }
                 break;
@@ -64,9 +64,9 @@ class _VoteState extends State<Vote> {
                 print('location');
                 print(widget.voteType);
                 if (widget.isVote! == true) {
-                  router.go('/selecte/vote/${widget.roomId}/${widget.voteInfo}');
+                  router.push('/selecte/vote/${widget.roomId}/${widget.voteInfo}');
                 } else {
-                  router.go(
+                  router.push(
                       '/create/vote/${widget.roomId}/${voteTypeToString(widget.voteType)}/$isUpdate/${widget.voteInfo}');
                 }
                 break;
