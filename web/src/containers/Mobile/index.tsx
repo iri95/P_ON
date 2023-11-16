@@ -1,8 +1,20 @@
+import Image from 'next/image';
 import styles from './mobile.module.scss';
 
 export default function index() {
   return (
     <div className={styles['mobile-container']}>
+      <div className={styles.image}>
+        <Image
+          src="/Pinkys.png"
+          alt="핑키 배경"
+          layout="fill"
+          objectFit="cover"
+          objectPosition="center"
+          quality={100}
+          priority
+        />
+      </div>
       <div className={`${styles.device} ${styles.note8}`}>
         <div className={styles.inner} />
         <div className={styles.overflow}>
