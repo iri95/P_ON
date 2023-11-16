@@ -20,14 +20,12 @@ class ChatBot extends ConsumerStatefulWidget {
 }
 
 class _ChatBotState extends ConsumerState<ChatBot> {
-  List<dynamic> messages = [];
+  List<Map<String, dynamic>> messages = [];
   final messageController = TextEditingController();
   bool createSchedule = false;
   bool checkSchedule = false;
   final ScrollController _scrollController = ScrollController();
   final FocusNode node = FocusNode();
-
-
 
   Future<void> postChatbot(String text) async {
     // 현재 저장된 서버 토큰을 가져옵니다.
@@ -50,11 +48,16 @@ class _ChatBotState extends ConsumerState<ChatBot> {
       headers['id'] = '$newId';
     }
     var data = {'content': text};
-    print(text);
-    print('post요청 보냄슨');
-    print(headers['id'].runtimeType);
 
-    messages.add((text: '일정이 생성되면 알려드릴게요!', user: false));
+    messages.add({'text': '일정이 생성되면 알려드릴게요!', 'user': false});
+
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent + 100,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.ease,
+      );
+    });
 
     final apiService = ApiService();
     try {
@@ -64,19 +67,18 @@ class _ChatBotState extends ConsumerState<ChatBot> {
         headers: headers,
         data: data,
       );
-      print('이거보이면 데이터 받아온거임');
-      print('이거보이면 데이터 받아온거임');
-      print(response);
+
+      messages.add({'text': '일정이 생성되었어요! \n일정탭에서 확인해 보세요!!', 'user': false});
 
       WidgetsBinding.instance!.addPostFrameCallback((_) {
         _scrollController.animateTo(
           _scrollController.position.maxScrollExtent + 100,
-          duration: Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 300),
           curve: Curves.ease,
         );
       });
     } catch (e) {
-      messages.add((text: '유효하지 않은 입력이에요!', user: false));
+      messages.add({'text': '유효하지 않은 입력이에요!', 'user': false});
     }
     setState(() {});
   }
@@ -87,7 +89,7 @@ class _ChatBotState extends ConsumerState<ChatBot> {
     final token = loginState.serverToken;
     final id = loginState.id;
 
-    var headers = {'Authorization': '$token', 'id': '$id'};
+    var headers = {'Authorization': '$token', 'id': int.parse('$id')};
 
     // 서버 토큰이 없으면
     if (token == null) {
@@ -101,27 +103,68 @@ class _ChatBotState extends ConsumerState<ChatBot> {
       headers['Authorization'] = '$newToken';
       headers['id'] = '$newId';
     }
+    var data = {'content': text};
+
+    messages.add({'text': '일정을 가져오는 중이에요!', 'user': false});
+
+    WidgetsBinding.instance!.addPostFrameCallback((_) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent + 100,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.ease,
+      );
+    });
+
     final apiService = ApiService();
     try {
       Response response = await apiService.sendRequest(
         method: 'GET',
-        path: 'http://k9e102.p.ssafy.io/chatbot',
+        path: 'https://p-on.site/chatbot',
         headers: headers,
-        data: text,
+        data: data,
       );
-      print('get 요청 보냄');
-      print(response);
+
+      var res = await response.data['res'];
+      messages.add({'text': '일정을 가져왔어요 확인해 보세요!', 'user': false});
+      if (res.length > 0) {
+        for (var item in res) {
+          messages.add({
+            'user': false,
+            'schedule': true,
+            'startDate': item['cal']['calendar_start_date'] ?? '미정',
+            'endDate': item['cal']['calendar_end_date'] ?? '미정',
+            'location': (item['cal']['calendar_place'] ?? '미정')
+                .replaceAll(RegExp(r'<[^>]*>'), '')
+                .replaceAll('&amp;', '&')
+                .replaceAll('&lt;', '<')
+                .replaceAll('&gt;', '>')
+                .replaceAll('&quot;', '"')
+                .replaceAll('&#39;', "'"),
+            'title': item['cal']['calendar_title'] ?? '미정',
+          });
+        }
+      } else {
+        messages.add({'text': '일정이 없어요!', 'user': false});
+      }
 
       WidgetsBinding.instance!.addPostFrameCallback((_) {
         _scrollController.animateTo(
           _scrollController.position.maxScrollExtent + 100,
-          duration: Duration(milliseconds: 300),
+          duration: const Duration(milliseconds: 300),
           curve: Curves.ease,
         );
       });
     } catch (e) {
-      print(e);
+      messages.add({'text': '유효하지 않은 입력이에요!', 'user': false});
+      WidgetsBinding.instance!.addPostFrameCallback((_) {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent + 100,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.ease,
+        );
+      });
     }
+    setState(() {});
   }
 
   @override
@@ -132,17 +175,17 @@ class _ChatBotState extends ConsumerState<ChatBot> {
     var formatter = DateFormat('yyyy-MM-dd (E)', 'ko_KR');
     String formattedDate = formatter.format(now);
 
-    messages.add((text: formattedDate, user: false));
-    messages.add((text: '하고 싶은 채팅을 선택해 주세요!', user: false));
-    messages.add((text: '일정 생성', user: false));
-    messages.add((text: '일정 확인', user: false));
+    messages.add({'text': formattedDate, 'user': false});
+    messages.add({'text': '하고 싶은 채팅을 선택해 주세요!', 'user': false});
+    messages.add({'text': '일정 생성', 'user': false});
+    messages.add({'text': '일정 확인', 'user': false});
 
     node.addListener(() {
       if (node.hasFocus) {
-        Future.delayed(Duration(milliseconds: 300)).then((_) {
+        Future.delayed(const Duration(milliseconds: 300)).then((_) {
           _scrollController.animateTo(
             _scrollController.position.maxScrollExtent + 100,
-            duration: Duration(milliseconds: 300),
+            duration: const Duration(milliseconds: 300),
             curve: Curves.ease,
           );
         });
@@ -202,7 +245,7 @@ class _ChatBotState extends ConsumerState<ChatBot> {
                             padding: const EdgeInsets.symmetric(
                                 vertical: 4, horizontal: 24),
                             child: Text(
-                              messages[index].text,
+                              messages[index]['text'],
                               style: const TextStyle(color: Colors.white),
                             ),
                           )
@@ -223,12 +266,14 @@ class _ChatBotState extends ConsumerState<ChatBot> {
                                   createSchedule = true;
                                   checkSchedule = false;
                                   setState(() {
-                                    messages.add((
-                                        text: '생성할 일정을 말씀해주세요!', user: false));
+                                    messages.add({
+                                      'text': '생성할 일정을 말씀해주세요!',
+                                      'user': false
+                                    });
                                   });
                                 },
                                 child: Text(
-                                  messages[2].text,
+                                  messages[2]['text'],
                                   style: const TextStyle(
                                       color: Colors.white,
                                       fontFamily: 'Pretendard',
@@ -250,12 +295,14 @@ class _ChatBotState extends ConsumerState<ChatBot> {
                                   createSchedule = false;
                                   checkSchedule = true;
                                   setState(() {
-                                    messages.add((
-                                        text: '확인할 일정을 말씀해 주세요!', user: false));
+                                    messages.add({
+                                      'text': '확인할 일정을 말씀해 주세요!',
+                                      'user': false
+                                    });
                                   });
                                 },
                                 child: Text(
-                                  messages[3].text,
+                                  messages[3]['text'],
                                   style: const TextStyle(
                                       color: Colors.white,
                                       fontFamily: 'Pretendard',
@@ -272,82 +319,302 @@ class _ChatBotState extends ConsumerState<ChatBot> {
                     } else {
                       var sameSender = false;
                       if (index - 1 != 3 &&
-                          messages[index - 1].user == messages[index].user) {
+                          messages[index - 1]['user'] ==
+                              messages[index]['user']) {
                         sameSender = true;
                       } else {
                         sameSender = false;
                       }
-                      return Column(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 4, vertical: 8),
-                            child: Row(
-                              mainAxisAlignment: messages[index].user
-                                  ? MainAxisAlignment.end
-                                  : MainAxisAlignment.start,
-                              children: [
-                                if (messages[index].user == false)
-                                  Image.asset('assets/image/main/핑키1.png',
-                                      width: 48),
-                                Container(
-                                  margin: const EdgeInsets.only(left: 8),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      if (messages[index].user == false)
-                                        const Text('핑키'),
-                                      ConstrainedBox(
-                                        constraints: BoxConstraints(
-                                          maxWidth: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              0.8, // 화면 너비의 80%를 최대 가로 길이로 설정
-                                        ),
-                                        child: Container(
-                                          margin: const EdgeInsets.only(top: 4),
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 8, horizontal: 16),
-                                          decoration: BoxDecoration(
-                                            color: messages[index].user
-                                                ? AppColors.pointOrange2
-                                                : AppColors.grey200,
-                                            borderRadius: sameSender
-                                                ? BorderRadius.all(
-                                                    Radius.circular(20))
-                                                : messages[index].user
-                                                    ? const BorderRadius.only(
-                                                        topLeft:
-                                                            Radius.circular(20),
-                                                        topRight:
-                                                            Radius.circular(20),
-                                                        bottomLeft:
-                                                            Radius.circular(20),
-                                                      )
-                                                    : const BorderRadius.only(
-                                                        topRight:
-                                                            Radius.circular(20),
-                                                        bottomRight:
-                                                            Radius.circular(20),
-                                                        bottomLeft:
-                                                            Radius.circular(20),
-                                                      ),
-                                          ),
-                                          child: Text(
-                                            messages[index].text,
-                                            style: TextStyle(fontSize: 16),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
+                      if (messages[index].containsKey('schedule')) {
+                        return Column(
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 2),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  const SizedBox(
+                                    width: 48,
                                   ),
-                                ),
-                              ],
+                                  ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      maxWidth:
+                                          MediaQuery.of(context).size.width *
+                                              0.7, // 화면 너비의 80%를 최대 가로 길이로 설정
+                                    ),
+                                    child: Container(
+                                      margin: const EdgeInsets.only(top: 4),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 8, horizontal: 16),
+                                      decoration: const BoxDecoration(
+                                          color: AppColors.grey200,
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(20))),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                              margin: const EdgeInsets.only(
+                                                  bottom: 2),
+                                              child: messages[index]
+                                                          ['startDate'] ==
+                                                      '미정'
+                                                  ? const Row(
+                                                      children: [
+                                                        Text(
+                                                          '시작 날짜',
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  'Pretendard',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 16,
+                                                              color: AppColors
+                                                                  .pointOrange),
+                                                        ),
+                                                        Text(
+                                                          ' 는 정해지지 않았고',
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  'Pretendard'),
+                                                        )
+                                                      ],
+                                                    )
+                                                  : Row(
+                                                      children: [
+                                                        Text(
+                                                          messages[index]
+                                                              ['startDate'],
+                                                          style: const TextStyle(
+                                                              fontFamily:
+                                                                  'Pretendard',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 16,
+                                                              color: AppColors
+                                                                  .pointOrange),
+                                                        ),
+                                                        const Text(
+                                                          ' 부터',
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  'Pretendard'),
+                                                        )
+                                                      ],
+                                                    )),
+                                          Container(
+                                            margin: const EdgeInsets.only(
+                                                bottom: 2),
+                                            child: messages[index]['endDate'] ==
+                                                    '미정'
+                                                ? const Row(
+                                                    children: [
+                                                      Text(
+                                                        '종료 날짜',
+                                                        style: TextStyle(
+                                                            fontFamily:
+                                                                'Pretendard',
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 16,
+                                                            color: AppColors
+                                                                .pointOrange),
+                                                      ),
+                                                      Text(
+                                                        ' 는 아직 정해지지 않았어요',
+                                                        style: TextStyle(
+                                                            fontFamily:
+                                                                'Pretendard'),
+                                                      )
+                                                    ],
+                                                  )
+                                                : Row(
+                                                    children: [
+                                                      Text(
+                                                        messages[index]
+                                                            ['endDate'],
+                                                        style: const TextStyle(
+                                                            fontFamily:
+                                                                'Pretendard',
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 16,
+                                                            color: AppColors
+                                                                .pointOrange),
+                                                      ),
+                                                      const Text(
+                                                        ' 까지',
+                                                        style: TextStyle(
+                                                            fontFamily:
+                                                                'Pretendard'),
+                                                      )
+                                                    ],
+                                                  ),
+                                          ),
+                                          Container(
+                                            margin: const EdgeInsets.only(
+                                                bottom: 2),
+                                            child: messages[index]
+                                                        ['location'] ==
+                                                    '미정'
+                                                ? const Row(
+                                                    children: [
+                                                      Text('장소',
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  'Pretendard',
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .bold,
+                                                              fontSize: 16,
+                                                              color: AppColors
+                                                                  .mainBlue)),
+                                                      Text('가 정해지지 않았어요!',
+                                                          style: TextStyle(
+                                                              fontFamily:
+                                                                  'Pretendard'))
+                                                    ],
+                                                  )
+                                                : Row(
+                                                    children: [
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            messages[index]
+                                                                ['location'],
+                                                            style: const TextStyle(
+                                                                fontFamily:
+                                                                    'Pretendard',
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 16,
+                                                                color: AppColors
+                                                                    .mainBlue),
+                                                          ),
+                                                          const Text(
+                                                            ' 에서',
+                                                            style: TextStyle(
+                                                                fontFamily:
+                                                                    'Pretendard'),
+                                                          )
+                                                        ],
+                                                      )
+                                                    ],
+                                                  ),
+                                          ),
+                                          Container(
+                                            margin: const EdgeInsets.only(
+                                                bottom: 2),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  messages[index]['title'],
+                                                  style: const TextStyle(
+                                                      fontFamily: 'Pretendard'),
+                                                ),
+                                                const Text(
+                                                  '약속이 있어요!',
+                                                  style: TextStyle(
+                                                      fontFamily: 'Pretendard'),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        );
+                      } else {
+                        return Column(
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 4, vertical: 8),
+                              child: Row(
+                                mainAxisAlignment: messages[index]['user']
+                                    ? MainAxisAlignment.end
+                                    : MainAxisAlignment.start,
+                                children: [
+                                  if (messages[index]['user'] == false)
+                                    Image.asset('assets/image/main/핑키1.png',
+                                        width: 48),
+                                  Container(
+                                    margin: const EdgeInsets.only(left: 8),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        if (messages[index]['user'] == false)
+                                          const Text('핑키'),
+                                        ConstrainedBox(
+                                          constraints: BoxConstraints(
+                                            maxWidth: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.8, // 화면 너비의 80%를 최대 가로 길이로 설정
+                                          ),
+                                          child: Container(
+                                            margin:
+                                                const EdgeInsets.only(top: 4),
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 8, horizontal: 16),
+                                            decoration: BoxDecoration(
+                                              color: messages[index]['user']
+                                                  ? AppColors.pointOrange2
+                                                  : AppColors.grey200,
+                                              borderRadius: sameSender
+                                                  ? const BorderRadius.all(
+                                                      Radius.circular(20))
+                                                  : messages[index]['user']
+                                                      ? const BorderRadius.only(
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  20),
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  20),
+                                                          bottomLeft:
+                                                              Radius.circular(
+                                                                  20),
+                                                        )
+                                                      : const BorderRadius.only(
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  20),
+                                                          bottomRight:
+                                                              Radius.circular(
+                                                                  20),
+                                                          bottomLeft:
+                                                              Radius.circular(
+                                                                  20),
+                                                        ),
+                                            ),
+                                            child: Text(
+                                              messages[index]['text'],
+                                              style:
+                                                  const TextStyle(fontSize: 16),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-                      );
+                          ],
+                        );
+                      }
                     }
                   },
                 ),
@@ -370,7 +637,7 @@ class _ChatBotState extends ConsumerState<ChatBot> {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
-                      return ChatbotExample();
+                      return const ChatbotExample();
                     },
                   );
                 },
@@ -407,7 +674,7 @@ class _ChatBotState extends ConsumerState<ChatBot> {
                               } else {
                                 setState(() {
                                   messageController.text = '';
-                                  messages.add((text: text, user: true));
+                                  messages.add({'text': text, 'user': true});
                                   if (createSchedule == true &&
                                       checkSchedule == false) {
                                     postChatbot(text);
@@ -415,9 +682,10 @@ class _ChatBotState extends ConsumerState<ChatBot> {
                                       createSchedule == false) {
                                     getChatbot(text);
                                   } else {
-                                    messages.add((
-                                        text: '하고싶은 채팅을 먼저 선택해 주세요!',
-                                        user: false));
+                                    messages.add({
+                                      'text': '하고싶은 채팅을 먼저 선택해 주세요!',
+                                      'user': false
+                                    });
                                   }
                                 });
                               }
@@ -430,9 +698,10 @@ class _ChatBotState extends ConsumerState<ChatBot> {
                                 null;
                               } else {
                                 setState(() {
-                                  messages.add((
-                                      text: messageController.text,
-                                      user: true));
+                                  messages.add({
+                                    'text': messageController.text,
+                                    'user': true
+                                  });
                                   if (createSchedule == true &&
                                       checkSchedule == false) {
                                     postChatbot(messageController.text);
@@ -440,9 +709,10 @@ class _ChatBotState extends ConsumerState<ChatBot> {
                                       createSchedule == false) {
                                     getChatbot(messageController.text);
                                   } else {
-                                    messages.add((
-                                        text: '하고싶은 채팅을 먼저 선택해 주세요!',
-                                        user: false));
+                                    messages.add({
+                                      'text': '하고싶은 채팅을 먼저 선택해 주세요!',
+                                      'user': false
+                                    });
                                   }
                                   messageController.text = '';
                                 });

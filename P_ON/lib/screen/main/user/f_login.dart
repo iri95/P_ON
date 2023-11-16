@@ -87,25 +87,33 @@ class _LoginPageState extends ConsumerState<LoginPage>
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: (kIsWeb)
-                    ? [
-                        const Text('P:ON 미리보기',
-                            style: TextStyle(
-                                color: Color(0xff371C1D),
-                                fontFamily: 'Pretendard',
-                                fontSize: 24,
-                                fontWeight: FontWeight.w700))
-                      ]
-                    : [
-                        Image.asset('assets/image/icon/kakao.png',
-                            width: 48, height: 48),
-                        const Text('카카오로 시작하기',
-                            style: TextStyle(
-                                color: Color(0xff371C1D),
-                                fontFamily: 'Pretendard',
-                                fontSize: 16,
-                                fontWeight: FontWeight.w700))
-                      ],
+                children: [
+                  Ink(
+                    decoration: const BoxDecoration(
+                        image: DecorationImage(
+                            image: AssetImage('assets/image/icon/kakao.png'),
+                            fit: BoxFit.cover),
+                        shape: BoxShape.circle),
+                    width: 48,
+                    height: 48,
+                    child: InkWell(
+                      onTap: () {},
+                    ),
+                  ),
+                  (kIsWeb)
+                      ? const Text('P:ON 미리보기',
+                          style: TextStyle(
+                              color: Color(0xff371C1D),
+                              fontFamily: 'Pretendard',
+                              fontSize: 24,
+                              fontWeight: FontWeight.w700))
+                      : const Text('카카오로 시작하기',
+                          style: TextStyle(
+                              color: Color(0xff371C1D),
+                              fontFamily: 'Pretendard',
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700))
+                ],
               ),
             ),
           ),

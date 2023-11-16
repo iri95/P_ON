@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
@@ -9,6 +11,7 @@ import 'package:p_on/screen/main/tab/chat_room/dto_vote.dart';
 import 'package:p_on/screen/main/user/token_state.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:go_router/go_router.dart';
+import 'package:table_calendar/table_calendar.dart';
 import '../../user/fn_kakao.dart';
 import '../promise_room/vo_server_url.dart';
 
@@ -23,17 +26,17 @@ class VoteItems extends ConsumerStatefulWidget {
   final ValueNotifier<bool> voteCompletedNotifier;
   final String voteInfo;
 
-  const VoteItems(
-      {super.key,
-      required this.roomId,
-      required this.text,
-      required this.voteData,
-      required this.voteType,
-      required this.count,
-      required this.isDone,
-      required this.voteCompletedNotifier,
-      required this.voteInfo,
-      });
+  const VoteItems({
+    super.key,
+    required this.roomId,
+    required this.text,
+    required this.voteData,
+    required this.voteType,
+    required this.count,
+    required this.isDone,
+    required this.voteCompletedNotifier,
+    required this.voteInfo,
+  });
 
   @override
   ConsumerState<VoteItems> createState() => _VoteItemsState();
@@ -48,6 +51,11 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
   List<dynamic> selectedItems = [];
   bool? isComplete = false;
   bool isVoteComplete = false;
+  List<dynamic> userList = [];
+  bool isLoading = true;
+  CalendarFormat _calendarFormat = CalendarFormat.month;
+  DateTime _focusedDay = DateTime.now();
+  final kToday = DateTime.now();
 
   String changeDate(String date) {
     DateTime chatRoomDate = DateTime.parse(date);
@@ -56,7 +64,7 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
     return formatterDate;
   }
 
-  Future<void> getVote() async {
+  Future<Response> getVote() async {
     // 현재 저장된 서버 토큰을 가져옵니다.
     final loginState = ref.read(loginStateProvider);
     final token = loginState.serverToken;
@@ -83,24 +91,24 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
           method: 'GET',
           path: '$server/api/promise/vote/${widget.roomId}',
           headers: headers);
-      print('이거 위젯안에서 한번더 조회하는거임');
-      print('이거 위젯안에서 한번더 조회하는거임');
-      print('이거 위젯안에서 한번더 조회하는거임');
-      print(response);
+      // print('이거 위젯안에서 한번더 조회하는거임');
+      // print('이거 위젯안에서 한번더 조회하는거임');
+      // print('이거 위젯안에서 한번더 조회하는거임');
+      // print(response);
       switch (widget.voteType) {
         case 'DATE':
-          print('여기는 date');
-          print(widget.voteType);
+          // print('여기는 date');
+          // print(widget.voteType);
           isComplete = await response.data['result'][0]['dateComplete'];
           break;
         case 'TIME':
-          print('여기는 time');
-          print(widget.voteType);
+          // print('여기는 time');
+          // print(widget.voteType);
           isComplete = await response.data['result'][0]['timeComplete'];
           break;
         case 'LOCATION':
-          print('여기는 location');
-          print(widget.voteType);
+          // print('여기는 location');
+          // print(widget.voteType);
           isComplete = await response.data['result'][0]['locationComplete'];
           break;
         default:
@@ -108,6 +116,66 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
       }
     } catch (e) {
       print(e);
+    }
+    try {
+      Response response = await apiService.sendRequest(
+          method: 'GET',
+          path: '$server/api/promise/room/${widget.roomId}',
+          headers: headers);
+      userList = await response.data['result'][0]['users'];
+
+      setState(() {});
+    } catch (e) {
+      print(e);
+    }
+    List<int> userId = (userList ?? [])
+        .map((user) => int.parse(user['userId'].toString()))
+        .toList();
+    String userIdList = userId.join(',');
+    try {
+      Response response = await apiService.sendRequest(
+        method: 'GET',
+        path: '$server/api/calendar/schedule/promise?userIdList=${userIdList}',
+        headers: headers,
+      );
+      var rawList = response.data['result'] as List<dynamic>; // Step 1
+      var convertedList = <Map<int, List<Map<String, dynamic>>>>[];
+
+      for (var rawItem in rawList) {
+        var mapItem = <int, List<Map<String, dynamic>>>{};
+
+        rawItem.forEach((key, value) {
+          var intKey = int.tryParse(key) ?? 0;
+
+          // value가 null이거나 빈 리스트인 경우 건너뜁니다.
+          if (value == null || (value as List<dynamic>).isEmpty) {
+            return;
+          }
+
+          var listValue = value as List<dynamic>;
+          var mapList =
+              listValue.map((item) => item as Map<String, dynamic>).toList();
+
+          mapItem[intKey] = mapList;
+        });
+
+        if (mapItem.isNotEmpty) {
+          convertedList.add(mapItem);
+        }
+      }
+      // print('일정조회 성ㄱㅇ');
+      // print(response.data['result']);
+      setState(() {
+        // print('컨버티드 리스트 만들어짐? : $convertedList');
+        isLoading = false; // 로딩 상태 업데이트
+        populateEventsFromList(convertedList);
+      });
+      return response;
+    } catch (e) {
+      setState(() {
+        isLoading = false; // 에러 발생 시에도 로딩 상태 업데이트
+      });
+      throw e;
     }
   }
 
@@ -136,17 +204,17 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
 
     final apiService = ApiService();
     try {
-      print(selectedItems);
+      // print(selectedItems);
       Response response = await apiService.sendRequest(
           method: 'POST',
           path: '$server/api/promise/vote',
           headers: {...headers, 'Content-Type': 'application/json'},
           data: data);
-      print('저장성공');
-      print(selectedItems);
-      print('초기화');
+      // print('저장성공');
+      // print(selectedItems);
+      // print('초기화');
       selectedItems.clear();
-      print(selectedItems);
+      // print(selectedItems);
       widget.voteCompletedNotifier.value = true;
     } catch (e) {
       print(e);
@@ -245,7 +313,6 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
     if (token == null) {
       await kakaoLogin(ref);
       await fetchToken(ref);
-
       // 토큰을 다시 읽습니다.
       final newToken = ref.read(loginStateProvider).serverToken;
       final newId = ref.read(loginStateProvider).id;
@@ -257,11 +324,11 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
     try {
       Response response = await apiService.sendRequest(
           method: 'PUT',
-          path: '$server/api/promise/item/${widget.roomId}/${widget.voteType}',
+          path: '/api/promise/item/${widget.roomId}/${widget.voteType}',
           headers: headers);
-      print(response);
+      // print(response);
       final router = GoRouter.of(context);
-      router.go('/chatroom/${widget.roomId}');
+      router.push('/chatroom/${widget.roomId}');
     } catch (e) {
       print(e);
     }
@@ -276,6 +343,42 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
     });
   }
 
+  List<Event> _getEventsForDay(DateTime day) {
+    // Implementation example
+    return kEvents[day] ?? [];
+  }
+
+  // 하나만 찍으려고 로직 바꿈
+  void populateEventsFromList(List<Map<int, List<Map<String, dynamic>>>> data) {
+    // LinkedHashMap 초기화
+    kEvents.clear();
+
+    for (var dayMap in data) {
+      for (var day in dayMap.keys) {
+        List<Map<String, dynamic>> events = dayMap[day]!;
+        for (var event in events) {
+          DateTime startDate = DateTime.parse(event['startDate']);
+          DateTime endDate = DateTime.parse(event['endDate']);
+          String nickName = event['nickName'];
+          String type = event['type'];
+
+          List<DateTime> datesInRange = getDatesInRange(startDate, endDate);
+          for (var date in datesInRange) {
+            // 이미 해당 날짜에 이벤트가 있는 경우 추가하지 않음
+            if (!kEvents.containsKey(date)) {
+              kEvents[date] = [Event('$nickName $type')];
+            }
+          }
+        }
+      }
+    }
+
+    // print('======');
+    // print('======');
+    // print('======');
+    // print(kEvents);
+  }
+
   @override
   Widget build(BuildContext context) {
     final isAnonymous = ref.read(voteInfoProvider).is_anonymous;
@@ -283,9 +386,27 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
     final currentUser = ref.read(loginStateProvider).id;
     final createUser = ref.read(voteInfoProvider).create_user.toString();
     final voteUpdate = currentUser == createUser ? true : false;
-    print('===================');
-    print(isComplete);
-    print(widget.voteType);
+    // print('===================');
+    // print(isComplete);
+    // print(widget.voteType);
+
+    if (isLoading) {
+      return Stack(
+        children: [
+          Positioned.fill(
+            child: Opacity(
+              opacity: 0.3,
+              child: IgnorePointer(
+                ignoring: true,
+                child: Container(
+                  color: Colors.transparent,
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
 
     return Container(
       decoration: const BoxDecoration(
@@ -306,14 +427,13 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
               PopupMenuButton<int>(
                   icon: const Icon(Icons.more_vert),
                   itemBuilder: (context) => <PopupMenuEntry<int>>[
-                    if (widget.isDone == false)
-                        const PopupMenuItem(
-                          textStyle: TextStyle(color: AppColors.grey500),
-                          value: 1,
-                          child: Center(child: Text('수정')),
-                        ),
-                    if (widget.isDone == false)
-                      const PopupMenuDivider(),
+                        if (widget.isDone == false)
+                          const PopupMenuItem(
+                            textStyle: TextStyle(color: AppColors.grey500),
+                            value: 1,
+                            child: Center(child: Text('수정')),
+                          ),
+                        if (widget.isDone == false) const PopupMenuDivider(),
                         const PopupMenuItem(
                           textStyle: TextStyle(color: AppColors.grey500),
                           value: 2,
@@ -468,24 +588,31 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
                   children: [
                     Checkbox(
                       value: _checkboxValues[i],
-                      onChanged: widget.isDone ? null : isVoteComplete ? null : (bool? newValue) {
-                        setState(() {
-                          if (newValue == true) {
-                            if (isMultipleChoice == false) {
-                              for (int j = 0; j < _checkboxValues.length; j++) {
-                                if (i != j) {
-                                  _checkboxValues[j] = false;
-                                }
-                              }
-                              selectedItems.clear();
-                            }
-                            selectedItems.add(widget.voteData![i]['itemId']);
-                          } else {
-                            selectedItems.remove(widget.voteData![i]);
-                          }
-                          _checkboxValues[i] = newValue!;
-                        });
-                      },
+                      onChanged: widget.isDone
+                          ? null
+                          : isVoteComplete
+                              ? null
+                              : (bool? newValue) {
+                                  setState(() {
+                                    if (newValue == true) {
+                                      if (isMultipleChoice == false) {
+                                        for (int j = 0;
+                                            j < _checkboxValues.length;
+                                            j++) {
+                                          if (i != j) {
+                                            _checkboxValues[j] = false;
+                                          }
+                                        }
+                                        selectedItems.clear();
+                                      }
+                                      selectedItems
+                                          .add(widget.voteData![i]['itemId']);
+                                    } else {
+                                      selectedItems.remove(widget.voteData![i]);
+                                    }
+                                    _checkboxValues[i] = newValue!;
+                                  });
+                                },
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15)),
                       checkColor: Colors.white,
@@ -615,8 +742,8 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
                               : AppColors.mainBlue,
                         ),
                         child: TextButton(
-                          onPressed: () {
-                            isComplete! ? null : doneVote();
+                          onPressed: () async {
+                            isComplete! ? null : await doneVote();
                           },
                           child: const Text(
                             '투표종료',
@@ -632,15 +759,80 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
                 ],
               ),
             ),
+
           /// TODO : 여기 캘린더 넣어, 일정 마커 추가된것만
           /// 초록창 부분
           if (widget.voteType == 'DATE')
-            Container(
-              width: double.infinity,
-              height: 300,
-              color: Colors.green,
-              margin: EdgeInsets.fromLTRB(24, 0, 24, 24),
+            Card(
+              margin: const EdgeInsets.all(8.0),
+              elevation: 5.0,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10),
+                ),
+                side: BorderSide(color: Colors.black26, width: 1.0),
+              ),
+              child: TableCalendar<Event>(
+                locale: 'ko_KR',
+                firstDay: DateTime.utc(2012, 4, 16),
+                lastDay: DateTime.utc(2033, 12, 14),
+                focusedDay: _focusedDay,
+                daysOfWeekHeight: 40.0,
+                calendarFormat: _calendarFormat,
+                eventLoader: _getEventsForDay,
+                startingDayOfWeek: StartingDayOfWeek.monday,
+                calendarBuilders: CalendarBuilders<Event>(
+                  markerBuilder: (context, date, events) {
+                    if (events.isNotEmpty) {
+                      return Container(
+                        margin: EdgeInsets.only(bottom: 12.0),
+                        child: Text(
+                          'X',
+                          style: TextStyle(
+                            fontSize: 24,
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      );
+                    }
+                  },
+                ),
+                calendarStyle: const CalendarStyle(
+                  tablePadding: EdgeInsets.only(bottom: 8.0),
+                  markerSize: 16.0,
+                  //   // marker 여러개 일 때 cell 영역을 벗어날지 여부
+                  canMarkersOverflow: false,
+                  //   markerDecoration: BoxDecoration(
+                  //     color: AppColors.calendarYellow,
+                  //     shape: BoxShape.circle,
+                  //     // shape: BoxShape.rectangle,
+                  //   ),
+                ),
+                headerStyle: HeaderStyle(
+                  titleCentered: true,
+                  titleTextFormatter: (date, locale) =>
+                      DateFormat('yy년 MM월', locale).format(date),
+                  titleTextStyle: const TextStyle(
+                    fontSize: 20.0,
+                    color: AppColors.mainBlue,
+                  ),
+                  formatButtonVisible: false,
+                  headerPadding: const EdgeInsets.symmetric(vertical: 4.0),
+                ),
+                onFormatChanged: (format) {
+                  if (_calendarFormat != format) {
+                    setState(() {
+                      _calendarFormat = format;
+                    });
+                  }
+                },
+                onPageChanged: (focusedDay) {
+                  _focusedDay = focusedDay;
+                },
+              ),
             ),
+
           /// 여기까지 입니다
           /// 이 사이에 모두의 일정이 포함된 공유 캘린더 넣어 주시면 되용
           if (widget.voteType == 'LOCATION' &&
@@ -671,8 +863,6 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
 
   List<NMarker> _markers = [];
 
-
-
   addMarker() {
     for (int i = 0; i < widget.voteData!.length; i++) {
       var marker = NMarker(
@@ -685,4 +875,31 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
           NInfoWindow.onMarker(id: marker.info.id, text: '${i + 1} 번'));
     }
   }
+}
+
+List<DateTime> getDatesInRange(DateTime start, DateTime end) {
+  List<DateTime> dates = [];
+  for (int i = 0; i <= end.difference(start).inDays; i++) {
+    dates.add(start.add(Duration(days: i)));
+  }
+  return dates;
+}
+
+// 이벤트 맵 초기화
+final kEvents = LinkedHashMap<DateTime, List<Event>>(
+  equals: isSameDay,
+  hashCode: getHashCode,
+);
+
+class Event {
+  final String title;
+
+  const Event(this.title);
+
+  @override
+  String toString() => title;
+}
+
+int getHashCode(DateTime key) {
+  return key.day * 1000000 + key.month * 10000 + key.year;
 }
