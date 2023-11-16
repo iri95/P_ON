@@ -8,6 +8,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:nav/nav.dart';
 import 'package:p_on/common/common.dart';
+import 'package:p_on/screen/main/tab/benefit/complete_provider.dart';
 import 'package:p_on/screen/main/user/token_state.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:p_on/screen/main/user/fn_kakao.dart';
@@ -164,6 +165,7 @@ class _RightModalState extends ConsumerState<RightModal> {
           path: '$server/api/promise/room/${widget.id}/exit',
           headers: headers);
       final router = GoRouter.of(context);
+      await ref.read(completeProvider.notifier).getPromiseRoom();
       router.go('/main');
     } catch (e) {
       print(e);

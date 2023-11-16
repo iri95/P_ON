@@ -91,24 +91,24 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
           method: 'GET',
           path: '$server/api/promise/vote/${widget.roomId}',
           headers: headers);
-      print('이거 위젯안에서 한번더 조회하는거임');
-      print('이거 위젯안에서 한번더 조회하는거임');
-      print('이거 위젯안에서 한번더 조회하는거임');
-      print(response);
+      // print('이거 위젯안에서 한번더 조회하는거임');
+      // print('이거 위젯안에서 한번더 조회하는거임');
+      // print('이거 위젯안에서 한번더 조회하는거임');
+      // print(response);
       switch (widget.voteType) {
         case 'DATE':
-          print('여기는 date');
-          print(widget.voteType);
+          // print('여기는 date');
+          // print(widget.voteType);
           isComplete = await response.data['result'][0]['dateComplete'];
           break;
         case 'TIME':
-          print('여기는 time');
-          print(widget.voteType);
+          // print('여기는 time');
+          // print(widget.voteType);
           isComplete = await response.data['result'][0]['timeComplete'];
           break;
         case 'LOCATION':
-          print('여기는 location');
-          print(widget.voteType);
+          // print('여기는 location');
+          // print(widget.voteType);
           isComplete = await response.data['result'][0]['locationComplete'];
           break;
         default:
@@ -163,10 +163,10 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
           convertedList.add(mapItem);
         }
       }
-      print('일정조회 성ㄱㅇ');
-      print(response.data['result']);
+      // print('일정조회 성ㄱㅇ');
+      // print(response.data['result']);
       setState(() {
-        print('컨버티드 리스트 만들어짐? : $convertedList');
+        // print('컨버티드 리스트 만들어짐? : $convertedList');
         isLoading = false; // 로딩 상태 업데이트
         populateEventsFromList(convertedList);
       });
@@ -204,17 +204,17 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
 
     final apiService = ApiService();
     try {
-      print(selectedItems);
+      // print(selectedItems);
       Response response = await apiService.sendRequest(
           method: 'POST',
           path: '$server/api/promise/vote',
           headers: {...headers, 'Content-Type': 'application/json'},
           data: data);
-      print('저장성공');
-      print(selectedItems);
-      print('초기화');
+      // print('저장성공');
+      // print(selectedItems);
+      // print('초기화');
       selectedItems.clear();
-      print(selectedItems);
+      // print(selectedItems);
       widget.voteCompletedNotifier.value = true;
     } catch (e) {
       print(e);
@@ -313,7 +313,6 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
     if (token == null) {
       await kakaoLogin(ref);
       await fetchToken(ref);
-
       // 토큰을 다시 읽습니다.
       final newToken = ref.read(loginStateProvider).serverToken;
       final newId = ref.read(loginStateProvider).id;
@@ -327,9 +326,9 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
           method: 'PUT',
           path: '/api/promise/item/${widget.roomId}/${widget.voteType}',
           headers: headers);
-      print(response);
+      // print(response);
       final router = GoRouter.of(context);
-      router.go('/chatroom/${widget.roomId}');
+      router.push('/chatroom/${widget.roomId}');
     } catch (e) {
       print(e);
     }
@@ -374,10 +373,10 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
       }
     }
 
-    print('======');
-    print('======');
-    print('======');
-    print(kEvents);
+    // print('======');
+    // print('======');
+    // print('======');
+    // print(kEvents);
   }
 
   @override
@@ -387,9 +386,9 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
     final currentUser = ref.read(loginStateProvider).id;
     final createUser = ref.read(voteInfoProvider).create_user.toString();
     final voteUpdate = currentUser == createUser ? true : false;
-    print('===================');
-    print(isComplete);
-    print(widget.voteType);
+    // print('===================');
+    // print(isComplete);
+    // print(widget.voteType);
 
     if (isLoading) {
       return Stack(
@@ -743,8 +742,8 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
                               : AppColors.mainBlue,
                         ),
                         child: TextButton(
-                          onPressed: () {
-                            isComplete! ? null : doneVote();
+                          onPressed: () async {
+                            isComplete! ? null : await doneVote();
                           },
                           child: const Text(
                             '투표종료',
