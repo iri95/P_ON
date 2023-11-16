@@ -10,13 +10,13 @@ class Vote extends StatefulWidget {
   final bool isVote;
   final String voteInfo;
 
-  const Vote(
-      {super.key,
-      required this.roomId,
-      required this.voteType,
-      required this.isVote,
-      required this.voteInfo,
-      });
+  const Vote({
+    super.key,
+    required this.roomId,
+    required this.voteType,
+    required this.isVote,
+    required this.voteInfo,
+  });
 
   @override
   State<Vote> createState() => _VoteState();
@@ -32,7 +32,8 @@ class _VoteState extends State<Vote> {
       height: 26,
       child: FilledButton(
           style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all(widget.isVote ? AppColors.mainBlue : AppColors.mainBlue3)),
+              backgroundColor: MaterialStateProperty.all(
+                  widget.isVote ? AppColors.mainBlue : AppColors.mainBlue3)),
           onPressed: () {
             final router = GoRouter.of(context);
             String voteTypeToString(VoteType voteType) {
@@ -44,9 +45,10 @@ class _VoteState extends State<Vote> {
                 print('date');
                 print(widget.voteType);
                 if (widget.isVote! == true) {
-                  router.go('/selecte/vote/${widget.roomId}/${widget.voteInfo}');
+                  router.push(
+                      '/selecte/vote/${widget.roomId}/${widget.voteInfo}');
                 } else {
-                  router.go(
+                  router.push(
                       '/create/vote/${widget.roomId}/${voteTypeToString(widget.voteType)}/$isUpdate/${widget.voteInfo}');
                 }
                 break;
@@ -54,9 +56,10 @@ class _VoteState extends State<Vote> {
                 print('time');
                 print(widget.voteType);
                 if (widget.isVote! == true) {
-                  router.go('/selecte/vote/${widget.roomId}/${widget.voteInfo}');
+                  router.push(
+                      '/selecte/vote/${widget.roomId}/${widget.voteInfo}');
                 } else {
-                  router.go(
+                  router.push(
                       '/create/vote/${widget.roomId}/${voteTypeToString(widget.voteType)}/$isUpdate/${widget.voteInfo}');
                 }
                 break;
@@ -64,9 +67,10 @@ class _VoteState extends State<Vote> {
                 print('location');
                 print(widget.voteType);
                 if (widget.isVote! == true) {
-                  router.go('/selecte/vote/${widget.roomId}/${widget.voteInfo}');
+                  router.push(
+                      '/selecte/vote/${widget.roomId}/${widget.voteInfo}');
                 } else {
-                  router.go(
+                  router.push(
                       '/create/vote/${widget.roomId}/${voteTypeToString(widget.voteType)}/$isUpdate/${widget.voteInfo}');
                 }
                 break;
