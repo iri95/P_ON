@@ -50,7 +50,8 @@ Future<String> getMobileId() async {
 // FCM 토큰 받아오기
 Future getFCMToken() async {
   String? token;
-  if (Platform.isAndroid) {
+  if (kIsWeb) {
+  } else {
     token = await FirebaseMessaging.instance.getToken();
   }
   return token;
@@ -96,6 +97,7 @@ Future<void> kakaoLogin(WidgetRef ref) async {
       }
     }
   } else if (kIsWeb) {
+    print('나는웹');
     launch('http://k9e102.p.ssafy.io:8000/oauth2/authorization/kakao');
 
     // launchUrl(Url: 'http://k9e102.p.ssafy.io:8000/oauth2/authorization/kakao');
