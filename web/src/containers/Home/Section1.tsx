@@ -18,19 +18,26 @@ export default function Section1() {
       <motion.div style={{ position }} className={styles.section1}>
         <div className={styles.screenshots}>
           <div className={styles.screen}>
-            <Image src="/main/main1.png" alt="PON스플래시" objectFit="contain" fill quality={100} priority />
+            <Image
+              src="/main/main1.png"
+              alt="PON스플래시"
+              style={{ objectFit: 'contain' }}
+              fill
+              quality={100}
+              priority
+            />
           </div>
           <div className={`${styles.screen}`}>
-            <Image src="/main/main2.png" alt="PON홈화면" objectFit="contain" fill quality={100} priority />
+            <Image src="/main/main2.png" alt="PON홈화면" style={{ objectFit: 'contain' }} fill quality={100} priority />
           </div>
           <div className={`${styles.screen}`}>
-            <Image src="/main/main3.png" alt="PON채팅방" objectFit="contain" fill quality={100} priority />
+            <Image src="/main/main3.png" alt="PON채팅방" style={{ objectFit: 'contain' }} fill quality={100} priority />
           </div>
         </div>
 
         <div className={styles.text}>
           <div className={styles.title}>
-            <Image src="/P_ON.png" alt="P:ON 로고" objectFit="contain" fill quality={100} priority />
+            <Image src="/P_ON.png" alt="P:ON 로고" style={{ objectFit: 'contain' }} fill quality={100} priority />
           </div>
           <p className={styles.description}>
             <span>약속의 시작</span>을 완벽하게 연결합니다!

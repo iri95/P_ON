@@ -163,10 +163,24 @@ export default function SectionPage({ data }: PageProps) {
 
           <div className={styles['image-container']}>
             <div className={styles.screen}>
-              <Image src={item.image_src[0]} alt={item.image_alt[0]} objectFit="contain" fill quality={100} priority />
+              <Image
+                src={item.image_src[0]}
+                alt={item.image_alt[0]}
+                style={{ objectFit: 'contain' }}
+                fill
+                quality={100}
+                priority
+              />
             </div>
             <div className={styles.screen}>
-              <Image src={item.image_src[1]} alt={item.image_alt[1]} objectFit="cover" fill quality={100} priority />
+              <Image
+                src={item.image_src[1]}
+                alt={item.image_alt[1]}
+                style={{ objectFit: 'cover' }}
+                fill
+                quality={100}
+                priority
+              />
             </div>
           </div>
         </section>
