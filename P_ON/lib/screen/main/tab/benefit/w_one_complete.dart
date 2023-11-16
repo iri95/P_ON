@@ -13,6 +13,8 @@ import 'package:p_on/screen/main/user/token_state.dart';
 import 'package:p_on/screen/main/tab/home/w_custom_text.dart';
 
 import 'complete_provider.dart';
+import 'package:p_on/screen/main/tab/tab_item.dart';
+import 'package:p_on/screen/main/s_main.dart';
 
 class OneCompletePromise extends ConsumerStatefulWidget {
   final dynamic item;
@@ -52,7 +54,7 @@ class _OneCompletePromiseState extends ConsumerState<OneCompletePromise> {
           headers: headers);
 
       users = response.data['result'][0]['users'];
-      print(users);
+      // print(users);
       // List<dynamic> newComplete = await response.data['result'][0];
       // int newCompleteCount = response.data['count'];
     } catch (e) {
@@ -69,6 +71,13 @@ class _OneCompletePromiseState extends ConsumerState<OneCompletePromise> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(currentTabProvider, (_, TabItem? newTabItem) async {
+      if (newTabItem == TabItem.history) {
+        print('dd');
+        oneComplete(widget.item);
+      }
+    });
+
     final completeData = ref.watch(completeProvider);
     dynamic item = widget.item;
 
@@ -142,7 +151,7 @@ class _OneCompletePromiseState extends ConsumerState<OneCompletePromise> {
                         ),
                       ]),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 8,
                     ),
                     // 유저 이미지

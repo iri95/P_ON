@@ -21,7 +21,7 @@ import 'package:p_on/screen/main/user/token_state.dart';
 late void Function() runAppAgain;
 
 void main() async {
-  // runAppAgain = main;
+  runAppAgain = main;
 
   // WidgetsFlutterBinding.ensureInitialized();
 

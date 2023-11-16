@@ -31,6 +31,21 @@ class CompleteState extends StateNotifier<CompleteData> {
       print(e);
     }
   }
+
+  Future<void> getPromiseRoom() async {
+    final token = loginState.serverToken;
+    final id = loginState.id;
+    var headers = {'Authorization': '$token', 'id': '$id'};
+    final apiService = ApiService();
+    try {
+      Response response = await apiService.sendRequest(
+          method: 'GET', path: '/api/promise/room', headers: headers);
+      // print(response.data['result'][0]);
+      print('getPromiseRoom');
+    } catch (e) {
+      print(e);
+    }
+  }
 }
 
 class CompleteData {

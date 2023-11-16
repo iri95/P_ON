@@ -75,6 +75,7 @@ class _HomeFragmentState extends ConsumerState<HomeFragment> {
   Widget build(BuildContext context) {
     scrollController = ref.watch(homeScrollControllerProvider);
     _user = ref.watch(userStateProvider);
+    ref.watch(currentTabProvider);
 
     return Container(
       // color: Colors.white,
