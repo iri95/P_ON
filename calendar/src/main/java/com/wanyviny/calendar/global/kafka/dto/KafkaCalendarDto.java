@@ -37,16 +37,28 @@ public class KafkaCalendarDto {
         cal.calendar_start_date = cal.calendar_start_date + " 00:00:00";
         cal.calendar_end_date = cal.calendar_end_date + " 23:59:59";
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date startDate = format.parse(cal.calendar_start_date);
-        Date endDate = format.parse(cal.calendar_end_date);
-
-        return CalendarDto.setSchedule.builder()
-                .title(cal.calendar_title)
-                .content(cal.calendar_title)
-                .place(cal.calendar_place)
-                .type(CALENDAR_TYPE.SCHEDULE)
-                .startDate(startDate)
-                .endDate(endDate)
-                .build();
+        Date startDate = new Date();
+        Date endDate = new Date();
+        try {
+            format.parse(cal.calendar_end_date);
+            format.parse(cal.calendar_start_date);
+            return CalendarDto.setSchedule.builder()
+                    .title(cal.calendar_title)
+                    .content(cal.calendar_title)
+                    .place(cal.calendar_place)
+                    .type(CALENDAR_TYPE.SCHEDULE)
+                    .startDate(startDate)
+                    .endDate(endDate)
+                    .build();
+        } catch (ParseException e) {
+            return CalendarDto.setSchedule.builder()
+                    .title(cal.calendar_title)
+                    .content(cal.calendar_title)
+                    .place(cal.calendar_place)
+                    .type(CALENDAR_TYPE.SCHEDULE)
+                    .startDate(startDate)
+                    .endDate(endDate)
+                    .build();
+        }
     }
 }
