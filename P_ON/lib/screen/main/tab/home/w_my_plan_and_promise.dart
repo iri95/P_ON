@@ -172,7 +172,7 @@ class _MyPlanAndPromiseState extends ConsumerState<MyPlanAndPromise> {
               ),
               onPressed: () {
                 final router = GoRouter.of(context);
-                router.go('/chatroom/${item['id']}');
+                router.push('/chatroom/${item['id']}');
               },
               child: Stack(
                 children: [
