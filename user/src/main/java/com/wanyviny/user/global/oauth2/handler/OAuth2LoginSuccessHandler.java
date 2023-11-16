@@ -1,9 +1,7 @@
 package com.wanyviny.user.global.oauth2.handler;
 
-import com.wanyviny.user.domain.user.entity.User;
-import com.wanyviny.user.domain.user.repository.UserRepository;
+
 import com.wanyviny.user.global.jwt.service.JwtService;
-import com.wanyviny.user.global.jwt.util.PasswordUtil;
 import com.wanyviny.user.global.oauth2.CustomOAuth2User;
 import com.wanyviny.user.domain.user.ROLE;
 import jakarta.servlet.ServletException;
@@ -12,12 +10,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.mapping.GrantedAuthoritiesMapper;
 import org.springframework.security.core.authority.mapping.NullAuthoritiesMapper;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
