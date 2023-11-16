@@ -82,10 +82,6 @@ class _AllFragmentState extends ConsumerState<AllFragment> {
         // print(ref.read(userStateProvider)?.nickName);
         ref.read(fetchFollowProvider.future);
       }
-
-      if (newTabItem == TabItem.history) {
-        ref.read(completeProvider.notifier).getCompleteRoom();
-      }
     });
 
     return Material(

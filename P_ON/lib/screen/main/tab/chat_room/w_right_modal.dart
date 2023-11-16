@@ -20,6 +20,8 @@ import 'package:p_on/screen/main/user/token_state.dart';
 
 import '../promise_room/vo_server_url.dart';
 import '../schedule/f_schedule.dart';
+import 'package:p_on/screen/main/s_main.dart';
+import 'package:p_on/screen/main/tab/tab_item.dart';
 
 class RightModal extends ConsumerStatefulWidget {
   int id;
@@ -200,6 +202,7 @@ class _RightModalState extends ConsumerState<RightModal> {
           path: '$server/api/promise/room/${widget.id}/complete',
           headers: headers);
       final router = GoRouter.of(context);
+      await ref.read(completeProvider.notifier).getCompleteRoom();
       router.go('/main');
     } catch (e) {
       print(e);
