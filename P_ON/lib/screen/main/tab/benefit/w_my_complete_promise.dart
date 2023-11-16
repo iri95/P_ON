@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 
 import 'complete_provider.dart';
 import 'w_one_complete.dart';
+import 'package:p_on/screen/main/s_main.dart';
+import 'package:p_on/screen/main/tab/tab_item.dart';
 
 class MyCompletePromise extends ConsumerStatefulWidget {
   const MyCompletePromise({super.key});
@@ -34,6 +36,12 @@ class _MyCompletePromiseState extends ConsumerState<MyCompletePromise> {
 
   @override
   Widget build(BuildContext context) {
+    ref.listen(currentTabProvider, (_, TabItem? newTabItem) async {
+      if (newTabItem == TabItem.history) {
+        // ref.read(completeProvider.notifier).getCompleteRoom();
+        ref.read(completeProvider.notifier).getCompleteRoom();
+      }
+    });
     final completeData = ref.watch(completeProvider);
     final complete = completeData.complete;
     final completeCount = completeData.completeCount;

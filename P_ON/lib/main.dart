@@ -15,14 +15,19 @@ import 'common/theme/custom_theme_app.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
+import 'package:flutter/foundation.dart';
 import 'package:p_on/screen/main/user/token_state.dart';
 
 late void Function() runAppAgain;
 
 void main() async {
-  runAppAgain = main;
+  // runAppAgain = main;
+  // WidgetsFlutterBinding.ensureInitialized();
 
-  WidgetsFlutterBinding.ensureInitialized();
+  final bindings = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: bindings);
+  await EasyLocalization.ensureInitialized();
+  await AppPreferences.init();
 
   // runApp() 호출 전 Flutter SDK 초기화
   KakaoSdk.init(
@@ -30,15 +35,14 @@ void main() async {
     javaScriptAppKey: '257ed79230fb398c5b7d48ae7ddb916d',
   );
 
-  await NaverMapSdk.instance.initialize(clientId: Naver_Map_Id);
-  final bindings = WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.preserve(widgetsBinding: bindings);
-  await EasyLocalization.ensureInitialized();
-  await AppPreferences.init();
-
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  // await NaverMapSdk.instance.initialize(clientId: Naver_Map_Id);
+  if (kIsWeb) {
+  } else {
+    await NaverMapSdk.instance.initialize(clientId: Naver_Map_Id);
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
 
   timeago.setLocaleMessages('ko', timeago.KoMessages());
   runApp(EasyLocalization(

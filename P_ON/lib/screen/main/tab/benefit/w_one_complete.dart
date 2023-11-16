@@ -11,7 +11,8 @@ import 'package:dio/dio.dart';
 import 'package:p_on/screen/main/user/token_state.dart';
 
 import 'package:p_on/screen/main/tab/home/w_custom_text.dart';
-
+import 'package:p_on/screen/main/s_main.dart';
+import 'package:p_on/screen/main/tab/tab_item.dart';
 import 'complete_provider.dart';
 
 class OneCompletePromise extends ConsumerStatefulWidget {
@@ -52,7 +53,7 @@ class _OneCompletePromiseState extends ConsumerState<OneCompletePromise> {
           headers: headers);
 
       users = response.data['result'][0]['users'];
-      print(users);
+      // print(users);
       // List<dynamic> newComplete = await response.data['result'][0];
       // int newCompleteCount = response.data['count'];
     } catch (e) {
@@ -63,12 +64,16 @@ class _OneCompletePromiseState extends ConsumerState<OneCompletePromise> {
   @override
   void initState() {
     super.initState();
-    print(11);
     oneComplete(widget.item);
   }
 
   @override
   Widget build(BuildContext context) {
+    ref.listen<CompleteData>(completeProvider, (_, CompleteData completeData) {
+      // Call oneComplete function when completeProvider changes
+      oneComplete(widget.item);
+    });
+
     final completeData = ref.watch(completeProvider);
     dynamic item = widget.item;
 

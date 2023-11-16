@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:kakao_flutter_sdk_user/kakao_flutter_sdk_user.dart';
@@ -26,11 +27,13 @@ class PonAuth extends ChangeNotifier {
   // 로그인
   // 서버 토큰이 있으면, 카카오 로그인 -> 서버 토큰 발급 진행
   Future<bool> signInWithKakao(WidgetRef ref) async {
-    print('로그인 ㄱㄱ');
-
     // 로그인
-    await kakaoLogin(ref);
-    await fetchToken(ref);
+    if (kIsWeb) {
+      fetchWeb(ref);
+    } else {
+      await kakaoLogin(ref);
+      await fetchToken(ref);
+    }
 
     // fetch Token 하면 token, role이 담김
     final token = ref.read(loginStateProvider).serverToken;
@@ -42,12 +45,13 @@ class PonAuth extends ChangeNotifier {
       _signedIn = true;
       print('토큰이 있고, role이 user');
 
-      await fetchProfile(ref);
+      if (!kIsWeb) {
+        await fetchProfile(ref);
+      }
 
       // 그러면 여기서 토큰으로 프로필을 저장하고 메인으로 이동해야 함
       print('${ref.read(userStateProvider)?.nickName}');
     } else if (token != null && role == 'GUEST') {
-      print('토큰이 있고, role이 guest');
       // _signedIn = true;
       _signedIn = false;
 

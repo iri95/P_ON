@@ -1,5 +1,5 @@
 name: p_on
-description: A new Flutter project.
+description: 핑키와 함께하는 약속 관리 앱
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: "none" # Remove this line if you wish to publish to pub.dev
@@ -16,7 +16,9 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.0.0+1
+
+# TODO: 버전 올리고 build
+version: 1.0.1+15
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -30,7 +32,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  url_launcher: ^6.2.1
   #splash creator
   flutter_native_splash: ^2.3.0
 
@@ -67,14 +69,13 @@ dependencies:
   intl: ^0.18.1
 
   #ui - util
-  keyboard_utils_fork: ^0.0.4
+  keyboard_utils_fork:
+    ^0.0.4
     # am, pm = 오전, 오후로 바꿈
   day_night_time_picker:
     git:
       url: https://github.com/HyeonBhinKim/day_night_time_picker.git
-      ref: '990d08d'
-
-
+      ref: "990d08d"
 
   #network
   dio: ^5.0.0
@@ -129,6 +130,7 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
+    - assets/
     - assets/json/
     - assets/image/
     - assets/image/icon/
