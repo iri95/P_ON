@@ -632,7 +632,7 @@ class _VoteItemsState extends ConsumerState<VoteItems> {
                 ],
               ),
             ),
-          /// TODO
+          /// TODO : 여기 캘린더 넣어, 일정 마커 추가된것만
           /// 초록창 부분
           if (widget.voteType == 'DATE')
             Container(
