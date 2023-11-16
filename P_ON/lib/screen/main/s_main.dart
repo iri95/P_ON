@@ -116,7 +116,7 @@ class MainScreenState extends ConsumerState<MainScreen>
                           onPressed: () {
                             final userId = ref.read(loginStateProvider).id;
                             final router = GoRouter.of(context);
-                            router.go('/chatbot/$userId');
+                            router.push('/chatbot/$userId');
                           },
                           child: Image.asset(currentImage),
                         ),
