@@ -11,7 +11,7 @@ class ApiService {
   Dio dio;
 
   ApiService({Dio? dio}) : dio = dio ?? Dio() {
-    this.dio.options.baseUrl = 'http://k9e102.p.ssafy.io:8000';
+    this.dio.options.baseUrl = 'https://k9e102.p.ssafy.io:8000';
     // this.dio.options.connectTimeout = 5000; // 5초
     // this.dio.options.receiveTimeout = 3000; // 3초
 
