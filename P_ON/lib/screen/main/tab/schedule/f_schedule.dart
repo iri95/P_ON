@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:p_on/common/common.dart';
 import 'package:p_on/common/util/dio.dart';
 import 'package:p_on/screen/main/fab/w_bottom_nav_floating_button.riverpod.dart';
+import 'package:p_on/screen/main/s_main.dart';
 import 'package:p_on/screen/main/tab/home/w_p_on_app_bar.dart';
-import 'package:p_on/screen/main/tab/promise_room/dto_promise.dart';
 import 'package:p_on/screen/main/tab/promise_room/vo_server_url.dart';
 import 'package:p_on/screen/main/tab/schedule/dto_schedule.dart';
 import 'package:p_on/screen/main/user/fn_kakao.dart';
@@ -29,6 +29,7 @@ class _CalendarFragmentState extends ConsumerState<ScheduleFragment> {
   RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
       .toggledOff; // Can be toggled on/off by longpressing a date
   DateTime _focusedDay = DateTime.now();
+  int? selectedUserId;
 
   final kToday = DateTime.now();
   DateTime? _selectedDay;
@@ -47,11 +48,13 @@ class _CalendarFragmentState extends ConsumerState<ScheduleFragment> {
     final myImage = userState?.profileImage;
     final myNick = userState?.nickName;
 
+    int? myId = int.tryParse(id!);
+
     // 현재 사용자 정보를 userList에 먼저 추가
     userList = [{
       'nickname': myNick,
       'profileImage': myImage,
-      'userId': id
+      'userId': myId
     }];
 
     var headers = {'Authorization': '$token', 'id': '$id'};
@@ -249,7 +252,7 @@ class _CalendarFragmentState extends ConsumerState<ScheduleFragment> {
       orElse: () => <int, List<Map<String, dynamic>>>{},
     );
 
-    if (eventsForDay != null) {
+    if (eventsForDay != null && eventsForDay[key] != null)  {
       List<Map<String, dynamic>> events = eventsForDay[key]!;
       for (var event in events) {
         DateTime startDate = DateTime.parse(event['startDate']);
@@ -288,40 +291,61 @@ class _CalendarFragmentState extends ConsumerState<ScheduleFragment> {
         children: [
           const PONAppBar(),
           Container(
-            height: 100,
+            height: 120,
             child: ListView(
               scrollDirection: Axis.horizontal,
-              children: userList
-                  ?.map((item) => Container(
-                margin: const EdgeInsets.symmetric(
-                    horizontal: 4),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      width: 80,
-                      height: 80,
-                      child: TextButton(
-                          onPressed: () {
-                            populateEventsForUserId(item['userId']);
-                          },
-                          child: ClipOval(
-                            child: Image.network(
-                                item['profileImage'],
-                                fit: BoxFit.cover),
-                          )),
+              children: userList?.map((item) {
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      selectedUserId = item['userId'];
+                      populateEventsForUserId(item['userId']);
+                    });
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 4),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          width: 80,
+                          height: 80,
+                          child: TextButton(
+                            onPressed: () {
+                              setState(() {
+                                selectedUserId = item['userId'];
+                                populateEventsForUserId(item['userId']);
+                              });
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: selectedUserId == item['userId'] ? Colors.blue : Colors.transparent,
+                                  width: 4.0,
+                                ),
+                              ),
+                              child: ClipOval(
+                                child: Image.network(
+                                  item['profileImage'],
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        Text(
+                          item['nickname'],
+                          style: const TextStyle(
+                            fontFamily: 'Pretendard',
+                            fontWeight: FontWeight.w500,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
                     ),
-                    Text(
-                      item['nickname'],
-                      style: const TextStyle(
-                          fontFamily: 'Pretendard',
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16),
-                    ),
-                  ],
-                ),
-              ))
-                  .toList() ??
-                  [],
+                  ),
+                );
+              }).toList()??[],
             ),
           ),
           Card(
@@ -389,6 +413,7 @@ class _CalendarFragmentState extends ConsumerState<ScheduleFragment> {
               // edgeOffset: PONAppBar.appBarHeight,
               onRefresh: () async {
                 await sleepAsync(500.ms);
+                getUserListAndSchedule();
               },
               child: ValueListenableBuilder<List<Event>>(
                 valueListenable: _selectedEvents,

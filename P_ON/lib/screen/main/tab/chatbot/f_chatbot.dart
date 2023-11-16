@@ -68,6 +68,8 @@ class _ChatBotState extends ConsumerState<ChatBot> {
         data: data,
       );
 
+      messages.add({'text' : '일정이 생성되었어요! 일정탭에서 확인해 보세요!!', 'user' : false});
+
       WidgetsBinding.instance!.addPostFrameCallback((_) {
         _scrollController.animateTo(
           _scrollController.position.maxScrollExtent + 100,
