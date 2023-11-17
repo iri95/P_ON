@@ -61,9 +61,8 @@ class _LoginPageState extends ConsumerState<LoginPage>
     }
 
     return Container(
-      color: Colors.white,
-      child: Column(
-        children: [
+        color: Colors.white,
+        child: Column(children: [
           Expanded(
             child: Container(
               margin: const EdgeInsets.symmetric(horizontal: 30),
@@ -71,57 +70,55 @@ class _LoginPageState extends ConsumerState<LoginPage>
             ),
           ),
           Container(
-            width: double.infinity,
-            height: 60,
-            margin: const EdgeInsets.fromLTRB(50, 20, 50, 80),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                color: (kIsWeb) ? Color(0xffffca38) : const Color(0xffF9E000)),
-            child: TextButton(
-              onPressed: () async {
-                // FIXME: 이게 키해시임
-                print("=====");
-                // print(await KakaoSdk.origin);
+              width: double.infinity,
+              height: 60,
+              margin: const EdgeInsets.fromLTRB(50, 20, 50, 80),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color:
+                      (kIsWeb) ? Color(0xffffca38) : const Color(0xffF9E000)),
+              child: TextButton(
+                onPressed: () async {
+                  // FIXME: 이게 키해시임
+                  print("=====");
+                  // print(await KakaoSdk.origin);
 
-                await goLogin();
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  (kIsWeb)
-                      ? Ink()
-                      : Ink(
-                          decoration: const BoxDecoration(
-                              image: DecorationImage(
-                                  image:
-                                      AssetImage('assets/image/icon/kakao.png'),
-                                  fit: BoxFit.cover),
-                              shape: BoxShape.circle),
-                          width: 48,
-                          height: 48,
-                          child: InkWell(
-                            onTap: () {},
+                  await goLogin();
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: (kIsWeb)
+                      ? [
+                          const Text('P:ON 미리보기',
+                              style: TextStyle(
+                                  color: Color(0xff371C1D),
+                                  fontFamily: 'Pretendard',
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w700))
+                        ]
+                      : [
+                          Ink(
+                            decoration: const BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage(
+                                        'assets/image/icon/kakao.png'),
+                                    fit: BoxFit.cover),
+                                shape: BoxShape.circle),
+                            width: 48,
+                            height: 48,
+                            child: InkWell(
+                              onTap: () {},
+                            ),
                           ),
-                        ),
-                  (kIsWeb)
-                      ? const Text('P:ON 미리보기',
-                          style: TextStyle(
-                              color: Color(0xff371C1D),
-                              fontFamily: 'Pretendard',
-                              fontSize: 24,
-                              fontWeight: FontWeight.w700))
-                      : const Text('카카오로 시작하기',
-                          style: TextStyle(
-                              color: Color(0xff371C1D),
-                              fontFamily: 'Pretendard',
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700))
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
+                          const Text('카카오로 시작하기',
+                              style: TextStyle(
+                                  color: Color(0xff371C1D),
+                                  fontFamily: 'Pretendard',
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700))
+                        ],
+                ),
+              ))
+        ]));
   }
 }
