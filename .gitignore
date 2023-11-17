@@ -73,3 +73,4 @@ front/.env*.local
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+/src/main/resources/firebase/wanibini-d1599-firebase-adminsdk-4c6ay-8ea8b10e56.json
