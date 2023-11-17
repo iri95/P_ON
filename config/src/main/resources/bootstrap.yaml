@@ -1,0 +1,21 @@
+encrypt:
+  key: 00fe614f1a973f692391cdac8bc32f1066374fa064239e35b83d1f0d736ed5cc
+
+server:
+  port: 8888
+
+spring:
+  application:
+    name: config-server
+
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://lab.ssafy.com/kimta2hwan/s09p31e102-yaml.git
+          default-label: master
+          search-paths: yaml/**
+          basedir: ../../repo
+
+  profiles:
+    include: gitlab
