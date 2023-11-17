@@ -1,0 +1,151 @@
+.nav-container {
+  height: 70px;
+  background-color: #f4f7fab3; // opacity 70%
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  position: fixed;
+  width: 100vw;
+  padding: 0 10vw;
+  margin-bottom: 12px;
+
+  z-index: 100;
+  .nav-icon {
+    height: 100%;
+
+    div.big {
+      display: block;
+      position: relative;
+      margin: auto 0;
+      height: 100%;
+      width: auto;
+      aspect-ratio: 710 / 363;
+    }
+    div.small {
+      display: none;
+      position: relative;
+      margin: 5% 0;
+      height: 90%;
+      width: auto;
+      aspect-ratio: 1;
+    }
+  }
+
+  .nav-items {
+    display: block;
+
+    ul li {
+      list-style: none;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .nav-item {
+      padding: 0 30px 0 0;
+      transition: all 0.4s ease;
+      width: 150px;
+      text-align: center;
+
+      &:last-child {
+        margin-right: 10px;
+      }
+      & > a {
+        opacity: 0.5;
+        text-decoration: none;
+        color: var(--color-grey7);
+        text-transform: uppercase;
+        display: block;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        font-size: 20px;
+        height: 100%;
+
+        & .line {
+          position: relative;
+          width: inherit;
+          padding: 0 5px;
+          height: 2px;
+          background: var(--color-point2);
+          animation: slide 0.3s forwards;
+        }
+      }
+      & > a:hover {
+        opacity: 0.7;
+      }
+      &.active a {
+        opacity: 1;
+      }
+    }
+  }
+
+  .nav-item:hover > .dropdown,
+  .dropdown:hover {
+    visibility: visible;
+  }
+
+  // dropdown
+  .dropdown {
+    visibility: hidden;
+    position: absolute;
+    left: inherit;
+    display: block;
+    background: white;
+    width: 160px;
+    text-align: center;
+    box-shadow: 0px 3px 5px -1px #ccc;
+    margin: 0px 0 0 -20px;
+    padding: 10px 0 0 0;
+
+    & > li {
+      width: 100%;
+      margin-bottom: 10px;
+      border-style: none;
+      padding: 5px 0;
+
+      &:hover {
+        background: var(--color-main4);
+        transition: all 0.3s ease;
+        a {
+          color: var(--color-grey7);
+        }
+      }
+      a {
+        color: var(--color-grey7);
+        font-weight: 400;
+        text-decoration: none;
+        letter-spacing: 0.03em;
+        font-size: 18px;
+        height: 100%;
+      }
+    }
+  }
+
+  @keyframes slide {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+    }
+  }
+}
+
+@media screen and (max-width: 1023px) {
+  .nav-container {
+    padding: 0 5vw;
+
+    .nav-icon {
+      div.big {
+        display: none;
+      }
+      div.small {
+        display: block;
+      }
+    }
+
+    .nav-item {
+      padding: 0 10px 0 0;
+    }
+  }
+}
