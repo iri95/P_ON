@@ -88,18 +88,21 @@ class _LoginPageState extends ConsumerState<LoginPage>
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Ink(
-                    decoration: const BoxDecoration(
-                        image: DecorationImage(
-                            image: AssetImage('assets/image/icon/kakao.png'),
-                            fit: BoxFit.cover),
-                        shape: BoxShape.circle),
-                    width: 48,
-                    height: 48,
-                    child: InkWell(
-                      onTap: () {},
-                    ),
-                  ),
+                  (kIsWeb)
+                      ? Ink()
+                      : Ink(
+                          decoration: const BoxDecoration(
+                              image: DecorationImage(
+                                  image:
+                                      AssetImage('assets/image/icon/kakao.png'),
+                                  fit: BoxFit.cover),
+                              shape: BoxShape.circle),
+                          width: 48,
+                          height: 48,
+                          child: InkWell(
+                            onTap: () {},
+                          ),
+                        ),
                   (kIsWeb)
                       ? const Text('P:ON 미리보기',
                           style: TextStyle(
