@@ -33,14 +33,18 @@ public class KafkaCalendarDto {
     public CalendarDto.setSchedule kafkaToSet() {
 
         // date 형 변환
+        System.out.println(cal.calendar_start_date);
+        System.out.println(cal.calendar_end_date);
         cal.calendar_start_date = cal.calendar_start_date + " 00:00:00";
         cal.calendar_end_date = cal.calendar_end_date + " 23:59:59";
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date startDate = new Date();
         Date endDate = new Date();
         try {
-            format.parse(cal.calendar_end_date);
-            format.parse(cal.calendar_start_date);
+            startDate = format.parse(cal.calendar_start_date);
+            endDate = format.parse(cal.calendar_end_date);
+            System.out.println(startDate);
+            System.out.println(endDate);
             return CalendarDto.setSchedule.builder()
                     .title(cal.calendar_title)
                     .content(cal.calendar_title)
