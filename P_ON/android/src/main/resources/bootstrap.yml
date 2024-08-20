@@ -1,8 +1,0 @@
-spring:
-  config:
-    import: optional:configserver:http://k9e102.p.ssafy.io:8888
-
-  cloud:
-    config:
-      name: user
-      profile: prob
